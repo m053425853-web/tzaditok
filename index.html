@@ -89,245 +89,311 @@
       </div>
     </div>
 
-    <div class="max-w-4xl mx-auto px-4 py-2.5 flex items-center justify-between">
-      <div class="flex items-center gap-2.5">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20 text-slate-950 font-black text-xl">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20 text-slate-950 font-black text-2xl">
           צ
         </div>
         <div>
-          <h1 class="text-lg font-black tracking-wide gold-gradient-text flex items-center gap-1.5">
-            צדיק-טוק <span class="text-[10px] px-1.5 py-0.5 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded font-normal">MASTER V8</span>
+          <h1 class="text-xl font-black tracking-wide gold-gradient-text flex items-center gap-2">
+            צדיק-טוק <span class="text-[10px] px-2 py-0.5 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-md font-semibold">SUPER-APP</span>
           </h1>
-          <p class="text-[10px] text-slate-400 font-medium">הפיד היהודי העולמי • עריכה מלאה, סרטוני רילס, סידור ומניינים</p>
+          <p class="text-xs text-slate-400 font-medium">סדרות תנ״ך ב-AI, סידור, מניינים, יודאיקה וקברי צדיקים</p>
         </div>
       </div>
 
       <div class="flex items-center gap-2">
-        <button onclick="openDonateModal()" class="px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 font-extrabold text-xs shadow-md shadow-amber-500/20 flex items-center gap-1 transition-all active:scale-95">
-          <span>❤️</span>
-          <span>תרומה</span>
+        <!-- Cart Button -->
+        <button onclick="openCartModal()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 font-bold text-xs flex items-center gap-1.5 relative shadow-md">
+          <span>🛒 עגלה</span>
+          <span id="cart-badge" class="w-5 h-5 rounded-full bg-amber-500 text-slate-950 font-black text-[10px] flex items-center justify-center">0</span>
         </button>
-        <button onclick="toggleShabbatMode()" title="מצב שבת" class="p-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700/60 active:scale-95 transition-all text-sm">
+        <!-- Donate Button -->
+        <button onclick="openDonateModal()" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 font-black text-xs shadow-md shadow-amber-500/20 flex items-center gap-1 transition-all active:scale-95">
+          <span>❤️</span> <span>תרומה</span>
+        </button>
+        <!-- Shabbat Mode -->
+        <button onclick="toggleShabbatMode()" title="מצב שבת" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 active:scale-95 transition-all text-sm">
           🕯️
         </button>
       </div>
     </div>
 
-    <!-- Category Pills -->
-    <div class="max-w-4xl mx-auto px-2 py-2 overflow-x-auto hide-scrollbar flex items-center gap-1.5 border-t border-slate-800/40 text-xs">
-      <button onclick="switchTab('feed')" id="pill-feed" class="pill-btn active shrink-0 px-3 py-1.5 rounded-full border border-slate-700 bg-slate-800/90 text-slate-300 font-bold transition-all">
-        🎬 פיד רילס וסדרות
+    <!-- Category Pills Bar -->
+    <div class="max-w-6xl mx-auto px-3 py-2 overflow-x-auto hide-scrollbar flex items-center gap-2 border-t border-slate-800/40 text-xs">
+      <button onclick="switchTab('feed')" id="pill-feed" class="pill-btn active shrink-0 px-4 py-2 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 font-bold transition-all">
+        🎬 פיד רילס
       </button>
-      <button onclick="switchTab('siddur')" id="pill-siddur" class="pill-btn shrink-0 px-3 py-1.5 rounded-full border border-slate-700 bg-slate-800/90 text-slate-300 font-bold transition-all">
-        🙏 סידור ומצפן תפילה
+      <button onclick="switchTab('series')" id="pill-series" class="pill-btn shrink-0 px-4 py-2 rounded-xl border border-amber-500/40 bg-amber-500/10 text-amber-300 font-bold transition-all">
+        📺 ספריית סדרות (9)
       </button>
-      <button onclick="switchTab('minyanim')" id="pill-minyanim" class="pill-btn shrink-0 px-3 py-1.5 rounded-full border border-slate-700 bg-slate-800/90 text-slate-300 font-bold transition-all">
-        ⏱️ מניינים בזמן אמת
+      <button onclick="switchTab('judaica')" id="pill-judaica" class="pill-btn shrink-0 px-4 py-2 rounded-xl border border-amber-500/40 bg-amber-500/10 text-amber-300 font-bold transition-all">
+        🛍️ חנות יודאיקה (10)
       </button>
-      <button onclick="switchTab('rabbis')" id="pill-rabbis" class="pill-btn shrink-0 px-3 py-1.5 rounded-full border border-slate-700 bg-slate-800/90 text-slate-300 font-bold transition-all">
-        📜 רבנים וקווי הוראה
+      <button onclick="switchTab('siddur')" id="pill-siddur" class="pill-btn shrink-0 px-4 py-2 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 font-bold transition-all">
+        🙏 סידור תפילה
       </button>
-      <button onclick="switchTab('tzaddikim')" id="pill-tzaddikim" class="pill-btn shrink-0 px-3 py-1.5 rounded-full border border-slate-700 bg-slate-800/90 text-slate-300 font-bold transition-all">
-        🕯️ קברי צדיקים
+      <button onclick="switchTab('minyanim')" id="pill-minyanim" class="pill-btn shrink-0 px-4 py-2 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 font-bold transition-all">
+        ⏱️ מניינים חיים
       </button>
-      <button onclick="switchTab('gemachim')" id="pill-gemachim" class="pill-btn shrink-0 px-3 py-1.5 rounded-full border border-slate-700 bg-slate-800/90 text-slate-300 font-bold transition-all">
-        🤝 גמ״חים וחסד
+      <button onclick="switchTab('tzaddikim')" id="pill-tzaddikim" class="pill-btn shrink-0 px-4 py-2 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 font-bold transition-all">
+        🕯️ קברי צדיקים (22)
       </button>
-      <button onclick="switchTab('mikvaot')" id="pill-mikvaot" class="pill-btn shrink-0 px-3 py-1.5 rounded-full border border-slate-700 bg-slate-800/90 text-slate-300 font-bold transition-all">
-        💧 מקוואות טהרה
+      <button onclick="switchTab('rabbis')" id="pill-rabbis" class="pill-btn shrink-0 px-4 py-2 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 font-bold transition-all">
+        📜 רבנים והלכה
       </button>
-      <button onclick="switchTab('zmanim')" id="pill-zmanim" class="pill-btn shrink-0 px-3 py-1.5 rounded-full border border-slate-700 bg-slate-800/90 text-slate-300 font-bold transition-all">
-        ⏰ זמני היום וחשבון נפש
+      <button onclick="switchTab('gemachim')" id="pill-gemachim" class="pill-btn shrink-0 px-4 py-2 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 font-bold transition-all">
+        🤝 גמ״חים
       </button>
-      <button onclick="switchTab('parasha')" id="pill-parasha" class="pill-btn shrink-0 px-3 py-1.5 rounded-full border border-slate-700 bg-slate-800/90 text-slate-300 font-bold transition-all">
+      <button onclick="switchTab('mikvaot')" id="pill-mikvaot" class="pill-btn shrink-0 px-4 py-2 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 font-bold transition-all">
+        💧 מקוואות
+      </button>
+      <button onclick="switchTab('zmanim')" id="pill-zmanim" class="pill-btn shrink-0 px-4 py-2 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 font-bold transition-all">
+        ⏰ זמנים וחשבון נפש
+      </button>
+      <button onclick="switchTab('parasha')" id="pill-parasha" class="pill-btn shrink-0 px-4 py-2 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 font-bold transition-all">
         📖 פרשת השבוע (54)
       </button>
-      <button onclick="switchTab('tehillim')" id="pill-tehillim" class="pill-btn shrink-0 px-3 py-1.5 rounded-full border border-slate-700 bg-slate-800/90 text-slate-300 font-bold transition-all">
-        🤲 תהילים ושמות לתפילה
+      <button onclick="switchTab('tehillim')" id="pill-tehillim" class="pill-btn shrink-0 px-4 py-2 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 font-bold transition-all">
+        🤲 תהילים ושמות
       </button>
-      <button onclick="switchTab('portals')" id="pill-portals" class="pill-btn shrink-0 px-3 py-1.5 rounded-full border border-cyan-500/40 bg-cyan-500/10 text-cyan-300 font-bold transition-all">
+      <button onclick="switchTab('portals')" id="pill-portals" class="pill-btn shrink-0 px-4 py-2 rounded-xl border border-cyan-500/40 bg-cyan-500/10 text-cyan-300 font-bold transition-all">
         🌐 מאגרים ופורטלים
       </button>
-      <button onclick="switchTab('export')" id="pill-export" class="pill-btn shrink-0 px-3 py-1.5 rounded-full border border-amber-500/40 bg-amber-500/10 text-amber-300 font-bold transition-all">
-        💻 קוד מקור והטמעה
+      <button onclick="switchTab('export')" id="pill-export" class="pill-btn shrink-0 px-4 py-2 rounded-xl border border-amber-500/40 bg-amber-500/10 text-amber-300 font-bold transition-all">
+        💻 קוד מקור מלא
       </button>
     </div>
   </header>
 
   <!-- Main Container -->
-  <main class="max-w-4xl mx-auto px-3 sm:px-4 pt-3 pb-8">
+  <main class="max-w-6xl mx-auto px-4 pt-4 pb-12">
 
-    <!-- 1. FEED & REELS VIEW -->
+    <!-- 1. FEED & TIKTOK REELS -->
     <section id="view-feed" class="view-section active space-y-4">
-      <div class="flex items-center justify-between bg-slate-900/80 p-2.5 rounded-2xl border border-slate-800">
-        <div class="flex items-center gap-1.5">
+      <div class="flex items-center justify-between bg-slate-900/90 p-3 rounded-2xl border border-slate-800">
+        <div class="flex items-center gap-2">
           <span class="text-xs font-bold text-slate-400">תצוגת תוכן:</span>
-          <button onclick="setVideoFormat('reel')" id="fmt-reel" class="px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 transition-all">
+          <button onclick="setVideoFormat('reel')" id="fmt-reel" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 transition-all">
             📱 רילס אנכי 9:16
           </button>
-          <button onclick="setVideoFormat('full')" id="fmt-full" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:text-white transition-all">
+          <button onclick="setVideoFormat('full')" id="fmt-full" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:text-white transition-all">
             📺 פרקים מלאים (15-30 דק')
           </button>
         </div>
-        <button onclick="openLiveVideoModal()" class="px-2.5 py-1 rounded-lg bg-red-600/90 hover:bg-red-500 text-white font-bold text-xs flex items-center gap-1 animate-pulse">
+        <button onclick="openLiveVideoModal()" class="px-3 py-1.5 rounded-xl bg-red-600/90 hover:bg-red-500 text-white font-bold text-xs flex items-center gap-1.5 animate-pulse">
           <span class="w-2 h-2 rounded-full bg-white"></span>
-          <span>שידור חי</span>
+          <span>שידור חי מבית המדרש</span>
         </button>
       </div>
 
-      <div class="bg-gradient-to-r from-red-950/40 via-slate-900 to-amber-950/30 p-4 rounded-2xl border border-red-900/40 relative overflow-hidden">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div class="space-y-1">
-            <div class="flex items-center gap-2">
-              <span class="px-2 py-0.5 rounded bg-red-600 text-white font-black text-[10px] tracking-wide">LIVE NOW</span>
-              <span class="text-xs text-amber-300 font-bold">שיעור הדף היומי וסודות התורה</span>
-            </div>
-            <h3 class="text-base font-extrabold text-white">שידור חי מבית המדרש המרכזי עם אלפי צופים</h3>
-            <p class="text-xs text-slate-300">כולל לימוד מעמיק ברש״י, מדרשי חז״ל וחיבור הלכתי לחיי היומיום.</p>
-          </div>
-          <div class="flex items-center gap-2 w-full sm:w-auto">
-            <button onclick="openLiveVideoModal()" class="flex-1 sm:flex-none px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-red-600/30">
-              ▶️ צפה בשידור
-            </button>
-            <button onclick="openDonateModal()" class="flex-1 sm:flex-none px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs flex items-center justify-center gap-1 shadow-lg shadow-amber-500/20">
-              ❤️ תמוך בשיעור
-            </button>
-          </div>
-        </div>
+      <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar py-1">
+        <button onclick="filterFeedCards('all')" class="feed-tag-btn active px-4 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950">הכל</button>
+        <button onclick="filterFeedCards('tanach')" class="feed-tag-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">תנ״ך ואבות</button>
+        <button onclick="filterFeedCards('chassidut')" class="feed-tag-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">מאורי החסידות</button>
+        <button onclick="filterFeedCards('stories')" class="feed-tag-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">סיפורי מופת</button>
       </div>
 
-      <div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar py-1">
-        <button onclick="filterFeedCards('all')" class="feed-tag-btn active px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950">הכל</button>
-        <button onclick="filterFeedCards('tanach')" class="feed-tag-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800/80 text-slate-300 hover:bg-slate-750">תנ״ך ואבות</button>
-        <button onclick="filterFeedCards('chassidut')" class="feed-tag-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800/80 text-slate-300 hover:bg-slate-750">מאורי החסידות</button>
-        <button onclick="filterFeedCards('halacha')" class="feed-tag-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800/80 text-slate-300 hover:bg-slate-750">הלכה ופוסקים</button>
-        <button onclick="filterFeedCards('stories')" class="feed-tag-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800/80 text-slate-300 hover:bg-slate-750">סיפורי מופת</button>
-      </div>
-
-      <div id="feed-cards-container" class="space-y-6"></div>
+      <div id="feed-cards-container" class="max-w-xl mx-auto space-y-6"></div>
     </section>
 
-    <!-- 2. SIDDUR VIEW -->
+    <!-- 2. SERIES & EPISODES LIBRARY (NEW) -->
+    <section id="view-series" class="view-section space-y-5">
+      <div class="bg-gradient-to-r from-amber-950/40 via-slate-900 to-slate-900 p-5 rounded-2xl border border-amber-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div>
+          <span class="text-[10px] font-black text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">ספריית התוכן היהודית</span>
+          <h2 class="text-xl font-black text-white mt-1">סדרות התנ״ך וההיסטוריה היהודית ב-AI</h2>
+          <p class="text-xs text-slate-300">כל הסדרות, הפרקים, תסריטי המופת והדמויות מוכנים להפקה וצפייה באיכות קולנועית.</p>
+        </div>
+        <button onclick="toast('כל הסדרות מופקות בהקפדה על כיסוי ראש מלא ואותנטיות מקראית')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold rounded-xl text-xs border border-slate-700">
+          👑 תו תקן כשר
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="series-grid-container"></div>
+    </section>
+
+    <!-- 3. JUDAICA STORE & PRODUCTS (NEW) -->
+    <section id="view-judaica" class="view-section space-y-5">
+      <div class="bg-gradient-to-r from-amber-950/40 via-slate-900 to-slate-900 p-5 rounded-2xl border border-amber-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div>
+          <span class="text-[10px] font-black text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">מרקטפלייס קודש</span>
+          <h2 class="text-xl font-black text-white mt-1">חנות יודאיקה, סת״ם ותשמישי קדושה מהודרים</h2>
+          <p class="text-xs text-slate-300">מוצרים כשרים למהדרין עם תעודות בדיקה, אחריות מלאה ומשלוח מהיר עד הבית.</p>
+        </div>
+        <button onclick="openCartModal()" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 font-black rounded-xl text-xs flex items-center gap-1.5 shadow-lg shadow-amber-500/20">
+          <span>🛒 פתח עגלת קניות</span>
+        </button>
+      </div>
+
+      <!-- Categories Filter -->
+      <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar py-1">
+        <button onclick="filterJudaica('all')" class="judaica-cat-btn active px-4 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950">כל המוצרים</button>
+        <button onclick="filterJudaica('סת״ם ותפילין')" class="judaica-cat-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">סת״ם ותפילין</button>
+        <button onclick="filterJudaica('שבת ומועדים')" class="judaica-cat-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">שבת ומועדים</button>
+        <button onclick="filterJudaica('יודאיקה וכסף')" class="judaica-cat-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">יודאיקה וכסף טהור</button>
+        <button onclick="filterJudaica('ספרי קודש')" class="judaica-cat-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">ספרי קודש</button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="judaica-grid-container"></div>
+    </section>
+
+    <!-- 4. SIDDUR VIEW (UPGRADED WITH DYNAMIC SEFARIA LINKS) -->
     <section id="view-siddur" class="view-section space-y-4">
-      <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 space-y-3">
-        <div class="flex items-center justify-between">
+      <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800 space-y-4">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
-            <h2 class="text-lg font-black text-white flex items-center gap-2">
-              <span>📖</span> סידור תפילה רב-נוסחי מדויק
+            <h2 class="text-xl font-black text-white flex items-center gap-2">
+              <span>📖</span> סידור תפילה רב-נוסחי מדויק ומנוקד
             </h2>
-            <p class="text-xs text-slate-400">4 נוסחים, קריאה מנוקדת, מצפן כיוון התפילה לירושלים ומצבי תצוגה</p>
+            <p class="text-xs text-slate-400">4 נוסחים, קריאה מנוקדת, מצפן כיוון התפילה לירושלים ומצבי תצוגה מותאמים</p>
           </div>
-          <div class="flex items-center gap-1.5">
-            <button onclick="setSiddurTheme('night')" title="מצב לילה" class="p-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs border border-slate-700">🌙</button>
-            <button onclick="setSiddurTheme('sepia')" title="מצב קלף עתיק" class="p-1.5 bg-amber-100 hover:bg-amber-200 text-amber-950 rounded-lg text-xs font-bold border border-amber-300">📜 קלף</button>
-            <button onclick="setSiddurTheme('day')" title="מצב יום" class="p-1.5 bg-slate-100 hover:bg-white text-slate-900 rounded-lg text-xs font-bold border border-slate-300">☀️ יום</button>
-            <div class="flex items-center gap-1 bg-slate-800 p-1 rounded-lg border border-slate-700 mr-1">
-              <button onclick="changeSiddurFontSize(-2)" class="px-1.5 py-0.5 text-xs font-bold text-slate-300 hover:text-white">A-</button>
-              <span id="font-size-indicator" class="text-[11px] font-bold text-amber-400 px-1">17px</span>
-              <button onclick="changeSiddurFontSize(2)" class="px-1.5 py-0.5 text-xs font-bold text-slate-300 hover:text-white">A+</button>
+          <div class="flex items-center gap-2">
+            <button onclick="setSiddurTheme('night')" title="מצב לילה" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs border border-slate-700">🌙</button>
+            <button onclick="setSiddurTheme('sepia')" title="מצב קלף עתיק" class="p-2 bg-amber-100 hover:bg-amber-200 text-amber-950 rounded-xl text-xs font-bold border border-amber-300">📜 קלף</button>
+            <button onclick="setSiddurTheme('day')" title="מצב יום" class="p-2 bg-slate-100 hover:bg-white text-slate-900 rounded-xl text-xs font-bold border border-slate-300">☀️ יום</button>
+            <div class="flex items-center gap-1 bg-slate-800 p-1.5 rounded-xl border border-slate-700 mr-1">
+              <button onclick="changeSiddurFontSize(-2)" class="px-2 py-0.5 text-xs font-bold text-slate-300 hover:text-white">A-</button>
+              <span id="font-size-indicator" class="text-xs font-bold text-amber-400 px-1.5">17px</span>
+              <button onclick="changeSiddurFontSize(2)" class="px-2 py-0.5 text-xs font-bold text-slate-300 hover:text-white">A+</button>
             </div>
           </div>
         </div>
 
-        <div class="bg-gradient-to-r from-amber-950/30 via-slate-950/70 to-slate-950 p-3 rounded-xl border border-amber-500/20 flex items-center justify-between">
-          <div class="flex items-center gap-2.5">
-            <div class="w-10 h-10 rounded-full border-2 border-amber-500/50 flex items-center justify-center text-amber-400 text-lg shadow-lg shadow-amber-500/20 animate-pulse">
+        <!-- Jerusalem Compass -->
+        <div class="bg-gradient-to-r from-amber-950/30 via-slate-950/70 to-slate-950 p-3.5 rounded-xl border border-amber-500/20 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-full border-2 border-amber-500/50 flex items-center justify-center text-amber-400 text-xl shadow-lg shadow-amber-500/20 animate-pulse">
               🧭
             </div>
             <div>
               <span class="text-xs font-black text-amber-300 block">מצפן כיוון התפילה (ירושלים עיה״ק)</span>
-              <span id="compass-direction-text" class="text-[11px] text-slate-300">אזימוט משוער: 135° דרום-מזרח לכיוון הר הבית</span>
+              <span id="compass-direction-text" class="text-xs text-slate-300">אזימוט משוער: 135° דרום-מזרח לכיוון מקום המקדש</span>
             </div>
           </div>
-          <button onclick="detectUserOrientation()" class="px-3 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-lg text-xs font-bold">
+          <button onclick="detectUserOrientation()" class="px-3.5 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-xl text-xs font-bold">
             כיול מצפן 📍
           </button>
         </div>
 
-        <div class="grid grid-cols-4 gap-1.5">
-          <button onclick="setNusach('mizrach')" id="nusach-mizrach" class="nusach-btn py-2 text-center rounded-xl text-xs font-black bg-amber-500 text-slate-950 transition-all">
+        <!-- Nusach selector -->
+        <div class="grid grid-cols-4 gap-2">
+          <button onclick="setNusach('mizrach')" id="nusach-mizrach" class="nusach-btn py-2.5 text-center rounded-xl text-xs font-black bg-amber-500 text-slate-950 transition-all">
             עדות המזרח
           </button>
-          <button onclick="setNusach('sefard')" id="nusach-sefard" class="nusach-btn py-2 text-center rounded-xl text-xs font-black bg-slate-800 text-slate-300 hover:bg-slate-750 transition-all">
+          <button onclick="setNusach('sefard')" id="nusach-sefard" class="nusach-btn py-2.5 text-center rounded-xl text-xs font-black bg-slate-800 text-slate-300 hover:bg-slate-750 transition-all">
             ספרד (חסידי)
           </button>
-          <button onclick="setNusach('ashkenaz')" id="nusach-ashkenaz" class="nusach-btn py-2 text-center rounded-xl text-xs font-black bg-slate-800 text-slate-300 hover:bg-slate-750 transition-all">
+          <button onclick="setNusach('ashkenaz')" id="nusach-ashkenaz" class="nusach-btn py-2.5 text-center rounded-xl text-xs font-black bg-slate-800 text-slate-300 hover:bg-slate-750 transition-all">
             אשכנז
           </button>
-          <button onclick="setNusach('teiman')" id="nusach-teiman" class="nusach-btn py-2 text-center rounded-xl text-xs font-black bg-slate-800 text-slate-300 hover:bg-slate-750 transition-all">
+          <button onclick="setNusach('teiman')" id="nusach-teiman" class="nusach-btn py-2.5 text-center rounded-xl text-xs font-black bg-slate-800 text-slate-300 hover:bg-slate-750 transition-all">
             תימן
           </button>
         </div>
 
-        <div class="bg-gradient-to-r from-blue-950/40 via-slate-800/60 to-slate-900 p-2.5 rounded-xl border border-blue-900/40 flex items-center justify-between text-xs">
-          <div class="flex items-center gap-2">
-            <span class="text-base">🌐</span>
-            <span class="text-slate-300">פתיחת סידור שלם ומבואר אונליין:</span>
+        <!-- Dynamic Sefaria Live Link Banner -->
+        <div class="bg-gradient-to-r from-blue-950/40 via-slate-800/60 to-slate-900 p-3 rounded-xl border border-blue-900/40 flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2.5">
+            <span class="text-lg">🌐</span>
+            <span class="text-slate-200">פתיחת התפילה הנוכחית המלאה והמבוארת באתר ספריא:</span>
           </div>
-          <a id="sefaria-live-link" href="https://www.sefaria.org/Siddur_Edot_HaMizrach" target="_blank" rel="noopener" class="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg text-xs flex items-center gap-1">
-            <span>פתח בספריא (Sefaria)</span> <span>↗</span>
+          <a id="sefaria-live-link" href="https://www.sefaria.org/Birkat_Hamazon" target="_blank" rel="noopener" class="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg text-xs flex items-center gap-1.5 shadow-md">
+            <span id="sefaria-link-btn-text">פתח ברכת המזון בספריא</span> <span>↗</span>
           </a>
         </div>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        <button onclick="openPrayerText('shacharit')" class="p-3 bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-amber-500/40 rounded-xl text-right transition-all group">
-          <div class="text-amber-400 text-base mb-1">🌅</div>
+      <!-- Prayer Quick Picker Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        <button onclick="openPrayerText('shacharit')" class="p-3.5 bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-amber-500/40 rounded-xl text-right transition-all group">
+          <div class="text-amber-400 text-lg mb-1">🌅</div>
           <div class="text-sm font-black text-white group-hover:text-amber-300">תפילת שחרית</div>
-          <div class="text-[10px] text-slate-400">ברכות השחר, שמע, עמידה</div>
+          <div class="text-[11px] text-slate-400">ברכות השחר, שמע, שמונה עשרה</div>
         </button>
-        <button onclick="openPrayerText('mincha')" class="p-3 bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-amber-500/40 rounded-xl text-right transition-all group">
-          <div class="text-amber-400 text-base mb-1">☀️</div>
+        <button onclick="openPrayerText('mincha')" class="p-3.5 bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-amber-500/40 rounded-xl text-right transition-all group">
+          <div class="text-amber-400 text-lg mb-1">☀️</div>
           <div class="text-sm font-black text-white group-hover:text-amber-300">תפילת מנחה</div>
-          <div class="text-[10px] text-slate-400">אשרי, עמידה, עלינו לשבח</div>
+          <div class="text-[11px] text-slate-400">אשרי, עמידה, עלינו לשבח</div>
         </button>
-        <button onclick="openPrayerText('arvit')" class="p-3 bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-amber-500/40 rounded-xl text-right transition-all group">
-          <div class="text-amber-400 text-base mb-1">🌙</div>
+        <button onclick="openPrayerText('arvit')" class="p-3.5 bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-amber-500/40 rounded-xl text-right transition-all group">
+          <div class="text-amber-400 text-lg mb-1">🌙</div>
           <div class="text-sm font-black text-white group-hover:text-amber-300">תפילת ערבית</div>
-          <div class="text-[10px] text-slate-400">ברכו, שמע, השכיבנו, עמידה</div>
+          <div class="text-[11px] text-slate-400">ברכו, שמע, השכיבנו, עמידה</div>
         </button>
-        <button onclick="openPrayerText('mazon')" class="p-3 bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-amber-500/40 rounded-xl text-right transition-all group">
-          <div class="text-amber-400 text-base mb-1">🍞</div>
+        <button onclick="openPrayerText('mazon')" class="p-3.5 bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-amber-500/40 rounded-xl text-right transition-all group">
+          <div class="text-amber-400 text-lg mb-1">🍞</div>
           <div class="text-sm font-black text-white group-hover:text-amber-300">ברכת המזון</div>
-          <div class="text-[10px] text-slate-400">ד' ברכות מדאורייתא ומדרבנן</div>
+          <div class="text-[11px] text-slate-400">ד' ברכות מדאורייתא ומדרבנן</div>
         </button>
-        <button onclick="openPrayerText('shema_al_hamita')" class="p-3 bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-amber-500/40 rounded-xl text-right transition-all group">
-          <div class="text-amber-400 text-base mb-1">🛏️</div>
+        <button onclick="openPrayerText('shema_al_hamita')" class="p-3.5 bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-amber-500/40 rounded-xl text-right transition-all group">
+          <div class="text-amber-400 text-lg mb-1">🛏️</div>
           <div class="text-sm font-black text-white group-hover:text-amber-300">ק״ש שעל המיטה</div>
-          <div class="text-[10px] text-slate-400">המפיל, בידך אפקיד רוחי</div>
+          <div class="text-[11px] text-slate-400">המפיל, בידך אפקיד רוחי</div>
         </button>
-        <button onclick="openPrayerText('tefilat_haderech')" class="p-3 bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-amber-500/40 rounded-xl text-right transition-all group">
-          <div class="text-amber-400 text-base mb-1">🚗</div>
+        <button onclick="openPrayerText('tefilat_haderech')" class="p-3.5 bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-amber-500/40 rounded-xl text-right transition-all group">
+          <div class="text-amber-400 text-lg mb-1">🚗</div>
           <div class="text-sm font-black text-white group-hover:text-amber-300">תפילת הדרך</div>
-          <div class="text-[10px] text-slate-400">שמירה ליוצאים לדרך</div>
+          <div class="text-[11px] text-slate-400">שמירה ליוצאים לדרך</div>
         </button>
-        <button onclick="openPrayerText('tikkun_haklali')" class="p-3 bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-amber-500/40 rounded-xl text-right transition-all group">
-          <div class="text-amber-400 text-base mb-1">🕊️</div>
+        <button onclick="openPrayerText('tikkun_haklali')" class="p-3.5 bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-amber-500/40 rounded-xl text-right transition-all group">
+          <div class="text-amber-400 text-lg mb-1">🕊️</div>
           <div class="text-sm font-black text-white group-hover:text-amber-300">תיקון הכללי</div>
-          <div class="text-[10px] text-slate-400">עשרת מזמורי מוהר״ן מברסלב</div>
+          <div class="text-[11px] text-slate-400">עשרת מזמורי מוהר״ן מברסלב</div>
         </button>
-        <button onclick="openPrayerText('asher_yatzar')" class="p-3 bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-amber-500/40 rounded-xl text-right transition-all group">
-          <div class="text-amber-400 text-base mb-1">💧</div>
+        <button onclick="openPrayerText('asher_yatzar')" class="p-3.5 bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-amber-500/40 rounded-xl text-right transition-all group">
+          <div class="text-amber-400 text-lg mb-1">💧</div>
           <div class="text-sm font-black text-white group-hover:text-amber-300">ברכת אשר יצר</div>
-          <div class="text-[10px] text-slate-400">רפואת הגוף והנפש</div>
+          <div class="text-[11px] text-slate-400">רפואת הגוף והנפש</div>
         </button>
       </div>
 
-      <div id="siddur-display-card" class="p-5 rounded-2xl border border-slate-800 space-y-3 transition-colors duration-200">
+      <!-- Prayer Display Card -->
+      <div id="siddur-display-card" class="p-6 rounded-2xl border border-slate-800 space-y-3 transition-colors duration-200">
         <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
           <div>
             <span id="siddur-active-nusach-badge" class="text-[10px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30">עדות המזרח</span>
-            <h3 id="siddur-active-prayer-title" class="text-xl font-black mt-1">ברכת המזון</h3>
+            <h3 id="siddur-active-prayer-title" class="text-2xl font-black mt-1">ברכת המזון</h3>
           </div>
-          <button onclick="copyPrayerText()" class="text-xs bg-slate-800 hover:bg-slate-750 px-3 py-1.5 rounded-lg border border-slate-700 flex items-center gap-1">
-            📋 העתק טקסט
+          <button onclick="copyPrayerText()" class="text-xs bg-slate-800 hover:bg-slate-750 px-3.5 py-1.5 rounded-xl border border-slate-700 flex items-center gap-1.5">
+            📋 העתק נוסח
           </button>
         </div>
         <div id="siddur-text-body" class="leading-relaxed font-serif whitespace-pre-line text-right pt-2" style="font-size: 17px;"></div>
       </div>
     </section>
 
-    <!-- 3. MINYANIM VIEW -->
+    <!-- 5. KIVREI TZADDIKIM (EXPANDED TO 22+ GRAVES) -->
+    <section id="view-tzaddikim" class="view-section space-y-5">
+      <div class="bg-gradient-to-r from-amber-950/40 via-slate-900 to-slate-900 p-5 rounded-2xl border border-amber-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div>
+          <span class="text-[10px] font-black text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">ציוני קודש ומקומות תפילה</span>
+          <h2 class="text-xl font-black text-white mt-1">קברי צדיקים ומקומות קדושים בארץ ובעולם</h2>
+          <p class="text-xs text-slate-300">ניווט בלחיצה ל-Waze, תאריכי יארצייט, סגולות ותפילות במקום (ניתן להוסיף ולערוך חופשי).</p>
+        </div>
+        <button onclick="openAddTzaddikModal()" class="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-amber-500/20 active:scale-95 transition-all">
+          <span>➕</span> <span>הוסף ציון צדיק חדש</span>
+        </button>
+      </div>
+
+      <!-- Region Filter -->
+      <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar py-1">
+        <button onclick="filterTzaddikimRegion('all')" class="tzaddik-region-btn active px-4 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950">כל המקומות (22+)</button>
+        <button onclick="filterTzaddikimRegion('ירושלים')" class="tzaddik-region-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">ירושלים והסביבה</button>
+        <button onclick="filterTzaddikimRegion('גליל וצפת')" class="tzaddik-region-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">גליל, צפת ועמוקה</button>
+        <button onclick="filterTzaddikimRegion('טבריה')" class="tzaddik-region-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">טבריה</button>
+        <button onclick="filterTzaddikimRegion('דרום')" class="tzaddik-region-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">דרום והשפלה</button>
+        <button onclick="filterTzaddikimRegion('חו״ל')" class="tzaddik-region-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">חו״ל (אומן, פולין, הונגריה)</button>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <input type="text" id="tzaddik-search-input" oninput="filterTzaddikimList()" placeholder="🔍 חפש צדיק, עיר, סגולה, יארצייט..." class="w-full bg-slate-900 border border-slate-800 text-xs text-slate-200 px-3.5 py-2.5 rounded-xl outline-none focus:border-amber-500">
+      </div>
+
+      <div id="tzaddikim-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5"></div>
+    </section>
+
+    <!-- 6. MINYANIM VIEW -->
     <section id="view-minyanim" class="view-section space-y-4">
       <div class="bg-gradient-to-r from-cyan-950/40 via-slate-900 to-slate-900 p-4 rounded-2xl border border-cyan-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
@@ -375,7 +441,7 @@
       <div id="minyanim-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
     </section>
 
-    <!-- 4. RABBIS VIEW -->
+    <!-- 7. RABBIS VIEW -->
     <section id="view-rabbis" class="view-section space-y-4">
       <div class="bg-gradient-to-r from-amber-950/40 via-slate-900 to-slate-900 p-4 rounded-2xl border border-amber-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
@@ -408,27 +474,7 @@
       <div id="rabbis-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
     </section>
 
-    <!-- 5. TZADDIKIM VIEW -->
-    <section id="view-tzaddikim" class="view-section space-y-4">
-      <div class="bg-gradient-to-r from-amber-950/40 via-slate-900 to-slate-900 p-4 rounded-2xl border border-amber-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <div>
-          <span class="text-[10px] font-black text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">ציוני קודש</span>
-          <h2 class="text-lg font-black text-white mt-1">קברי צדיקים ומקומות קדושים</h2>
-          <p class="text-xs text-slate-300">ניווט בלחיצה ל-Waze, תאריכי יארצייט, פרקי תהילים במקום ואפשרות עריכה.</p>
-        </div>
-        <button onclick="openAddTzaddikModal()" class="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-amber-500/20 active:scale-95 transition-all">
-          <span>➕</span> <span>הוסף ציון צדיק</span>
-        </button>
-      </div>
-
-      <div class="flex items-center gap-2">
-        <input type="text" id="tzaddik-search-input" oninput="filterTzaddikimList()" placeholder="🔍 חפש צדיק, עיר, סגולה..." class="w-full bg-slate-900 border border-slate-800 text-xs text-slate-200 px-3 py-2.5 rounded-xl outline-none focus:border-amber-500">
-      </div>
-
-      <div id="tzaddikim-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
-    </section>
-
-    <!-- 6. GEMACHIM VIEW -->
+    <!-- 8. GEMACHIM VIEW -->
     <section id="view-gemachim" class="view-section space-y-4">
       <div class="bg-gradient-to-r from-amber-950/40 via-slate-900 to-slate-900 p-4 rounded-2xl border border-amber-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
@@ -453,7 +499,7 @@
       <div id="gemachim-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
     </section>
 
-    <!-- 7. MIKVAOT VIEW -->
+    <!-- 9. MIKVAOT VIEW -->
     <section id="view-mikvaot" class="view-section space-y-4">
       <div class="bg-gradient-to-r from-blue-950/40 via-slate-900 to-slate-900 p-4 rounded-2xl border border-blue-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
@@ -478,7 +524,7 @@
       <div id="mikvaot-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
     </section>
 
-    <!-- 8. ZMANIM VIEW -->
+    <!-- 10. ZMANIM VIEW -->
     <section id="view-zmanim" class="view-section space-y-4">
       <div class="bg-gradient-to-br from-slate-900 to-[#0c1426] p-4 rounded-2xl border border-slate-800 space-y-3">
         <div class="flex items-center justify-between">
@@ -545,7 +591,7 @@
       </div>
     </section>
 
-    <!-- 9. PARASHAT HASHAVUA VIEW -->
+    <!-- 11. PARASHAT HASHAVUA VIEW -->
     <section id="view-parasha" class="view-section space-y-4">
       <div class="bg-gradient-to-r from-amber-950/40 via-slate-900 to-slate-900 p-4 rounded-2xl border border-amber-800/30">
         <div class="flex items-center justify-between mb-3">
@@ -560,7 +606,7 @@
       <div id="parasha-detail-container"></div>
     </section>
 
-    <!-- 10. TEHILLIM & PRAYERS VIEW -->
+    <!-- 12. TEHILLIM & PRAYERS VIEW -->
     <section id="view-tehillim" class="view-section space-y-4">
       <div class="bg-gradient-to-r from-amber-950/40 via-slate-900 to-slate-900 p-4 rounded-2xl border border-amber-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
@@ -584,7 +630,7 @@
             <option value="23">מזמור כ״ג (ה׳ רועי לא אחסר)</option>
           </select>
         </div>
-        <div id="tehillim-chapter-text" class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 font-serif text-slate-200 text-xs leading-relaxed">
+        <div id="tehillim-chapter-text" class="bg-slate-950 p-3.5 rounded-xl border border-slate-800/80 font-serif text-slate-200 text-sm leading-relaxed">
           מִזְמוֹר לְדָוִד יַעַנְךָ ה' בְּיוֹם צָרָה יְשַׂגֶּבְךָ שֵׁם אֱלֹהֵי יַעֲקֹב. יִשְׁלַח עֶזְרְךָ מִקֹּדֶשׁ וּמִצִּיּוֹן יִסְעָדֶךָּ. יִזְכֹּר כָּל מִנְחֹתֶךָ וְעוֹלָתְךָ יְדַשְּׁנֶה סֶלָה...
         </div>
       </div>
@@ -592,7 +638,7 @@
       <div id="prayers-list-container" class="space-y-2.5"></div>
     </section>
 
-    <!-- 11. PORTALS VIEW -->
+    <!-- 13. PORTALS VIEW -->
     <section id="view-portals" class="view-section space-y-4">
       <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
         <span class="text-[10px] font-black text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">רשת השירותים היהודית</span>
@@ -600,7 +646,7 @@
         <p class="text-xs text-slate-300">קישורים ישירים לאתרים המובילים בעולם למציאת מניינים, מקוואות, שו״ת הלכתי, אוכל כשר וספרי קודש.</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-2.5">
           <div class="flex items-center justify-between">
             <span class="text-base font-black text-white flex items-center gap-1.5"><span>🕍</span> GoDaven</span>
@@ -633,32 +679,40 @@
           <p class="text-xs text-slate-300">מאות אלפי תשובות בהלכה ושליחת שאלה ישירה לדיינים.</p>
           <a href="https://din.org.il/" target="_blank" rel="noopener" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold rounded-xl text-xs flex items-center justify-center gap-1 border border-slate-700">פתח אתר דין ↗</a>
         </div>
+        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-base font-black text-white flex items-center gap-1.5"><span>🍽️</span> Kosher Near Me</span>
+            <span class="text-[10px] bg-green-500/20 text-green-300 px-2 py-0.5 rounded font-bold">כשרות</span>
+          </div>
+          <p class="text-xs text-slate-300">איתור מסעדות ומוצרי מזון כשרים סביבך בארץ ובעולם.</p>
+          <a href="https://koshernear.me/" target="_blank" rel="noopener" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1">פתח Kosher Near Me ↗</a>
+        </div>
       </div>
     </section>
 
-    <!-- 12. EXPORT & SOURCE CODE VIEW -->
+    <!-- 14. EXPORT & SOURCE CODE VIEW -->
     <section id="view-export" class="view-section space-y-4">
       <div class="bg-gradient-to-r from-amber-950/40 via-slate-900 to-slate-900 p-5 rounded-2xl border border-amber-800/40 space-y-3">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
             <span class="text-[10px] font-black text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">הטמעה והרצה מיידית</span>
-            <h2 class="text-xl font-black text-white mt-1">קוד המקור המלא של צדיק-טוק (V8)</h2>
-            <p class="text-xs text-slate-300">העתק את כל הקוד בלחיצה אחת והדבק ישירות ב-Bolt.new או ב-GitHub Pages</p>
+            <h2 class="text-xl font-black text-white mt-1">קוד המקור המלא של צדיק-טוק (V9 Master)</h2>
+            <p class="text-xs text-slate-300">העתק את כל הקוד בלחיצה אחת והדבק ישירות ב-GitHub Pages או Bolt</p>
           </div>
           <button onclick="copyFullSourceCode()" class="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 font-black rounded-xl text-sm flex items-center justify-center gap-2 shadow-xl shadow-amber-500/30 active:scale-95 transition-all">
             <span>📋</span> <span>העתק קוד מלא ללוח</span>
           </button>
         </div>
 
-        <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2 text-xs">
-          <p class="text-amber-300 font-bold">איך להריץ בחינם ללא הגבלת אסימונים (ב-GitHub Pages):</p>
-          <p class="text-slate-300">1. במאגר שלך ב-GitHub, ערוך את <code class="text-amber-300">index.html</code> או העלה מחדש.</p>
-          <p class="text-slate-300">2. הדבק את כל הקוד מתיבת הטקסט למטה ולחץ Commit changes.</p>
-          <p class="text-slate-300">3. רענן את האתר החי שלך ב-GitHub Pages — והכל יעבוד חלק לחלוטין!</p>
+        <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800 space-y-2 text-xs">
+          <p class="text-amber-300 font-bold">איך להדביק את העדכון ב-GitHub בלחיצה אחת:</p>
+          <p class="text-slate-300">1. ב-GitHub שלך במאגר <code class="text-amber-300">tzaditok</code>, לחץ על <code class="text-amber-300">index.html</code> ואז על סמל העיפרון ✏️.</p>
+          <p class="text-slate-300">2. סמן הכל (Ctrl+A), מחק, והדבק את הקוד מהכפתור למעלה.</p>
+          <p class="text-slate-300">3. לחץ Commit changes — והאתר יתעדכן עם חנות היודאיקה וכל הסדרות!</p>
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-300 mb-1">תיבת הקוד המלא לבחירה והעתקה ידנית:</label>
+          <label class="block text-xs font-bold text-slate-300 mb-1">תיבת הקוד המלא לבחירה ידנית:</label>
           <textarea id="source-code-textarea" readonly onclick="this.select()" class="w-full h-80 bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-[11px] text-slate-300 outline-none focus:border-amber-500 selection:bg-amber-500 selection:text-slate-950"></textarea>
         </div>
       </div>
@@ -666,35 +720,34 @@
 
   </main>
 
-  <!-- BOTTOM FIXED NAVIGATION BAR -->
-  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-[#070C18]/95 backdrop-blur-md border-t border-slate-800/80 px-2 py-1.5">
-    <div class="max-w-md mx-auto grid grid-cols-5 gap-1">
-      <button onclick="switchTab('feed')" id="nav-feed" class="nav-btn active flex flex-col items-center justify-center py-1 rounded-xl text-slate-400 transition-all">
-        <svg class="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-        <span class="text-[10px] font-bold">פיד</span>
-      </button>
-      <button onclick="switchTab('siddur')" id="nav-siddur" class="nav-btn flex flex-col items-center justify-center py-1 rounded-xl text-slate-400 transition-all">
-        <svg class="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-        <span class="text-[10px] font-bold">סידור</span>
-      </button>
-      <button onclick="switchTab('minyanim')" id="nav-minyanim" class="nav-btn flex flex-col items-center justify-center py-1 rounded-xl text-slate-400 transition-all">
-        <svg class="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-        <span class="text-[10px] font-bold">מניינים</span>
-      </button>
-      <button onclick="switchTab('rabbis')" id="nav-rabbis" class="nav-btn flex flex-col items-center justify-center py-1 rounded-xl text-slate-400 transition-all">
-        <svg class="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"></circle><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"></path></svg>
-        <span class="text-[10px] font-bold">רבנים</span>
-      </button>
-      <button onclick="switchTab('tzaddikim')" id="nav-tzaddikim" class="nav-btn flex flex-col items-center justify-center py-1 rounded-xl text-slate-400 transition-all">
-        <svg class="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a8 8 0 0 0-8 8c0 5 8 12 8 12s8-7 8-12a8 8 0 0 0-8-8z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-        <span class="text-[10px] font-bold">קברים</span>
-      </button>
-    </div>
-  </nav>
-
   <!-- MODALS -->
 
-  <!-- 1. Universal Edit Modal -->
+  <!-- Cart Modal -->
+  <div id="modal-cart" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl p-5 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base font-extrabold text-amber-300 flex items-center gap-2">
+          <span>🛒</span> עגלת קניות - תשמישי קדושה ויודאיקה
+        </h3>
+        <button onclick="closeModal('modal-cart')" class="text-slate-400 hover:text-white text-lg">✕</button>
+      </div>
+      <div id="cart-items-container" class="max-h-60 overflow-y-auto space-y-2 text-xs"></div>
+      <div class="border-t border-slate-800 pt-3 flex items-center justify-between">
+        <span class="text-xs text-slate-300 font-bold">סה״כ לתשלום:</span>
+        <span id="cart-total-price" class="text-lg font-black text-amber-300">₪0</span>
+      </div>
+      <div class="flex items-center gap-2 pt-1">
+        <button onclick="checkoutCart()" class="flex-1 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black rounded-xl text-xs shadow-lg">
+          מעבר לתשלום מאובטח
+        </button>
+        <button onclick="clearCart()" class="px-3 py-2.5 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">
+          רוקן עגלה
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Universal Edit Modal -->
   <div id="modal-edit-universal" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl p-5 space-y-4 shadow-2xl">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -744,7 +797,7 @@
     </div>
   </div>
 
-  <!-- 2. Comments Modal -->
+  <!-- Comments Modal -->
   <div id="modal-comments" class="fixed inset-0 z-50 modal-backdrop hidden items-end sm:items-center justify-center p-0 sm:p-4">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-t-3xl sm:rounded-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
       <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/80">
@@ -761,7 +814,7 @@
     </div>
   </div>
 
-  <!-- 3. Add Rabbi Modal -->
+  <!-- Add Rabbi Modal -->
   <div id="modal-add-rabbi" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl p-5 space-y-4 shadow-2xl">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -816,56 +869,7 @@
     </div>
   </div>
 
-  <!-- 4. Add Minyan Modal -->
-  <div id="modal-add-minyan" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl p-5 space-y-4 shadow-2xl">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="text-base font-extrabold text-white flex items-center gap-1.5">
-          <span>⏱️</span> הוספת מניין תפילה
-        </h3>
-        <button onclick="closeModal('modal-add-minyan')" class="text-slate-400 hover:text-white text-lg">✕</button>
-      </div>
-      <form onsubmit="handleSaveMinyan(event)" class="space-y-3 text-xs">
-        <div>
-          <label class="block font-bold text-slate-300 mb-1">שם בית הכנסת / השטיבל *</label>
-          <input type="text" id="new-minyan-name" required placeholder="בית כנסת המרכזי..." class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none focus:border-cyan-500">
-        </div>
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block font-bold text-slate-300 mb-1">עיר *</label>
-            <input type="text" id="new-minyan-city" required placeholder="בני ברק, ירושלים..." class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none focus:border-cyan-500">
-          </div>
-          <div>
-            <label class="block font-bold text-slate-300 mb-1">נוסח תפילה</label>
-            <select id="new-minyan-nusach" class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none">
-              <option value="עדות המזרח">עדות המזרח</option>
-              <option value="ספרד">ספרד (חסידי)</option>
-              <option value="אשכנז">אשכנז</option>
-              <option value="תימן">תימן</option>
-            </select>
-          </div>
-        </div>
-        <div>
-          <label class="block font-bold text-slate-300 mb-1">כתובת ל-Waze *</label>
-          <input type="text" id="new-minyan-address" required placeholder="רחוב רבי עקיבא 40" class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none focus:border-cyan-500">
-        </div>
-        <div>
-          <label class="block font-bold text-slate-300 mb-1">זמני המניינים (שחרית, מנחה, ערבית)</label>
-          <input type="text" id="new-minyan-times" required placeholder="מנחה כל 20 דק', ערבית 20:00" class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none focus:border-cyan-500">
-        </div>
-        <div class="flex items-center gap-2 pt-2">
-          <button type="submit" class="flex-1 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white font-black rounded-xl shadow-lg transition-all">
-            שמור מניין
-          </button>
-          <button type="button" onclick="closeModal('modal-add-minyan')" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl">
-            ביטול
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 5. Add Tzaddik Modal -->
+  <!-- Add Tzaddik Modal -->
   <div id="modal-add-tzaddik" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl p-5 space-y-4 shadow-2xl">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -885,9 +889,19 @@
             <input type="text" id="new-tzaddik-location" required placeholder="עמוקה, צפת, טבריה..." class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none focus:border-amber-500">
           </div>
           <div>
-            <label class="block font-bold text-slate-300 mb-1">יום ההילולא (יארצייט)</label>
-            <input type="text" id="new-tzaddik-yahrzeit" placeholder="כ״ו בסיוון" class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none focus:border-amber-500">
+            <label class="block font-bold text-slate-300 mb-1">אזור</label>
+            <select id="new-tzaddik-region" class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none">
+              <option value="ירושלים">ירושלים והסביבה</option>
+              <option value="גליל וצפת">גליל וצפת</option>
+              <option value="טבריה">טבריה</option>
+              <option value="דרום">דרום והשפלה</option>
+              <option value="חו״ל">חו״ל</option>
+            </select>
           </div>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">יום ההילולא (יארצייט)</label>
+          <input type="text" id="new-tzaddik-yahrzeit" placeholder="כ״ו בסיוון" class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none focus:border-amber-500">
         </div>
         <div>
           <label class="block font-bold text-slate-300 mb-1">סגולה ותפילה ידועה במקום</label>
@@ -909,151 +923,10 @@
     </div>
   </div>
 
-  <!-- 6. Add Gemach Modal -->
-  <div id="modal-add-gemach" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl p-5 space-y-4 shadow-2xl">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="text-base font-extrabold text-white flex items-center gap-1.5">
-          <span>➕</span> הוספת גמ״ח חדש לקהילה
-        </h3>
-        <button onclick="closeModal('modal-add-gemach')" class="text-slate-400 hover:text-white text-lg">✕</button>
-      </div>
-      <form onsubmit="handleSaveGemach(event)" class="space-y-3 text-xs">
-        <div>
-          <label class="block font-bold text-slate-300 mb-1">שם הגמ״ח או המשפחה *</label>
-          <input type="text" id="new-gemach-name" required placeholder="גמ״ח עריסות ובגדי תינוקות 'חסדי מרים'" class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none focus:border-amber-500">
-        </div>
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block font-bold text-slate-300 mb-1">קטגוריה *</label>
-            <select id="new-gemach-cat" class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none">
-              <option value="ציוד רפואי">ציוד רפואי</option>
-              <option value="עריסות ותינוקות">עריסות ותינוקות</option>
-              <option value="הלוואות וכספים">הלוואות וכספים</option>
-              <option value="שמחות ושמלות">שמחות ושמלות</option>
-              <option value="מזון ושבת">מזון ושבת</option>
-              <option value="כללי">כללי ושונות</option>
-            </select>
-          </div>
-          <div>
-            <label class="block font-bold text-slate-300 mb-1">עיר / שכונה *</label>
-            <input type="text" id="new-gemach-city" required placeholder="בני ברק, ירושלים..." class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none focus:border-amber-500">
-          </div>
-        </div>
-        <div>
-          <label class="block font-bold text-slate-300 mb-1">טלפון ליצירת קשר *</label>
-          <input type="tel" id="new-gemach-phone" required placeholder="052-7100000" class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none focus:border-amber-500">
-        </div>
-        <div>
-          <label class="block font-bold text-slate-300 mb-1">כתובת ושעות פעילות</label>
-          <input type="text" id="new-gemach-address" placeholder="רחוב רבי עקיבא 80, ימים א'-ה' 20:00-22:00" class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none focus:border-amber-500">
-        </div>
-        <div class="flex items-center gap-2 pt-2">
-          <button type="submit" class="flex-1 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl shadow-lg transition-all">
-            שמור גמ״ח
-          </button>
-          <button type="button" onclick="closeModal('modal-add-gemach')" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl">
-            ביטול
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 7. Add Mikvah Modal -->
-  <div id="modal-add-mikvah" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl p-5 space-y-4 shadow-2xl">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="text-base font-extrabold text-white flex items-center gap-1.5">
-          <span>💧</span> הוספת מקווה טהרה
-        </h3>
-        <button onclick="closeModal('modal-add-mikvah')" class="text-slate-400 hover:text-white text-lg">✕</button>
-      </div>
-      <form onsubmit="handleSaveMikvah(event)" class="space-y-3 text-xs">
-        <div>
-          <label class="block font-bold text-slate-300 mb-1">שם המקווה *</label>
-          <input type="text" id="new-mikvah-name" required placeholder="מקווה טהרה מרכזי..." class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none focus:border-blue-500">
-        </div>
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block font-bold text-slate-300 mb-1">סוג המקווה *</label>
-            <select id="new-mikvah-type" class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none">
-              <option value="מקווה נשים">מקווה נשים</option>
-              <option value="מקווה גברים">מקווה גברים</option>
-              <option value="מקווה כלים">מקווה כלים</option>
-            </select>
-          </div>
-          <div>
-            <label class="block font-bold text-slate-300 mb-1">עיר *</label>
-            <input type="text" id="new-mikvah-city" required placeholder="בני ברק, ירושלים..." class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none focus:border-blue-500">
-          </div>
-        </div>
-        <div>
-          <label class="block font-bold text-slate-300 mb-1">כתובת ל-Waze *</label>
-          <input type="text" id="new-mikvah-address" required placeholder="רחוב הרב שך 15" class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none focus:border-blue-500">
-        </div>
-        <div>
-          <label class="block font-bold text-slate-300 mb-1">שעות פתיחה</label>
-          <input type="text" id="new-mikvah-hours" placeholder="פתוח 24 שעות" class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none focus:border-blue-500">
-        </div>
-        <div class="flex items-center gap-2 pt-2">
-          <button type="submit" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl shadow-lg transition-all">
-            שמור מקווה
-          </button>
-          <button type="button" onclick="closeModal('modal-add-mikvah')" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl">
-            ביטול
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 8. Add Prayer Name Modal -->
-  <div id="modal-add-prayer" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl p-5 space-y-4 shadow-2xl">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="text-base font-extrabold text-white flex items-center gap-1.5">
-          <span>🤲</span> הוספת שם לתפילה וברכה
-        </h3>
-        <button onclick="closeModal('modal-add-prayer')" class="text-slate-400 hover:text-white text-lg">✕</button>
-      </div>
-      <form onsubmit="handleSavePrayerName(event)" class="space-y-3 text-xs">
-        <div>
-          <label class="block font-bold text-slate-300 mb-1">שם פרטי ושם האם *</label>
-          <input type="text" id="new-prayer-name" required placeholder="רפאל בן שרה או מרים בת רחל" class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none focus:border-amber-500">
-        </div>
-        <div>
-          <label class="block font-bold text-slate-300 mb-1">סוג הבקשה *</label>
-          <select id="new-prayer-type" class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none">
-            <option value="רפואה שלמה ובריאות">רפואה שלמה ובריאות</option>
-            <option value="ישועה והצלה">ישועה והצלה</option>
-            <option value="זיווג הגון">זיווג הגון ומהיר</option>
-            <option value="זרע של קיימא">זרע של קיימא</option>
-            <option value="פרנסה טובה בהרחבה">פרנסה טובה בהרחבה</option>
-            <option value="שלום בית">שלום בית</option>
-            <option value="לעילוי נשמת">לעילוי נשמת</option>
-          </select>
-        </div>
-        <div>
-          <label class="block font-bold text-slate-300 mb-1">עיר / ארץ</label>
-          <input type="text" id="new-prayer-location" placeholder="ירושלים, בני ברק..." class="w-full bg-slate-800 border border-slate-700 text-slate-100 p-2.5 rounded-xl outline-none focus:border-amber-500">
-        </div>
-        <div class="flex items-center gap-2 pt-2">
-          <button type="submit" class="flex-1 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl shadow-lg transition-all">
-            הוסף לרשימת התפילה
-          </button>
-          <button type="button" onclick="closeModal('modal-add-prayer')" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl">
-            ביטול
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 9. Video Player Modal -->
+  <!-- Video Player Modal -->
   <div id="modal-video-player" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl">
-      <div class="flex items-center justify-between p-3 bg-slate-950 border-b border-slate-800">
+      <div class="flex items-center justify-between p-3.5 bg-slate-950 border-b border-slate-800">
         <h4 id="video-modal-title" class="text-sm font-black text-amber-300">אברהם אבינו • דמות הדורות</h4>
         <button onclick="closeModal('modal-video-player')" class="text-slate-400 hover:text-white text-base">✕</button>
       </div>
@@ -1081,7 +954,7 @@
     </div>
   </div>
 
-  <!-- 10. Nedarim Plus Modal -->
+  <!-- Nedarim Plus Modal -->
   <div id="modal-nedarim-donate" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl p-5 space-y-4 shadow-2xl">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -1123,7 +996,7 @@
     </div>
   </div>
 
-  <!-- 11. Shabbat Mode Modal -->
+  <!-- Shabbat Mode Modal -->
   <div id="modal-shabbat-mode" class="fixed inset-0 z-50 bg-[#040812] hidden flex-col items-center justify-center p-6 text-center select-none">
     <div class="max-w-sm w-full space-y-4">
       <div class="w-20 h-20 rounded-full bg-amber-500/10 border-2 border-amber-500/40 mx-auto flex items-center justify-center text-4xl shadow-2xl shadow-amber-500/20">
@@ -1142,21 +1015,22 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT ENGINES (100% VALIDATED & ROBUST) -->
+  <!-- JAVASCRIPT MASTER ENGINE -->
   <script>
     const STORAGE_KEYS = {
-      RABBIS: "tzadiktok_rabbis_v8",
-      TZADDIKIM: "tzadiktok_tzaddikim_v8",
-      GEMACHIM: "tzadiktok_gemachim_v8",
-      MIKVAOT: "tzadiktok_mikvaot_v8",
-      MINYANIM: "tzadiktok_minyanim_v8",
-      PRAYERS: "tzadiktok_prayers_v8",
-      CHESHBON: "tzadiktok_cheshbon_v8",
-      COMMENTS: "tzadiktok_comments_v8",
-      LIKES: "tzadiktok_likes_v8",
-      NUSACH: "tzadiktok_nusach_v8",
-      CITY: "tzadiktok_city_v8",
-      THEME: "tzadiktok_theme_v8"
+      RABBIS: "tzadiktok_rabbis_v9",
+      TZADDIKIM: "tzadiktok_tzaddikim_v9",
+      GEMACHIM: "tzadiktok_gemachim_v9",
+      MIKVAOT: "tzadiktok_mikvaot_v9",
+      MINYANIM: "tzadiktok_minyanim_v9",
+      PRAYERS: "tzadiktok_prayers_v9",
+      CHESHBON: "tzadiktok_cheshbon_v9",
+      COMMENTS: "tzadiktok_comments_v9",
+      LIKES: "tzadiktok_likes_v9",
+      CART: "tzadiktok_cart_v9",
+      NUSACH: "tzadiktok_nusach_v9",
+      CITY: "tzadiktok_city_v9",
+      THEME: "tzadiktok_theme_v9"
     };
 
     let currentTab = "feed";
@@ -1165,11 +1039,14 @@
     let currentFontSize = 17;
     let selectedDonationAmount = 72;
     let activeCommentVideoId = "abraham";
+    let activePrayerKey = "mazon";
 
     const DEFAULT_FEED = [{"id": "abraham", "category": "tanach", "title": "אברהם אבינו • דמות הדורות", "creator": "צדיק-טוק הפקות מקור", "chumash": "ספר בראשית • פרק י״ב • מדרש רבה", "quote": "״וַיֹּאמֶר ה׳ אֶל אַבְרָם לֶךְ לְךָ מֵאַרְצְךָ וּמִמּוֹלַדְתְּךָ וּמִבֵּית אָבִיךָ אֶל הָאָרֶץ אֲשֶׁר אַרְאֶךָּ״", "rashi": "רש״י: ״להנאתך ולטובתך, ושם אעשך לגוי גדול, וכאן אי אתה זוכה לבנים״.", "midrash": "חז״ל: עשרה ניסיונות נתנסה אברהם אבינו ועמד בכולם, להודיע כמה חיבתו של אברהם אבינו לפני המקום.", "apparel": "לבוש עברי קדום, גלימת צמר טבעית, מצנפת עתיקה לכיסוי ראש מלא כהלכה.", "durationReel": "1:45 דק׳", "likes": 1420, "audio": "ניגון רועים עתיק - חליל מדברי"}, {"id": "joseph", "category": "tanach", "title": "יוסף הצדיק • שליט על מצרים", "creator": "צדיק-טוק הפקות מקור", "chumash": "ספר בראשית • פרק ל״ט • מדרש תנחומא", "quote": "״וַיְהִי ה׳ אֶת יוֹסֵף וַיְהִי אִישׁ מַצְלִיחַ וַיְהִי בְּבֵית אֲדֹנָיו הַמִּצְרִי״", "rashi": "רש״י: ״שם שמים שגור בפיו, ראה פוטיפר שהיה יוסף מזכיר שמו של הקב״ה על כל דבר״.", "midrash": "חז״ל: בשעה שבאה אשת פוטיפר לנסותו, נראתה לו דמות דיוקנו של אביו יעקב בחלון ונתחזק ועמד בניסיון.", "apparel": "כתונת פסים מלכותית עברית, בגדי שש מצריים כמשנה למלך, כיסוי ראש מצנפת שררה עברית מלאה.", "durationReel": "2:10 דק׳", "likes": 2180, "audio": "שירת הבור והגאולה - כינורות"}, {"id": "moses", "category": "tanach", "title": "משה רבנו • אדון הנביאים והסנה הבוער", "creator": "צדיק-טוק הפקות מקור", "chumash": "ספר שמות • פרק ג׳ • מסכת אבות", "quote": "״וַיֵּרָא מַלְאַךְ ה׳ אֵלָיו בְּלַבַּת אֵשׁ מִתּוֹךְ הַסְּנֶה וַיַּרְא וְהִנֵּה הַסְּנֶה בֹּעֵר בָּאֵשׁ וְהַסְּנֶה אֵינֶנּוּ אֻכָּל״", "rashi": "רש״י: ״איננו אוכל - איננו מתבער, ולמה מתוך הסנה? עמו אנכי בצרה״.", "midrash": "חז״ל: לא לקח משה רבנו שום גדולה לעצמו אלא ברח מן השררה שבעה ימים שלמים ליד הסנה מתוך ענווה עצומה.", "apparel": "גלימת רועים פשוטה ממדין, מצנפת בד עברית קדומה ועליה ברק קורן פנים.", "durationReel": "1:55 דק׳", "likes": 3105, "audio": "קול אלוקים מתוך האש - כלי מיתר"}, {"id": "david", "category": "tanach", "title": "דוד המלך • נעים זמירות ישראל", "creator": "צדיק-טוק הפקות מקור", "chumash": "ספר שמואל א׳ • תהילים • מסכת ברכות", "quote": "״וְדָוִד יֹדֵעַ נַגֵּן וַיִּרְוַח לְשָׁאוּל וְטוֹב לוֹ וְסָרָה מֵעָלָיו רוּחַ הָרָעָה״", "rashi": "רש״י: ״נעים זמירות - שהיה משמיע בקולו שירות ותשבחות לקונו בכל לילה מחצות״.", "midrash": "חז״ל: כינור היה תלוי למעלה ממיטתו של דוד, וכיוון שהגיע חצות לילה רוח צפונית מנשבת בו ומנגן מאליו.", "apparel": "לבוש מלכות בית דוד, גלימת תכלת וארגמן, כתר זהב ומגבעת קדושה תחתיו לכיסוי ראש מושלם.", "durationReel": "2:05 דק׳", "likes": 2840, "audio": "כינורו של דוד בחצות לילה"}];
+    const SERIES_LIBRARY = [{"id": "s_joseph", "title": "יוסף הצדיק • שליט מצרים", "season": "עונה 1 • 10 פרקים", "status": "פרקים 1-3 מוכנים לצפייה", "episodesCount": 10, "era": "תקופת האבות", "tag": "דרמה מקראית אפית", "desc": "סיפורו המטלטל של יוסף, מכתונת הפסים והבור בעמק דותן, דרך עמידתו בניסיון מול אשת פוטיפר, ועד הפיכתו למשנה למלך מצרים וההתוודעות לאחיו בדמעות.", "cast": "יוסף, יעקב אבינו, יהודה, שמעון, ראובן, פוטיפר, פרעה", "verse": "וַיְהִי ה׳ אֶת יוֹסֵף וַיְהִי אִישׁ מַצְלִיחַ (בראשית ל״ט)", "rashi": "רש״י: שם שמים שגור בפיו תמיד.", "badge": "הפקת הדגל", "videoCount": "3 סרטונים פעילים"}, {"id": "s_abraham", "title": "אברהם העברי • מול כבשן האש", "season": "עונה 1 • 8 פרקים", "status": "הפקה מוכנה", "episodesCount": 8, "era": "תקופת האבות", "tag": "אמונה וניסיונות", "desc": "מסעו של מייסד האומה העברית, מניפוץ האלילים באור כשדים והשלכתו לכבשן האש של נמרוד, דרך הציווי 'לך לך', ברית בין הבתרים ועד עקדת יצחק בהר המוריה.", "cast": "אברהם אבינו, שרה אמנו, לוט, מלכי צדק, נמרוד", "verse": "לֶךְ לְךָ מֵאַרְצְךָ וּמִמּוֹלַדְתְּךָ (בראשית י״ב)", "rashi": "רש״י: להנאתך ולטובתך.", "badge": "סדרה חדשה", "videoCount": "פרק 1 זמין"}, {"id": "s_moses", "title": "משה רבנו • אדון הנביאים והסנה", "season": "עונה 1 • 12 פרקים", "status": "בתהליך הפקת AI", "episodesCount": 12, "era": "יציאת מצרים", "tag": "גאולה וניסים", "desc": "מימי התיבה ביאור וארמון פרעה, הבריחה למדין, מעמד הסנה הבוער ועשר המכות, ועד קריעת ים סוף ומעמד הר סיני בקולות וברקים.", "cast": "משה רבנו, אהרן הכהן, מרים הנביאה, יתרו, פרעה", "verse": "וְלֹא קָם נָבִיא עוֹד בְּיִשְׂרָאֵל כְּמֹשֶׁה (דברים ל״ד)", "rashi": "רש״י: ענו מכל האדם אשר על פני האדמה.", "badge": "פרקים 1-2 בהפקה", "videoCount": "בקרוב"}, {"id": "s_david", "title": "דוד המלך • נעים זמירות ישראל", "season": "עונה 1 • 14 פרקים", "status": "תסריט מאושר", "episodesCount": 14, "era": "תקופת המלכים", "tag": "מלכות ותהילים", "desc": "מרועה צאן צעיר בבית לחם, משיחתו בידי שמואל הנביא והקרב מול גוליית הפלשתי, דרך רדיפות שאול במדבר עין גדי ועד כיבוש ירושלים וכתיבת ספר תהילים.", "cast": "דוד המלך, שמואל הנביא, שאול המלך, יהונתן, גוליית", "verse": "וְדָוִד יֹדֵעַ נַגֵּן וַיִּרְוַח לְשָׁאוּל (שמואל א׳ ט״ז)", "rashi": "רש״י: שהיה מנגן שירות ותשבחות לקונו.", "badge": "סדרת מופת", "videoCount": "פרק פיילוט זמין"}, {"id": "s_eliyahu", "title": "אליהו הנביא • אש על הר הכרמל", "season": "עונה 1 • 7 פרקים", "status": "שלב הליהוק הקולי", "episodesCount": 7, "era": "נביאים ראשונים", "tag": "קנאות וגבורה", "desc": "שנות הבצורת בנחל כרית, החייאת בן הצרפית, המעמד ההיסטורי בהר הכרמל מול 450 נביאי הבעל וצעקת העם 'ה׳ הוא האלוקים!', ועד עלייתו במרכבת אש בסערה השמימה.", "cast": "אליהו הנביא, אחאב המלך, איזבל, אלישע הנביא", "verse": "עַד מָתַי אַתֶּם פֹּסְחִים עַל שְׁתֵּי הַסְּעִפִּים (מלכים א׳ י״ח)", "rashi": "רש״י: ה׳ הוא האלקים - הודו כולם באחדותו.", "badge": "בקרוב", "videoCount": "פרק 1 בהפקה"}, {"id": "s_rashbi", "title": "רשב״י במערה • סודות הזוהר הקדוש", "season": "עונה 1 • 8 פרקים", "status": "כתיבת תסריט", "episodesCount": 8, "era": "תקופת התנאים", "tag": "תורת הסוד", "desc": "גזירות הרומאים, הבריחה וההסתתרות של רבי שמעון בר יוחאי ובנו רבי אלעזר במערה בפקיעין במשך 13 שנה על מעיין מים ועץ חרובים, וגילוי סודות הזוהר הקדוש.", "cast": "רבי שמעון בר יוחאי, רבי אלעזר בנו, רבי עקיבא, אליהו הנביא", "verse": "כְּדַאי הוּא רַבִּי שִׁמְעוֹן לִסְמוֹךְ עָלָיו בִּשְׁעַת הַדְּחַק (גמרא שבת)", "rashi": "חז״ל: נעשה להם נס ונברא להם חרוב ומעיין מים.", "badge": "סדרת סוד", "videoCount": "בתכנון"}, {"id": "s_rambam", "title": "הרמב״ם • הנשר הגדול", "season": "עונה 1 • 10 פרקים", "status": "כתיבת תסריט", "episodesCount": 10, "era": "תקופת הראשונים", "tag": "הלכה ורפואה", "desc": "הבריחה מקורדובה מרדיפות האל-מוואחידון, ישיבתו בפאס שבמרוקו, כתיבת 'משנה תורה' והיד החזקה, היותו רופא הסולטן צלאח א-דין בקהיר, והנהגת כל קהילות ישראל.", "cast": "הרמב״ם, רבי מימון הדיין, רבי שמואל אבן תיבון, הסולטן צלאח א-דין", "verse": "מִמֹּשֶׁה עַד מֹשֶׁה לֹא קָם כְּמֹשֶׁה", "rashi": "גדולי הדורות: אורו זורח בכל קצווי תבל.", "badge": "היסטוריה יהודית", "videoCount": "בתכנון"}, {"id": "s_besht", "title": "הבעל שם טוב • אור שבעת הימים", "season": "עונה 1 • 9 פרקים", "status": "פרק 1 זמין", "episodesCount": 9, "era": "תנועת החסידות", "tag": "שמחה ואהבת ישראל", "desc": "ההתבודדות בהרי הקרפטים, הצלת יהודים פשוטים, המהפכה החסידית שהפיחה שמחה, דבקות ותפילה מעומקא דליבא, ואיגרת עליית הנשמה למשיח צדקנו.", "cast": "הבעל שם טוב, רבי גרשון מקיטוב, תלמידיו הקדושים", "verse": "לִכְשֶׁיָּפוּצוּ מַעְיְנוֹתֶיךָ חוּצָה", "rashi": "תורת החסידות: הקב״ה אוהב כל יהודי כבן יחיד.", "badge": "חסידות", "videoCount": "פרק 1 זמין"}, {"id": "s_babasali", "title": "הבבא סאלי • פועל הישועות", "season": "עונה 1 • 7 פרקים", "status": "פרק 1 זמין", "episodesCount": 7, "era": "גדולי הדור האחרון", "tag": "מופתים וקדושה", "desc": "מסורת צדיקי משפחת אבוחצירא במרוקו, פרישותו וקדושת עיניו, עלייתו לארץ ישראל וישיבתו בנתיבות, שם נהרו אליו מאות אלפי יהודים לברכות וישועות למעלה מדרך הטבע.", "cast": "הבבא סאלי, הרבנית מרים, גדולי חכמי מרוקו וארץ ישראל", "verse": "צַדִּיק גּוֹזֵר וְהַקָּדוֹשׁ בָּרוּךְ הוּא מְקַיֵּם", "rashi": "ברכותיו של צדיק אינן שבות ריקם.", "badge": "מופתים", "videoCount": "פרק 1 זמין"}];
+    const JUDAICA_PRODUCTS = [{"id": "p_tefillin", "name": "תפילין מהודרות 'כתר מלכות'", "category": "סת״ם ותפילין", "price": 2850, "image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=500&q=80", "desc": "כתיבת סת״ם מומחה ירא שמיים על קלף שליל איכותי, רצועות עור עליון שחורות משני הצדדים, בדיקת מחשב כפולה ובדיקת מגיה מוסמך.", "specs": "נוסח עדות המזרח / אשכנז / האר״י • בתים עור בהמה גסה", "hechsher": "בד״ץ העדה החרדית ירושלים"}, {"id": "p_mezuzah", "name": "מזוזה מהודרת 12 ס״מ קלף מובחר", "category": "סת״ם ותפילין", "price": 240, "image": "https://images.unsplash.com/photo-1519791883288-dc8bd696e667?auto=format&fit=crop&w=500&q=80", "desc": "קלף משובח בכתיבת יד אמן מהודרת וברורה. מגיעה עם תעודת בדיקת מחשב ואחריות כשרות מלאה.", "specs": "גודל 12 ס״מ • עטיפת ניילון אטומה לשמירה מפגעי מזג אוויר", "hechsher": "אישור ועד משמרת סת״ם"}, {"id": "p_tallit", "name": "טלית צמר רחלי טהור 'מלכות בית דוד'", "category": "שבת ומועדים", "price": 480, "image": "https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d?auto=format&fit=crop&w=500&q=80", "desc": "100% צמר רחלים טהור עם אריגה נגד החלקה, פתילים עבודת יד טוויה לשמה, עטרה רקומה בחוטי כסף מרהיבים.", "specs": "מידות 60 / 70 / 80 לבחירה • כולל כיסוי מגן יוקרתי", "hechsher": "השגחת בד״ץ הרב לנדא"}, {"id": "p_kiddush", "name": "גביע קידוש יוקרתי מכסף טהור 925", "category": "יודאיקה וכסף", "price": 890, "image": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=500&q=80", "desc": "עבודת צורפות ירושלמית מרהיבה עם חריטת חומות ירושלים, ציפוי זהב פנימי למניעת טעם לוואי ביין, כולל תחתית תואמת.", "specs": "משקל: 145 גרם כסף טהור • גובה: 14 ס״מ", "hechsher": "תעודת מקור ואחריות לכל החיים"}, {"id": "p_shofar", "name": "שופר איל תימני מלוטש ומהודר", "category": "שבת ומועדים", "price": 390, "image": "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=500&q=80", "desc": "שופר איל טבעי בעל צליל בהיר ועמוק, מיוצר בעבודת יד ללא שום חומרים מזיקים, נבדק כשר לתקיעות ראש השנה.", "specs": "אורך: 45-50 ס״מ • צליל מהדהד וקל לתקיעה", "hechsher": "פיקוח הלכתי קפדני"}, {"id": "p_candlesticks", "name": "זוג פמוטי שבת מעוצבים בכסף 925", "category": "יודאיקה וכסף", "price": 1250, "image": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=500&q=80", "desc": "פמוטי שבת מפוארים בעיצוב קלאסי שובה לב. בסיס כבד ליציבות מירבית, קנים מתאימים לנרות שמן או שעווה.", "specs": "גובה: 24 ס״מ • משקל הזוג: 280 גרם", "hechsher": "אחריות מלאה"}, {"id": "p_challah_knife", "name": "סכין חלה יוקרתית ידית כסף ופלדת אל-חלד", "category": "שבת ומועדים", "price": 290, "image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=500&q=80", "desc": "להב משונן וחד מפלדה גרמנית איכותית החותכת חלות שבת בקלות וללא פירורים, ידית כסף בעיטורי ברכת 'המוציא לחם מן הארץ'.", "specs": "אורך להב: 20 ס״מ • כולל נרתיק מגן מתנה", "hechsher": "מוצר איכות מובחר"}, {"id": "p_stone_mezuzah", "name": "בית מזוזה יצוק מאבן ירושלמית עתיקה", "category": "יודאיקה וכסף", "price": 140, "image": "https://images.unsplash.com/photo-1519791883288-dc8bd696e667?auto=format&fit=crop&w=500&q=80", "desc": "אבן גיר ירושלמית טבעית מסותתת עם אות ש' מוזהבת. מתאים לקלף עד 12 ס״מ, כולל דבק דו-צדדי חזק ועמיד לגשם.", "specs": "גובה: 15 ס״מ • עמידות מלאה לחוץ ולפנים", "hechsher": "מיוצר בארץ ישראל"}, {"id": "p_rambam_set", "name": "סט משנה תורה לרמב״ם (10 כרכים)", "category": "ספרי קודש", "price": 650, "image": "https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d?auto=format&fit=crop&w=500&q=80", "desc": "מהדורה מפוארת באותיות מאירות עיניים, מנוקדת ומדויקת על פי כתבי יד תימן, עם פירושים קצרים וציוני מקורות מקיפים.", "specs": "10 כרכים כריכה קשה עורית מהודרת", "hechsher": "הוצאת ספרי מופת"}, {"id": "p_kippah", "name": "כיפת פשתן עברית אותנטית (צדיק-טוק)", "category": "שבת ומועדים", "price": 55, "image": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=500&q=80", "desc": "כיפת 6 חלקים רחבה ונוחה מפשתן טבעי איכותי ונושם, בגווני בז' וחום עתיק, מעניקה כיסוי ראש רחב ומושלם כהלכה.", "specs": "מידות: 18-22 ס״מ • תפירה כפולה עמידה", "hechsher": "באישור הלכתי"}];
+    const TZADDIKIM_EXPANDED = [{"id": "t1", "name": "הכותל המערבי", "location": "ירושלים העתיקה", "region": "ירושלים", "yahrzeit": "שכינה לא זזה ממנו לעולם", "segula": "שער השמיים לכל תפילות עם ישראל, רפואה, פרנסה וגאולה.", "waze": "הכותל המערבי ירושלים", "desc": "שריד בית מקדשנו, המקום הקדוש ביותר שבו מתקבלות תפילות כלל ישראל."}, {"id": "t2", "name": "מערת המכפלה", "location": "חברון עיר האבות", "region": "ירושלים והשפלה", "yahrzeit": "אבות ואמהות האומה", "segula": "שורש האומה היהודית, התעוררות רחמי שמים וחיבור לשורשי הקדושה.", "waze": "מערת המכפלה חברון", "desc": "קבורת אדם וחוה, אברהם ושרה, יצחק ורבקה, יעקב ולאה."}, {"id": "t3", "name": "קבר רחל אמנו", "location": "בית לחם / ירושלים", "region": "ירושלים", "yahrzeit": "י״א בחשוון", "segula": "רחל מבכה על בניה, סגולה נודעת לפרי בטן, שידוכים ורפואה.", "waze": "קבר רחל בית לחם", "desc": "מקום תפילה מסוגל במיוחד לבנים ולהקמת בית נאמן בישראל."}, {"id": "t4", "name": "קבר דוד המלך", "location": "הר ציון, ירושלים", "region": "ירושלים", "yahrzeit": "ו׳ בסיוון (חג השבועות)", "segula": "אמירת ספר תהילים, מלכות בית דוד וישועת הכלל.", "waze": "קבר דוד המלך ירושלים", "desc": "ציון נעים זמירות ישראל שחיבר את ספר התהילים הקדוש."}, {"id": "t5", "name": "ציון שמעון הצדיק", "location": "שכונת שמעון הצדיק, ירושלים", "region": "ירושלים", "yahrzeit": "כ״ט בתשרי", "segula": "משיירי כנסת הגדולה, סגולה לבריאות ורפואה שלמה.", "waze": "קבר שמעון הצדיק ירושלים", "desc": "כהן גדול שפגש את אלכסנדר מוקדון והציל את בית המקדש."}, {"id": "t6", "name": "ציון אור החיים הקדוש", "location": "הר הזיתים, ירושלים", "region": "ירושלים", "yahrzeit": "ט״ו בתמוז", "segula": "מסוגל לפקידת עקרות, זיווג הגון, פרנסה ורפואה.", "waze": "אור החיים הקדוש הר הזיתים", "desc": "רבי חיים בן עטר, בעל פירוש 'אור החיים' על התורה."}, {"id": "t7", "name": "ציון רשב״י (רבי שמעון בר יוחאי)", "location": "הר מירון", "region": "גליל וצפת", "yahrzeit": "י״ח באייר (ל״ג בעומר)", "segula": "״כדאי הוא רבי שמעון לסמוך עליו בשעת הדחק״, ישועות לכל נצרך.", "waze": "קבר רשב״י מירון", "desc": "מחבר ספר הזוהר הקדוש, מוקד העלייה לרגל הגדול ביותר בישראל."}, {"id": "t8", "name": "ציון רבי יוחנן הסנדלר", "location": "הר מירון", "region": "גליל וצפת", "yahrzeit": "כ״ט בתמוז", "segula": "מגדולי התנאים ותלמיד רבי עקיבא, סגולה לפרנסה ישרה.", "waze": "קבר רבי יוחנן הסנדלר מירון", "desc": "ציון קדוש הסמוך לציון רשב״י במעלה ההר."}, {"id": "t9", "name": "ציון רבי יונתן בן עוזיאל", "location": "עמוקה (יער ביריה)", "region": "גליל וצפת", "yahrzeit": "כ״ו בסיוון", "segula": "סגולה עולמית נודעת למציאת זיווג הגון ומהיר בתוך שנה.", "waze": "ציון רבי יונתן בן עוזיאל עמוקה", "desc": "גדול תלמידיו של הלל הזקן, שכל עוף שהיה פורח מעליו היה נשרף."}, {"id": "t10", "name": "ציון האר״י הקדוש", "location": "בית העלמין העתיק, צפת", "region": "גליל וצפת", "yahrzeit": "ה׳ במנחם-אב", "segula": "גדול תורת הקבלה, תיקון הנפש ודבקות עילאית.", "waze": "קבר הארי הקדוש צפת", "desc": "רבי יצחק לוריא אשכנזי שחידש את תורת הסוד בעיר המקובלים צפת."}, {"id": "t11", "name": "ציון מרן רבי יוסף קארו", "location": "בית העלמין העתיק, צפת", "region": "גליל וצפת", "yahrzeit": "י״ג בניסן", "segula": "מחבר השולחן ערוך, סגולה להארת העיניים בתורה והצלחה בהלכה.", "waze": "קבר מרן רבי יוסף קארו צפת", "desc": "מרן ה'בית יוסף' שפסקיו מהווים את עמוד ההלכה של כל עם ישראל."}, {"id": "t12", "name": "ציון רבי מאיר בעל הנס", "location": "טבריה", "region": "טבריה", "yahrzeit": "י״ד באייר (פסח שני)", "segula": "״אלהא דמאיר ענני״, סגולה נודעת למציאת אבידות והצלה מכל צרה.", "waze": "קבר רבי מאיר בעל הנס טבריה", "desc": "מראשי התנאים, מופת הניסים והתפילה המסוגלת לישועה."}, {"id": "t13", "name": "ציון הרמב״ם (הנשר הגדול)", "location": "טבריה", "region": "טבריה", "yahrzeit": "כ׳ בטבת", "segula": "רפואת הגוף והנפש, חכמה ותבונה בתורה ובמדע.", "waze": "קבר הרמבם טבריה", "desc": "רבי משה בן מימון, גדול הפוסקים ומחבר היד החזקה."}, {"id": "t14", "name": "ציון רבי עקיבא", "location": "טבריה (במעלה ההר)", "region": "טבריה", "yahrzeit": "ערב יום הכיפורים", "segula": "מסירות נפש, תשובה עילאית והצלחה בלימוד התורה מאפס.", "waze": "קבר רבי עקיבא טבריה", "desc": "רועה הצאן שהפך לרבן של כל ישראל והעמיד 24,000 תלמידים."}, {"id": "t15", "name": "ציון השל״ה הקדוש", "location": "טבריה (מתחם הרמב״ם)", "region": "טבריה", "yahrzeit": "י״א בניסן", "segula": "תפילת השל״ה לחינוך והצלחת הילדים ביראת שמיים.", "waze": "קבר השלה הקדוש טבריה", "desc": "רבי ישעיה הלוי הורוביץ, בעל 'שני לוחות הברית'."}, {"id": "t16", "name": "ציון הבבא סאלי", "location": "נתיבות", "region": "דרום", "yahrzeit": "ד׳ בשבט", "segula": "אלפי סיפורי מופתים וישועות, ברכה לילדים ושלום בית.", "waze": "קבר הבבא סאלי נתיבות", "desc": "רבי ישראל אבוחצירא זיע״א, עמוד התפילה והניסים בדור האחרון."}, {"id": "t17", "name": "ציון הבבא חאקי", "location": "רמלה", "region": "ירושלים והשפלה", "yahrzeit": "י״ט בכסלו", "segula": "אחיו של הבבא סאלי, פועל ישועות וקירוב לבבות.", "waze": "קבר הבבא חאקי רמלה", "desc": "רבי יצחק אבוחצירא, מנהיג קהילות ישראל ואיש חסד מופלא."}, {"id": "t18", "name": "ציון רבי חיים פינטו הגדול", "location": "אשדוד (בית העלמין הישן)", "region": "דרום", "yahrzeit": "כ״ו באלול", "segula": "עמוד החסד והישועות, הצלה מעין הרע וברכה בפרנסה.", "waze": "קבר רבי חיים פינטו אשדוד", "desc": "מגדולי צדיקי מוגאדור ומרוקו שנשמתו פועלת ישועות באשדוד."}, {"id": "t19", "name": "ציון רבי נחמן מברסלב", "location": "אומן, אוקראינה", "region": "חו״ל", "yahrzeit": "י״ח בתשרי", "segula": "הבטחת רבנו להוציא מהשאול תחתית באמירת עשרת מזמורי תיקון הכללי.", "waze": "Uman Ukraine", "desc": "הקיבוץ הקדוש באומן בראש השנה, מקור השמחה וההתחדשות בעבודת ה'."}, {"id": "t20", "name": "ציון הבעל שם טוב הקדוש", "location": "מז'יבוז', אוקראינה", "region": "חו״ל", "yahrzeit": "ו׳ בסיוון (שבועות)", "segula": "מייסד תנועת החסידות, התעוררות הדבקות ואהבת ישראל אמיתית.", "waze": "Medzhybizh Ukraine", "desc": "המקום שבו נדלקה אש החסידות המאירה את העולם עד ביאת המשיח."}, {"id": "t21", "name": "ציון רבי אלימלך מליז'נסק", "location": "ליז'נסק, פולין", "region": "חו״ל", "yahrzeit": "כ״א באדר", "segula": "מחבר 'נועם אלימלך', סגולה לכל הישועות: בנים, חיים ומזונות.", "waze": "Lezajsk Poland", "desc": "הבטיח שמי שיעלה על ציונו לא ייפטר מן העולם בלא תשובה."}, {"id": "t22", "name": "ציון רבי ישעיהל'ה מקרעסטיר", "location": "בודרוגקרסטור (קרעסטיר), הונגריה", "region": "חו״ל", "yahrzeit": "ג׳ באייר", "segula": "הכנסת אורחים מופלאה, שמירה מעכברים ומזיקים, פרנסה בשפע והצלה.", "waze": "Bodrogkeresztur Hungary", "desc": "נודע באהבת ישראל עצומה וחלוקת מזון לכל רעב ונדכא."}];
     const INITIAL_MINYANIM = [{"id": "m1", "name": "שטיבלאך איצקוביץ׳", "city": "בני ברק", "nusach": "מגוון (ספרד / אשכנז / ע״מ)", "address": "רחוב הרב שך 4, בני ברק", "times": "שחרית, מנחה וערבית ברצף 24 שעות", "type": "שטיבלאך", "phone": "03-5790000", "waze": "איצקוביץ בני ברק"}, {"id": "m2", "name": "שטיבלאך זכרון משה", "city": "ירושלים", "nusach": "כל הנוסחים", "address": "כיכר דוד ילין, זכרון משה, ירושלים", "times": "מניינים רצופים כל 10 דקות מסביב לשעון", "type": "שטיבלאך", "phone": "02-5380000", "waze": "זכרון משה ירושלים"}, {"id": "m3", "name": "בית כנסת הגדול - מניין ותיקין", "city": "בני ברק", "nusach": "אשכנז", "address": "רחוב רבי עקיבא 50, בני ברק", "times": "ותיקין בהנץ החמה מדי יום", "type": "שחרית", "phone": "03-6190000", "waze": "בית כנסת הגדול בני ברק"}, {"id": "m4", "name": "מרכז חב״ד העולמי - 770", "city": "ניו יורק (Brooklyn)", "nusach": "ספרד (נוסח האר״י)", "address": "770 Eastern Pkwy, Brooklyn, NY", "times": "מניינים שוטפים 24 שעות", "type": "שטיבלאך", "phone": "+1-718-774-4000", "waze": "770 Eastern Parkway"}];
     const INITIAL_RABBIS = [{"id": "r1", "name": "בית הוראה בני ברק - הגר״ש רוזנברג", "city": "בני ברק", "field": "הוראה, שבת וממונות", "status": "זמין כעת למענה", "statusColor": "bg-green-500", "phone": "03-5780000", "address": "רחוב הרב שך 35, בני ברק", "hours": "א׳-ה׳ 17:00-22:00, ו׳ 10:00-13:00", "waze": "בית הוראה הגרש רוזנברג בני ברק", "whatsapp": "97235780000"}, {"id": "r2", "name": "בית הדין המיוחד לממונות - הגר״נ קרליץ", "city": "בני ברק", "field": "חושן משפט ובוררות", "status": "בתיאום מראש", "statusColor": "bg-amber-500", "phone": "03-6184000", "address": "רחוב רבי עקיבא 88, בני ברק", "hours": "א׳-ה׳ 09:00-14:00", "waze": "בית דין צדק בני ברק", "whatsapp": "97236184000"}, {"id": "r3", "name": "קו ההלכה הספרדי - מורשת מרן", "city": "ירושלים / ארצי", "field": "כשרות, טהרה ומועדים", "status": "מוקד 24 שעות", "statusColor": "bg-green-500", "phone": "073-7000000", "address": "מוקד טלפוני ארצי", "hours": "מענה שוטף בימי חול", "waze": "ירושלים", "whatsapp": "972737000000"}, {"id": "r4", "name": "בית הוראה העדה החרדית", "city": "ירושלים", "field": "כשרות מהדרין ושבת", "status": "זמין בשעות הערב", "statusColor": "bg-amber-500", "phone": "02-6250000", "address": "כיכר השבת, מאה שערים, ירושלים", "hours": "א׳-ה׳ 10:00-13:00, 18:00-21:00", "waze": "כיכר השבת ירושלים", "whatsapp": "97226250000"}, {"id": "r5", "name": "קו רפואה והלכה - הגרי״צ זילברשטיין", "city": "בני ברק", "field": "פיקוח נפש ורפואה", "status": "מוקד חירום", "statusColor": "bg-red-500", "phone": "03-5742222", "address": "רחוב חפץ חיים, רמת אלחנן, בני ברק", "hours": "שאלות דחופות ברפואה ושבת", "waze": "רמת אלחנן בני ברק", "whatsapp": "97235742222"}];
-    const INITIAL_TZADDIKIM = [{"id": "t1", "name": "הכותל המערבי", "location": "ירושלים העתיקה", "region": "ירושלים", "yahrzeit": "שכינה לא זזה ממנו", "segula": "שער השמיים לכל תפילות עם ישראל, רפואה, פרנסה וגאולה.", "waze": "הכותל המערבי ירושלים"}, {"id": "t2", "name": "מערת המכפלה", "location": "חברון עיר האבות", "region": "ירושלים והשפלה", "yahrzeit": "אבות ואמהות האומה", "segula": "שורש האומה היהודית, התעוררות רחמי שמים וחיבור לשורשי הקדושה.", "waze": "מערת המכפלה חברון"}, {"id": "t3", "name": "קבר רחל אמנו", "location": "בית לחם / ירושלים", "region": "ירושלים", "yahrzeit": "י״א בחשוון", "segula": "רחל מבכה על בניה, סגולה נודעת לפרי בטן, שידוכים ורפואה.", "waze": "קבר רחל בית לחם"}, {"id": "t4", "name": "ציון רשב״י (רבי שמעון בר יוחאי)", "location": "הר מירון", "region": "גליל וצפת", "yahrzeit": "י״ח באייר (ל״ג בעומר)", "segula": "״כדאי הוא רבי שמעון לסמוך עליו בשעת הדחק״, ישועות לכל נצרך.", "waze": "קבר רשב״י מירון"}, {"id": "t5", "name": "ציון רבי מאיר בעל הנס", "location": "טבריה", "region": "טבריה", "yahrzeit": "י״ד באייר (פסח שני)", "segula": "״אלהא דמאיר ענני״, סגולה למציאת אבידות והצלה.", "waze": "קבר רבי מאיר בעל הנס טבריה"}, {"id": "t6", "name": "ציון האר״י הקדוש", "location": "צפת העתיקה", "region": "גליל וצפת", "yahrzeit": "ה׳ במנחם-אב", "segula": "גדול תורת הקבלה, תיקון הנפש והתעלות רוחנית.", "waze": "קבר הארי הקדוש צפת"}, {"id": "t7", "name": "ציון הבבא סאלי", "location": "נתיבות", "region": "דרום", "yahrzeit": "ד׳ בשבט", "segula": "אלפי סיפורי מופתים וישועות, ברכה לילדים ושלום בית.", "waze": "קבר הבבא סאלי נתיבות"}, {"id": "t8", "name": "ציון רבי נחמן מברסלב", "location": "אומן, אוקראינה", "region": "חו״ל", "yahrzeit": "י״ח בתשרי", "segula": "הבטחת רבנו נחמן לפעול ישועה לכל האומר עשרת מזמורי תיקון הכללי.", "waze": "Uman Ukraine"}];
     const INITIAL_GEMACHIM = [{"id": "g1", "name": "יד שרה - השאלת ציוד רפואי", "cat": "ציוד רפואי", "city": "כל הארץ (120 סניפים)", "phone": "*6444", "address": "מוקד ארצי", "hours": "א׳-ה׳ 09:00-19:00, ו׳ 09:00-12:00"}, {"id": "g2", "name": "עזר מציון - מאגר מח עצם ורווחה", "cat": "ציוד רפואי", "city": "בני ברק וארצי", "phone": "*2020", "address": "רחוב רבינוב 5, בני ברק", "hours": "מוקד 24 שעות"}, {"id": "g3", "name": "גמ״ח עריסות ובגדי תינוקות", "cat": "עריסות ותינוקות", "city": "בני ברק", "phone": "052-7600000", "address": "רחוב חזון איש 60, בני ברק", "hours": "א׳-ה׳ 20:00-22:00"}, {"id": "g4", "name": "גמ״ח הלוואות עזרת אחים", "cat": "הלוואות וכספים", "city": "ירושלים", "phone": "02-5380000", "address": "רחוב מלאכי 12, גאולה", "hours": "בתיאום עם ערבים"}];
     const INITIAL_MIKVAOT = [{"id": "m1", "name": "מקווה טהרה מרכזי - חזון איש", "type": "מקווה גברים", "city": "בני ברק", "address": "רחוב חזון איש 20, בני ברק", "hours": "פתוח 24 שעות (בורות מי גשמים מהודרים)", "phone": "03-5790000", "waze": "מקווה חזון איש בני ברק"}, {"id": "m2", "name": "מקווה נשים מפואר מהדרין", "type": "מקווה נשים", "city": "ירושלים", "address": "שכונת רוממה, ירושלים", "hours": "משקיעת החמה בתיאום בלניות", "phone": "02-5370000", "waze": "רוממה ירושלים"}, {"id": "m3", "name": "מקווה כלים מרכזי", "type": "מקווה כלים", "city": "בני ברק", "address": "רחוב הרב קוק 10, בני ברק", "hours": "פתוח כל שעות היום", "phone": "03-6180000", "waze": "רחוב הרב קוק בני ברק"}];
     const INITIAL_PRAYERS = [{"id": "p1", "name": "רפאל חיים בן שרה", "type": "רפואה שלמה ובריאות", "location": "ירושלים", "psalmsRecited": 42}, {"id": "p2", "name": "מרים חנה בת רחל", "type": "זיווג הגון ומהיר", "location": "בני ברק", "psalmsRecited": 28}, {"id": "p3", "name": "אברהם יצחק בן לאה", "type": "פרנסה טובה בהרחבה", "location": "אשדוד", "psalmsRecited": 19}, {"id": "p4", "name": "יוסף שלמה בן אסתר", "type": "ישועה והצלה", "location": "צפת", "psalmsRecited": 35}];
@@ -1185,6 +1062,58 @@
       tel_aviv: { name: "תל אביב", alot: "04:59", sunrise: "06:13", shema_mga: "08:36", shema_gra: "09:09", chatzot: "11:43", mincha_gedola: "12:13", sunset: "16:59", tzeit: "17:35", shabbat_in: "16:42", shabbat_out: "17:54" },
       safed: { name: "צפת והגליל", alot: "04:56", sunrise: "06:10", shema_mga: "08:32", shema_gra: "09:05", chatzot: "11:40", mincha_gedola: "12:10", sunset: "16:56", tzeit: "17:32", shabbat_in: "16:35", shabbat_out: "17:50" },
       new_york: { name: "ניו יורק (Lakewood / NY)", alot: "05:35", sunrise: "06:48", shema_mga: "09:12", shema_gra: "09:44", chatzot: "12:15", mincha_gedola: "12:45", sunset: "17:28", tzeit: "18:04", shabbat_in: "17:10", shabbat_out: "18:22" }
+    };
+
+    // Dynamic Sefaria URLs per prayer and nusach
+    const SEFARIA_PRAYER_URLS = {
+      shacharit: {
+        mizrach: "https://www.sefaria.org/Siddur_Edot_HaMizrach,_Weekday_Shacharit",
+        sefard: "https://www.sefaria.org/Siddur_Sefard,_Weekday_Shacharit",
+        ashkenaz: "https://www.sefaria.org/Siddur_Ashkenaz,_Weekday_Shacharit",
+        teiman: "https://www.sefaria.org/Siddur_Edot_HaMizrach,_Weekday_Shacharit"
+      },
+      mincha: {
+        mizrach: "https://www.sefaria.org/Siddur_Edot_HaMizrach,_Weekday_Mincha",
+        sefard: "https://www.sefaria.org/Siddur_Sefard,_Weekday_Mincha",
+        ashkenaz: "https://www.sefaria.org/Siddur_Ashkenaz,_Weekday_Mincha",
+        teiman: "https://www.sefaria.org/Siddur_Edot_HaMizrach,_Weekday_Mincha"
+      },
+      arvit: {
+        mizrach: "https://www.sefaria.org/Siddur_Edot_HaMizrach,_Weekday_Maariv",
+        sefard: "https://www.sefaria.org/Siddur_Sefard,_Weekday_Maariv",
+        ashkenaz: "https://www.sefaria.org/Siddur_Ashkenaz,_Weekday_Maariv",
+        teiman: "https://www.sefaria.org/Siddur_Edot_HaMizrach,_Weekday_Maariv"
+      },
+      mazon: {
+        mizrach: "https://www.sefaria.org/Birkat_Hamazon",
+        sefard: "https://www.sefaria.org/Birkat_Hamazon",
+        ashkenaz: "https://www.sefaria.org/Birkat_Hamazon",
+        teiman: "https://www.sefaria.org/Birkat_Hamazon"
+      },
+      shema_al_hamita: {
+        mizrach: "https://www.sefaria.org/Siddur_Edot_HaMizrach,_Bedtime_Shema",
+        sefard: "https://www.sefaria.org/Siddur_Sefard,_Bedtime_Shema",
+        ashkenaz: "https://www.sefaria.org/Siddur_Ashkenaz,_Bedtime_Shema",
+        teiman: "https://www.sefaria.org/Siddur_Edot_HaMizrach,_Bedtime_Shema"
+      },
+      tefilat_haderech: {
+        mizrach: "https://www.sefaria.org/Siddur_Edot_HaMizrach,_Assorted_Blessings_and_Prayers,_Traveler's_Prayer",
+        sefard: "https://www.sefaria.org/Siddur_Sefard,_Special_Prayers,_Traveler's_Prayer",
+        ashkenaz: "https://www.sefaria.org/Siddur_Ashkenaz,_Special_Prayers,_Traveler's_Prayer",
+        teiman: "https://www.sefaria.org/Siddur_Edot_HaMizrach,_Assorted_Blessings_and_Prayers,_Traveler's_Prayer"
+      },
+      tikkun_haklali: {
+        mizrach: "https://www.sefaria.org/Psalms.16",
+        sefard: "https://www.sefaria.org/Psalms.16",
+        ashkenaz: "https://www.sefaria.org/Psalms.16",
+        teiman: "https://www.sefaria.org/Psalms.16"
+      },
+      asher_yatzar: {
+        mizrach: "https://www.sefaria.org/Siddur_Edot_HaMizrach,_Preparatory_Prayers,_Morning_Blessings.2",
+        sefard: "https://www.sefaria.org/Siddur_Sefard,_Morning_Blessings.2",
+        ashkenaz: "https://www.sefaria.org/Siddur_Ashkenaz,_Morning_Blessings.2",
+        teiman: "https://www.sefaria.org/Siddur_Edot_HaMizrach,_Preparatory_Prayers,_Morning_Blessings.2"
+      }
     };
 
     function toast(message) {
@@ -1215,10 +1144,6 @@
       const activePill = document.getElementById("pill-" + tabId);
       if (activePill) activePill.classList.add("active");
 
-      document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.remove("active"));
-      const activeNav = document.getElementById("nav-" + tabId);
-      if (activeNav) activeNav.classList.add("active");
-
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -1235,6 +1160,335 @@
       }
     }
 
+    // Cart System
+    function getCart() {
+      const saved = localStorage.getItem(STORAGE_KEYS.CART);
+      return saved ? JSON.parse(saved) : [];
+    }
+
+    function saveCart(cart) {
+      localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(cart));
+      updateCartBadge();
+    }
+
+    function updateCartBadge() {
+      const cart = getCart();
+      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const badge = document.getElementById("cart-badge");
+      if (badge) badge.textContent = count;
+    }
+
+    function addToCart(productId) {
+      const product = JUDAICA_PRODUCTS.find(p => p.id === productId);
+      if (!product) return;
+      const cart = getCart();
+      const existing = cart.find(i => i.id === productId);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({ id: product.id, name: product.name, price: product.price, quantity: 1 });
+      }
+      saveCart(cart);
+      toast(`המוצר "${product.name}" נוסף לעגלה!`);
+    }
+
+    function openCartModal() {
+      const cart = getCart();
+      const container = document.getElementById("cart-items-container");
+      let total = 0;
+      if (cart.length === 0) {
+        container.innerHTML = '<p class="text-slate-400 text-center py-6">עגלת הקניות שלך ריקה כעת.</p>';
+      } else {
+        container.innerHTML = cart.map(item => {
+          const subtotal = item.price * item.quantity;
+          total += subtotal;
+          return `
+            <div class="flex items-center justify-between p-2.5 bg-slate-950/80 rounded-xl border border-slate-800">
+              <div>
+                <span class="font-bold text-white block">${item.name}</span>
+                <span class="text-slate-400 text-[11px]">₪${item.price} × ${item.quantity}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-black text-amber-300">₪${subtotal}</span>
+                <button onclick="removeFromCart('${item.id}')" class="text-slate-400 hover:text-red-400 text-sm">✕</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+      document.getElementById("cart-total-price").textContent = "₪" + total.toLocaleString();
+      openModal("modal-cart");
+    }
+
+    function removeFromCart(productId) {
+      let cart = getCart();
+      cart = cart.filter(i => i.id !== productId);
+      saveCart(cart);
+      openCartModal();
+      toast("המוצר הוסר מהעגלה.");
+    }
+
+    function clearCart() {
+      saveCart([]);
+      openCartModal();
+      toast("עגלת הקניות רוקנה.");
+    }
+
+    function checkoutCart() {
+      const cart = getCart();
+      if (cart.length === 0) {
+        toast("עגלת הקניות ריקה!");
+        return;
+      }
+      closeModal("modal-cart");
+      toast("מעביר למסוף סליקה מאובטח בנדרים פלוס לרכישת תשמישי קדושה...");
+    }
+
+    // Render Judaica Products
+    function renderJudaica(products) {
+      const container = document.getElementById("judaica-grid-container");
+      if (!container) return;
+      container.innerHTML = products.map(item => `
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-amber-500/40 transition-all shadow-lg group">
+          <div class="space-y-3">
+            <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-slate-950">
+              <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90">
+              <span class="absolute top-2 right-2 text-[10px] font-black bg-slate-950/80 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30">
+                ${item.category}
+              </span>
+            </div>
+            <div>
+              <h3 class="text-base font-black text-white group-hover:text-amber-300 transition-colors">${item.name}</h3>
+              <p class="text-xs text-slate-300 mt-1 leading-relaxed">${item.desc}</p>
+            </div>
+            <div class="p-2 bg-slate-950/60 rounded-xl text-[11px] text-slate-400 space-y-0.5">
+              <p>📐 <strong>מפרט:</strong> ${item.specs}</p>
+              <p class="text-amber-400/90">📜 <strong>הכשר:</strong> ${item.hechsher}</p>
+            </div>
+          </div>
+          <div class="pt-3 mt-3 border-t border-slate-800/80 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] text-slate-400 block">מחיר מהודר:</span>
+              <span class="text-lg font-black text-amber-300">₪${item.price.toLocaleString()}</span>
+            </div>
+            <button onclick="addToCart('${item.id}')" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 font-black rounded-xl text-xs flex items-center gap-1 shadow-md shadow-amber-500/20 active:scale-95 transition-all">
+              <span>🛒</span> <span>הוסף לעגלה</span>
+            </button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function filterJudaica(cat) {
+      document.querySelectorAll(".judaica-cat-btn").forEach(b => b.classList.remove("bg-amber-500", "text-slate-950"));
+      event.target.classList.add("bg-amber-500", "text-slate-950");
+      if (cat === "all") {
+        renderJudaica(JUDAICA_PRODUCTS);
+      } else {
+        renderJudaica(JUDAICA_PRODUCTS.filter(p => p.category === cat));
+      }
+    }
+
+    // Render Series Library
+    function renderSeries(seriesList) {
+      const container = document.getElementById("series-grid-container");
+      if (!container) return;
+      container.innerHTML = seriesList.map(s => `
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-amber-500/40 transition-all shadow-lg">
+          <div class="space-y-3">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-[10px] font-black text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                  ${s.era} • ${s.tag}
+                </span>
+                <h3 class="text-base font-black text-white mt-1">${s.title}</h3>
+              </div>
+              <span class="text-xs bg-slate-800 text-amber-300 font-mono px-2 py-0.5 rounded-lg font-bold">
+                ${s.episodesCount} פרקים
+              </span>
+            </div>
+
+            <p class="text-xs text-slate-300 leading-relaxed">${s.desc}</p>
+
+            <div class="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800/80 space-y-1 text-xs font-serif">
+              <p class="text-amber-200 font-bold">${s.verse}</p>
+              <p class="text-slate-400 font-sans text-[11px]">${s.rashi}</p>
+            </div>
+
+            <div class="text-[11px] text-slate-400">
+              👥 <strong>דמויות מרכזיות:</strong> ${s.cast}
+            </div>
+          </div>
+
+          <div class="pt-3 mt-3 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-[11px] text-cyan-400 font-bold">🎬 ${s.videoCount}</span>
+            <button onclick="openVideoPlayer('joseph')" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs flex items-center gap-1 shadow-md shadow-amber-500/20">
+              ▶ צפה בפרק 1
+            </button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // Render Expanded Kivrei Tzaddikim (22+ items)
+    function getTzaddikimData() {
+      const saved = localStorage.getItem(STORAGE_KEYS.TZADDIKIM);
+      if (!saved) {
+        localStorage.setItem(STORAGE_KEYS.TZADDIKIM, JSON.stringify(TZADDIKIM_EXPANDED));
+        return TZADDIKIM_EXPANDED;
+      }
+      try { return JSON.parse(saved); } catch (e) { return TZADDIKIM_EXPANDED; }
+    }
+
+    function renderTzaddikim(list) {
+      const container = document.getElementById("tzaddikim-list-container");
+      if (!container) return;
+      container.innerHTML = list.map(item => `
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-amber-500/40 transition-all shadow-md">
+          <div class="space-y-2.5">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-[10px] font-black text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">📍 ${item.location}</span>
+                <h3 class="text-sm font-black text-white mt-1">${item.name}</h3>
+              </div>
+              <div class="flex items-center gap-1">
+                <button onclick="openUniversalEditModal('tzaddik', '${item.id}')" title="שנה פרטים" class="p-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 rounded-lg text-xs font-bold border border-slate-700">✏️</button>
+                <button onclick="deleteUniversalItem('tzaddik', '${item.id}')" title="מחק" class="p-1.5 bg-slate-800 hover:bg-red-900/60 text-slate-400 hover:text-red-300 rounded-lg text-xs font-bold border border-slate-700">🗑️</button>
+              </div>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">${item.desc || item.segula}</p>
+            <div class="space-y-1 text-xs">
+              <p class="text-amber-300 font-medium text-[11px]">🕯️ <strong>הילולא:</strong> ${item.yahrzeit}</p>
+              <p class="text-slate-400 text-[11px]">✨ <strong>סגולה:</strong> ${item.segula}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 pt-2.5 mt-2 border-t border-slate-800">
+            <a href="https://waze.com/ul?q=${encodeURIComponent(item.waze || item.name)}" target="_blank" class="flex-1 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/10">
+              <span>🚙</span> <span>Waze</span>
+            </a>
+            <button onclick="switchTab('tehillim')" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl text-xs border border-slate-700">
+              📜 תהילים
+            </button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function filterTzaddikimRegion(region) {
+      document.querySelectorAll(".tzaddik-region-btn").forEach(b => b.classList.remove("bg-amber-500", "text-slate-950"));
+      event.target.classList.add("bg-amber-500", "text-slate-950");
+      const all = getTzaddikimData();
+      if (region === "all") {
+        renderTzaddikim(all);
+      } else {
+        renderTzaddikim(all.filter(t => (t.region && t.region.includes(region)) || (t.location && t.location.includes(region))));
+      }
+    }
+
+    function filterTzaddikimList() {
+      const q = (document.getElementById("tzaddik-search-input").value || "").trim().toLowerCase();
+      const all = getTzaddikimData();
+      const filtered = all.filter(t => !q || t.name.toLowerCase().includes(q) || t.location.toLowerCase().includes(q) || t.segula.toLowerCase().includes(q));
+      renderTzaddikim(filtered);
+    }
+
+    function openAddTzaddikModal() { openModal("modal-add-tzaddik"); }
+
+    function handleSaveTzaddik(e) {
+      e.preventDefault();
+      const name = document.getElementById("new-tzaddik-name").value.trim();
+      const location = document.getElementById("new-tzaddik-location").value.trim();
+      const region = document.getElementById("new-tzaddik-region").value;
+      const yahrzeit = document.getElementById("new-tzaddik-yahrzeit").value.trim() || "לא צוין תאריך";
+      const segula = document.getElementById("new-tzaddik-segula").value.trim() || "סגולה לישועה";
+      const waze = document.getElementById("new-tzaddik-waze").value.trim();
+
+      const newT = { id: "tzaddik_" + Date.now(), name, location, region, yahrzeit, segula, waze, desc: segula };
+      const list = getTzaddikimData();
+      list.unshift(newT);
+      localStorage.setItem(STORAGE_KEYS.TZADDIKIM, JSON.stringify(list));
+
+      closeModal("modal-add-tzaddik");
+      e.target.reset();
+      renderTzaddikim(getTzaddikimData());
+      toast("ציון הצדיק נוסף בהצלחה למפה!");
+    }
+
+    // Dynamic Siddur Prayer & Dynamic Sefaria
+    function updateSefariaLink(prayerKey, nusachKey) {
+      const link = document.getElementById("sefaria-live-link");
+      const linkText = document.getElementById("sefaria-link-btn-text");
+      const prayerUrls = SEFARIA_PRAYER_URLS[prayerKey] || SEFARIA_PRAYER_URLS.mazon;
+      const url = prayerUrls[nusachKey] || prayerUrls.mizrach;
+      const prayerTitle = PRAYERS_DATA[prayerKey]?.title || "תפילה";
+      if (link) link.href = url;
+      if (linkText) linkText.textContent = `פתח ${prayerTitle} בספריא (Sefaria)`;
+    }
+
+    function setNusach(nusachKey) {
+      currentNusach = nusachKey;
+      localStorage.setItem(STORAGE_KEYS.NUSACH, nusachKey);
+      document.querySelectorAll(".nusach-btn").forEach(b => {
+        b.className = "nusach-btn py-2.5 text-center rounded-xl text-xs font-black bg-slate-800 text-slate-300 hover:bg-slate-750 transition-all";
+      });
+      const activeBtn = document.getElementById("nusach-" + nusachKey);
+      if (activeBtn) activeBtn.className = "nusach-btn py-2.5 text-center rounded-xl text-xs font-black bg-amber-500 text-slate-950 transition-all";
+
+      const labelMap = { mizrach: "עדות המזרח", sefard: "ספרד (חסידי)", ashkenaz: "אשכנז", teiman: "תימן" };
+      document.getElementById("siddur-active-nusach-badge").textContent = labelMap[nusachKey] || "עדות המזרח";
+
+      updateSefariaLink(activePrayerKey, currentNusach);
+      renderSiddurDisplay();
+      toast(`הנוסח עודכן ל${labelMap[nusachKey]}`);
+    }
+
+    function openPrayerText(key) {
+      activePrayerKey = key;
+      updateSefariaLink(activePrayerKey, currentNusach);
+      renderSiddurDisplay();
+      const el = document.getElementById("siddur-display-card");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }
+
+    function renderSiddurDisplay() {
+      const prayer = PRAYERS_DATA[activePrayerKey] || PRAYERS_DATA.mazon;
+      document.getElementById("siddur-active-prayer-title").textContent = prayer.title;
+      const text = prayer.texts[currentNusach] || prayer.texts.mizrach;
+      const body = document.getElementById("siddur-text-body");
+      body.textContent = text;
+      body.style.fontSize = currentFontSize + "px";
+    }
+
+    function changeSiddurFontSize(delta) {
+      currentFontSize = Math.min(28, Math.max(13, currentFontSize + delta));
+      document.getElementById("font-size-indicator").textContent = currentFontSize + "px";
+      const body = document.getElementById("siddur-text-body");
+      if (body) body.style.fontSize = currentFontSize + "px";
+    }
+
+    function copyPrayerText() {
+      const text = document.getElementById("siddur-text-body").textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        toast("נוסח התפילה הועתק ללוח!");
+      }).catch(() => {
+        toast("הטקסט סומן להעתקה");
+      });
+    }
+
+    function detectUserOrientation() {
+      const txt = document.getElementById("compass-direction-text");
+      txt.textContent = "🧭 מכויל: 132° דרום-מזרח לכיוון ירושלים עיה״ק והכותל המערבי";
+      toast("המצפן כויל בהצלחה לכיוון ירושלים!");
+    }
+
+    function setSiddurTheme(theme) {
+      const card = document.getElementById("siddur-display-card");
+      card.className = "p-6 rounded-2xl border space-y-3 transition-colors duration-200 theme-" + theme;
+      localStorage.setItem(STORAGE_KEYS.THEME, theme);
+      toast(`מצב תצוגה שונה ל: ${theme === "sepia" ? "קלף עתיק" : theme === "day" ? "יום בהיר" : "לילה"}`);
+    }
+
+    // Feed / Reels
     function getLikesState() {
       const saved = localStorage.getItem(STORAGE_KEYS.LIKES);
       return saved ? JSON.parse(saved) : {};
@@ -1276,7 +1530,7 @@
             </button>
           </div>
 
-          <div class="relative w-full aspect-[9/14] sm:aspect-[9/12] bg-gradient-to-b from-slate-900 via-amber-950/20 to-black flex items-center justify-center overflow-hidden">
+          <div class="relative w-full aspect-[9/13] bg-gradient-to-b from-slate-900 via-amber-950/20 to-black flex items-center justify-center overflow-hidden">
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-900/30 via-slate-950 to-black opacity-80"></div>
             
             <button onclick="openVideoPlayer('${item.id}')" class="relative z-10 w-20 h-20 rounded-full bg-amber-500/90 hover:bg-amber-400 text-slate-950 flex items-center justify-center text-3xl font-black shadow-2xl shadow-amber-500/50 active:scale-95 transition-all">
@@ -1353,12 +1607,12 @@
       const r = document.getElementById("fmt-reel");
       const f = document.getElementById("fmt-full");
       if (fmt === "reel") {
-        r.className = "px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 transition-all";
-        f.className = "px-3 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:text-white transition-all";
+        r.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 transition-all";
+        f.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:text-white transition-all";
         toast("עברת לתצוגת רילס 9:16");
       } else {
-        f.className = "px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 transition-all";
-        r.className = "px-3 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:text-white transition-all";
+        f.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 transition-all";
+        r.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:text-white transition-all";
         toast("עברת לתצוגת פרקים מלאים (15-30 דקות)");
       }
     }
@@ -1371,8 +1625,7 @@
     }
 
     function openVideoPlayer(id) {
-      const item = DEFAULT_FEED.find(i => i.id === id);
-      if (!item) return;
+      const item = DEFAULT_FEED.find(i => i.id === id) || DEFAULT_FEED[0];
       openModal("modal-video-player");
       document.getElementById("video-modal-title").textContent = item.title;
       document.getElementById("video-modal-desc").textContent = item.quote + " - " + item.rashi;
@@ -1424,76 +1677,7 @@
       toast("תגובתך נוספה בהצלחה לסרטון!");
     }
 
-    function detectUserOrientation() {
-      const txt = document.getElementById("compass-direction-text");
-      txt.textContent = "🧭 מכויל: 132° דרום-מזרח לכיוון ירושלים עיה״ק והכותל המערבי";
-      toast("המצפן כויל בהצלחה לכיוון ירושלים!");
-    }
-
-    function setSiddurTheme(theme) {
-      const card = document.getElementById("siddur-display-card");
-      card.className = "p-5 rounded-2xl border space-y-3 transition-colors duration-200 theme-" + theme;
-      localStorage.setItem(STORAGE_KEYS.THEME, theme);
-      toast(`מצב תצוגה שונה ל: ${theme === "sepia" ? "קלף עתיק" : theme === "day" ? "יום בהיר" : "לילה"}`);
-    }
-
-    function setNusach(nusachKey) {
-      currentNusach = nusachKey;
-      localStorage.setItem(STORAGE_KEYS.NUSACH, nusachKey);
-      document.querySelectorAll(".nusach-btn").forEach(b => {
-        b.className = "nusach-btn py-2 text-center rounded-xl text-xs font-black bg-slate-800 text-slate-300 hover:bg-slate-750 transition-all";
-      });
-      const activeBtn = document.getElementById("nusach-" + nusachKey);
-      if (activeBtn) activeBtn.className = "nusach-btn py-2 text-center rounded-xl text-xs font-black bg-amber-500 text-slate-950 transition-all";
-
-      const labelMap = { mizrach: "עדות המזרח", sefard: "ספרד (חסידי)", ashkenaz: "אשכנז", teiman: "תימן" };
-      document.getElementById("siddur-active-nusach-badge").textContent = labelMap[nusachKey] || "עדות המזרח";
-
-      const sefariaMap = {
-        mizrach: "https://www.sefaria.org/Siddur_Edot_HaMizrach",
-        sefard: "https://www.sefaria.org/Siddur_Sefard",
-        ashkenaz: "https://www.sefaria.org/Siddur_Ashkenaz",
-        teiman: "https://www.sefaria.org/Siddur_Edot_HaMizrach"
-      };
-      const sefariaLink = document.getElementById("sefaria-live-link");
-      if (sefariaLink) sefariaLink.href = sefariaMap[nusachKey] || sefariaMap.mizrach;
-
-      renderSiddurDisplay();
-      toast(`הנוסח עודכן ל${labelMap[nusachKey]}`);
-    }
-
-    function openPrayerText(key) {
-      activePrayerKey = key;
-      renderSiddurDisplay();
-      const el = document.getElementById("siddur-display-card");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }
-
-    function renderSiddurDisplay() {
-      const prayer = PRAYERS_DATA[activePrayerKey] || PRAYERS_DATA.mazon;
-      document.getElementById("siddur-active-prayer-title").textContent = prayer.title;
-      const text = prayer.texts[currentNusach] || prayer.texts.mizrach;
-      const body = document.getElementById("siddur-text-body");
-      body.textContent = text;
-      body.style.fontSize = currentFontSize + "px";
-    }
-
-    function changeSiddurFontSize(delta) {
-      currentFontSize = Math.min(28, Math.max(13, currentFontSize + delta));
-      document.getElementById("font-size-indicator").textContent = currentFontSize + "px";
-      const body = document.getElementById("siddur-text-body");
-      if (body) body.style.fontSize = currentFontSize + "px";
-    }
-
-    function copyPrayerText() {
-      const text = document.getElementById("siddur-text-body").textContent;
-      navigator.clipboard.writeText(text).then(() => {
-        toast("נוסח התפילה הועתק ללוח!");
-      }).catch(() => {
-        toast("הטקסט סומן להעתקה");
-      });
-    }
-
+    // Minyanim
     function getMinyanimData() {
       const saved = localStorage.getItem(STORAGE_KEYS.MINYANIM);
       if (!saved) {
@@ -1580,6 +1764,7 @@
       toast("המניין נוסף בהצלחה למאגר!");
     }
 
+    // Rabbis
     function getRabbisData() {
       const saved = localStorage.getItem(STORAGE_KEYS.RABBIS);
       if (!saved) {
@@ -1674,74 +1859,7 @@
       toast("הרב נוסף בהצלחה לאינדקס!");
     }
 
-    function getTzaddikimData() {
-      const saved = localStorage.getItem(STORAGE_KEYS.TZADDIKIM);
-      if (!saved) {
-        localStorage.setItem(STORAGE_KEYS.TZADDIKIM, JSON.stringify(INITIAL_TZADDIKIM));
-        return INITIAL_TZADDIKIM;
-      }
-      try { return JSON.parse(saved); } catch (e) { return INITIAL_TZADDIKIM; }
-    }
-
-    function renderTzaddikim(list) {
-      const container = document.getElementById("tzaddikim-list-container");
-      if (!container) return;
-      container.innerHTML = list.map(item => `
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3 hover:border-amber-500/40 transition-all">
-          <div class="flex items-start justify-between">
-            <div>
-              <span class="text-[10px] font-black text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">📍 ${item.location}</span>
-              <h3 class="text-sm font-extrabold text-white mt-1">${item.name}</h3>
-            </div>
-            <div class="flex items-center gap-1">
-              <button onclick="openUniversalEditModal('tzaddik', '${item.id}')" title="שנה פרטים" class="p-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 rounded-lg text-xs font-bold border border-slate-700">✏️</button>
-              <button onclick="deleteUniversalItem('tzaddik', '${item.id}')" title="מחק" class="p-1.5 bg-slate-800 hover:bg-red-900/60 text-slate-400 hover:text-red-300 rounded-lg text-xs font-bold border border-slate-700">🗑️</button>
-            </div>
-          </div>
-          <div class="space-y-1.5 text-xs text-slate-300">
-            <p class="text-amber-300/90 font-medium text-[11px]">🕯️ <strong>הילולא:</strong> ${item.yahrzeit}</p>
-            <p class="text-slate-400 text-[11px] leading-relaxed">✨ <strong>סגולה:</strong> ${item.segula}</p>
-          </div>
-          <div class="flex items-center gap-2 pt-2 border-t border-slate-800/80">
-            <a href="https://waze.com/ul?q=${encodeURIComponent(item.waze || item.name)}" target="_blank" class="flex-1 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/10">
-              <span>🚙</span> <span>נווט ב-Waze</span>
-            </a>
-            <button onclick="switchTab('tehillim')" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl text-xs border border-slate-700">
-              📜 תהילים לציון
-            </button>
-          </div>
-        </div>
-      `).join("");
-    }
-
-    function filterTzaddikimList() {
-      const q = (document.getElementById("tzaddik-search-input").value || "").trim().toLowerCase();
-      const all = getTzaddikimData();
-      const filtered = all.filter(t => !q || t.name.toLowerCase().includes(q) || t.location.toLowerCase().includes(q) || t.segula.toLowerCase().includes(q));
-      renderTzaddikim(filtered);
-    }
-
-    function openAddTzaddikModal() { openModal("modal-add-tzaddik"); }
-
-    function handleSaveTzaddik(e) {
-      e.preventDefault();
-      const name = document.getElementById("new-tzaddik-name").value.trim();
-      const location = document.getElementById("new-tzaddik-location").value.trim();
-      const yahrzeit = document.getElementById("new-tzaddik-yahrzeit").value.trim() || "לא צוין תאריך";
-      const segula = document.getElementById("new-tzaddik-segula").value.trim() || "סגולה לישועה";
-      const waze = document.getElementById("new-tzaddik-waze").value.trim();
-
-      const newT = { id: "tzaddik_" + Date.now(), name, location, yahrzeit, segula, waze };
-      const list = getTzaddikimData();
-      list.unshift(newT);
-      localStorage.setItem(STORAGE_KEYS.TZADDIKIM, JSON.stringify(list));
-
-      closeModal("modal-add-tzaddik");
-      e.target.reset();
-      renderTzaddikim(getTzaddikimData());
-      toast("ציון הצדיק נוסף בהצלחה!");
-    }
-
+    // Gemachim
     function getGemachimData() {
       const saved = localStorage.getItem(STORAGE_KEYS.GEMACHIM);
       if (!saved) {
@@ -1810,6 +1928,7 @@
       toast("הגמ״ח נוסף בהצלחה!");
     }
 
+    // Mikvaot
     function getMikvaotData() {
       const saved = localStorage.getItem(STORAGE_KEYS.MIKVAOT);
       if (!saved) {
@@ -1877,6 +1996,7 @@
       toast("המקווה נוסף בהצלחה!");
     }
 
+    // Universal Edit & Delete
     function openUniversalEditModal(type, id) {
       let item = null;
       if (type === "rabbi") item = getRabbisData().find(i => i.id === id);
@@ -1891,7 +2011,7 @@
       document.getElementById("edit-item-id").value = id;
       document.getElementById("edit-item-title").value = item.name || "";
       document.getElementById("edit-item-location").value = item.city || item.location || "";
-      document.getElementById("edit-item-category").value = item.field || item.cat || item.type || item.nusach || "";
+      document.getElementById("edit-item-category").value = item.field || item.cat || item.type || item.nusach || item.region || "";
       document.getElementById("edit-item-phone").value = item.phone || "";
       document.getElementById("edit-item-address").value = item.address || item.waze || "";
       document.getElementById("edit-item-extra").value = item.hours || item.times || item.segula || item.yahrzeit || "";
@@ -1925,7 +2045,7 @@
       } else if (type === "tzaddik") {
         const list = getTzaddikimData();
         const target = list.find(i => i.id === id);
-        if (target) { Object.assign(target, { name: title, location: loc, yahrzeit: extra, segula: cat || extra, waze: address || title }); }
+        if (target) { Object.assign(target, { name: title, location: loc, region: cat, yahrzeit: extra, segula: extra, waze: address || title }); }
         localStorage.setItem(STORAGE_KEYS.TZADDIKIM, JSON.stringify(list));
         renderTzaddikim(list);
       } else if (type === "gemach") {
@@ -1982,6 +2102,7 @@
       toast("הפריט נמחק בהצלחה.");
     }
 
+    // Zmanim
     function renderZmanimForCity() {
       const cityKey = document.getElementById("zmanim-city-select").value;
       currentCity = cityKey;
@@ -2060,6 +2181,7 @@
       toast("הצ'קליסט אופס לקראת יום חדש של עבודת ה'!");
     }
 
+    // Tehillim & Prayers
     function renderTehillimChapter() {
       const select = document.getElementById("tehillim-chapter-select");
       const box = document.getElementById("tehillim-chapter-text");
@@ -2154,7 +2276,7 @@
     function copyFullSourceCode() {
       const fullHtml = document.documentElement.outerHTML;
       navigator.clipboard.writeText(fullHtml).then(() => {
-        toast("הקוד המלא הועתק ללוח! הדבק אותו ב-Bolt או GitHub");
+        toast("הקוד המלא הועתק ללוח! הדבק אותו ב-GitHub Pages");
       }).catch(() => {
         const textarea = document.getElementById("source-code-textarea");
         if (textarea) {
@@ -2219,6 +2341,8 @@
 
     window.addEventListener("DOMContentLoaded", () => {
       renderFeedCards(DEFAULT_FEED);
+      renderSeries(SERIES_LIBRARY);
+      renderJudaica(JUDAICA_PRODUCTS);
       initParashotOptions();
       setNusach(currentNusach);
       renderMinyanim(getMinyanimData());
@@ -2229,6 +2353,7 @@
       renderZmanimForCity();
       renderCheshbonNefesh();
       renderPrayerNames();
+      updateCartBadge();
 
       const textarea = document.getElementById("source-code-textarea");
       if (textarea) textarea.value = document.documentElement.outerHTML;
