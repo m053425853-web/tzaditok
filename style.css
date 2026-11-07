@@ -1,0 +1,112 @@
+/* ==========================================================================
+   צדיק-טוק (TzadikTok Super-App) - קובץ עיצוב ומיקומים (style.css)
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Heebo', sans-serif;
+  background: #070C18;
+  color: #F8FAFC;
+  padding-bottom: calc(6.5rem + env(safe-area-inset-bottom));
+  line-height: 1.6;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.view-section {
+  display: none;
+}
+
+.view-section.active {
+  display: block;
+  animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bottom-nav-item.active {
+  color: #F59E0B;
+}
+
+.bottom-nav-item.active .nav-icon-bg {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.4);
+  transform: translateY(-2px);
+}
+
+.pill-btn.active {
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: #07101F;
+  border-color: #F59E0B;
+  font-weight: 900;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #FDE68A 0%, #F59E0B 50%, #D97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.modal-backdrop {
+  background: rgba(3, 7, 18, 0.88);
+  backdrop-filter: blur(8px);
+}
+
+@keyframes ticker {
+  0% {
+    transform: translate3d(100%, 0, 0);
+  }
+  100% {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+.ticker-content {
+  animation: ticker 35s linear infinite;
+}
+
+.flame-anim {
+  animation: flicker 1.5s infinite alternate ease-in-out;
+}
+
+@keyframes flicker {
+  0% {
+    transform: scale(1) rotate(-1deg);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.08) rotate(1deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 8px #f59e0b);
+  }
+  100% {
+    transform: scale(0.96) rotate(-0.5deg);
+    opacity: 0.85;
+  }
+}
+
+.shabbat-blur {
+  filter: grayscale(80%);
+  pointer-events: none;
+}
