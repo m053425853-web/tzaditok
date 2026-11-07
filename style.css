@@ -11,8 +11,9 @@ body {
   font-family: 'Heebo', sans-serif;
   background: #070C18;
   color: #F8FAFC;
-  padding-bottom: calc(6.5rem + env(safe-area-inset-bottom));
-  line-height: 1.6;
+  padding-bottom: calc(5.2rem + env(safe-area-inset-bottom));
+  line-height: 1.5;
+  overflow-x: hidden;
 }
 
 .hide-scrollbar::-webkit-scrollbar {
@@ -30,13 +31,13 @@ body {
 
 .view-section.active {
   display: block;
-  animation: fadeIn 0.25s ease-out;
+  animation: fadeIn 0.2s ease-out;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
@@ -44,13 +45,19 @@ body {
   }
 }
 
+.bottom-nav-item {
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+}
+
 .bottom-nav-item.active {
-  color: #F59E0B;
+  color: #F59E0B !important;
 }
 
 .bottom-nav-item.active .nav-icon-bg {
-  background: rgba(245, 158, 11, 0.15);
-  border-color: rgba(245, 158, 11, 0.4);
+  background: rgba(245, 158, 11, 0.2);
+  border-color: rgba(245, 158, 11, 0.5);
   transform: translateY(-2px);
 }
 
@@ -69,8 +76,8 @@ body {
 }
 
 .modal-backdrop {
-  background: rgba(3, 7, 18, 0.88);
-  backdrop-filter: blur(8px);
+  background: rgba(3, 7, 18, 0.92);
+  backdrop-filter: blur(10px);
 }
 
 @keyframes ticker {
@@ -106,7 +113,11 @@ body {
   }
 }
 
-.shabbat-blur {
-  filter: grayscale(80%);
-  pointer-events: none;
+/* Edge-to-Edge Full Mobile Video Card */
+@media (max-width: 640px) {
+  .mobile-full-bleed {
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
+    border-radius: 1.25rem;
+  }
 }

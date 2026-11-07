@@ -126,26 +126,26 @@
   </header>
 
   <!-- Main Content Container -->
-  <main class="max-w-6xl mx-auto px-4 py-4">
+  <main class="max-w-6xl mx-auto px-3 sm:px-4 py-3">
 
     <!-- 1. VERTICAL REELS FEED (9:16) + FEATURE OF THE WEEK -->
     <section id="view-feed" class="view-section active space-y-5">
       
-      <!-- Feature of the Week Banner (Spec Section 2) -->
-      <div class="bg-gradient-to-r from-amber-950/60 via-slate-900 to-slate-900 border border-amber-500/30 p-4 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xl">
-        <div class="flex items-center gap-3">
-          <span class="px-2.5 py-1 bg-amber-500 text-slate-950 font-black rounded-xl text-xs shrink-0">⭐ סדרת השבוע</span>
+      <!-- Feature of the Week + Intro Video Button -->
+      <div class="bg-gradient-to-r from-amber-950/60 via-slate-900 to-slate-900 border border-amber-500/30 p-3.5 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xl">
+        <div class="flex items-center gap-2.5">
+          <span class="px-2.5 py-1 bg-amber-500 text-slate-950 font-black rounded-xl text-[11px] shrink-0">⭐ סדרת השבוע</span>
           <div>
-            <h2 class="text-sm sm:text-base font-black text-white">יוסף הצדיק • שליט על מצרים (10 פרקים)</h2>
-            <p class="text-xs text-slate-300">מותאם לפרשיות ספר בראשית • 100% כיסוי ראש מלא • מבוסס על מדרשי חז״ל ורש״י</p>
+            <h2 class="text-sm font-black text-white">יוסף הצדיק • שליט על מצרים (10 פרקים)</h2>
+            <p class="text-[11px] text-slate-300">מותאם לפרשת השבוע • מבוסס על מדרשי חז״ל ורש״י</p>
           </div>
         </div>
         <div class="flex items-center gap-2 w-full sm:w-auto">
-          <button onclick="openSeriesEpisodes('s_joseph')" class="flex-1 sm:flex-initial px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs transition-all">
-            📺 מעבר לפרק המלא (25 דק')
+          <button onclick="openIntroModal()" class="flex-1 sm:flex-initial px-3 py-2 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 font-black rounded-xl text-xs">
+            👋 סרטון היכרות
           </button>
-          <button onclick="openRashiDrawer('joseph')" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 font-bold rounded-xl text-xs">
-            📖 פניני רש״י
+          <button onclick="openSeriesEpisodes('s_joseph')" class="flex-1 sm:flex-initial px-3.5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs">
+            📺 לפרק המלא
           </button>
         </div>
       </div>
@@ -170,6 +170,11 @@
 
     <!-- 2. 9 HISTORICAL SERIES LIBRARY + 200 CHARACTER BIBLE -->
     <section id="view-series" class="view-section space-y-5">
+      <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-1 text-xs font-bold">
+        <button onclick="switchTab('series')" class="px-4 py-2 rounded-xl bg-amber-500 text-slate-950 shrink-0">📚 סדרות ההיסטוריה (9)</button>
+        <button onclick="switchTab('music')" class="px-4 py-2 rounded-xl bg-slate-800 text-amber-300 border border-amber-500/40 shrink-0">🎵 היכל המוזיקה והניגונים (8)</button>
+        <button onclick="openAiStudioModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-cyan-300 border border-cyan-500/40 shrink-0">🎬 יוצר הסרטים ב-AI</button>
+      </div>
       <div class="bg-gradient-to-r from-amber-950/40 via-slate-900 to-slate-900 p-5 rounded-3xl border border-amber-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <span class="text-[10px] font-black text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/30">ספריית ההיסטוריה היהודית ב-AI</span>
@@ -220,6 +225,7 @@
         <button onclick="switchTab('tzaddikim')" class="px-3.5 py-2 rounded-xl bg-slate-800 text-amber-300 border border-slate-700 shrink-0">🕯️ קברי צדיקים (22)</button>
         <button onclick="switchTab('rabbis')" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-200 border border-slate-700 shrink-0">📜 קו הלכה ורבנים</button>
         <button onclick="switchTab('customs')" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-200 border border-slate-700 shrink-0">🕎 מנהגים ושירותים</button>
+        <button onclick="switchTab('music')" class="px-3.5 py-2 rounded-xl bg-slate-800 text-amber-300 border border-amber-500/40 shrink-0">🎵 היכל המוזיקה והניגונים</button>
       </div>
       <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-4">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
@@ -459,19 +465,53 @@
       </div>
     </section>
 
-  </main>
+  
+    <!-- 16. DEDICATED MUSIC & NIGGUNIM HUB (היכל המוזיקה והניגונים) -->
+    <section id="view-music" class="view-section space-y-5">
+      <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-1 text-xs font-bold">
+        <button onclick="switchTab('series')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 border border-slate-700 shrink-0">📚 חזרה לסדרות הספרייה</button>
+        <button onclick="switchTab('music')" class="px-4 py-2 rounded-xl bg-amber-500 text-slate-950 shrink-0">🎵 היכל המוזיקה והניגונים</button>
+      </div>
 
-  <!-- Floating Mini Niggunim Player (Spec Section 2) -->
-  <div class="fixed bottom-16 md:bottom-4 left-4 z-30 bg-slate-900/95 backdrop-blur-md border border-amber-500/40 rounded-2xl px-3.5 py-2 shadow-2xl flex items-center gap-3">
-    <button onclick="toggleNiggunPlayer()" id="niggun-play-btn" class="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 font-black flex items-center justify-center text-xs shadow">
-      🎵
-    </button>
-    <div class="text-right">
-      <span id="niggun-title" class="text-[11px] font-bold text-white block">ניגון ארבע בבות • חב״ד</span>
-      <span id="niggun-status" class="text-[9px] text-amber-400 block">נגן ניגונים ופסקול קודש</span>
-    </div>
-    <button onclick="nextNiggunTrack()" title="הניגון הבא" class="text-xs text-slate-400 hover:text-white px-1">⏮</button>
-  </div>
+      <div class="bg-gradient-to-r from-amber-950/50 via-slate-900 to-slate-900 border border-amber-500/40 p-5 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <span class="text-[10px] font-black text-amber-400 bg-amber-500/15 px-2.5 py-0.5 rounded-full border border-amber-500/30">היכל הנגינה והפסקול היהודי</span>
+          <h2 class="text-xl font-black text-white mt-1">🎵 ספריית מוזיקה, ניגוני קודש ופיוטים</h2>
+          <p class="text-xs text-slate-300">ניגוני חב״ד ודבקות, שמחה וברסלב, פיוטי עדות המזרח ותימן, ופסי הקול המקוריים של סדרות התנ״ך.</p>
+        </div>
+        <button onclick="openUploadMusicModal()" class="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black rounded-xl text-xs shrink-0 shadow-lg">
+          ➕ העלאת ניגון / שיר חדש
+        </button>
+      </div>
+
+      <!-- Now Playing Bar inside Music Page -->
+      <div class="bg-slate-950 border border-amber-500/40 p-4 rounded-2xl flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500 text-slate-950 font-black flex items-center justify-center text-lg">🎵</div>
+          <div>
+            <span class="text-[10px] text-amber-400 font-bold block">מתנגן כעת בהיכל המוזיקה:</span>
+            <h4 id="music-now-playing-title" class="text-sm font-black text-white">ניגון ארבע בבות • התוועדות חב״ד</h4>
+            <p id="music-now-playing-artist" class="text-xs text-slate-400">היכל הנגינה החסידי • חב״ד ודבקות</p>
+          </div>
+        </div>
+        <button onclick="toast('הניגון מושמע ברקע')" class="px-3.5 py-1.5 bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-xl text-xs font-bold">
+          🔊 פועל
+        </button>
+      </div>
+
+      <!-- Music Categories Filter -->
+      <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar py-1 text-xs">
+        <button onclick="filterMusicCategory('all')" class="music-cat-btn active px-3.5 py-1.5 rounded-xl font-bold bg-amber-500 text-slate-950 shrink-0">כל הניגונים (8)</button>
+        <button onclick="filterMusicCategory('חב״ד ודבקות')" class="music-cat-btn px-3.5 py-1.5 rounded-xl font-bold bg-slate-800 text-slate-300 shrink-0">חב״ד ודבקות</button>
+        <button onclick="filterMusicCategory('שמחה וברסלב')" class="music-cat-btn px-3.5 py-1.5 rounded-xl font-bold bg-slate-800 text-slate-300 shrink-0">שמחה וברסלב</button>
+        <button onclick="filterMusicCategory('פיוטים ובקשות')" class="music-cat-btn px-3.5 py-1.5 rounded-xl font-bold bg-slate-800 text-slate-300 shrink-0">פיוטים ובקשות</button>
+        <button onclick="filterMusicCategory('פסקול מקראי')" class="music-cat-btn px-3.5 py-1.5 rounded-xl font-bold bg-slate-800 text-slate-300 shrink-0">פסקול מקראי</button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="music-grid-container"></div>
+    </section>
+
+  </main>
 
   <!-- Mobile Bottom Navigation Bar (5 Core Pillars + Super-App Drawer) -->
   <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#070C18]/95 backdrop-blur-xl border-t border-slate-800 px-2 py-1.5 flex items-center justify-around shadow-2xl">
@@ -509,6 +549,7 @@
         <button onclick="closeModal('modal-super-drawer')" class="text-slate-400 hover:text-white text-lg">✕</button>
       </div>
       <div class="grid grid-cols-3 sm:grid-cols-4 gap-2.5 text-xs">
+        <button onclick="selectDrawerTab('music')" class="p-3 bg-slate-950 hover:bg-slate-800 border border-amber-500/40 rounded-2xl flex flex-col items-center gap-1.5 text-center"><span class="text-2xl">🎵</span><span class="font-bold text-amber-300">היכל המוזיקה</span></button>
         <button onclick="selectDrawerTab('judaica')" class="p-3 bg-slate-950 hover:bg-slate-800 border border-amber-500/30 rounded-2xl flex flex-col items-center gap-1.5 text-center">
           <span class="text-2xl">🛍️</span><span class="font-bold text-amber-300">חנות יודאיקה</span>
         </button>
@@ -787,6 +828,69 @@
       </div>
       <button onclick="closeModal('modal-user-profile'); toast('הגדרות הפרופיל נשמרו בהצלחה! 👤');" class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black rounded-xl text-xs shadow-lg">
         💾 שמור הגדרות אישיות
+      </button>
+    </div>
+  </div>
+
+  
+  <!-- 12. Welcome Intro Video Modal (סרטון היכרות קופץ בכניסה) -->
+  <div id="modal-intro-welcome" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border-2 border-amber-500/50 rounded-3xl max-w-md w-full overflow-hidden shadow-2xl">
+      <div class="relative h-56 bg-slate-950 flex items-center justify-center overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover opacity-65">
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-black/40 to-transparent"></div>
+        <button onclick="toast('מנגן סרטון היכרות רשמי של צדיק-טוק! 🎬')" class="relative z-10 w-16 h-16 rounded-full bg-amber-500 text-slate-950 text-2xl font-black flex items-center justify-center shadow-2xl animate-pulse">
+          ▶
+        </button>
+        <span class="absolute top-3 right-3 px-3 py-1 bg-amber-500 text-slate-950 font-black rounded-full text-xs">ברוכים הבאים לצדיק-טוק ✨</span>
+      </div>
+      <div class="p-5 text-center space-y-3">
+        <h3 class="text-xl font-black gold-gradient-text">הכירו את צדיק-טוק בדקה אחת</h3>
+        <p class="text-xs text-slate-300 leading-relaxed">
+          הפלטפורמה היהודית המאגדת סדרות תנ״ך והיסטוריה ב-AI, סידור תפילה, מקוואות, מסעדות כשרות בסביבה, קברי צדיקים והיכל מוזיקה וניגונים.
+        </p>
+        <div class="flex flex-col gap-2 pt-2">
+          <button onclick="closeIntroModal(true)" class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black rounded-xl text-xs shadow-lg">
+            🚀 כנס לאפליקציה (אל תציג שוב)
+          </button>
+          <button onclick="closeIntroModal(false)" class="w-full py-2 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">
+            סגור לעכשיו
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 13. Upload New Music / Niggun Modal -->
+  <div id="modal-upload-music" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-amber-500/40 rounded-3xl max-w-md w-full p-6 space-y-4 relative shadow-2xl">
+      <button onclick="closeModal('modal-upload-music')" class="absolute top-4 left-4 text-slate-400 hover:text-white text-lg">✕</button>
+      <h3 class="text-lg font-black text-white">🎵 העלאת ניגון או שיר קודש לספרייה</h3>
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-300 font-bold mb-1">שם הניגון / הפיוט:</label>
+          <input type="text" id="new-music-title" placeholder="לדוגמה: ניגון שמחה והתעוררות..." class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white">
+        </div>
+        <div>
+          <label class="block text-slate-300 font-bold mb-1">שם המבצע / החסידות:</label>
+          <input type="text" id="new-music-artist" placeholder="לדוגמה: בעל המנגן..." class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white">
+        </div>
+        <div>
+          <label class="block text-slate-300 font-bold mb-1">סוג המוזיקה:</label>
+          <select id="new-music-cat" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white">
+            <option value="חב״ד ודבקות">חב״ד ודבקות</option>
+            <option value="שמחה וברסלב">שמחה וברסלב</option>
+            <option value="פיוטים ובקשות">פיוטים ובקשות</option>
+            <option value="פסקול מקראי">פסקול מקראי</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-slate-300 font-bold mb-1">תיאור קצר על הניגון:</label>
+          <textarea id="new-music-desc" rows="2" placeholder="ספר בקצרה על מקור הניגון או מעלתו..." class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white"></textarea>
+        </div>
+      </div>
+      <button onclick="saveUploadedMusic()" class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black rounded-xl text-xs shadow-lg">
+        ➕ הוסף להיכל המוזיקה
       </button>
     </div>
   </div>

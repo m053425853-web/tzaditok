@@ -1,9 +1,8 @@
 /* ==========================================================================
    צדיק-טוק (TzadikTok Super-App) - מאגרי הנתונים והתוכן (data.js)
-   כל הסדרות, הרילס, המקוואות, המסעדות, הצדיקים, הגמ"חים, חב"ד, יודאיקה ותפילות
    ========================================================================== */
 
-const REEL_FEED = [
+window.REEL_FEED = [
   {
     "id": "joseph",
     "category": "tanach",
@@ -108,7 +107,7 @@ const REEL_FEED = [
   }
 ];
 
-const SERIES_LIBRARY = [
+window.SERIES_LIBRARY = [
   {
     "id": "s_joseph",
     "title": "יוסף הצדיק • שליט מצרים",
@@ -534,7 +533,74 @@ const SERIES_LIBRARY = [
   }
 ];
 
-const JUDAICA_PRODUCTS = [
+window.MUSIC_LIBRARY = [
+  {
+    "id": "m1",
+    "title": "ניגון ארבע בבות • התוועדות חב״ד",
+    "artist": "היכל הנגינה החסידי",
+    "duration": "4:15",
+    "category": "חב״ד ודבקות",
+    "desc": "ניגון הדבקות המפורסם של אדמו״ר הזקן מייסד חסידות חב״ד, מנוגן ברגש עמוק."
+  },
+  {
+    "id": "m2",
+    "title": "שירת הבור והגאולה • פסקול סדרת יוסף הצדיק",
+    "artist": "תזמורת צדיק-טוק",
+    "duration": "3:40",
+    "category": "פסקול מקראי",
+    "desc": "כינורות וכלי מיתר המלווים את ירידת יוסף למצרים ועלייתו למלוכה."
+  },
+  {
+    "id": "m3",
+    "title": "מצווה גדולה להיות בשמחה • ניגוני אומן",
+    "artist": "חבורת ברסלב",
+    "duration": "3:10",
+    "category": "שמחה וברסלב",
+    "desc": "ניגון התעוררות ושמחה הפותח את הלבבות ומגרש כל עצבות."
+  },
+  {
+    "id": "m4",
+    "title": "פיוט ידיד נפש • מסורת עדות המזרח וירושלים",
+    "artist": "הפייטן הירושלמי",
+    "duration": "5:05",
+    "category": "פיוטים ובקשות",
+    "desc": "פיוט כמיהה וכיסופים לקבלת שבת ולסעודה שלישית במקאם חג'אז."
+  },
+  {
+    "id": "m5",
+    "title": "כינורו של דוד בחצות לילה • נעימות הר הבית",
+    "artist": "אנסמבל עיר דוד",
+    "duration": "4:50",
+    "category": "פסקול מקראי",
+    "desc": "נעימת נבל וכינור עתיקה בהשראת מזמורי ספר תהילים של דוד המלך."
+  },
+  {
+    "id": "m6",
+    "title": "ניגון הבעל שם טוב • אש הרי הקרפטים",
+    "artist": "תזמורת מעיינות החסידות",
+    "duration": "6:12",
+    "category": "חב״ד ודבקות",
+    "desc": "ניגון ללא מילים המעלה את הנשמה להיכלות הקדושה והתפילה."
+  },
+  {
+    "id": "m7",
+    "title": "אודה לאל לבב חוקר • שירת יהדות תימן",
+    "artist": "מקהלת שירת הדיוואן",
+    "duration": "4:25",
+    "category": "פיוטים ובקשות",
+    "desc": "שירה תימנית אותנטית בהגייה מדויקת מתוך ספר הדיוואן העתיק."
+  },
+  {
+    "id": "m8",
+    "title": "בר יוחאי נמשחת אשריך • ניגוני הילולא דמירון",
+    "artist": "כליזמרים בגליל",
+    "duration": "3:55",
+    "category": "שמחה וברסלב",
+    "desc": "ניגון השמחה המסורתי מחצר ציון רשב״י במירון בל״ג בעומר."
+  }
+];
+
+window.JUDAICA_PRODUCTS = [
   {
     "id": "p_tefillin",
     "name": "תפילין מהודרות 'כתר מלכות'",
@@ -657,7 +723,7 @@ const JUDAICA_PRODUCTS = [
   }
 ];
 
-const TZADDIKIM_DATA = [
+window.TZADDIKIM_DATA = [
   {
     "id": "t1",
     "name": "הכותל המערבי",
@@ -924,7 +990,7 @@ const TZADDIKIM_DATA = [
   }
 ];
 
-const MIKVAOT_DATA = [
+window.MIKVAOT_DATA = [
   {
     "id": "m_bb_men",
     "name": "מקווה גברים בני ברק רבי עקיבא",
@@ -983,7 +1049,7 @@ const MIKVAOT_DATA = [
   }
 ];
 
-const RESTAURANTS_DATA = [
+window.RESTAURANTS_DATA = [
   {
     "id": "r1",
     "name": "פלאפל כשר מהדרין בני ברק",
@@ -1094,7 +1160,7 @@ const RESTAURANTS_DATA = [
   }
 ];
 
-const MINYANIM_DATA = [
+window.MINYANIM_DATA = [
   {
     "id": "m1",
     "name": "שטיבלאך איצקוביץ׳",
@@ -1157,7 +1223,7 @@ const MINYANIM_DATA = [
   }
 ];
 
-const GEMACHIM_DATA = [
+window.GEMACHIM_DATA = [
   {
     "id": "g1",
     "name": "עזר מציון • מוקד השאלת ציוד רפואי וחמצן",
@@ -1214,7 +1280,7 @@ const GEMACHIM_DATA = [
   }
 ];
 
-const CHABAD_DATA = [
+window.CHABAD_DATA = [
   {
     "id": "ch1",
     "name": "בית חב״ד המרכזי בנגקוק • תאילנד",
@@ -1261,7 +1327,7 @@ const CHABAD_DATA = [
   }
 ];
 
-const RAFFLES_DATA = [
+window.RAFFLES_DATA = [
   {
     "id": "raf1",
     "title": "הגרלה על הכנסת ספר תורה מהודר לעילוי נשמת יקיריכם",
@@ -1306,7 +1372,7 @@ const RAFFLES_DATA = [
   }
 ];
 
-const DONORS_DATA = [
+window.DONORS_DATA = [
   {
     "tier": "פרנס החודש",
     "name": "משפחת ביטון הי״ו (ירושלים)",
@@ -1333,38 +1399,7 @@ const DONORS_DATA = [
   }
 ];
 
-const NIGGUNIM_DATA = [
-  {
-    "id": "n1",
-    "title": "ניגון ארבע בבות • חב״ד",
-    "artist": "היכל הנגינה החסידי",
-    "duration": "4:15",
-    "category": "דבקות וחב״ד"
-  },
-  {
-    "id": "n2",
-    "title": "שירת הבור והגאולה • פסקול סדרת יוסף הצדיק",
-    "artist": "תזמורת צדיק-טוק",
-    "duration": "3:40",
-    "category": "פסקול מקראי"
-  },
-  {
-    "id": "n3",
-    "title": "מצווה גדולה להיות בשמחה • ניגון ברסלב",
-    "artist": "חבורת אומן",
-    "duration": "3:10",
-    "category": "שמחה וריקוד"
-  },
-  {
-    "id": "n4",
-    "title": "פיוט ידיד נפש • מסורת עדות המזרח",
-    "artist": "הפייטן הירושלמי",
-    "duration": "5:05",
-    "category": "פיוטים ושבת"
-  }
-];
-
-const VOICES_DATA = [
+window.VOICES_DATA = [
   {
     "id": "v1",
     "name": "קול המספר המקראי (The Epic Narrator)",
@@ -1397,7 +1432,7 @@ const VOICES_DATA = [
   }
 ];
 
-const CAMPAIGNS_DATA = [
+window.CAMPAIGNS_DATA = [
   {
     "id": "c_joseph",
     "title": "הפקת סדרת יוסף הצדיק ב-AI (עונה 1)",
@@ -1433,7 +1468,7 @@ const CAMPAIGNS_DATA = [
   }
 ];
 
-const RABBIS_DATA = [
+window.RABBIS_DATA = [
   {
     "id": "r1",
     "name": "בית הוראה בני ברק - הגר״ש רוזנברג",
@@ -1501,7 +1536,7 @@ const RABBIS_DATA = [
   }
 ];
 
-const CUSTOMS_DATA = [
+window.CUSTOMS_DATA = [
   {
     "name": "ספרד ועדות המזרח",
     "desc": "סדר ליל הסדר, פיוטי הבקשות, סליחות מחודש אלול, תפילת ברוך שאמר בקדושה."
@@ -1528,7 +1563,7 @@ const CUSTOMS_DATA = [
   }
 ];
 
-const SERVICES_DATA = [
+window.SERVICES_DATA = [
   {
     "icon": "👶",
     "title": "מוהל מומחה",
@@ -1571,7 +1606,7 @@ const SERVICES_DATA = [
   }
 ];
 
-const PRAYERS_DATA = {
+window.PRAYERS_DATA = {
   "shacharit": {
     "title": "תפילת שחרית",
     "texts": {
@@ -1646,7 +1681,7 @@ const PRAYERS_DATA = {
   }
 };
 
-const DEFAULT_MITZVOT_DATA = [
+window.DEFAULT_MITZVOT_DATA = [
   {
     "id": "m1",
     "title": "הנחת תפילין וקריאת שמע",
