@@ -1,37 +1,35 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl" class="dark">
 <head>
-<header class="main-header">
-  <div class="header-top" style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
-    <!-- לוגו בצד ימין -->
-    <div class="logo" style="font-size: 24px; font-weight: bold; color: #e6b95c;">צדיק-טוק ⭐</div>
-    
-    <!-- כפתור התפריט (המבורגר) -->
-    <button onclick="window.toggleSidebar()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">☰</button>
-  </div>
-  
-  <!-- שורה שניה של כפתורים -->
-  <div class="header-bottom" style="display: flex; justify-content: space-around; padding: 10px; background: #2a3654; gap: 10px;">
-    <button onclick="window.toggleSearch()" style="background: #1a2238; color: white; border: 1px solid #e6b95c; border-radius: 20px; padding: 5px 15px; cursor: pointer;">🔍 חיפוש</button>
-    <button onclick="window.toggleShabbatMode()" style="background: #1a2238; color: white; border: 1px solid #e6b95c; border-radius: 20px; padding: 5px 15px; cursor: pointer;">🕯️ מצב שבת</button>
-    <button onclick="window.openProfileModal()" style="background: #1a2238; color: white; border: 1px solid #e6b95c; border-radius: 20px; padding: 5px 15px; cursor: pointer;">👤 התחברות</button>
-  </div>
-</header>
-
-<!-- תפריט צד (Hidden by default) -->
-<div id="sideMenu" class="sidebar hidden" style="position: fixed; top: 0; right: 0; width: 250px; height: 100vh; background: #1a2238; color: white; z-index: 1000; transition: transform 0.3s; box-shadow: -2px 0 10px rgba(0,0,0,0.5); transform: translateX(100%);">
-  <div class="sidebar-header" style="display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #2a3654;">
-    <h3>תפריט</h3>
-    <button onclick="window.toggleSidebar()" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">✖</button>
-  </div>
-  <ul class="sidebar-list" style="list-style: none; padding: 0; margin: 0;">
-    <li><a href="#home" style="display: block; padding: 15px; color: white; text-decoration: none; border-bottom: 1px solid #2a3654;">🏠 דף הבית</a></li>
-    <li><a href="#learn" style="display: block; padding: 15px; color: white; text-decoration: none; border-bottom: 1px solid #2a3654;">📚 ללמוד</a></li>
-    <li><a href="#pray" style="display: block; padding: 15px; color: white; text-decoration: none; border-bottom: 1px solid #2a3654;">🙏 להתפלל</a></li>
-    <li><a href="#find" style="display: block; padding: 15px; color: white; text-decoration: none; border-bottom: 1px solid #2a3654;">📍 למצוא</a></li>
-    <li><a href="#profile" style="display: block; padding: 15px; color: white; text-decoration: none; border-bottom: 1px solid #2a3654;">👤 האזור האישי</a></li>
-  </ul>
-</div>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>צדיק-טוק (TzadikTok Super-App) | הפלטפורמה היהודית העולמית</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Heebo', 'sans-serif'] },
+          colors: {
+            brand: {
+              gold: '#F59E0B',
+              darkGold: '#D97706',
+              lightGold: '#FDE68A',
+              cyan: '#00E5FF',
+              navy: '#070C18',
+              card: '#0D1527',
+              border: '#1E293B'
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body class="min-h-screen select-none">
 
