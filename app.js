@@ -14,7 +14,7 @@ window.switchTab = function(tabId) {
   if (tabId === "learn") tabId = "series";
   if (tabId === "pray") tabId = "siddur";
   if (tabId === "find") tabId = "chabad";
-  if (tabId === "givebuy") tabId = "donate";
+  if (tabId === "givebuy" || tabId === "donate") tabId = "raffles";
 
   currentTab = tabId;
   var sections = document.querySelectorAll(".view-section");
@@ -25,25 +25,24 @@ window.switchTab = function(tabId) {
   if (target) target.classList.add("active");
 
   var parentHub = tabId;
-  if (["series"].indexOf(tabId) !== -1) parentHub = "series";
+  if (["series", "kids", "live", "forum"].indexOf(tabId) !== -1) parentHub = "series";
   else if (["siddur", "minyanim", "rabbis"].indexOf(tabId) !== -1) parentHub = "siddur";
-  else if (["chabad", "mikvaot", "restaurants", "tzaddikim", "gemachim"].indexOf(tabId) !== -1) parentHub = "find";
+  else if (["chabad", "mikvaot", "restaurants", "tzaddikim", "gemachim", "customs", "zmanim"].indexOf(tabId) !== -1) parentHub = "find";
   else if (["donate", "judaica", "raffles", "donors"].indexOf(tabId) !== -1) parentHub = "givebuy";
-  else if (["myzone"].indexOf(tabId) !== -1) parentHub = "myzone";
   else if (["feed"].indexOf(tabId) !== -1) parentHub = "feed";
 
   var pills = document.querySelectorAll(".pill-btn");
   for (var j = 0; j < pills.length; j++) {
     pills[j].classList.remove("active");
   }
-  var activePill = document.getElementById("pill-" + parentHub) || document.getElementById("pill-" + tabId);
+  var activePill = document.getElementById("pill-" + tabId) || document.getElementById("pill-" + parentHub);
   if (activePill) activePill.classList.add("active");
 
   var bnavs = document.querySelectorAll(".bottom-nav-item");
   for (var k = 0; k < bnavs.length; k++) {
     bnavs[k].classList.remove("active");
   }
-  var activeBNav = document.getElementById("bnav-" + parentHub) || document.getElementById("bnav-" + tabId);
+  var activeBNav = document.getElementById("bnav-" + parentHub);
   if (activeBNav) activeBNav.classList.add("active");
 
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -208,7 +207,7 @@ window.switchRashiTab = function(t) {
 // 2. הספרייה המרכזית (Library): תורה (54 פרשיות) | נביאים וכתובים | היסטוריה ודורות | סדרות AI
 // ============================================================================
 window.switchLibrarySubTab = function(subId) {
-  ["weekseries", "music", "torah", "nach", "generations", "aiseries"].forEach(function(k) {
+  ["weekseries", "music", "torah", "nach", "generations", "aiseries", "eduvideos"].forEach(function(k) {
     var box = document.getElementById("lib-sub-" + k);
     var btn = document.getElementById("lib-btn-" + k);
     if (box) {
@@ -1250,7 +1249,7 @@ window.renderFullDonorsPage = function() {
 
 // האזור שלי (My Zone): שמורים, היסטוריה, יארצייטים אישיים, הגדרות
 window.switchMyZoneSubTab = function(subTab) {
-  ["saved", "history", "yahrzeits", "submissions", "settings"].forEach(function(k) {
+  ["tracker", "quizresults", "saved", "history", "yahrzeits", "submissions", "settings"].forEach(function(k) {
     var box = document.getElementById("myzone-sub-" + k);
     var btn = document.getElementById("myzone-btn-" + k);
     if (box) {
@@ -2282,4 +2281,428 @@ window.refreshAllCommunityViews = function() {
   window.renderYahrzeitSharedCards("tzaddikim-yahrzeits-container");
   window.renderYahrzeitSharedCards("zmanim-yahrzeits-container");
   window.renderMySubmissionsList();
+  window.filterEduVideos('all');
+  window.renderActiveQuizQuestion();
+  window.renderQuizResultsInMyZone();
+  window.renderForumPosts('all');
+  window.renderReligiousServicesDirectory('all');
+  window.renderMyZoneMitzvahTracker();
+};
+
+
+
+window.handleGlobalSearch = function(e) {
+  var inp = document.getElementById("home-search-input");
+  var q = (inp ? inp.value : "").trim().toLowerCase();
+  if (!q) return;
+  if (!e || e.key === "Enter") {
+    if (q.includes("מקווה") || q.includes("טבילה")) window.switchTab("mikvaot");
+    else if (q.includes("מסעד") || q.includes("אוכל") || q.includes("כשר")) window.switchTab("restaurants");
+    else if (q.includes("גמח") || q.includes("גמ״ח") || q.includes("יד שרה") || q.includes("עזר")) window.switchTab("gemachim");
+    else if (q.includes("חבד") || q.includes("חב״ד") || q.includes("שליח")) window.switchTab("chabad");
+    else if (q.includes("הגרל") || q.includes("קמפיין") || q.includes("תרומ")) window.switchTab("raffles");
+    else if (q.includes("סידור") || q.includes("תפיל") || q.includes("שחרית")) window.switchTab("siddur");
+    else if (q.includes("צדיק") || q.includes("קבר") || q.includes("מירון")) window.switchTab("tzaddikim");
+    else if (q.includes("מניין") || q.includes("מנין")) window.switchTab("minyanim");
+    else if (q.includes("מוהל") || q.includes("משגיח") || q.includes("חתן") || q.includes("שירות")) window.switchTab("customs");
+    else if (q.includes("חידון") || q.includes("משחק") || q.includes("ילד")) window.switchTab("kids");
+    else if (q.includes("פורום") || q.includes("דיון")) window.switchTab("forum");
+    else if (q.includes("חי") || q.includes("שידור")) window.switchTab("live");
+    else if (q.includes("ספרי") || q.includes("חומש") || q.includes("פרש") || q.includes("נביא") || q.includes("למוד")) window.switchTab("series");
+    else window.toast("חיפוש מהיר עבור: " + q);
+  }
+};
+
+// ============================================================================
+// V22 ENGINE: סרטונים חינוכיים מיוטיוב, חידונים לילדים, פורום קהילתי, שירותי דת, ומעקב יומי עם נודניק
+// ============================================================================
+
+var activeEduCategory = "all";
+var currentQuizIndex = 0;
+var currentQuizScore = 0;
+var activeForumCategory = "all";
+var activeRelServiceCategory = "all";
+
+// 1. סרטונים חינוכיים (היסטוריה, רבנים, פרשה, ילדים) + הורדה/הוספה מיוטיוב
+window.filterEduVideos = function(cat) {
+  activeEduCategory = cat || "all";
+  var videos = window.getStorageJson(STORAGE_KEYS.EDU_VIDEOS, window.EDUCATIONAL_VIDEOS_DATA || []);
+  var list = (activeEduCategory === "all")
+    ? videos
+    : videos.filter(function(v) { return v.category.indexOf(activeEduCategory) !== -1; });
+
+  var grid = document.getElementById("edu-videos-grid");
+  if (!grid) return;
+  grid.innerHTML = list.map(function(v) {
+    var eKey = "edu_" + v.id;
+    var stats = window.getEntityStats(eKey, 5.0);
+    var safeTitle = (v.title || "").replace(/'/g, "");
+    var safeSpeaker = (v.speaker || "").replace(/'/g, "");
+    var safeDesc = (v.description || "").replace(/'/g, "");
+    return `
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden flex flex-col justify-between shadow-lg hover:border-amber-500/50 transition-all">
+      <div>
+        <div class="relative h-44 bg-slate-950 flex items-center justify-center overflow-hidden">
+          <img src="${v.thumbnail}" alt="${safeTitle}" class="absolute inset-0 w-full h-full object-cover opacity-70">
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-black/40"></div>
+          <button onclick="openEntityFullPage('${eKey}', 'סרטון חינוכי • ${v.category}', '${safeTitle}', '${safeSpeaker} • ${v.duration}', 'ספריית הווידאו החינוכית', 'אורך: ${v.duration}', '', '${safeDesc}', 'תוכן חינוכי • בהירות ההסבר • עניין וחיזוק', '${v.thumbnail}')" class="relative z-10 w-14 h-14 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 flex items-center justify-center text-xl font-black shadow-2xl">
+            ▶
+          </button>
+          <span class="absolute top-3 right-3 px-2.5 py-0.5 bg-amber-500 text-slate-950 font-black rounded-lg text-[10px]">${v.category}</span>
+          <span class="absolute bottom-2 left-3 px-2 py-0.5 bg-black/80 text-white font-mono rounded text-[10px]">${v.duration}</span>
+        </div>
+        <div class="p-4 space-y-1.5">
+          <div class="flex items-center justify-between text-[11px] text-amber-400 font-bold">
+            <span>🎙️ ${v.speaker}</span>
+            <span>★ ${stats.avg} (${v.views || "10K"} צפיות)</span>
+          </div>
+          <h4 class="text-sm font-black text-white">${v.title}</h4>
+          <p class="text-xs text-slate-400 line-clamp-2">${v.description}</p>
+        </div>
+      </div>
+      <div class="p-3 pt-0 grid grid-cols-2 gap-2">
+        <button onclick="openEntityFullPage('${eKey}', 'סרטון חינוכי • ${v.category}', '${safeTitle}', '${safeSpeaker} • ${v.duration}', 'ספריית הווידאו החינוכית', 'אורך: ${v.duration}', '', '${safeDesc}', 'תוכן חינוכי • בהירות ההסבר • עניין וחיזוק', '${v.thumbnail}')" class="py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">
+          🎬 צפה ודרג (${stats.count})
+        </button>
+        <button onclick="saveItemToMyZone('סרטון חינוכי', '${safeTitle}', 'series')" class="py-2 bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 font-bold rounded-xl text-xs">
+          ⭐ שמור באזור שלי
+        </button>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+window.addYoutubeEduVideo = function() {
+  window.requireRegisteredUser(function() {
+    var titleEl = document.getElementById("yt-edu-title");
+    var catEl = document.getElementById("yt-edu-cat");
+    var urlEl = document.getElementById("yt-edu-url");
+    if (!titleEl || !titleEl.value.trim()) {
+      window.toast("נא להזין כותרת לסרטון החינוכי");
+      return;
+    }
+    var videos = window.getStorageJson(STORAGE_KEYS.EDU_VIDEOS, window.EDUCATIONAL_VIDEOS_DATA || []);
+    var newVid = {
+      id: "edv_" + Date.now(),
+      title: titleEl.value.trim() + " (⏳ במודרציה)",
+      speaker: "נוסף מיוטיוב ע״י הקהילה",
+      category: catEl ? catEl.value : "היסטוריה",
+      duration: "15:00",
+      youtubeId: (urlEl && urlEl.value.trim()) ? urlEl.value.trim() : "youtube",
+      views: "חדש",
+      thumbnail: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80",
+      description: "סרטון חינוכי שנוסף מיוטיוב על ידי משתמש רשום ועובר בדיקת מודרציה."
+    };
+    videos.unshift(newVid);
+    window.setStorageJson(STORAGE_KEYS.EDU_VIDEOS, videos);
+
+    var mySubs = window.getStorageJson(STORAGE_KEYS.MY_SUBMISSIONS, window.DEFAULT_MY_SUBMISSIONS || []);
+    mySubs.unshift({
+      id: "sub_yt_" + Date.now(),
+      type: "סרטון חינוכי מיוטיוב",
+      title: titleEl.value.trim(),
+      details: "קטגוריה: " + newVid.category,
+      date: "עכשיו",
+      status: "⏳ ממתין לאישור מודרציה"
+    });
+    window.setStorageJson(STORAGE_KEYS.MY_SUBMISSIONS, mySubs);
+
+    titleEl.value = "";
+    if (urlEl) urlEl.value = "";
+    window.filterEduVideos("all");
+    window.renderMyZoneAll();
+    window.toast("🎬 הסרטון החינוכי נשלח למודרציה ונוסף לספרייה!");
+  });
+};
+
+// 2. מנוע חידונים ומשחקים חינוכיים לילדים ולכל המשפחה + שמירת תוצאות באזור האישי
+window.renderActiveQuizQuestion = function() {
+  var qList = window.QUIZ_QUESTIONS_DATA || [];
+  if (qList.length === 0) return;
+  if (currentQuizIndex >= qList.length) currentQuizIndex = 0;
+  var q = qList[currentQuizIndex];
+
+  var counterEl = document.getElementById("quiz-step-counter");
+  var catEl = document.getElementById("quiz-question-cat");
+  var textEl = document.getElementById("quiz-question-text");
+  var optsEl = document.getElementById("quiz-options-container");
+  var scoreEl = document.getElementById("quiz-live-score");
+
+  if (counterEl) counterEl.textContent = "שאלה " + (currentQuizIndex + 1) + " מתוך " + qList.length;
+  if (catEl) catEl.textContent = q.category;
+  if (textEl) textEl.textContent = q.question;
+  if (scoreEl) scoreEl.textContent = "ניקוד מצטבר: " + currentQuizScore + " נק׳ 🏆";
+
+  if (optsEl) {
+    optsEl.innerHTML = q.options.map(function(opt, idx) {
+      return `
+      <button onclick="answerQuizQuestion(${idx})" class="w-full text-right p-3.5 rounded-2xl bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-amber-400 text-xs sm:text-sm font-bold text-white flex items-center justify-between transition-all">
+        <span>${idx + 1}. ${opt}</span>
+        <span class="text-amber-400">←</span>
+      </button>`;
+    }).join("");
+  }
+};
+
+window.answerQuizQuestion = function(selectedIndex) {
+  var qList = window.QUIZ_QUESTIONS_DATA || [];
+  var q = qList[currentQuizIndex];
+  var feedbackEl = document.getElementById("quiz-feedback-box");
+  if (selectedIndex === q.correctIndex) {
+    currentQuizScore += 20;
+    if (feedbackEl) {
+      feedbackEl.className = "p-3.5 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 text-xs text-emerald-200 font-bold";
+      feedbackEl.innerHTML = "🎉 <strong>תשובה נכונה! (+20 נק׳)</strong> • " + q.explanation;
+    }
+    window.toast("כל הכבוד! תשובה נכונה (+20 נקודות) 🏆");
+  } else {
+    if (feedbackEl) {
+      feedbackEl.className = "p-3.5 rounded-2xl bg-amber-950/60 border border-amber-500/40 text-xs text-amber-200 font-bold";
+      feedbackEl.innerHTML = "💡 <strong>כמעט!</strong> התשובה הנכונה היא: " + q.options[q.correctIndex] + " • " + q.explanation;
+    }
+  }
+
+  if (currentQuizIndex + 1 < qList.length) {
+    currentQuizIndex++;
+    setTimeout(function() {
+      window.renderActiveQuizQuestion();
+    }, 1200);
+  } else {
+    // סיום החידון ושמירה אוטומטית ב"האזור האישי שלי -> תוצאות החידונים"
+    var results = window.getStorageJson(STORAGE_KEYS.QUIZ_RESULTS, window.DEFAULT_QUIZ_RESULTS || []);
+    var badge = currentQuizScore >= 80 ? "🥇 אלוף התורה והפרשה" : "🥈 מתמיד בחידון";
+    results.unshift({
+      id: "qres_" + Date.now(),
+      title: "חידון צדיק-טוק (תורה, תנ״ך והלכה)",
+      score: currentQuizScore + " מתוך 100 נקודות",
+      badge: badge,
+      date: "עכשיו"
+    });
+    window.setStorageJson(STORAGE_KEYS.QUIZ_RESULTS, results);
+    window.renderQuizResultsInMyZone();
+    window.toast("🏆 סיימת את החידון עם " + currentQuizScore + " נקודות! התוצאה נשמרה באזור האישי שלך.");
+    currentQuizIndex = 0;
+    currentQuizScore = 0;
+    setTimeout(function() {
+      window.renderActiveQuizQuestion();
+    }, 1800);
+  }
+};
+
+window.renderQuizResultsInMyZone = function() {
+  var box = document.getElementById("myzone-quiz-results-list");
+  if (!box) return;
+  var results = window.getStorageJson(STORAGE_KEYS.QUIZ_RESULTS, window.DEFAULT_QUIZ_RESULTS || []);
+  box.innerHTML = results.map(function(r) {
+    return `
+    <div class="bg-slate-950 border border-amber-500/30 p-4 rounded-2xl flex items-center justify-between gap-3">
+      <div>
+        <span class="px-2.5 py-0.5 bg-amber-500 text-slate-950 font-black rounded-md text-[10px]">${r.badge}</span>
+        <h4 class="text-sm font-black text-white mt-1">${r.title}</h4>
+        <p class="text-xs text-amber-300 font-bold">ציון: ${r.score} • ${r.date}</p>
+      </div>
+      <button onclick="switchTab('kids')" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-amber-300 rounded-xl text-xs font-bold shrink-0">שחק שוב 🎮</button>
+    </div>`;
+  }).join("");
+};
+
+// 3. פורום קהילתי ובית מדרש חברתי
+window.renderForumPosts = function(catFilter) {
+  activeForumCategory = catFilter || "all";
+  var posts = window.getStorageJson(STORAGE_KEYS.FORUM_POSTS, window.INITIAL_FORUM_POSTS || []);
+  var list = (activeForumCategory === "all")
+    ? posts
+    : posts.filter(function(p) { return p.category.indexOf(activeForumCategory) !== -1; });
+
+  var container = document.getElementById("forum-posts-container");
+  if (!container) return;
+  container.innerHTML = list.map(function(p) {
+    var safeTitle = (p.title || "").replace(/'/g, "");
+    var safeContent = (p.content || "").replace(/'/g, "");
+    var eKey = "forum_" + p.id;
+    return `
+    <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-3 hover:border-amber-500/40 transition-all">
+      <div class="flex items-center justify-between">
+        <span class="px-2.5 py-0.5 bg-amber-500/15 text-amber-300 border border-amber-500/30 rounded-lg text-[10px] font-black">${p.category}</span>
+        <span class="text-[11px] text-slate-400">👤 ${p.author} • ${p.time} • <span class="text-emerald-400">${p.status || "מאושר ✔"}</span></span>
+      </div>
+      <h3 class="text-base font-black text-white">${p.title}</h3>
+      <p class="text-xs text-slate-300 leading-relaxed">${p.content}</p>
+      <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <button onclick="toast('יישר כוח נשלח למחבר! 👍')" class="px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 rounded-xl text-xs font-bold">👍 יישר כוח (${p.likes || 12})</button>
+          <button onclick="openEntityFullPage('${eKey}', 'אשכול בפורום • ${p.category}', '${safeTitle}', 'נכתב ע״י ${p.author}', 'פורום קהילת צדיק-טוק', '${p.time}', '', '${safeContent}', 'תגובות לאשכול • דברי תורה • עזרה הדדית')" class="px-3 py-1.5 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">💬 תגובות לדיון (${p.repliesCount || 4})</button>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+window.addNewForumPost = function() {
+  window.requireRegisteredUser(function() {
+    var titleEl = document.getElementById("forum-new-title");
+    var catEl = document.getElementById("forum-new-cat");
+    var bodyEl = document.getElementById("forum-new-body");
+    if (!titleEl || !titleEl.value.trim() || !bodyEl || !bodyEl.value.trim()) {
+      window.toast("נא להזין כותרת ותוכן לאשכול בפורום");
+      return;
+    }
+    var acc = window.getStorageJson(STORAGE_KEYS.USER_ACCOUNT, currentUserAccount);
+    var posts = window.getStorageJson(STORAGE_KEYS.FORUM_POSTS, window.INITIAL_FORUM_POSTS || []);
+    posts.unshift({
+      id: "fp_" + Date.now(),
+      category: catEl ? catEl.value : "דברי תורה ופרשת השבוע",
+      title: titleEl.value.trim(),
+      author: acc.name + " (" + acc.city + ")",
+      time: "עכשיו",
+      content: bodyEl.value.trim(),
+      likes: 1,
+      repliesCount: 0,
+      status: "⏳ ממתין לאישור מודרציה"
+    });
+    window.setStorageJson(STORAGE_KEYS.FORUM_POSTS, posts);
+
+    var mySubs = window.getStorageJson(STORAGE_KEYS.MY_SUBMISSIONS, window.DEFAULT_MY_SUBMISSIONS || []);
+    mySubs.unshift({
+      id: "sub_fp_" + Date.now(),
+      type: "אשכול בפורום הקהילתי",
+      title: titleEl.value.trim(),
+      details: bodyEl.value.trim(),
+      date: "עכשיו",
+      status: "⏳ ממתין לאישור מודרציה"
+    });
+    window.setStorageJson(STORAGE_KEYS.MY_SUBMISSIONS, mySubs);
+
+    titleEl.value = "";
+    bodyEl.value = "";
+    window.renderForumPosts("all");
+    window.renderMyZoneAll();
+    window.toast("✅ האשכול נשלח למודרציה ופורסם בפורום הקהילתי!");
+  });
+};
+
+// 4. שירותי דת בתוך "למצוא" (מוהלים, משגיחי כשרות, מדריכי חתנים, סופרי סת"ם, כלות)
+window.renderReligiousServicesDirectory = function(catFilter) {
+  activeRelServiceCategory = catFilter || "all";
+  var services = window.getStorageJson(STORAGE_KEYS.REL_SERVICES, window.RELIGIOUS_SERVICES_DATA || []);
+  var list = (activeRelServiceCategory === "all")
+    ? services
+    : services.filter(function(s) { return s.category.indexOf(activeRelServiceCategory) !== -1 || s.name.indexOf(activeRelServiceCategory) !== -1; });
+
+  var grid = document.getElementById("religious-services-pro-grid");
+  if (!grid) return;
+  grid.innerHTML = list.map(function(s, idx) {
+    var sid = s.id || ("srv_" + idx);
+    var eKey = "relsrv_" + sid;
+    var stats = window.getEntityStats(eKey, s.rating || 5.0);
+    var safeName = (s.name || "").replace(/'/g, "");
+    var safeCat = (s.category || "").replace(/'/g, "");
+    var safeCity = (s.city || "").replace(/'/g, "");
+    var safeDesc = (s.description || "").replace(/'/g, "");
+    return `
+    <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-3 flex flex-col justify-between hover:border-amber-500/40 transition-all">
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="px-2.5 py-0.5 bg-amber-500/15 text-amber-300 border border-amber-500/30 rounded-lg text-[10px] font-black">${s.category}</span>
+          <button onclick="openEntityFullPage('${eKey}', 'שירותי דת • ${safeCat}', '${safeName}', '${safeCity}', '${safeCity}', 'בתיאום טלפוני', '${s.phone}', '${safeDesc}', 'מקצועיות ויראת שמיים • זמינות • יחס ושירות')" class="text-xs font-black text-amber-400 hover:underline">
+            ★ ${stats.avg} (${stats.count} המלצות)
+          </button>
+        </div>
+        <h3 class="text-base font-black text-white">${s.name}</h3>
+        <p class="text-xs text-slate-300 leading-relaxed">${s.description}</p>
+        <p class="text-[11px] text-slate-400">📍 ${s.city} • 📞 ${s.phone}</p>
+      </div>
+      <div class="pt-3 border-t border-slate-800 grid grid-cols-2 gap-2">
+        <a href="tel:${s.phone}" class="py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs text-center">📞 חייג כעת</a>
+        <button onclick="openEntityFullPage('${eKey}', 'שירותי דת • ${safeCat}', '${safeName}', '${safeCity}', '${safeCity}', 'בתיאום טלפוני', '${s.phone}', '${safeDesc}', 'מקצועיות ויראת שמיים • זמינות • יחס ושירות')" class="py-2 bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 font-bold rounded-xl text-xs">
+          ⭐ דרג והמלץ (${stats.count})
+        </button>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+// 5. מעקב יומי, חשבון נפש ותזכורות מצוות (עשיתי ✔ / לא עשיתי ✗ / נודניק 🔔) בתוך האזור האישי שלי
+window.renderMyZoneMitzvahTracker = function() {
+  var box = document.getElementById("myzone-tracker-list");
+  if (!box) return;
+  var items = window.getStorageJson(STORAGE_KEYS.MITZVAH_TRACKER, window.DEFAULT_MITZVAH_TRACKER || []);
+  var doneCount = items.filter(function(i) { return i.status === "done"; }).length;
+  var summaryEl = document.getElementById("myzone-tracker-summary");
+  if (summaryEl) summaryEl.textContent = "הושלמו היום: " + doneCount + " מתוך " + items.length + " יעדים רוחניים ✨";
+
+  box.innerHTML = items.map(function(item) {
+    var isDone = item.status === "done";
+    var isMissed = item.status === "missed";
+    return `
+    <div class="bg-slate-950 border ${isDone ? 'border-emerald-500/50' : (isMissed ? 'border-red-500/40' : 'border-slate-800')} p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-0.5 bg-amber-500/15 text-amber-300 rounded text-[10px] font-black">${item.category}</span>
+          <span class="text-[11px] ${item.snoozeActive ? 'text-cyan-400 font-bold' : 'text-slate-500'}">⏰ תזכורת: ${item.snoozeTime || '20:00'} ${item.snoozeActive ? '(נודניק פעיל 🔔)' : ''}</span>
+        </div>
+        <h4 class="text-sm font-black ${isDone ? 'text-emerald-300' : 'text-white'}">${item.title}</h4>
+      </div>
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button onclick="setMitzvahTrackerStatus('${item.id}', 'done')" class="px-3 py-1.5 rounded-xl text-xs font-black ${isDone ? 'bg-emerald-500 text-slate-950 shadow' : 'bg-slate-900 text-slate-300 border border-slate-800 hover:border-emerald-500'}">
+          ✔ עשיתי
+        </button>
+        <button onclick="setMitzvahTrackerStatus('${item.id}', 'missed')" class="px-3 py-1.5 rounded-xl text-xs font-bold ${isMissed ? 'bg-red-600 text-white' : 'bg-slate-900 text-slate-400 border border-slate-800 hover:border-red-500'}">
+          ✗ לא עשיתי
+        </button>
+        <button onclick="toggleMitzvahSnooze('${item.id}')" class="px-3 py-1.5 rounded-xl text-xs font-bold ${item.snoozeActive ? 'bg-cyan-500 text-slate-950 font-black' : 'bg-slate-900 text-cyan-300 border border-cyan-500/30'}">
+          🔔 ${item.snoozeActive ? 'נודניק פעיל' : 'הפעל נודניק'}
+        </button>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+window.setMitzvahTrackerStatus = function(itemId, newStatus) {
+  var items = window.getStorageJson(STORAGE_KEYS.MITZVAH_TRACKER, window.DEFAULT_MITZVAH_TRACKER || []);
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].id === itemId) {
+      items[i].status = newStatus;
+      if (newStatus === "done") items[i].snoozeActive = false;
+    }
+  }
+  window.setStorageJson(STORAGE_KEYS.MITZVAH_TRACKER, items);
+  window.renderMyZoneMitzvahTracker();
+  window.toast(newStatus === "done" ? "אשריך! סומן 'עשיתי' במעקב היומי ✔" : "סומן 'לא עשיתי' – תמיד אפשר להשלים או להפעיל נודניק 🔔");
+};
+
+window.toggleMitzvahSnooze = function(itemId) {
+  var items = window.getStorageJson(STORAGE_KEYS.MITZVAH_TRACKER, window.DEFAULT_MITZVAH_TRACKER || []);
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].id === itemId) {
+      items[i].snoozeActive = !items[i].snoozeActive;
+      window.toast(items[i].snoozeActive
+        ? ("🔔 נודניק תזכורת הופעל עבור: " + items[i].title + " (יתריע שוב בעוד 30 דק׳)")
+        : ("🔕 הנודניק כובה עבור: " + items[i].title));
+    }
+  }
+  window.setStorageJson(STORAGE_KEYS.MITZVAH_TRACKER, items);
+  window.renderMyZoneMitzvahTracker();
+};
+
+window.addNewMitzvahTrackerGoal = function() {
+  var titleEl = document.getElementById("new-tracker-goal-title");
+  var timeEl = document.getElementById("new-tracker-goal-time");
+  if (!titleEl || !titleEl.value.trim()) {
+    window.toast("נא להזין שם מצווה או קבלה אישית");
+    return;
+  }
+  var items = window.getStorageJson(STORAGE_KEYS.MITZVAH_TRACKER, window.DEFAULT_MITZVAH_TRACKER || []);
+  items.unshift({
+    id: "mt_" + Date.now(),
+    title: titleEl.value.trim(),
+    category: "קבלה אישית",
+    status: "pending",
+    snoozeTime: (timeEl && timeEl.value.trim()) ? timeEl.value.trim() : "20:00",
+    snoozeActive: true
+  });
+  window.setStorageJson(STORAGE_KEYS.MITZVAH_TRACKER, items);
+  titleEl.value = "";
+  window.renderMyZoneMitzvahTracker();
+  window.toast("✨ הקבלה האישית נוספה למעקב היומי עם תזכורת נודניק!");
 };
