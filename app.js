@@ -27,7 +27,7 @@ window.switchTab = function(tabId) {
   var parentHub = tabId;
   if (["series", "kids", "live", "studio"].indexOf(tabId) !== -1) parentHub = "series";
   else if (["siddur"].indexOf(tabId) !== -1) parentHub = "siddur";
-  else if (["minyanim", "rabbis", "chabad", "mikvaot", "restaurants", "tzaddikim", "gemachim", "customs", "zmanim", "yeshivot", "prayerwall"].indexOf(tabId) !== -1) parentHub = "find";
+  else if (["minyanim", "rabbis", "chabad", "mikvaot", "restaurants", "tzaddikim", "gemachim", "customs", "zmanim", "yeshivot", "prayerwall", "chavruta"].indexOf(tabId) !== -1) parentHub = "find";
   else if (["raffles", "judaica", "donors", "premium"].indexOf(tabId) !== -1) parentHub = "givebuy";
   else if (["forum"].indexOf(tabId) !== -1) parentHub = "forum";
   else if (["myzone", "admin"].indexOf(tabId) !== -1) parentHub = "myzone";
@@ -221,13 +221,15 @@ window.switchRashiTab = function(t) {
 // 2. הספרייה המרכזית (Library): תורה (54 פרשיות) | נביאים וכתובים | היסטוריה ודורות | סדרות AI
 // ============================================================================
 window.switchLibrarySubTab = function(subId) {
-  var allSubIds = ["weekseries", "music", "torah", "nach", "generations", "aiseries", "eduvideos", "chassidut", "courses", "mishnah"];
+  var allSubIds = ["weekseries", "music", "torah", "nach", "generations", "aiseries", "eduvideos", "chassidut", "courses", "mishnah", "liveshiurim", "quizzes"];
   var overviewGrid = document.getElementById("learn-departments-overview");
   var backBar = document.getElementById("learn-back-to-departments");
+  var libInternalNav = document.getElementById("library-internal-subnav");
 
   if (subId === "overview") {
     if (overviewGrid) overviewGrid.classList.remove("hidden");
     if (backBar) backBar.classList.add("hidden");
+    if (libInternalNav) libInternalNav.classList.add("hidden");
     allSubIds.forEach(function(k) {
       var box = document.getElementById("lib-sub-" + k);
       if (box) box.classList.add("hidden");
@@ -237,6 +239,14 @@ window.switchLibrarySubTab = function(subId) {
 
   if (overviewGrid) overviewGrid.classList.add("hidden");
   if (backBar) backBar.classList.remove("hidden");
+
+  // אם נכנסו ל"ספרייה" (library או torah/nach/generations/chassidut/mishnah/courses/weekseries) - נציג את סרגל הספרייה הפנימי
+  var librarySubTabs = ["torah", "nach", "generations", "chassidut", "mishnah", "courses", "weekseries"];
+  if (subId === "library") subId = "torah";
+  if (libInternalNav) {
+    if (librarySubTabs.indexOf(subId) !== -1) libInternalNav.classList.remove("hidden");
+    else libInternalNav.classList.add("hidden");
+  }
 
   allSubIds.forEach(function(k) {
     var box = document.getElementById("lib-sub-" + k);
@@ -1280,7 +1290,7 @@ window.renderFullDonorsPage = function() {
 
 // האזור שלי (My Zone): שמורים, היסטוריה, יארצייטים אישיים, הגדרות
 window.switchMyZoneSubTab = function(subTab) {
-  ["tracker", "quizresults", "saved", "history", "yahrzeits", "submissions", "premium", "orders", "settings"].forEach(function(k) {
+  ["tracker", "community", "quizresults", "saved", "history", "yahrzeits", "submissions", "premium", "orders", "settings"].forEach(function(k) {
     var box = document.getElementById("myzone-sub-" + k);
     var btn = document.getElementById("myzone-btn-" + k);
     if (box) {
@@ -2330,6 +2340,9 @@ window.refreshAllCommunityViews = function() {
   window.renderCommunityPrayerWall();
   window.renderOrdersAndSubscriptionInMyZone();
   window.renderAdminPanel();
+  window.renderRabbiShiurimList('');
+  window.renderDailyCustomsCalendar();
+  window.renderChavrutaDirectory('all');
 };
 
 
@@ -2723,6 +2736,9 @@ window.setMitzvahTrackerStatus = function(itemId, newStatus) {
   window.renderCommunityPrayerWall();
   window.renderOrdersAndSubscriptionInMyZone();
   window.renderAdminPanel();
+  window.renderRabbiShiurimList('');
+  window.renderDailyCustomsCalendar();
+  window.renderChavrutaDirectory('all');
   window.toast(newStatus === "done" ? "אשריך! סומן 'עשיתי' במעקב היומי ✔" : "סומן 'לא עשיתי' – תמיד אפשר להשלים או להפעיל נודניק 🔔");
 };
 
@@ -2750,6 +2766,9 @@ window.toggleMitzvahSnooze = function(itemId) {
   window.renderCommunityPrayerWall();
   window.renderOrdersAndSubscriptionInMyZone();
   window.renderAdminPanel();
+  window.renderRabbiShiurimList('');
+  window.renderDailyCustomsCalendar();
+  window.renderChavrutaDirectory('all');
 };
 
 window.addNewMitzvahTrackerGoal = function() {
@@ -2783,6 +2802,9 @@ window.addNewMitzvahTrackerGoal = function() {
   window.renderCommunityPrayerWall();
   window.renderOrdersAndSubscriptionInMyZone();
   window.renderAdminPanel();
+  window.renderRabbiShiurimList('');
+  window.renderDailyCustomsCalendar();
+  window.renderChavrutaDirectory('all');
   window.toast("✨ הקבלה האישית נוספה למעקב היומי עם תזכורת נודניק!");
 };
 
@@ -2921,6 +2943,8 @@ window.filterFindSectionByQuery = function(sectionType, query) {
       return !q || (t.name && t.name.toLowerCase().indexOf(q) !== -1) || (t.city && t.city.toLowerCase().indexOf(q) !== -1) || (t.segula && t.segula.toLowerCase().indexOf(q) !== -1);
     });
     window.renderTzaddikim(listT);
+  } else if (sectionType === "chavruta") {
+    window.renderChavrutaDirectory(q || "all");
   } else if (sectionType === "customs") {
     var services = window.getStorageJson(STORAGE_KEYS.REL_SERVICES, window.RELIGIOUS_SERVICES_DATA || []);
     var listS = services.filter(function(s) {
@@ -2954,6 +2978,7 @@ window.locateNearestByGPS = function(sectionType) {
     else if (sectionType === "chabad") window.renderChabad(sortArr(window.CHABAD_DATA));
     else if (sectionType === "tzaddikim") window.renderTzaddikim(sortArr(window.TZADDIKIM_DATA));
     else if (sectionType === "rabbis") window.renderRabbis(window.RABBIS_DATA);
+    else if (sectionType === "chavruta") window.renderChavrutaDirectory("all");
     else if (sectionType === "customs") window.renderReligiousServicesDirectory("all");
     window.toast("התוצאות מוינו לפי קרבה למיקום ה-GPS שלך (" + label + ")");
   };
@@ -3011,6 +3036,9 @@ window.handleCustomLogoUpload = function(inputEl) {
   window.renderCommunityPrayerWall();
   window.renderOrdersAndSubscriptionInMyZone();
   window.renderAdminPanel();
+  window.renderRabbiShiurimList('');
+  window.renderDailyCustomsCalendar();
+  window.renderChavrutaDirectory('all');
     window.toast("הלוגו שלך עודכן בכותרת הראשית בהצלחה!");
   };
   reader.readAsDataURL(inputEl.files[0]);
@@ -3189,6 +3217,9 @@ window.saveStudioDraft = function(sendToAdmin) {
   window.renderStudioDrafts();
   window.renderMyZoneAll();
   window.renderAdminPanel();
+  window.renderRabbiShiurimList('');
+  window.renderDailyCustomsCalendar();
+  window.renderChavrutaDirectory('all');
   window.toast(sendToAdmin ? "הסרטון נשלח לאישור מנהל לפני פרסום ומופיע בפאנל הניהול!" : "הטיוטה נשמרה בהצלחה בסטודיו.");
 };
 
@@ -3293,6 +3324,9 @@ window.submitTzaddikStoryWithSource = function() {
     bodyEl.value = "";
     window.renderMyZoneAll();
     window.renderAdminPanel();
+  window.renderRabbiShiurimList('');
+  window.renderDailyCustomsCalendar();
+  window.renderChavrutaDirectory('all');
     window.toast("הסיפור על הצדיק נשלח עם המקור למערכת הניהול לבדיקה ואישור לפני פרסום!");
   });
 };
@@ -3471,6 +3505,9 @@ window.setAdminRole = function(roleName) {
   var roleLabel = document.getElementById("admin-active-role-badge");
   if (roleLabel) roleLabel.textContent = "הרשאה פעילה: " + roleName;
   window.renderAdminPanel();
+  window.renderRabbiShiurimList('');
+  window.renderDailyCustomsCalendar();
+  window.renderChavrutaDirectory('all');
   window.toast("תפקיד הניהול בפאנל עודכן ל: " + roleName);
 };
 
@@ -3543,4 +3580,301 @@ window.openNotificationsModal = function() {
   }
   var modal = document.getElementById("modal-notifications-center");
   if (modal) modal.classList.remove("hidden");
+};
+
+
+// ============================================================================
+// V25 ENGINE: חיפוש פנימי בכל מדורי ללמוד, שיעורים ושידור חי לפי רב, מנהג היום בלהתפלל, חברותא בלמצוא, וקהילה באזור האישי
+// ============================================================================
+
+// 1. חיפוש ראשי ופנימי בתוך "ללמוד" (פרשיות, נ"ך, דורות, שיעורים, רבנים וסרטונים)
+window.handleLearnGlobalSearch = function(query) {
+  var q = (query || "").trim().toLowerCase();
+  var resBox = document.getElementById("learn-search-results-box");
+  if (!resBox) return;
+  if (!q) {
+    resBox.classList.add("hidden");
+    resBox.innerHTML = "";
+    return;
+  }
+  var matches = [];
+
+  // חיפוש ב-54 פרשיות התורה
+  (window.CHUMASHIM_PARASHOT || []).forEach(function(ch) {
+    (ch.parashot || []).forEach(function(p) {
+      if (p.name.toLowerCase().indexOf(q) !== -1 || (p.summary && p.summary.toLowerCase().indexOf(q) !== -1)) {
+        matches.push({
+          type: "פרשת השבוע (" + ch.title + ")",
+          title: "פרשת " + p.name,
+          subtitle: p.summary,
+          action: "openParashaViewer('" + ch.id + "', '" + p.name.replace(/'/g, "") + "')"
+        });
+      }
+    });
+  });
+
+  // חיפוש בשיעורי רבנים ושידור חי
+  var shiurim = window.getStorageJson(STORAGE_KEYS.RABBI_SHIURIM, window.RABBI_SHIURIM_DATA || []);
+  shiurim.forEach(function(s) {
+    if (s.rabbi.toLowerCase().indexOf(q) !== -1 || s.title.toLowerCase().indexOf(q) !== -1 || s.topic.toLowerCase().indexOf(q) !== -1) {
+      matches.push({
+        type: "שיעור / שידור חי • " + s.rabbi,
+        title: s.title,
+        subtitle: s.institution + " • " + s.duration,
+        action: "switchLibrarySubTab('liveshiurim')"
+      });
+    }
+  });
+
+  // חיפוש בסרטונים חינוכיים
+  var edus = window.getStorageJson(STORAGE_KEYS.EDU_VIDEOS, window.EDUCATIONAL_VIDEOS_DATA || []);
+  edus.forEach(function(v) {
+    if (v.title.toLowerCase().indexOf(q) !== -1 || v.speaker.toLowerCase().indexOf(q) !== -1 || v.category.toLowerCase().indexOf(q) !== -1) {
+      matches.push({
+        type: "סרטון חינוכי • " + v.category,
+        title: v.title,
+        subtitle: v.speaker + " • " + v.duration,
+        action: "switchLibrarySubTab('eduvideos')"
+      });
+    }
+  });
+
+  // חיפוש בדורות (ראשונים ואחרונים)
+  (window.GENERATIONS_HISTORY || []).forEach(function(gen) {
+    (gen.figures || []).forEach(function(fig) {
+      if (fig.name.toLowerCase().indexOf(q) !== -1 || fig.story.toLowerCase().indexOf(q) !== -1) {
+        matches.push({
+          type: "דורות • " + gen.era,
+          title: fig.name,
+          subtitle: fig.role + " – " + fig.story,
+          action: "switchLibrarySubTab('generations')"
+        });
+      }
+    });
+  });
+
+  resBox.classList.remove("hidden");
+  if (matches.length === 0) {
+    resBox.innerHTML = '<div class="p-4 bg-white border border-[#E5DBC7] rounded-xl text-xs text-[#5C4938]">לא נמצאו תוצאות עבור "' + query + '". נסה לחפש שם פרשה, שם רב או נושא לימוד.</div>';
+    return;
+  }
+
+  resBox.innerHTML = `<div class="bg-white border-2 border-[#C9A227] p-4 rounded-2xl space-y-2.5">
+    <div class="flex items-center justify-between"><span class="text-xs font-bold text-[#0F2340]">תוצאות חיפוש בללמוד (${matches.length}):</span><button onclick="handleLearnGlobalSearch('')" class="text-xs text-[#5C4938] font-bold">סגור ✕</button></div>` +
+    matches.slice(0, 8).map(function(m) {
+      return `
+      <div onclick="${m.action}" class="cursor-pointer bg-[#F8F3E8] hover:border-[#C9A227] border border-[#E5DBC7] p-3 rounded-xl flex items-center justify-between gap-2">
+        <div>
+          <span class="text-[10px] font-bold text-[#5C4938] block">${m.type}</span>
+          <h4 class="text-sm font-bold text-[#0F2340]">${m.title}</h4>
+          <p class="text-xs text-[#5C4938] line-clamp-1">${m.subtitle}</p>
+        </div>
+        <span class="px-3 py-1.5 bg-amber-500 text-white font-bold rounded-lg text-xs shrink-0">פתח ←</span>
+      </div>`;
+    }).join("") + `</div>`;
+};
+
+// 2. שידור חי ושיעורי רבנים בתוך "ללמוד" (כולל חיפוש לפי רב + העלאת שיעור/שידור חדש)
+window.renderRabbiShiurimList = function(query) {
+  var box = document.getElementById("rabbi-shiurim-grid");
+  if (!box) return;
+  var list = window.getStorageJson(STORAGE_KEYS.RABBI_SHIURIM, window.RABBI_SHIURIM_DATA || []);
+  var q = (query || "").trim().toLowerCase();
+  if (q) {
+    list = list.filter(function(s) {
+      return s.rabbi.toLowerCase().indexOf(q) !== -1 || s.title.toLowerCase().indexOf(q) !== -1 || s.topic.toLowerCase().indexOf(q) !== -1 || s.institution.toLowerCase().indexOf(q) !== -1;
+    });
+  }
+  box.innerHTML = list.map(function(s) {
+    var safeTitle = (s.title || "").replace(/'/g, "");
+    var safeRabbi = (s.rabbi || "").replace(/'/g, "");
+    return `
+    <div class="bg-white border border-[#E5DBC7] p-5 rounded-2xl space-y-3 flex flex-col justify-between">
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="px-2.5 py-0.5 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-md text-xs font-bold">${s.type} • ${s.topic}</span>
+          <span class="text-xs text-[#5C4938]">${s.duration}</span>
+        </div>
+        <h4 class="text-lg font-bold text-[#0F2340] serif-heading">${s.title}</h4>
+        <p class="text-xs font-bold text-[#0F2340]">מגיד השיעור: ${s.rabbi}</p>
+        <p class="text-xs text-[#5C4938]">מוסד / בית מדרש: ${s.institution}</p>
+      </div>
+      <div class="pt-3 border-t border-[#E5DBC7] flex items-center gap-2">
+        <button onclick="openEntityFullPage('shiur_${s.id}', 'שיעור תורה • ${safeRabbi}', '${safeTitle}', '${safeRabbi} • ${s.institution}', '${s.institution}', 'אורך: ${s.duration}', '', 'שיעור תורה מפי ${safeRabbi} בנושא ${s.topic}.', 'בהירות השיעור • חיזוק • מקורות')" class="flex-1 py-2 bg-amber-500 text-white font-bold rounded-xl text-xs">צפייה בשיעור ותגובות</button>
+        <button onclick="openDonateModal('תרומה והקדשה לשיעור של ${safeRabbi}')" class="px-3 py-2 bg-white text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs">הקדשה</button>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+window.uploadNewRabbiShiur = function() {
+  window.requireRegisteredUser(function() {
+    var rabbiEl = document.getElementById("new-shiur-rabbi");
+    var titleEl = document.getElementById("new-shiur-title");
+    var topicEl = document.getElementById("new-shiur-topic");
+    var urlEl = document.getElementById("new-shiur-url");
+    if (!rabbiEl || !rabbiEl.value.trim() || !titleEl || !titleEl.value.trim()) {
+      window.toast("נא למלא את שם הרב וכותרת השיעור / השידור החי");
+      return;
+    }
+    var list = window.getStorageJson(STORAGE_KEYS.RABBI_SHIURIM, window.RABBI_SHIURIM_DATA || []);
+    list.unshift({
+      id: "sh_" + Date.now(),
+      rabbi: rabbiEl.value.trim(),
+      title: titleEl.value.trim() + " (⏳ במודרציה)",
+      institution: "הועלה ע״י הקהילה",
+      topic: (topicEl && topicEl.value.trim()) ? topicEl.value.trim() : "שיעור תורה",
+      type: "שידור חי / שיעור מוקלט",
+      duration: "45:00",
+      videoUrl: (urlEl && urlEl.value.trim()) ? urlEl.value.trim() : ""
+    });
+    window.setStorageJson(STORAGE_KEYS.RABBI_SHIURIM, list);
+
+    var mySubs = window.getStorageJson(STORAGE_KEYS.MY_SUBMISSIONS, window.DEFAULT_MY_SUBMISSIONS || []);
+    mySubs.unshift({
+      id: "sub_sh_" + Date.now(),
+      type: "שיעור / שידור חי",
+      title: titleEl.value.trim() + " (" + rabbiEl.value.trim() + ")",
+      details: "נושא: " + (topicEl ? topicEl.value : ""),
+      date: "עכשיו",
+      status: "⏳ ממתין לאישור מודרציה"
+    });
+    window.setStorageJson(STORAGE_KEYS.MY_SUBMISSIONS, mySubs);
+
+    rabbiEl.value = "";
+    titleEl.value = "";
+    if (urlEl) urlEl.value = "";
+    window.renderRabbiShiurimList("");
+    window.renderMyZoneAll();
+    window.toast("השיעור / השידור החי של הרב נוסף ונשלח למודרציה!");
+  });
+};
+
+// חיפוש לפי רב או נושא בתוך הסרטונים החינוכיים
+window.searchEduVideosByRabbiOrTopic = function(query) {
+  var q = (query || "").trim().toLowerCase();
+  var videos = window.getStorageJson(STORAGE_KEYS.EDU_VIDEOS, window.EDUCATIONAL_VIDEOS_DATA || []);
+  var filtered = videos.filter(function(v) {
+    return !q || v.title.toLowerCase().indexOf(q) !== -1 || v.speaker.toLowerCase().indexOf(q) !== -1 || v.category.toLowerCase().indexOf(q) !== -1 || (v.description && v.description.toLowerCase().indexOf(q) !== -1);
+  });
+  var grid = document.getElementById("edu-videos-grid");
+  if (!grid) return;
+  grid.innerHTML = filtered.map(function(v) {
+    var eKey = "edu_" + v.id;
+    var stats = window.getEntityStats(eKey, 5.0);
+    var safeTitle = (v.title || "").replace(/'/g, "");
+    var safeSpeaker = (v.speaker || "").replace(/'/g, "");
+    var safeDesc = (v.description || "").replace(/'/g, "");
+    return `
+    <div class="bg-white border border-[#E5DBC7] rounded-2xl overflow-hidden flex flex-col justify-between shadow-sm">
+      <div>
+        <div class="relative h-44 bg-[#0F2340] flex items-center justify-center overflow-hidden">
+          <img src="${v.thumbnail}" alt="${safeTitle}" class="absolute inset-0 w-full h-full object-cover opacity-80">
+          <button onclick="openEntityFullPage('${eKey}', 'סרטון חינוכי • ${v.category}', '${safeTitle}', '${safeSpeaker} • ${v.duration}', 'ספריית הווידאו החינוכית', 'אורך: ${v.duration}', '', '${safeDesc}', 'תוכן חינוכי • בהירות ההסבר • עניין וחיזוק', '${v.thumbnail}')" class="relative z-10 w-14 h-14 rounded-full bg-amber-500 text-white flex items-center justify-center text-xl font-black shadow-lg">
+            ▶
+          </button>
+          <span class="absolute top-3 right-3 px-2.5 py-0.5 bg-amber-500 text-white font-bold rounded-lg text-[10px]">${v.category}</span>
+        </div>
+        <div class="p-4 space-y-1.5">
+          <span class="text-xs font-bold text-[#5C4938] block">${v.speaker} • ${v.duration}</span>
+          <h4 class="text-base font-bold text-[#0F2340]">${v.title}</h4>
+          <p class="text-xs text-[#5C4938] line-clamp-2">${v.description}</p>
+        </div>
+      </div>
+      <div class="p-3 pt-0 grid grid-cols-2 gap-2">
+        <button onclick="openEntityFullPage('${eKey}', 'סרטון חינוכי • ${v.category}', '${safeTitle}', '${safeSpeaker} • ${v.duration}', 'ספריית הווידאו החינוכית', 'אורך: ${v.duration}', '', '${safeDesc}', 'תוכן חינוכי • בהירות ההסבר • עניין וחיזוק', '${v.thumbnail}')" class="py-2 bg-amber-500 text-white font-bold rounded-xl text-xs">צפה ודרג (${stats.count})</button>
+        <button onclick="saveItemToMyZone('סרטון חינוכי', '${safeTitle}', 'series')" class="py-2 bg-white text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs">שמור</button>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+// 3. מנהג היום והמועדים המתקרבים בתוך "להתפלל -> מנהגים" (ברכת האילנות, ספירת העומר, תעניות וראשי חודשים)
+window.renderDailyCustomsCalendar = function() {
+  var dateEl = document.getElementById("pray-customs-today-date");
+  if (dateEl && window.getHebrewDateString) dateEl.textContent = window.getHebrewDateString();
+
+  var box = document.getElementById("daily-customs-calendar-grid");
+  if (!box || !window.DAILY_CUSTOMS_CALENDAR) return;
+  box.innerHTML = window.DAILY_CUSTOMS_CALENDAR.map(function(dc) {
+    return `
+    <div class="bg-white border border-[#E5DBC7] p-5 rounded-2xl space-y-3">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <span class="px-3 py-1 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-lg text-xs font-bold">${dc.badge}</span>
+        <span class="text-xs font-bold text-[#5C4938]">זמן: ${dc.season}</span>
+      </div>
+      <h4 class="text-lg font-bold text-[#0F2340] serif-heading">${dc.title}</h4>
+      <p class="text-sm text-[#5C4938] leading-relaxed">${dc.explanation}</p>
+      <div class="p-3.5 bg-[#F8F3E8] border border-[#E5DBC7] rounded-xl font-serif text-base text-[#0F2340]">
+        <strong class="text-xs font-sans text-[#5C4938] block mb-1">נוסח הברכה / התפילה:</strong>
+        ${dc.blessingText}
+      </div>
+    </div>`;
+  }).join("");
+};
+
+// 4. מאתר חברותא בתוך "למצוא -> חברותא" (#view-chavruta) + חיפוש + GPS + הוספת חברותא
+window.renderChavrutaDirectory = function(query) {
+  var box = document.getElementById("chavruta-grid-container");
+  if (!box) return;
+  var list = window.getStorageJson(STORAGE_KEYS.CHAVRUTA_LIST, window.CHAVRUTA_DATA || []);
+  var q = (query || "").trim().toLowerCase();
+  if (q && q !== "all") {
+    list = list.filter(function(c) {
+      return c.name.toLowerCase().indexOf(q) !== -1 || c.topic.toLowerCase().indexOf(q) !== -1 || c.city.toLowerCase().indexOf(q) !== -1 || c.mode.toLowerCase().indexOf(q) !== -1 || c.description.toLowerCase().indexOf(q) !== -1;
+    });
+  }
+  box.innerHTML = list.map(function(c) {
+    var safeName = (c.name || "").replace(/'/g, "");
+    var safeTopic = (c.topic || "").replace(/'/g, "");
+    return `
+    <div class="bg-white border border-[#E5DBC7] p-5 rounded-2xl space-y-3 flex flex-col justify-between">
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="px-2.5 py-0.5 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-md text-xs font-bold">${c.mode}</span>
+          <span class="text-xs text-[#5C4938]">${c.verification || "מאומת ✔"}</span>
+        </div>
+        <h4 class="text-lg font-bold text-[#0F2340] serif-heading">${c.name}</h4>
+        <p class="text-xs font-bold text-[#0F2340]">נושא לימוד: ${c.topic}</p>
+        <p class="text-xs text-[#5C4938] leading-relaxed">${c.description}</p>
+        <p class="text-xs text-[#5C4938]">עיר: <strong>${c.city}</strong> • שעות: <strong>${c.hours}</strong></p>
+      </div>
+      <div class="pt-3 border-t border-[#E5DBC7] grid grid-cols-2 gap-2">
+        <a href="tel:${c.phone}" class="py-2 bg-amber-500 text-white font-bold rounded-xl text-xs text-center">חיוג לתיאום חברותא</a>
+        <a href="https://wa.me/972${(c.phone || "").replace(/[^0-9]/g, '').replace(/^0/, '')}?text=${encodeURIComponent('שלום וברכה, ראיתי את הצעת החברותא שלך בצדיק-טוק בנושא ' + safeTopic)}" target="_blank" class="py-2 bg-white text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs text-center">שלח הודעת וואטסאפ</a>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+window.addNewChavrutaOffer = function() {
+  window.requireRegisteredUser(function() {
+    var nameEl = document.getElementById("chavruta-new-name");
+    var topicEl = document.getElementById("chavruta-new-topic");
+    var cityEl = document.getElementById("chavruta-new-city");
+    var phoneEl = document.getElementById("chavruta-new-phone");
+    if (!nameEl || !nameEl.value.trim() || !topicEl || !topicEl.value.trim()) {
+      window.toast("נא למלא שם ונושא לימוד לחברותא");
+      return;
+    }
+    var list = window.getStorageJson(STORAGE_KEYS.CHAVRUTA_LIST, window.CHAVRUTA_DATA || []);
+    list.unshift({
+      id: "chv_" + Date.now(),
+      name: nameEl.value.trim() + " (⏳ במודרציה)",
+      topic: topicEl.value.trim(),
+      mode: "פנים אל פנים / טלפוני",
+      city: (cityEl && cityEl.value.trim()) ? cityEl.value.trim() : currentCity,
+      hours: "בתיאום אישי",
+      phone: (phoneEl && phoneEl.value.trim()) ? phoneEl.value.trim() : "050-0000000",
+      description: "הצעת חברותא חדשה שנוספה על ידי חבר קהילה רשום.",
+      lat: 32.08,
+      lng: 34.83,
+      verification: "ממתין לאישור מודרציה"
+    });
+    window.setStorageJson(STORAGE_KEYS.CHAVRUTA_LIST, list);
+    nameEl.value = "";
+    topicEl.value = "";
+    window.renderChavrutaDirectory("all");
+    window.toast("הצעת החברותא פורסמה ונשלחה למודרציה!");
+  });
 };
