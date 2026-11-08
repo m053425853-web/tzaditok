@@ -2317,6 +2317,7 @@ window.refreshAllCommunityViews = function() {
   window.renderOrdersAndSubscriptionInMyZone();
   window.renderAdminPanel();
   window.renderRabbiShiurimList('');
+  window.fetchLessonsFromSupabase();
   window.renderDailyCustomsCalendar();
   window.renderChavrutaDirectory('all');
   window.initFloatingShabbatButton();
@@ -2714,6 +2715,7 @@ window.setMitzvahTrackerStatus = function(itemId, newStatus) {
   window.renderOrdersAndSubscriptionInMyZone();
   window.renderAdminPanel();
   window.renderRabbiShiurimList('');
+  window.fetchLessonsFromSupabase();
   window.renderDailyCustomsCalendar();
   window.renderChavrutaDirectory('all');
   window.initFloatingShabbatButton();
@@ -2745,6 +2747,7 @@ window.toggleMitzvahSnooze = function(itemId) {
   window.renderOrdersAndSubscriptionInMyZone();
   window.renderAdminPanel();
   window.renderRabbiShiurimList('');
+  window.fetchLessonsFromSupabase();
   window.renderDailyCustomsCalendar();
   window.renderChavrutaDirectory('all');
   window.initFloatingShabbatButton();
@@ -2782,6 +2785,7 @@ window.addNewMitzvahTrackerGoal = function() {
   window.renderOrdersAndSubscriptionInMyZone();
   window.renderAdminPanel();
   window.renderRabbiShiurimList('');
+  window.fetchLessonsFromSupabase();
   window.renderDailyCustomsCalendar();
   window.renderChavrutaDirectory('all');
   window.initFloatingShabbatButton();
@@ -3017,6 +3021,7 @@ window.handleCustomLogoUpload = function(inputEl) {
   window.renderOrdersAndSubscriptionInMyZone();
   window.renderAdminPanel();
   window.renderRabbiShiurimList('');
+  window.fetchLessonsFromSupabase();
   window.renderDailyCustomsCalendar();
   window.renderChavrutaDirectory('all');
   window.initFloatingShabbatButton();
@@ -3199,6 +3204,7 @@ window.saveStudioDraft = function(sendToAdmin) {
   window.renderMyZoneAll();
   window.renderAdminPanel();
   window.renderRabbiShiurimList('');
+  window.fetchLessonsFromSupabase();
   window.renderDailyCustomsCalendar();
   window.renderChavrutaDirectory('all');
   window.initFloatingShabbatButton();
@@ -3307,6 +3313,7 @@ window.submitTzaddikStoryWithSource = function() {
     window.renderMyZoneAll();
     window.renderAdminPanel();
   window.renderRabbiShiurimList('');
+  window.fetchLessonsFromSupabase();
   window.renderDailyCustomsCalendar();
   window.renderChavrutaDirectory('all');
   window.initFloatingShabbatButton();
@@ -3489,6 +3496,7 @@ window.setAdminRole = function(roleName) {
   if (roleLabel) roleLabel.textContent = "הרשאה פעילה: " + roleName;
   window.renderAdminPanel();
   window.renderRabbiShiurimList('');
+  window.fetchLessonsFromSupabase();
   window.renderDailyCustomsCalendar();
   window.renderChavrutaDirectory('all');
   window.initFloatingShabbatButton();
@@ -3946,4 +3954,117 @@ var origToggleShabbat = window.toggleShabbatOverlay;
 window.toggleShabbatOverlay = function() {
   origToggleShabbat();
   window.initFloatingShabbatButton();
+};
+
+
+// ============================================================================
+// V27 SUPABASE INTEGRATION: משיכת והוספת שיעורים מהטבלה 'lessons' ב-Supabase
+// ============================================================================
+
+window.fetchLessonsFromSupabase = async function() {
+  if (!window.supabaseClient) {
+    // אם עדיין לא הוגדרו מפתחות Supabase בדפדפן, מציג את מאגר השיעורים המקומי
+    window.renderRabbiShiurimList("");
+    return;
+  }
+  try {
+    var response = await window.supabaseClient
+      .from("lessons")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (response.error) {
+      console.error("שגיאה במשיכת שיעורים מ-Supabase:", response.error.message);
+      window.renderRabbiShiurimList("");
+      return;
+    }
+
+    if (response.data && response.data.length > 0) {
+      // מיפוי הנתונים מהטבלה lessons לתצוגת השיעורים באפליקציה
+      var supabaseLessons = response.data.map(function(row) {
+        return {
+          id: "sb_" + row.id,
+          rabbi: row.rabbi_name || row.rabbi || "רב בית המדרש",
+          title: row.title || "שיעור תורה",
+          institution: row.institution || "בית המדרש צדיק-טוק",
+          topic: row.topic || row.category || "שיעור תורה",
+          type: row.type || "שיעור מ-Supabase ✔",
+          duration: row.duration || "45:00",
+          videoUrl: row.video_url || row.url || ""
+        };
+      });
+      window.RABBI_SHIURIM_DATA = supabaseLessons.concat(window.RABBI_SHIURIM_DATA || []);
+      window.setStorageJson(STORAGE_KEYS.RABBI_SHIURIM, window.RABBI_SHIURIM_DATA);
+      window.renderRabbiShiurimList("");
+      window.toast("נטענו " + supabaseLessons.length + " שיעורים חיים מטבלת lessons ב-Supabase ✔");
+    }
+  } catch (err) {
+    console.warn("Supabase lessons fetch fallback:", err);
+  }
+};
+
+
+// ============================================================================
+// V28 FULL SUPABASE SYNC: משיכה ושמירה אוטומטית מול הטבלאות ב-Supabase
+// ============================================================================
+
+window.saveSupabaseCredentialsInBrowser = function() {
+  var urlEl = document.getElementById("sb-config-url");
+  var keyEl = document.getElementById("sb-config-key");
+  var u = (urlEl ? urlEl.value : "").trim();
+  var k = (keyEl ? keyEl.value : "").trim();
+  if (!u || !k) {
+    window.toast("נא להדביק את ה-URL ואת ה-ANON KEY של פרויקט ה-Supabase שלך");
+    return;
+  }
+  localStorage.setItem("tzadiktok_supabase_url", u);
+  localStorage.setItem("tzadiktok_supabase_anon_key", k);
+  if (window.supabase && typeof window.supabase.createClient === "function") {
+    window.supabaseClient = window.supabase.createClient(u, k);
+    window.syncAllTablesFromSupabase();
+    window.toast("חיבור ל-Supabase הופעל בהצלחה! טוען נתונים מהטבלאות...");
+  }
+};
+
+window.syncAllTablesFromSupabase = async function() {
+  if (!window.supabaseClient) return;
+  await window.fetchLessonsFromSupabase();
+  try {
+    var chRes = await window.supabaseClient.from("chavruta").select("*").order("created_at", { ascending: false });
+    if (chRes.data && chRes.data.length > 0) {
+      window.CHAVRUTA_DATA = chRes.data.concat(window.CHAVRUTA_DATA || []);
+      window.setStorageJson(STORAGE_KEYS.CHAVRUTA_LIST, window.CHAVRUTA_DATA);
+      window.renderChavrutaDirectory("all");
+    }
+  } catch (e) {
+    console.warn("Supabase sync note:", e);
+  }
+};
+
+// שדרוג uploadNewRabbiShiur כך שישמור גם ישירות לטבלת lessons ב-Supabase אם מחובר!
+var origUploadShiur = window.uploadNewRabbiShiur;
+window.uploadNewRabbiShiur = function() {
+  var rabbiEl = document.getElementById("new-shiur-rabbi");
+  var titleEl = document.getElementById("new-shiur-title");
+  var topicEl = document.getElementById("new-shiur-topic");
+  var urlEl = document.getElementById("new-shiur-url");
+  var rVal = rabbiEl ? rabbiEl.value.trim() : "";
+  var tVal = titleEl ? titleEl.value.trim() : "";
+  var topVal = topicEl ? topicEl.value.trim() : "שיעור תורה";
+  var uVal = urlEl ? urlEl.value.trim() : "";
+
+  origUploadShiur();
+
+  if (window.supabaseClient && rVal && tVal) {
+    window.supabaseClient.from("lessons").insert([{
+      title: tVal,
+      rabbi_name: rVal,
+      topic: topVal || "שיעור תורה",
+      video_url: uVal
+    }]).then(function(res) {
+      if (!res.error) {
+        window.toast("השיעור נשמר גם בטבלת lessons ב-Supabase ✔");
+      }
+    });
+  }
 };
