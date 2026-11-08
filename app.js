@@ -13,7 +13,7 @@ var MITZVOT_LIST = window.getStorageJson(STORAGE_KEYS.CUSTOM_MITZVOT, window.DEF
 window.switchTab = function(tabId) {
   if (tabId === "learn") tabId = "series";
   if (tabId === "pray") tabId = "siddur";
-  if (tabId === "find") tabId = "chabad";
+  if (tabId === "find") tabId = "minyanim";
   if (tabId === "givebuy" || tabId === "donate") tabId = "raffles";
 
   currentTab = tabId;
@@ -26,9 +26,9 @@ window.switchTab = function(tabId) {
 
   var parentHub = tabId;
   if (["series", "kids", "live", "forum"].indexOf(tabId) !== -1) parentHub = "series";
-  else if (["siddur", "minyanim", "rabbis"].indexOf(tabId) !== -1) parentHub = "siddur";
-  else if (["chabad", "mikvaot", "restaurants", "tzaddikim", "gemachim", "customs", "zmanim"].indexOf(tabId) !== -1) parentHub = "find";
-  else if (["donate", "judaica", "raffles", "donors"].indexOf(tabId) !== -1) parentHub = "givebuy";
+  else if (["siddur"].indexOf(tabId) !== -1) parentHub = "siddur";
+  else if (["minyanim", "rabbis", "chabad", "mikvaot", "restaurants", "tzaddikim", "gemachim", "customs", "zmanim"].indexOf(tabId) !== -1) parentHub = "find";
+  else if (["raffles", "judaica", "donors"].indexOf(tabId) !== -1) parentHub = "givebuy";
   else if (["feed"].indexOf(tabId) !== -1) parentHub = "feed";
 
   var pills = document.querySelectorAll(".pill-btn");
@@ -207,7 +207,24 @@ window.switchRashiTab = function(t) {
 // 2. הספרייה המרכזית (Library): תורה (54 פרשיות) | נביאים וכתובים | היסטוריה ודורות | סדרות AI
 // ============================================================================
 window.switchLibrarySubTab = function(subId) {
-  ["weekseries", "music", "torah", "nach", "generations", "aiseries", "eduvideos"].forEach(function(k) {
+  var allSubIds = ["weekseries", "music", "torah", "nach", "generations", "aiseries", "eduvideos", "chassidut", "courses"];
+  var overviewGrid = document.getElementById("learn-departments-overview");
+  var backBar = document.getElementById("learn-back-to-departments");
+
+  if (subId === "overview") {
+    if (overviewGrid) overviewGrid.classList.remove("hidden");
+    if (backBar) backBar.classList.add("hidden");
+    allSubIds.forEach(function(k) {
+      var box = document.getElementById("lib-sub-" + k);
+      if (box) box.classList.add("hidden");
+    });
+    return;
+  }
+
+  if (overviewGrid) overviewGrid.classList.add("hidden");
+  if (backBar) backBar.classList.remove("hidden");
+
+  allSubIds.forEach(function(k) {
     var box = document.getElementById("lib-sub-" + k);
     var btn = document.getElementById("lib-btn-" + k);
     if (box) {
@@ -216,8 +233,8 @@ window.switchLibrarySubTab = function(subId) {
     }
     if (btn) {
       btn.className = (k === subId)
-        ? "px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-black shrink-0 shadow-md"
-        : "px-4 py-2 rounded-xl bg-slate-800 text-slate-300 border border-slate-700 font-bold shrink-0";
+        ? "px-4 py-2 rounded-xl bg-amber-500 text-white font-black shrink-0 shadow-sm"
+        : "px-4 py-2 rounded-xl bg-white text-[#0F2340] border border-[#D8CBB5] font-bold shrink-0";
     }
   });
 };
@@ -283,7 +300,7 @@ window.renderNachBooks = function() {
   c.innerHTML = window.NACH_BOOKS.map(function(grp) {
     return `
       <div class="space-y-3">
-        <h3 class="text-base font-black text-amber-400 border-b border-slate-800 pb-1.5">📜 ${grp.group}</h3>
+        <h3 class="text-base font-black text-amber-400 border-b border-slate-800 pb-1.5"> ${grp.group}</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           ${grp.books
             .map(function(b) {
@@ -1393,7 +1410,7 @@ window.renderMyZoneAll = function() {
             <span class="px-2.5 py-0.5 bg-amber-500/20 text-amber-300 font-black rounded-lg text-[11px]">📅 ${y.hebDate}</span>
             <span class="text-[11px] text-slate-400">${y.relation}</span>
           </div>
-          <h4 class="text-sm font-black text-white">🕯️ ${y.name}</h4>
+          <h4 class="text-sm font-black text-white"> ${y.name}</h4>
           <p class="text-xs text-slate-300">${y.notes}</p>
         </div>
         <div class="flex items-center gap-2 shrink-0">
@@ -1957,7 +1974,7 @@ window.renderHalachaQABank = function(query) {
         <span class="px-2.5 py-0.5 bg-amber-500/15 text-amber-300 rounded-lg text-[10px] font-black">${item.category}</span>
         <span class="text-[11px] text-slate-400">פסק: ${item.rabbi}</span>
       </div>
-      <h4 class="text-sm font-black text-white">❓ ${item.question}</h4>
+      <h4 class="text-sm font-black text-white"> ${item.question}</h4>
       <p class="text-xs text-slate-300 leading-relaxed">✅ ${item.answer}</p>
     </div>`;
   }).join("");
@@ -2287,6 +2304,10 @@ window.refreshAllCommunityViews = function() {
   window.renderForumPosts('all');
   window.renderReligiousServicesDirectory('all');
   window.renderMyZoneMitzvahTracker();
+  window.renderTehillimChapters('');
+  window.renderPrayCustoms('');
+  window.renderCoursesAndChassidut();
+  window.applySavedCustomLogo();
 };
 
 
@@ -2668,6 +2689,10 @@ window.setMitzvahTrackerStatus = function(itemId, newStatus) {
   }
   window.setStorageJson(STORAGE_KEYS.MITZVAH_TRACKER, items);
   window.renderMyZoneMitzvahTracker();
+  window.renderTehillimChapters('');
+  window.renderPrayCustoms('');
+  window.renderCoursesAndChassidut();
+  window.applySavedCustomLogo();
   window.toast(newStatus === "done" ? "אשריך! סומן 'עשיתי' במעקב היומי ✔" : "סומן 'לא עשיתי' – תמיד אפשר להשלים או להפעיל נודניק 🔔");
 };
 
@@ -2683,6 +2708,10 @@ window.toggleMitzvahSnooze = function(itemId) {
   }
   window.setStorageJson(STORAGE_KEYS.MITZVAH_TRACKER, items);
   window.renderMyZoneMitzvahTracker();
+  window.renderTehillimChapters('');
+  window.renderPrayCustoms('');
+  window.renderCoursesAndChassidut();
+  window.applySavedCustomLogo();
 };
 
 window.addNewMitzvahTrackerGoal = function() {
@@ -2704,5 +2733,242 @@ window.addNewMitzvahTrackerGoal = function() {
   window.setStorageJson(STORAGE_KEYS.MITZVAH_TRACKER, items);
   titleEl.value = "";
   window.renderMyZoneMitzvahTracker();
+  window.renderTehillimChapters('');
+  window.renderPrayCustoms('');
+  window.renderCoursesAndChassidut();
+  window.applySavedCustomLogo();
   window.toast("✨ הקבלה האישית נוספה למעקב היומי עם תזכורת נודניק!");
+};
+
+
+// ============================================================================
+// V23 ENGINE: עיצוב מורשת יהודית, תהילים ומנהגים בלהתפלל, חיפוש ו-GPS בכל דפי למצוא, ומצב שבת הלכתי
+// ============================================================================
+
+// 1. ניווט פנימי בלשונית "להתפלל": סידור תפילה | ספר תהילים | מנהגים והלכות
+window.switchPraySubTab = function(subTab) {
+  ["siddur", "tehillim", "customs"].forEach(function(k) {
+    var box = document.getElementById("pray-sub-" + k);
+    var btn = document.getElementById("pray-btn-" + k);
+    if (box) {
+      if (k === subTab) box.classList.remove("hidden");
+      else box.classList.add("hidden");
+    }
+    if (btn) {
+      btn.className = (k === subTab)
+        ? "py-3 px-4 rounded-2xl bg-amber-500 text-white font-black text-sm flex items-center justify-center gap-2 shadow-sm"
+        : "py-3 px-4 rounded-2xl bg-white text-[#0F2340] border border-[#D8CBB5] font-bold text-sm flex items-center justify-center gap-2";
+    }
+  });
+};
+
+window.renderTehillimChapters = function(query) {
+  var container = document.getElementById("tehillim-chapters-container");
+  if (!container || !window.TEHILLIM_DATA) return;
+  var q = (query || "").trim().toLowerCase();
+  var list = window.TEHILLIM_DATA.filter(function(item) {
+    return !q || item.chapter.toLowerCase().indexOf(q) !== -1 || item.category.toLowerCase().indexOf(q) !== -1 || item.purpose.toLowerCase().indexOf(q) !== -1 || item.text.toLowerCase().indexOf(q) !== -1;
+  });
+  container.innerHTML = list.map(function(t) {
+    return `
+    <div class="prayer-sheet-paper space-y-3">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E5DBC7] pb-3">
+        <div>
+          <span class="px-3 py-1 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-lg text-xs font-black">${t.chapter} • ${t.category}</span>
+          <h4 class="text-lg font-black text-[#0F2340] mt-2">${t.purpose}</h4>
+        </div>
+        <button onclick="saveItemToMyZone('תהילים', 'תהילים ${t.chapter} - ${t.category}', 'siddur')" class="px-3.5 py-1.5 bg-white text-[#0F2340] border border-[#D8CBB5] rounded-xl text-xs font-bold self-start sm:self-auto">
+          שמור באזור שלי
+        </button>
+      </div>
+      <p class="text-xl leading-loose font-serif text-[#0F2340]">${t.text}</p>
+    </div>`;
+  }).join("");
+};
+
+window.renderPrayCustoms = function(query) {
+  var container = document.getElementById("pray-customs-container");
+  if (!container || !window.CUSTOMS_DATA) return;
+  var q = (query || "").trim().toLowerCase();
+  var list = window.CUSTOMS_DATA.filter(function(c) {
+    return !q || (c.title && c.title.toLowerCase().indexOf(q) !== -1) || (c.description && c.description.toLowerCase().indexOf(q) !== -1);
+  });
+  container.innerHTML = list.map(function(c) {
+    return `
+    <div class="bg-white border border-[#E5DBC7] p-5 rounded-2xl space-y-2 shadow-sm">
+      <span class="text-xs font-bold text-[#5C4938] bg-[#F6EFE2] px-2.5 py-1 rounded-md inline-block">${c.category || "מנהגי ישראל"}</span>
+      <h4 class="text-lg font-black text-[#0F2340]">${c.title}</h4>
+      <p class="text-sm text-[#5C4938] leading-relaxed">${c.description || c.summary || ""}</p>
+    </div>`;
+  }).join("");
+};
+
+// 2. קורסים במדורים ותורת החסידות בלשונית "ללמוד"
+window.renderCoursesAndChassidut = function() {
+  var chasBox = document.getElementById("chassidut-courses-grid");
+  var crsBox = document.getElementById("structured-courses-grid");
+  var allData = window.COURSES_CHASSIDUT_DATA || [];
+  if (chasBox) {
+    var chasList = allData.filter(function(x) { return x.type === "חסידות"; });
+    chasBox.innerHTML = chasList.map(function(c) {
+      return `
+      <div class="bg-white border border-[#E5DBC7] p-6 rounded-2xl space-y-3 flex flex-col justify-between">
+        <div class="space-y-2">
+          <span class="px-3 py-1 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-lg text-xs font-bold">${c.lessonsCount} • ${c.instructor}</span>
+          <h4 class="text-lg font-black text-[#0F2340]">${c.title}</h4>
+          <p class="text-sm text-[#5C4938] leading-relaxed">${c.summary}</p>
+        </div>
+        <button onclick="openEntityFullPage('course_${c.id}', 'תורת החסידות', '${c.title}', '${c.instructor} • ${c.lessonsCount}', 'בית המדרש לחסידות', '${c.lessonsCount}', '', '${c.summary}', 'עומק התוכן • בהירות השיעור • חיזוק רוחני')" class="w-full py-2.5 bg-amber-500 text-white font-black rounded-xl text-xs">
+          כניסה לשיעורי המדור
+        </button>
+      </div>`;
+    }).join("");
+  }
+  if (crsBox) {
+    var crsList = allData.filter(function(x) { return x.type === "קורסים במדורים"; });
+    crsBox.innerHTML = crsList.map(function(c) {
+      return `
+      <div class="bg-white border border-[#E5DBC7] p-6 rounded-2xl space-y-3 flex flex-col justify-between">
+        <div class="space-y-2">
+          <span class="px-3 py-1 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-lg text-xs font-bold">${c.lessonsCount} • ${c.instructor}</span>
+          <h4 class="text-lg font-black text-[#0F2340]">${c.title}</h4>
+          <p class="text-sm text-[#5C4938] leading-relaxed">${c.summary}</p>
+        </div>
+        <button onclick="openEntityFullPage('course_${c.id}', 'קורס מובנה', '${c.title}', '${c.instructor} • ${c.lessonsCount}', 'מערכת הקורסים', '${c.lessonsCount}', '', '${c.summary}', 'בהירות ההלכה • סדר הלימוד • יישום מעשי')" class="w-full py-2.5 bg-amber-500 text-white font-black rounded-xl text-xs">
+          פתיחת הקורס המלא
+        </button>
+      </div>`;
+    }).join("");
+  }
+};
+
+// 3. חיפוש פרטני + איתור לפי מיקום GPS בכל דף בתוך "למצוא"
+window.filterFindSectionByQuery = function(sectionType, query) {
+  var q = (query || "").trim().toLowerCase();
+  if (sectionType === "minyanim") {
+    var list = (window.MINYANIM_DATA || []).filter(function(m) {
+      return !q || (m.name && m.name.toLowerCase().indexOf(q) !== -1) || (m.city && m.city.toLowerCase().indexOf(q) !== -1) || (m.nusach && m.nusach.toLowerCase().indexOf(q) !== -1);
+    });
+    window.renderMinyanim(list);
+  } else if (sectionType === "rabbis") {
+    var listR = (window.RABBIS_DATA || []).filter(function(r) {
+      return !q || (r.name && r.name.toLowerCase().indexOf(q) !== -1) || (r.title && r.title.toLowerCase().indexOf(q) !== -1) || (r.specialty && r.specialty.toLowerCase().indexOf(q) !== -1) || (r.city && r.city.toLowerCase().indexOf(q) !== -1);
+    });
+    window.renderRabbis(listR);
+  } else if (sectionType === "gemachim") {
+    var listG = (window.GEMACHIM_DATA || []).filter(function(g) {
+      return !q || (g.name && g.name.toLowerCase().indexOf(q) !== -1) || (g.category && g.category.toLowerCase().indexOf(q) !== -1) || (g.city && g.city.toLowerCase().indexOf(q) !== -1) || (g.description && g.description.toLowerCase().indexOf(q) !== -1);
+    });
+    window.renderGemachim(listG);
+  } else if (sectionType === "mikvaot") {
+    var listM = (window.MIKVAOT_DATA || []).filter(function(m) {
+      return !q || (m.name && m.name.toLowerCase().indexOf(q) !== -1) || (m.city && m.city.toLowerCase().indexOf(q) !== -1) || (m.type && m.type.toLowerCase().indexOf(q) !== -1);
+    });
+    window.renderMikvaot(listM);
+  } else if (sectionType === "chabad") {
+    var listC = (window.CHABAD_DATA || []).filter(function(c) {
+      return !q || (c.name && c.name.toLowerCase().indexOf(q) !== -1) || (c.country && c.country.toLowerCase().indexOf(q) !== -1) || (c.rabbi && c.rabbi.toLowerCase().indexOf(q) !== -1) || (c.address && c.address.toLowerCase().indexOf(q) !== -1);
+    });
+    window.renderChabad(listC);
+  } else if (sectionType === "tzaddikim") {
+    var listT = (window.TZADDIKIM_DATA || []).filter(function(t) {
+      return !q || (t.name && t.name.toLowerCase().indexOf(q) !== -1) || (t.city && t.city.toLowerCase().indexOf(q) !== -1) || (t.segula && t.segula.toLowerCase().indexOf(q) !== -1);
+    });
+    window.renderTzaddikim(listT);
+  } else if (sectionType === "customs") {
+    var services = window.getStorageJson(STORAGE_KEYS.REL_SERVICES, window.RELIGIOUS_SERVICES_DATA || []);
+    var listS = services.filter(function(s) {
+      return !q || (s.name && s.name.toLowerCase().indexOf(q) !== -1) || (s.category && s.category.toLowerCase().indexOf(q) !== -1) || (s.city && s.city.toLowerCase().indexOf(q) !== -1) || (s.description && s.description.toLowerCase().indexOf(q) !== -1);
+    });
+    var grid = document.getElementById("religious-services-pro-grid");
+    if (grid) {
+      activeRelServiceCategory = "all";
+      window.RELIGIOUS_SERVICES_TEMP = listS;
+      window.renderReligiousServicesDirectory(q || "all");
+    }
+  }
+};
+
+window.locateNearestByGPS = function(sectionType) {
+  window.toast("מאתר מיקום GPS נוכחי וממיין תוצאות לפי מרחק ממך...");
+  var applySortByCoords = function(userLat, userLng, label) {
+    var sortArr = function(arr) {
+      return (arr || []).slice().sort(function(a, b) {
+        var dA = window.calcDistanceKm ? window.calcDistanceKm(userLat, userLng, a.lat || 32.08, a.lng || 34.83) : 0.5;
+        var dB = window.calcDistanceKm ? window.calcDistanceKm(userLat, userLng, b.lat || 32.08, b.lng || 34.83) : 1.2;
+        a.distanceKm = dA.toFixed(1);
+        b.distanceKm = dB.toFixed(1);
+        return dA - dB;
+      });
+    };
+    if (sectionType === "minyanim") window.renderMinyanim(sortArr(window.MINYANIM_DATA));
+    else if (sectionType === "gemachim") window.renderGemachim(sortArr(window.GEMACHIM_DATA));
+    else if (sectionType === "mikvaot") window.renderMikvaot(sortArr(window.MIKVAOT_DATA));
+    else if (sectionType === "restaurants") window.renderRestaurants(sortArr(window.RESTAURANTS_DATA));
+    else if (sectionType === "chabad") window.renderChabad(sortArr(window.CHABAD_DATA));
+    else if (sectionType === "tzaddikim") window.renderTzaddikim(sortArr(window.TZADDIKIM_DATA));
+    else if (sectionType === "rabbis") window.renderRabbis(window.RABBIS_DATA);
+    else if (sectionType === "customs") window.renderReligiousServicesDirectory("all");
+    window.toast("התוצאות מוינו לפי קרבה למיקום ה-GPS שלך (" + label + ")");
+  };
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      function(pos) {
+        applySortByCoords(pos.coords.latitude, pos.coords.longitude, "מיקום GPS מדויק");
+      },
+      function() {
+        applySortByCoords(32.0840, 34.8352, currentCity || "בני ברק / מרכז");
+      },
+      { timeout: 4000 }
+    );
+  } else {
+    applySortByCoords(32.0840, 34.8352, currentCity || "בני ברק / מרכז");
+  }
+};
+
+// 4. מצב שבת הלכתי אמיתי: מכבה מוזיקה, סרטונים, חנות ותרומות, ומשאיר רק סידור, זמנים ומידע
+window.toggleShabbatOverlay = function() {
+  var isShabbat = document.body.classList.contains("shabbat-mode-active");
+  if (!isShabbat) {
+    document.body.classList.add("shabbat-mode-active");
+    localStorage.setItem(STORAGE_KEYS.SHABBAT_ACTIVE, "true");
+    isMusicPlaying = false;
+    var banner = document.getElementById("shabbat-active-top-banner");
+    if (banner) banner.classList.remove("hidden");
+    var modal = document.getElementById("modal-shabbat-mode");
+    if (modal) modal.classList.add("hidden");
+    window.switchTab("siddur");
+    window.toast("שבת שלום: מצב שבת הופעל – מוזיקה, סרטונים, חנות ותרומות כבויים. פתוח לסידור, תהילים, זמנים ומידע בלבד.");
+  } else {
+    document.body.classList.remove("shabbat-mode-active");
+    localStorage.setItem(STORAGE_KEYS.SHABBAT_ACTIVE, "false");
+    var bannerOff = document.getElementById("shabbat-active-top-banner");
+    if (bannerOff) bannerOff.classList.add("hidden");
+    window.toast("שבוע טוב ומבורך: מצב שבת כובה וכל חלקי האפליקציה פעילים.");
+  }
+};
+
+// 5. העלאת תמונת לוגו מותאמת אישית לכותרת העליונה
+window.handleCustomLogoUpload = function(inputEl) {
+  if (!inputEl || !inputEl.files || !inputEl.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var dataUrl = e.target.result;
+    localStorage.setItem(STORAGE_KEYS.CUSTOM_LOGO, dataUrl);
+    window.applySavedCustomLogo();
+    window.toast("הלוגו שלך עודכן בכותרת הראשית בהצלחה!");
+  };
+  reader.readAsDataURL(inputEl.files[0]);
+};
+
+window.applySavedCustomLogo = function() {
+  var savedLogo = localStorage.getItem(STORAGE_KEYS.CUSTOM_LOGO);
+  var imgEl = document.getElementById("header-custom-logo-img");
+  var svgFallback = document.getElementById("header-default-logo-svg");
+  if (savedLogo && imgEl) {
+    imgEl.src = savedLogo;
+    imgEl.classList.remove("hidden");
+    if (svgFallback) svgFallback.classList.add("hidden");
+  }
 };

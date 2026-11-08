@@ -1,151 +1,231 @@
 /* ==========================================================================
-   צדיק-טוק (TzadikTok Super-App) - קובץ עיצוב ומיקומים (style.css)
+   צדיק-טוק (TzadikTok) - עיצוב פרימיום יהודי חם ומכובד (style.css - V23)
+   פלטת צבעים: קרם בהיר (#FDF8EF), כחול עמוק (#0F2340), זהב (#C9A227), חום חם (#5C4938), לבן (#FFFFFF)
    ========================================================================== */
 
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
+:root {
+  --bg-cream: #FDF8EF;
+  --bg-cream-alt: #F6EFE2;
+  --navy-deep: #0F2340;
+  --gold-heritage: #C9A227;
+  --gold-hover: #B38E1E;
+  --brown-warm: #5C4938;
+  --border-warm: #E5DBC7;
+  --white: #FFFFFF;
 }
 
-body {
-  font-family: 'Heebo', sans-serif;
-  background: #070C18;
-  color: #F8FAFC;
-  padding-bottom: calc(5.2rem + env(safe-area-inset-bottom));
-  line-height: 1.5;
-  overflow-x: hidden;
-}
-
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.hide-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.view-section {
-  display: none;
-}
-
-.view-section.active {
-  display: block;
-  animation: fadeIn 0.2s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.bottom-nav-item {
-  cursor: pointer;
-  touch-action: manipulation;
-  user-select: none;
-}
-
-.bottom-nav-item.active {
-  color: #F59E0B !important;
-}
-
-.bottom-nav-item.active .nav-icon-bg {
-  background: rgba(245, 158, 11, 0.2);
-  border-color: rgba(245, 158, 11, 0.5);
-  transform: translateY(-2px);
-}
-
-.pill-btn.active {
-  background: linear-gradient(135deg, #F59E0B, #D97706);
-  color: #07101F;
-  border-color: #F59E0B;
-  font-weight: 900;
-  box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
-}
-
-.gold-gradient-text {
-  background: linear-gradient(135deg, #FDE68A 0%, #F59E0B 50%, #D97706 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.modal-backdrop {
-  background: rgba(3, 7, 18, 0.92);
-  backdrop-filter: blur(10px);
-}
-
-@keyframes ticker {
-  0% {
-    transform: translate3d(100%, 0, 0);
-  }
-  100% {
-    transform: translate3d(-100%, 0, 0);
-  }
-}
-
-.ticker-content {
-  animation: ticker 35s linear infinite;
-}
-
-.flame-anim {
-  animation: flicker 1.5s infinite alternate ease-in-out;
-}
-
-@keyframes flicker {
-  0% {
-    transform: scale(1) rotate(-1deg);
-    opacity: 0.9;
-  }
-  50% {
-    transform: scale(1.08) rotate(1deg);
-    opacity: 1;
-    filter: drop-shadow(0 0 8px #f59e0b);
-  }
-  100% {
-    transform: scale(0.96) rotate(-0.5deg);
-    opacity: 0.85;
-  }
-}
-
-/* Edge-to-Edge Full Mobile Video Card */
-@media (max-width: 640px) {
-  .mobile-full-bleed {
-    margin-left: -0.75rem;
-    margin-right: -0.75rem;
-    border-radius: 1.25rem;
-  }
-}
-
-
-/* V22 Strict Mobile & Desktop Responsive Lock - Zero Horizontal Shift */
 *, *::before, *::after {
   box-sizing: border-box;
 }
+
 html, body {
   max-width: 100vw !important;
   width: 100% !important;
   overflow-x: hidden !important;
   margin: 0 !important;
   padding: 0 !important;
+  background-color: #FDF8EF !important;
+  color: #0F2340 !important;
+  font-family: 'Heebo', sans-serif;
+  line-height: 1.6;
   position: relative;
   touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
 }
+
 main, header, nav, section, .view-section {
   max-width: 100vw !important;
   overflow-x: hidden;
 }
-@media (max-width: 640px) {
-  .mobile-full-bleed {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: 100% !important;
-    border-radius: 20px !important;
-  }
+
+/* כותרות בפונט Frank Ruhl Libre / Heebo Bold עם היררכיה ברורה */
+h1, h2, .serif-heading, .font-serif {
+  font-family: 'Frank Ruhl Libre', 'Heebo', serif !important;
+  color: #0F2340 !important;
+  letter-spacing: -0.01em;
+}
+
+h3, h4 {
+  font-family: 'Heebo', sans-serif;
+  font-weight: 700;
+  color: #0F2340 !important;
+}
+
+/* דריסת מחלקות כהות ישנות לטובת פלטת הקרם-כחול-זהב-לבן המכובדת */
+.bg-slate-900, .bg-slate-900\/95, .bg-slate-900\/90, .bg-\[\#070C18\]\/95, .bg-\[\#070C18\]\/98, .glass-panel {
+  background-color: #FFFFFF !important;
+  color: #0F2340 !important;
+  border-color: #E5DBC7 !important;
+  box-shadow: 0 2px 10px rgba(15, 35, 64, 0.05) !important;
+}
+
+.bg-slate-950, .bg-slate-950\/90, .bg-slate-950\/85, .bg-slate-800 {
+  background-color: #F8F3E8 !important;
+  color: #0F2340 !important;
+  border-color: #E5DBC7 !important;
+}
+
+/* ביטול גרדיאנטים גנריים של AI */
+.bg-gradient-to-r, .bg-gradient-to-br {
+  background-image: none !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #E5DBC7 !important;
+  box-shadow: 0 2px 10px rgba(15, 35, 64, 0.05) !important;
+}
+
+/* טקסטים כהים, חמים וקריאים */
+.text-white, .text-slate-100, .text-slate-200 {
+  color: #0F2340 !important;
+}
+
+.text-slate-300, .text-slate-400, .text-slate-500 {
+  color: #5C4938 !important;
+}
+
+.text-amber-300, .text-amber-400, .text-cyan-300, .text-cyan-400, .text-emerald-300, .text-emerald-400, .text-purple-300, .text-rose-300, .text-rose-400, .text-blue-300, .gold-gradient-text {
+  color: #0F2340 !important;
+  background: none !important;
+  -webkit-text-fill-color: initial !important;
+}
+
+/* מסגרות ופינות מעוגלות אחידות 16px */
+.border-slate-800, .border-slate-800\/80, .border-slate-800\/90, .border-slate-700, .border-amber-500\/30, .border-amber-500\/40, .border-amber-500\/50, .border-cyan-500\/30, .border-emerald-500\/30, .border-rose-500\/30, .border-blue-500\/30, .border-red-500\/30, .border-red-500\/40 {
+  border-color: #E5DBC7 !important;
+}
+
+.rounded-3xl, .rounded-2xl {
+  border-radius: 16px !important;
+}
+
+/* כפתור ראשי בצבע זהב כהה (#C9A227) */
+.bg-amber-500, .bg-amber-600, .btn-gold-primary {
+  background-color: #C9A227 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #B38E1E !important;
+  box-shadow: 0 2px 6px rgba(201, 162, 39, 0.2) !important;
+}
+.bg-amber-500:hover, .btn-gold-primary:hover {
+  background-color: #B38E1E !important;
+}
+.bg-amber-500 *, .btn-gold-primary * {
+  color: #FFFFFF !important;
+}
+
+/* כפתורים משניים בלבן עם מסגרת עדינה */
+.bg-amber-500\/10, .bg-amber-500\/15, .bg-amber-500\/20, .bg-cyan-500\/10, .bg-cyan-500\/15, .bg-cyan-500\/20, .bg-emerald-500\/10, .bg-emerald-500\/15, .bg-emerald-500\/20, .bg-blue-500\/20, .bg-red-950\/40, .bg-red-950\/60, .btn-secondary-white {
+  background-color: #FFFFFF !important;
+  color: #0F2340 !important;
+  border: 1px solid #D8CBB5 !important;
+}
+
+/* כותרת עליונה ותחתונה בכחול עמוק או לבן-קרם נקי */
+header.heritage-header {
+  background-color: #0F2340 !important;
+  border-bottom: 2px solid #C9A227 !important;
+  color: #FFFFFF !important;
+}
+header.heritage-header h1, header.heritage-header .header-title-text {
+  color: #FDF8EF !important;
+  font-family: 'Frank Ruhl Libre', serif !important;
+}
+
+/* תפריט תחתון קבוע במובייל - 5 כפתורים */
+nav.heritage-bottom-nav {
+  background-color: #FFFFFF !important;
+  border-top: 1px solid #DFD3BE !important;
+  box-shadow: 0 -2px 12px rgba(15, 35, 64, 0.06) !important;
+}
+nav.heritage-bottom-nav .bottom-nav-item {
+  color: #5C4938 !important;
+  transition: all 0.15s ease;
+}
+nav.heritage-bottom-nav .bottom-nav-item.active {
+  color: #0F2340 !important;
+  font-weight: 800;
+}
+nav.heritage-bottom-nav .bottom-nav-item.active .nav-line-indicator {
+  background-color: #C9A227 !important;
+  opacity: 1;
+}
+
+/* ייחודיות עיצובית לכל עולם (World-Specific Styling) */
+/* 1. ללמוד: תמונות רחבות ומרווח נדיב */
+#view-series .learn-dept-card {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E5DBC7 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 2px 10px rgba(15, 35, 64, 0.05) !important;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+#view-series .learn-dept-card:hover {
+  border-color: #C9A227 !important;
+}
+
+/* 2. להתפלל: נקי ושקט עם הרבה לבן ומרווח ספר קודש */
+#view-siddur .prayer-sheet-paper {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E5DBC7 !important;
+  border-radius: 16px !important;
+  padding: 28px 24px !important;
+  box-shadow: 0 2px 12px rgba(15, 35, 64, 0.04) !important;
+  line-height: 2.05 !important;
+  font-family: 'Frank Ruhl Libre', serif !important;
+  color: #0F2340 !important;
+}
+
+/* 3. למצוא: רשימות סדורות ומפה */
+.find-search-panel {
+  background-color: #FFFFFF !important;
+  border: 1px solid #D8CBB5 !important;
+  border-radius: 16px !important;
+  padding: 16px !important;
+  box-shadow: 0 2px 8px rgba(15, 35, 64, 0.04) !important;
+}
+
+/* 4. לתת ולקנות: כרטיסים קומפקטיים ומחירים ברורים */
+.price-tag-clear {
+  font-family: 'Heebo', sans-serif;
+  font-weight: 900;
+  color: #0F2340 !important;
+  background-color: #F6EFE2 !important;
+  border: 1px solid #C9A227 !important;
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+/* ניהול תצוגת מדורים */
+.view-section {
+  display: none;
+}
+.view-section.active {
+  display: block;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.modal-backdrop {
+  background-color: rgba(15, 35, 64, 0.65) !important;
+  backdrop-filter: blur(3px);
+}
+
+/* מצב שבת הלכתי: מכבה מוזיקה, סרטונים, חנות ותרומות - משאיר רק סידור, זמנים ומידע */
+body.shabbat-mode-active .shabbat-hide,
+body.shabbat-mode-active #bnav-givebuy,
+body.shabbat-mode-active #pill-givebuy,
+body.shabbat-mode-active #view-raffles,
+body.shabbat-mode-active #view-judaica,
+body.shabbat-mode-active #view-donors,
+body.shabbat-mode-active #view-live,
+body.shabbat-mode-active #feed-cards-container,
+body.shabbat-mode-active #home-music-section,
+body.shabbat-mode-active #home-hero-video-section,
+body.shabbat-mode-active #home-quick-media-bar {
+  display: none !important;
 }
