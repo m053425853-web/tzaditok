@@ -25,10 +25,12 @@ window.switchTab = function(tabId) {
   if (target) target.classList.add("active");
 
   var parentHub = tabId;
-  if (["series", "kids", "live", "forum"].indexOf(tabId) !== -1) parentHub = "series";
+  if (["series", "kids", "live", "studio"].indexOf(tabId) !== -1) parentHub = "series";
   else if (["siddur"].indexOf(tabId) !== -1) parentHub = "siddur";
-  else if (["minyanim", "rabbis", "chabad", "mikvaot", "restaurants", "tzaddikim", "gemachim", "customs", "zmanim"].indexOf(tabId) !== -1) parentHub = "find";
-  else if (["raffles", "judaica", "donors"].indexOf(tabId) !== -1) parentHub = "givebuy";
+  else if (["minyanim", "rabbis", "chabad", "mikvaot", "restaurants", "tzaddikim", "gemachim", "customs", "zmanim", "yeshivot", "prayerwall"].indexOf(tabId) !== -1) parentHub = "find";
+  else if (["raffles", "judaica", "donors", "premium"].indexOf(tabId) !== -1) parentHub = "givebuy";
+  else if (["forum"].indexOf(tabId) !== -1) parentHub = "forum";
+  else if (["myzone", "admin"].indexOf(tabId) !== -1) parentHub = "myzone";
   else if (["feed"].indexOf(tabId) !== -1) parentHub = "feed";
 
   var pills = document.querySelectorAll(".pill-btn");
@@ -42,7 +44,7 @@ window.switchTab = function(tabId) {
   for (var k = 0; k < bnavs.length; k++) {
     bnavs[k].classList.remove("active");
   }
-  var activeBNav = document.getElementById("bnav-" + parentHub);
+  var activeBNav = document.getElementById("bnav-" + parentHub) || document.getElementById("bnav-" + tabId);
   if (activeBNav) activeBNav.classList.add("active");
 
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -105,58 +107,70 @@ window.renderFeedCards = function(cards) {
   var container = document.getElementById("feed-cards-container");
   if (!container) return;
   var likesState = window.getStorageJson(STORAGE_KEYS.LIKES, {});
+  var followed = window.getStorageJson(STORAGE_KEYS.FOLLOWED_CREATORS, {});
 
-  container.innerHTML = cards
-    .map(function(item) {
-      var totalLikes = (item.likes + (likesState[item.id] || 0)).toLocaleString();
-      return `
-      <div class="mobile-full-bleed relative bg-slate-950 border border-slate-800/80 rounded-3xl overflow-hidden shadow-2xl">
-        <div class="absolute top-0 left-0 right-0 z-20 p-3.5 bg-gradient-to-b from-black/90 via-black/40 to-transparent flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <span class="w-8 h-8 rounded-full bg-amber-500 text-slate-950 font-black flex items-center justify-center text-xs">צ</span>
-            <div>
-              <span class="text-xs font-black text-white flex items-center gap-1">${item.creator} <span class="text-cyan-400 text-[10px]">✔</span></span>
-              <span class="text-[10px] text-amber-300 font-medium">${item.chumash}</span>
+  container.innerHTML = (cards || []).map(function(item) {
+    var totalLikes = (item.likes + (likesState[item.id] || 0)).toLocaleString();
+    var isFollowing = !!followed[item.creator];
+    var safeTitle = (item.title || "").replace(/'/g, "");
+    var safeCreator = (item.creator || "צדיק-טוק הפקות מקור").replace(/'/g, "");
+    var srcBadge = item.sourceBadge || "פסוק מהמקור + מדרש חז״ל";
+    return `
+    <div class="mobile-full-bleed relative bg-white border border-[#E5DBC7] rounded-2xl overflow-hidden shadow-sm">
+      <div class="p-3.5 bg-[#FDF8EF] border-b border-[#E5DBC7] flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-[#0F2340] text-white font-black flex items-center justify-center text-sm" style="color:#FFFFFF !important;">צ</div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-[#0F2340]">${item.creator}</span>
+              <button onclick="toggleFollowCreator('${safeCreator}')" class="px-2 py-0.5 rounded-md text-[10px] font-bold ${isFollowing ? 'bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227]' : 'bg-amber-500 text-white'}">
+                ${isFollowing ? 'עוקב ✔' : '+ מעקב'}
+              </button>
             </div>
+            <span class="text-[11px] text-[#5C4938] block">${item.chumash} • מקור: <strong>${srcBadge}</strong></span>
           </div>
-          <button onclick="openSeriesEpisodes('${item.seriesId || "s_joseph"}')" class="px-3 py-1 bg-amber-500 text-slate-950 rounded-full text-[11px] font-black shadow-lg active:scale-95">
-            📺 לפרק המלא
+        </div>
+        <button onclick="openSeriesEpisodes('${item.seriesId || "s_joseph"}')" class="px-3 py-1.5 bg-amber-500 text-white rounded-xl text-xs font-bold">
+          לסדרה המלאה
+        </button>
+      </div>
+
+      <div class="relative w-full h-[64vh] sm:h-[540px] bg-[#0F2340] flex items-center justify-center overflow-hidden">
+        <img src="${item.image}" alt="${safeTitle}" class="absolute inset-0 w-full h-full object-cover opacity-85">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" style="background-image: linear-gradient(to top, rgba(15,35,64,0.92), rgba(15,35,64,0.2), transparent) !important; background-color: transparent !important; border: none !important;"></div>
+
+        <button onclick="playReelVideoDemo('${item.id}', '${safeTitle}')" class="relative z-10 w-16 h-16 rounded-full bg-amber-500 text-white flex items-center justify-center text-2xl font-black shadow-lg">
+          ▶
+        </button>
+
+        <!-- כפתורי אינטראקציה בצד הסרטון -->
+        <div class="absolute right-3 bottom-24 z-20 flex flex-col items-center gap-2.5">
+          <button onclick="toggleLike('${item.id}')" class="px-3 py-1.5 rounded-xl bg-white/95 border border-[#E5DBC7] text-[#0F2340] text-xs font-bold shadow">
+            לייק (${totalLikes})
+          </button>
+          <button onclick="openRashiDrawer('${item.id}')" class="px-3 py-1.5 rounded-xl bg-white/95 border border-[#C9A227] text-[#0F2340] text-xs font-bold shadow">
+            רש״י ומקור
+          </button>
+          <button onclick="openEntityFullPage('reel_${item.id}', 'תגובות לסרטון • ${srcBadge}', '${safeTitle}', '${safeCreator}', '${item.chumash}', '', '', '${(item.rashi || "").replace(/'/g, "")}', 'תגובות הגולשים • דברי תורה • חיזוק')" class="px-3 py-1.5 rounded-xl bg-white/95 border border-[#E5DBC7] text-[#0F2340] text-xs font-bold shadow">
+            תגובות
+          </button>
+          <button onclick="saveItemToMyZone('סרטון קצר', '${safeTitle}', 'feed')" class="px-3 py-1.5 rounded-xl bg-white/95 border border-[#E5DBC7] text-[#0F2340] text-xs font-bold shadow">
+            שמור
+          </button>
+          <button onclick="reportContentModal('${safeTitle}')" class="px-2.5 py-1 rounded-lg bg-white/80 text-[#5C4938] text-[10px] font-bold">
+            דיווח
           </button>
         </div>
 
-        <div class="relative w-full h-[72vh] sm:h-[620px] bg-slate-950 flex items-center justify-center overflow-hidden">
-          <img src="${item.image}" alt="${item.title}" class="absolute inset-0 w-full h-full object-cover">
-          <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/95"></div>
-
-          <button onclick="toast('מנגן סרטון רילס ב-4K')" class="relative z-10 w-16 h-16 rounded-full bg-amber-500/95 hover:bg-amber-400 text-slate-950 flex items-center justify-center text-2xl font-black shadow-2xl active:scale-95 transition-all">
-            ▶
-          </button>
-
-          <div class="absolute right-3 bottom-20 z-20 flex flex-col items-center gap-3.5">
-            <button onclick="toggleLike('${item.id}')" class="flex flex-col items-center gap-0.5">
-              <div class="w-10 h-10 rounded-full bg-slate-900/85 border border-slate-700 flex items-center justify-center text-red-500 text-lg shadow-lg">❤️</div>
-              <span id="like-count-${item.id}" class="text-[11px] font-bold text-white">${totalLikes}</span>
-            </button>
-            <button onclick="openRashiDrawer('${item.id}')" class="flex flex-col items-center gap-0.5">
-              <div class="w-10 h-10 rounded-full bg-amber-500/25 border border-amber-500/60 flex items-center justify-center text-amber-300 text-lg shadow-lg">📖</div>
-              <span class="text-[10px] font-bold text-amber-300">רש״י וחז״ל</span>
-            </button>
-            <button onclick="toast('הקישור הועתק לשיתוף בוואטסאפ!')" class="flex flex-col items-center gap-0.5">
-              <div class="w-10 h-10 rounded-full bg-slate-900/85 border border-slate-700 flex items-center justify-center text-white text-lg shadow-lg">📤</div>
-              <span class="text-[11px] font-bold text-white">שתף</span>
-            </button>
-          </div>
-
-          <div class="absolute bottom-0 left-0 right-16 z-20 p-4 space-y-1.5 text-right">
-            <h3 class="text-base font-black text-white">${item.title}</h3>
-            <p class="text-xs text-amber-200 font-serif line-clamp-2">${item.quote}</p>
-            <p class="text-[11px] text-slate-300 line-clamp-1">${item.rashi}</p>
-          </div>
+        <div class="absolute bottom-0 left-0 right-28 z-20 p-4 space-y-1 text-right">
+          <span class="px-2.5 py-0.5 bg-[#C9A227] text-white rounded text-[10px] font-bold inline-block">${srcBadge}</span>
+          <h3 class="text-lg font-bold" style="color:#FFFFFF !important;">${item.title}</h3>
+          <p class="text-xs font-serif" style="color:#FDF8EF !important;">${item.quote}</p>
+          <p class="text-xs" style="color:#E5DBC7 !important;">${item.rashi}</p>
         </div>
       </div>
-      `;
-    })
-    .join("");
+    </div>`;
+  }).join("");
 };
 
 window.filterFeedCards = function(cat) {
@@ -207,7 +221,7 @@ window.switchRashiTab = function(t) {
 // 2. הספרייה המרכזית (Library): תורה (54 פרשיות) | נביאים וכתובים | היסטוריה ודורות | סדרות AI
 // ============================================================================
 window.switchLibrarySubTab = function(subId) {
-  var allSubIds = ["weekseries", "music", "torah", "nach", "generations", "aiseries", "eduvideos", "chassidut", "courses"];
+  var allSubIds = ["weekseries", "music", "torah", "nach", "generations", "aiseries", "eduvideos", "chassidut", "courses", "mishnah"];
   var overviewGrid = document.getElementById("learn-departments-overview");
   var backBar = document.getElementById("learn-back-to-departments");
 
@@ -1266,7 +1280,7 @@ window.renderFullDonorsPage = function() {
 
 // האזור שלי (My Zone): שמורים, היסטוריה, יארצייטים אישיים, הגדרות
 window.switchMyZoneSubTab = function(subTab) {
-  ["tracker", "quizresults", "saved", "history", "yahrzeits", "submissions", "settings"].forEach(function(k) {
+  ["tracker", "quizresults", "saved", "history", "yahrzeits", "submissions", "premium", "orders", "settings"].forEach(function(k) {
     var box = document.getElementById("myzone-sub-" + k);
     var btn = document.getElementById("myzone-btn-" + k);
     if (box) {
@@ -2308,6 +2322,14 @@ window.refreshAllCommunityViews = function() {
   window.renderPrayCustoms('');
   window.renderCoursesAndChassidut();
   window.applySavedCustomLogo();
+  window.renderMishnahGemaraHalacha();
+  window.renderLearningStreakBar();
+  window.renderContinueWatchingBanner();
+  window.renderStudioDrafts();
+  window.renderYeshivotAndMosdot('');
+  window.renderCommunityPrayerWall();
+  window.renderOrdersAndSubscriptionInMyZone();
+  window.renderAdminPanel();
 };
 
 
@@ -2693,6 +2715,14 @@ window.setMitzvahTrackerStatus = function(itemId, newStatus) {
   window.renderPrayCustoms('');
   window.renderCoursesAndChassidut();
   window.applySavedCustomLogo();
+  window.renderMishnahGemaraHalacha();
+  window.renderLearningStreakBar();
+  window.renderContinueWatchingBanner();
+  window.renderStudioDrafts();
+  window.renderYeshivotAndMosdot('');
+  window.renderCommunityPrayerWall();
+  window.renderOrdersAndSubscriptionInMyZone();
+  window.renderAdminPanel();
   window.toast(newStatus === "done" ? "אשריך! סומן 'עשיתי' במעקב היומי ✔" : "סומן 'לא עשיתי' – תמיד אפשר להשלים או להפעיל נודניק 🔔");
 };
 
@@ -2712,6 +2742,14 @@ window.toggleMitzvahSnooze = function(itemId) {
   window.renderPrayCustoms('');
   window.renderCoursesAndChassidut();
   window.applySavedCustomLogo();
+  window.renderMishnahGemaraHalacha();
+  window.renderLearningStreakBar();
+  window.renderContinueWatchingBanner();
+  window.renderStudioDrafts();
+  window.renderYeshivotAndMosdot('');
+  window.renderCommunityPrayerWall();
+  window.renderOrdersAndSubscriptionInMyZone();
+  window.renderAdminPanel();
 };
 
 window.addNewMitzvahTrackerGoal = function() {
@@ -2737,6 +2775,14 @@ window.addNewMitzvahTrackerGoal = function() {
   window.renderPrayCustoms('');
   window.renderCoursesAndChassidut();
   window.applySavedCustomLogo();
+  window.renderMishnahGemaraHalacha();
+  window.renderLearningStreakBar();
+  window.renderContinueWatchingBanner();
+  window.renderStudioDrafts();
+  window.renderYeshivotAndMosdot('');
+  window.renderCommunityPrayerWall();
+  window.renderOrdersAndSubscriptionInMyZone();
+  window.renderAdminPanel();
   window.toast("✨ הקבלה האישית נוספה למעקב היומי עם תזכורת נודניק!");
 };
 
@@ -2957,6 +3003,14 @@ window.handleCustomLogoUpload = function(inputEl) {
     var dataUrl = e.target.result;
     localStorage.setItem(STORAGE_KEYS.CUSTOM_LOGO, dataUrl);
     window.applySavedCustomLogo();
+  window.renderMishnahGemaraHalacha();
+  window.renderLearningStreakBar();
+  window.renderContinueWatchingBanner();
+  window.renderStudioDrafts();
+  window.renderYeshivotAndMosdot('');
+  window.renderCommunityPrayerWall();
+  window.renderOrdersAndSubscriptionInMyZone();
+  window.renderAdminPanel();
     window.toast("הלוגו שלך עודכן בכותרת הראשית בהצלחה!");
   };
   reader.readAsDataURL(inputEl.files[0]);
@@ -2971,4 +3025,522 @@ window.applySavedCustomLogo = function() {
     imgEl.classList.remove("hidden");
     if (svgFallback) svgFallback.classList.add("hidden");
   }
+};
+
+
+// ============================================================================
+// V24 MASTER PHASE 1 ENGINE: כל 14 המודולים במצב הדגמה מלא (ללא פעולות ריקות)
+// ============================================================================
+
+var appliedCouponDiscount = 0;
+var activeAdminRole = localStorage.getItem(STORAGE_KEYS.ADMIN_ROLE) || "מנהל ראשי";
+
+window.toggleFollowCreator = function(creatorName) {
+  var followed = window.getStorageJson(STORAGE_KEYS.FOLLOWED_CREATORS, {});
+  followed[creatorName] = !followed[creatorName];
+  window.setStorageJson(STORAGE_KEYS.FOLLOWED_CREATORS, followed);
+  window.renderFeedCards(window.REEL_FEED);
+  window.toast(followed[creatorName] ? ("התחלת לעקוב אחרי " + creatorName + " ✔") : ("הפסקת מעקב אחרי " + creatorName));
+};
+
+window.playReelVideoDemo = function(reelId, title) {
+  window.addLearningPoints(5, "צפייה בסרטון תורה: " + title);
+  var hist = window.getStorageJson(STORAGE_KEYS.HISTORY_ITEMS, window.DEFAULT_HISTORY_ITEMS || []);
+  hist.unshift({ id: "hs_" + Date.now(), time: "עכשיו", title: title, category: "פיד סרטונים" });
+  window.setStorageJson(STORAGE_KEYS.HISTORY_ITEMS, hist);
+  window.renderMyZoneAll();
+  window.toast("מנגן סרטון: " + title + " (+5 נקודות לימוד נוספו לחשבונך)");
+};
+
+window.reportContentModal = function(itemTitle) {
+  var reason = prompt("דיווח למערכת הניהול על התוכן: '" + itemTitle + "'\nנא לציין את סיבת הדיווח (אי-דיוק במקור / תוכן לא מתאים / תקלה טכנית):", "בדיקת התאמה למקור");
+  if (reason) {
+    window.addAdminAuditLog("מנהל קהילה", "התקבל דיווח משתמש על: " + itemTitle + " (" + reason + ")", "ממתין לבדיקה");
+    window.toast("הדיווח נקלט והועבר לפאנל הניהול המרכזי לבדיקה.");
+  }
+};
+
+// 2. סדרות ופרקים: סימון נצפה, המשך צפייה, פרקים בחינם ופרקי Premium, וסימון סוג המקור
+window.openSeriesEpisodes = function(seriesId) {
+  var s = (window.SERIES_LIBRARY || []).find(function(x) { return x.id === seriesId; }) || window.SERIES_LIBRARY[0];
+  if (!s) return;
+  var watchedMap = window.getStorageJson(STORAGE_KEYS.WATCHED_EPISODES, {});
+  var isPremUser = localStorage.getItem(STORAGE_KEYS.PREMIUM_STATUS) === "active";
+
+  document.getElementById("episodes-series-title").textContent = s.title;
+  document.getElementById("episodes-series-status").textContent = (s.description || "") + " • סיווג מקור: " + (s.sourceBadge || "פסוק מהמקור, מדרש והמחשה יצירתית");
+
+  var eps = s.episodes || [];
+  var listEl = document.getElementById("episodes-list-container");
+  if (listEl) {
+    listEl.innerHTML = eps.map(function(ep) {
+      var epKey = s.id + "_ep_" + ep.epNum;
+      var isWatched = !!watchedMap[epKey];
+      var locked = ep.isPremium && !isPremUser;
+      return `
+      <div class="bg-white border border-[#E5DBC7] p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="space-y-1">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-md text-xs font-bold ${ep.isPremium ? 'bg-[#0F2340] text-white' : 'bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227]'}">
+              ${ep.isPremium ? 'פרק Premium' : 'פרק חינם'}
+            </span>
+            <span class="px-2.5 py-0.5 bg-[#F8F3E8] text-[#5C4938] rounded-md text-xs font-bold">מקור: ${ep.sourceType || 'מדרש חז״ל'}</span>
+            <span class="text-xs text-[#5C4938]">${ep.duration}</span>
+            ${isWatched ? '<span class="text-xs font-bold text-[#0F2340] bg-[#F6EFE2] px-2 py-0.5 rounded">נצפה ✔</span>' : ''}
+          </div>
+          <h4 class="text-base font-bold text-[#0F2340]">${ep.title}</h4>
+          <p class="text-xs text-[#5C4938]">${ep.summary || ''}</p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          ${locked
+            ? `<button onclick="closeModal('modal-episodes');switchTab('myzone');switchMyZoneSubTab('premium');" class="px-4 py-2 bg-[#0F2340] text-white font-bold rounded-xl text-xs" style="color:#FFFFFF !important;">שדרג ל-Premium לצפייה</button>`
+            : `<button onclick="watchSeriesEpisode('${s.id}', ${ep.epNum}, '${ep.title.replace(/'/g, "")}')" class="px-4 py-2 bg-amber-500 text-white font-bold rounded-xl text-xs">נגן פרק (${ep.duration})</button>`
+          }
+        </div>
+      </div>`;
+    }).join("");
+  }
+  document.getElementById("modal-episodes").classList.remove("hidden");
+};
+
+window.watchSeriesEpisode = function(seriesId, epNum, epTitle) {
+  var watchedMap = window.getStorageJson(STORAGE_KEYS.WATCHED_EPISODES, {});
+  watchedMap[seriesId + "_ep_" + epNum] = true;
+  window.setStorageJson(STORAGE_KEYS.WATCHED_EPISODES, watchedMap);
+  localStorage.setItem("tzadiktok_last_watched_title", epTitle);
+  localStorage.setItem("tzadiktok_last_watched_series", seriesId);
+  window.addLearningPoints(15, "צפייה בפרק סדרה: " + epTitle);
+  window.openSeriesEpisodes(seriesId);
+  window.renderContinueWatchingBanner();
+  window.toast("מנגן פרק: " + epTitle + " (סומן כ'נצפה ✔' ונשמר בהמשך צפייה)");
+};
+
+window.renderContinueWatchingBanner = function() {
+  var lastTitle = localStorage.getItem("tzadiktok_last_watched_title") || "יוסף הצדיק - פרק 1: הפתיחה והניסיון הראשון";
+  var lastSeries = localStorage.getItem("tzadiktok_last_watched_series") || "s_joseph";
+  var box = document.getElementById("continue-watching-text");
+  if (box) box.textContent = lastTitle;
+  var btn = document.getElementById("continue-watching-btn");
+  if (btn) btn.setAttribute("onclick", "openSeriesEpisodes('" + lastSeries + "')");
+};
+
+// 3. סטודיו יצירת סרטוני AI (#view-studio) - תהליך עבודה מלא בהדגמה (תצוגה מקדימה, שמירת טיוטה, שליחה לאישור מנהל)
+window.previewStudioCreation = function() {
+  var charVal = document.getElementById("studio-char-select").value;
+  var periodVal = document.getElementById("studio-period-select").value;
+  var sourceVal = document.getElementById("studio-source-select").value;
+  var scriptVal = (document.getElementById("studio-script-input").value || "").trim() || "ויהי ה׳ את יוסף ויהי איש מצליח... המחשת הסיפור על פי דברי חז״ל.";
+  var voiceVal = document.getElementById("studio-voice-select").value;
+  var styleVal = document.getElementById("studio-style-select").value;
+  var lenVal = document.getElementById("studio-length-select").value;
+
+  var previewBox = document.getElementById("studio-live-preview-box");
+  if (previewBox) {
+    previewBox.classList.remove("hidden");
+    previewBox.innerHTML = `
+      <div class="bg-[#F8F3E8] border-2 border-[#C9A227] p-5 rounded-2xl space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="px-3 py-1 bg-amber-500 text-white font-bold rounded-lg text-xs">תצוגה מקדימה להדגמה • ${lenVal}</span>
+          <span class="text-xs font-bold text-[#5C4938]">סיווג: ${sourceVal}</span>
+        </div>
+        <h4 class="text-lg font-bold text-[#0F2340]">${charVal} • ${periodVal}</h4>
+        <p class="text-xs text-[#5C4938]">קריינות: <strong>${voiceVal}</strong> | סגנון ויזואלי: <strong>${styleVal}</strong></p>
+        <div class="p-3 bg-white border border-[#E5DBC7] rounded-xl text-sm font-serif text-[#0F2340]">"${scriptVal}"</div>
+      </div>`;
+  }
+  window.toast("תצוגה מקדימה נוצרה בסטודיו");
+};
+
+window.saveStudioDraft = function(sendToAdmin) {
+  var charVal = document.getElementById("studio-char-select").value;
+  var periodVal = document.getElementById("studio-period-select").value;
+  var sourceVal = document.getElementById("studio-source-select").value;
+  var scriptVal = (document.getElementById("studio-script-input").value || "").trim() || "תסריט לדוגמה על פי מדרשי חז״ל";
+  var lenVal = document.getElementById("studio-length-select").value;
+
+  var drafts = window.getStorageJson(STORAGE_KEYS.STUDIO_DRAFTS, []);
+  var statusLabel = sendToAdmin ? "נשלח לאישור מנהל לפני פרסום" : "טיוטה שמורה בסטודיו";
+  drafts.unshift({
+    id: "drf_" + Date.now(),
+    character: charVal,
+    period: periodVal,
+    source: sourceVal,
+    length: lenVal,
+    script: scriptVal,
+    status: statusLabel,
+    time: "עכשיו"
+  });
+  window.setStorageJson(STORAGE_KEYS.STUDIO_DRAFTS, drafts);
+
+  if (sendToAdmin) {
+    var mySubs = window.getStorageJson(STORAGE_KEYS.MY_SUBMISSIONS, window.DEFAULT_MY_SUBMISSIONS || []);
+    mySubs.unshift({
+      id: "sub_st_" + Date.now(),
+      type: "הפקת סטודיו AI (" + lenVal + ")",
+      title: charVal + " • " + periodVal,
+      details: "מקור: " + sourceVal + " • " + scriptVal,
+      date: "עכשיו",
+      status: "⏳ ממתין לאישור מנהל תוכן"
+    });
+    window.setStorageJson(STORAGE_KEYS.MY_SUBMISSIONS, mySubs);
+    window.addAdminAuditLog("עורך תוכן", "התקבלה הפקת סטודיו חדשה לאישור: " + charVal, "ממתין לאישור");
+  }
+
+  window.renderStudioDrafts();
+  window.renderMyZoneAll();
+  window.renderAdminPanel();
+  window.toast(sendToAdmin ? "הסרטון נשלח לאישור מנהל לפני פרסום ומופיע בפאנל הניהול!" : "הטיוטה נשמרה בהצלחה בסטודיו.");
+};
+
+window.renderStudioDrafts = function() {
+  var box = document.getElementById("studio-drafts-list");
+  if (!box) return;
+  var drafts = window.getStorageJson(STORAGE_KEYS.STUDIO_DRAFTS, []);
+  if (drafts.length === 0) {
+    box.innerHTML = '<div class="text-xs text-[#5C4938] p-3 bg-[#F8F3E8] rounded-xl border border-[#E5DBC7]">עדיין אין טיוטות שמורות. בחר דמות ותסריט למעלה ולחץ על שמירת טיוטה.</div>';
+    return;
+  }
+  box.innerHTML = drafts.map(function(d) {
+    return `
+    <div class="bg-[#F8F3E8] border border-[#E5DBC7] p-3.5 rounded-xl flex items-center justify-between gap-2">
+      <div>
+        <span class="text-[11px] font-bold text-[#5C4938]">${d.status} • ${d.length} • ${d.source}</span>
+        <h4 class="text-sm font-bold text-[#0F2340]">${d.character} (${d.period})</h4>
+        <p class="text-xs text-[#5C4938] line-clamp-1">${d.script}</p>
+      </div>
+      <span class="text-xs font-bold text-[#0F2340]">${d.time}</span>
+    </div>`;
+  }).join("");
+};
+
+// 4. בית מדרש: משנה, גמרא (דף יומי), הלכה יומית + נקודות ורצף לימוד יומי (Streak)
+window.addLearningPoints = function(pts, reason) {
+  var data = window.getStorageJson(STORAGE_KEYS.STREAK_POINTS, { points: 140, streakDays: 7 });
+  data.points = (data.points || 140) + pts;
+  window.setStorageJson(STORAGE_KEYS.STREAK_POINTS, data);
+  window.renderLearningStreakBar();
+};
+
+window.renderLearningStreakBar = function() {
+  var data = window.getStorageJson(STORAGE_KEYS.STREAK_POINTS, { points: 140, streakDays: 7 });
+  var ptsEl = document.getElementById("beit-midrash-points");
+  var strkEl = document.getElementById("beit-midrash-streak");
+  if (ptsEl) ptsEl.textContent = data.points + " נקודות תורה";
+  if (strkEl) strkEl.textContent = "רצף לימוד: " + data.streakDays + " ימים רצופים";
+};
+
+window.renderMishnahGemaraHalacha = function() {
+  var box = document.getElementById("mishnah-gemara-grid");
+  if (!box || !window.MISHNAH_GEMARA_DATA) return;
+  box.innerHTML = window.MISHNAH_GEMARA_DATA.map(function(m) {
+    return `
+    <div class="bg-white border border-[#E5DBC7] p-5 rounded-2xl space-y-3 flex flex-col justify-between">
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="px-3 py-1 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-lg text-xs font-bold">${m.track}</span>
+          <span class="text-xs text-[#5C4938]">${m.duration}</span>
+        </div>
+        <h4 class="text-lg font-bold text-[#0F2340] serif-heading">${m.title}</h4>
+        <p class="text-xs font-bold text-[#5C4938]">${m.rabbi}</p>
+        <p class="text-xs text-[#5C4938] leading-relaxed">${m.summary}</p>
+      </div>
+      <div class="pt-3 border-t border-[#E5DBC7] grid grid-cols-2 gap-2">
+        <button onclick="addLearningPoints(20, '${m.title}');toast('השיעור סומן כנלמד (+20 נקודות לימוד!)');" class="py-2 bg-amber-500 text-white font-bold rounded-xl text-xs">לימוד השיעור (+20 נק׳)</button>
+        <a href="${m.sefaria}" target="_blank" class="py-2 bg-white text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs text-center">מקור ב-Sefaria</a>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+// 5. שידורים חיים (#view-live): הטמעת שידור YouTube בקישור + תרומה לבעל השיעור + צ'אט חי
+window.loadCustomYoutubeLiveStream = function() {
+  var inp = document.getElementById("live-youtube-url-input");
+  var url = (inp ? inp.value : "").trim();
+  if (!url) {
+    window.toast("נא להדביק קישור לשידור YouTube");
+    return;
+  }
+  var statusEl = document.getElementById("live-stream-active-title");
+  if (statusEl) statusEl.textContent = "שידור YouTube מחובר: " + url;
+  window.toast("שידור ה-YouTube חובר לנגן השידור החי בהצלחה!");
+};
+
+// 6. שליחת סיפור על צדיק עם מקור, תמונה ופרטים לאישור מערכת הניהול
+window.submitTzaddikStoryWithSource = function() {
+  window.requireRegisteredUser(function() {
+    var nameEl = document.getElementById("story-tzaddik-name");
+    var srcEl = document.getElementById("story-source-ref");
+    var imgEl = document.getElementById("story-image-url");
+    var bodyEl = document.getElementById("story-body-text");
+    if (!nameEl || !nameEl.value.trim() || !bodyEl || !bodyEl.value.trim()) {
+      window.toast("נא למלא את שם הצדיק, מקור הסיפור ותוכן הסיפור");
+      return;
+    }
+    var mySubs = window.getStorageJson(STORAGE_KEYS.MY_SUBMISSIONS, window.DEFAULT_MY_SUBMISSIONS || []);
+    mySubs.unshift({
+      id: "sub_tzs_" + Date.now(),
+      type: "סיפור צדיק מאומת עם מקור",
+      title: "סיפור על " + nameEl.value.trim() + " (מקור: " + (srcEl.value.trim() || "מסורת ומקורות") + ")",
+      details: bodyEl.value.trim(),
+      date: "עכשיו",
+      status: "⏳ ממתין לאישור מערכת הניהול"
+    });
+    window.setStorageJson(STORAGE_KEYS.MY_SUBMISSIONS, mySubs);
+    window.addAdminAuditLog("מנהל קהילה", "נשלח סיפור צדיק חדש עם מקור: " + nameEl.value.trim(), "ממתין לאישור");
+    nameEl.value = "";
+    if (srcEl) srcEl.value = "";
+    if (imgEl) imgEl.value = "";
+    bodyEl.value = "";
+    window.renderMyZoneAll();
+    window.renderAdminPanel();
+    window.toast("הסיפור על הצדיק נשלח עם המקור למערכת הניהול לבדיקה ואישור לפני פרסום!");
+  });
+};
+
+// 8 & 9. ישיבות ומוסדות תורה + מוקד תפילות קהילתי, נרות והקדשות
+window.renderYeshivotAndMosdot = function(query) {
+  var box = document.getElementById("yeshivot-grid-container");
+  if (!box || !window.YESHIVOT_DATA) return;
+  var q = (query || "").trim().toLowerCase();
+  var list = window.YESHIVOT_DATA.filter(function(y) {
+    return !q || y.name.toLowerCase().indexOf(q) !== -1 || y.city.toLowerCase().indexOf(q) !== -1;
+  });
+  box.innerHTML = list.map(function(y) {
+    return `
+    <div class="bg-white border border-[#E5DBC7] p-5 rounded-2xl space-y-2.5 flex flex-col justify-between">
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="px-2.5 py-0.5 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-md text-xs font-bold">${y.type}</span>
+          <span class="text-xs font-bold text-[#5C4938]">${y.verification}</span>
+        </div>
+        <h4 class="text-lg font-bold text-[#0F2340]">${y.name}</h4>
+        <p class="text-xs text-[#5C4938]">${y.description}</p>
+        <p class="text-xs font-bold text-[#0F2340]">כתובת: ${y.address} • טלפון: ${y.phone}</p>
+      </div>
+      <div class="pt-2 border-t border-[#E5DBC7] flex items-center gap-2">
+        <a href="tel:${y.phone}" class="flex-1 py-2 bg-amber-500 text-white font-bold rounded-xl text-xs text-center">חיוג למוסד</a>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+window.renderCommunityPrayerWall = function() {
+  var box = document.getElementById("community-prayer-wall-grid");
+  if (!box) return;
+  var wall = window.getStorageJson(STORAGE_KEYS.PRAYER_WALL, window.INITIAL_PRAYER_WALL || []);
+  box.innerHTML = wall.map(function(p) {
+    return `
+    <div class="bg-white border border-[#E5DBC7] p-5 rounded-2xl space-y-3 flex flex-col justify-between">
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="px-2.5 py-0.5 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-md text-xs font-bold">${p.category}</span>
+          <span class="text-xs text-[#5C4938]">לכבוד: ${p.tzaddikName}</span>
+        </div>
+        <h4 class="text-lg font-bold text-[#0F2340] serif-heading">תפילה עבור: ${p.prayerForName}</h4>
+        <p class="text-xs text-[#5C4938] leading-relaxed">${p.requestText}</p>
+        <p class="text-[11px] text-[#5C4938]">נרשם ע״י: ${p.submittedBy} • ${p.time}</p>
+      </div>
+      <div class="pt-3 border-t border-[#E5DBC7] flex items-center justify-between gap-2">
+        <button onclick="sayAmenOnPrayer('${p.id}')" class="flex-1 py-2 bg-amber-500 text-white font-bold rounded-xl text-xs">
+          אמן • התפללתי (${p.amenCount})
+        </button>
+        <button onclick="toast('קישור לתפילה הועתק לשיתוף בוואטסאפ')" class="px-3 py-2 bg-white text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs">
+          שיתוף תפילה
+        </button>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+window.sayAmenOnPrayer = function(pid) {
+  var wall = window.getStorageJson(STORAGE_KEYS.PRAYER_WALL, window.INITIAL_PRAYER_WALL || []);
+  for (var i = 0; i < wall.length; i++) {
+    if (wall[i].id === pid) wall[i].amenCount = (wall[i].amenCount || 0) + 1;
+  }
+  window.setStorageJson(STORAGE_KEYS.PRAYER_WALL, wall);
+  window.renderCommunityPrayerWall();
+  window.toast("תפילתך צורפה למניין המתפללים!");
+};
+
+window.addPrayerWallDedication = function() {
+  var nameEl = document.getElementById("pw-name-input");
+  var catEl = document.getElementById("pw-cat-select");
+  var tzEl = document.getElementById("pw-tzaddik-input");
+  var reqEl = document.getElementById("pw-request-input");
+  if (!nameEl || !nameEl.value.trim()) {
+    window.toast("נא להזין שם לתפילה (פלוני בן פלונית)");
+    return;
+  }
+  var acc = window.getStorageJson(STORAGE_KEYS.USER_ACCOUNT, currentUserAccount);
+  var wall = window.getStorageJson(STORAGE_KEYS.PRAYER_WALL, window.INITIAL_PRAYER_WALL || []);
+  wall.unshift({
+    id: "pw_" + Date.now(),
+    prayerForName: nameEl.value.trim(),
+    category: catEl ? catEl.value : "לרפואה שלמה",
+    tzaddikName: (tzEl && tzEl.value.trim()) ? tzEl.value.trim() : "כלל צדיקי הדורות",
+    requestText: (reqEl && reqEl.value.trim()) ? reqEl.value.trim() : "לרפואה, ישועה והצלחה.",
+    submittedBy: acc.name,
+    amenCount: 1,
+    time: "עכשיו"
+  });
+  window.setStorageJson(STORAGE_KEYS.PRAYER_WALL, wall);
+  nameEl.value = "";
+  if (reqEl) reqEl.value = "";
+  window.renderCommunityPrayerWall();
+  window.toast("הנר והתפילה נוספו למוקד התפילות הקהילתי!");
+};
+
+// 10. חנות יודאיקה: קופון הנחה + תהליך הזמנה מלא לדוגמה + מעקב הזמנות באזור האישי
+window.applyDemoCoupon = function() {
+  var inp = document.getElementById("checkout-coupon-input");
+  var code = (inp ? inp.value : "").trim().toUpperCase();
+  if (code === "TZADIK10" || code === "SHABBAT") {
+    appliedCouponDiscount = 10;
+    window.toast("קופון 10% הנחה הופעל בהצלחה בהדגמה!");
+  } else {
+    window.toast("קוד קופון לדוגמה: הקלד TZADIK10 לקבלת 10% הנחה");
+  }
+};
+
+window.completeDemoOrderCheckout = function() {
+  var addrEl = document.getElementById("checkout-shipping-address");
+  var addr = (addrEl && addrEl.value.trim()) ? addrEl.value.trim() : "בני ברק (משלוח עד הבית)";
+  var orders = window.getStorageJson(STORAGE_KEYS.ORDERS_HISTORY, [
+    { id: "ORD-8821", date: "לפני שבוע", items: "פמוטי שבת מהודרים + סידור קודש", total: "₪340", status: "נמסר לשליח • בדרך אליך" }
+  ]);
+  orders.unshift({
+    id: "ORD-" + Math.floor(1000 + Math.random() * 9000),
+    date: "היום (הזמנת הדגמה)",
+    items: "הזמנת מוצרי יודאיקה לתשמישי קדושה (" + addr + ")",
+    total: "הזמנת דמו מאושרת (ללא חיוב אמיתי)",
+    status: "נקלטה במערכת המשלוחים ✔"
+  });
+  window.setStorageJson(STORAGE_KEYS.ORDERS_HISTORY, orders);
+  window.setStorageJson(STORAGE_KEYS.CART, []);
+  window.updateCartBadge();
+  window.closeModal("modal-cart");
+  window.renderOrdersAndSubscriptionInMyZone();
+  window.toast("ההזמנה לדוגמה הושלמה! ניתן לעקוב אחרי המשלוח תחת 'האזור שלי -> רכישות ומנויים'.");
+};
+
+// 12 & 13. ניהול מנוי Premium (35 ₪ לחודש / שנתי) והיסטוריית רכישות באזור האישי
+window.togglePremiumSubscriptionDemo = function(planType) {
+  var currentStatus = localStorage.getItem(STORAGE_KEYS.PREMIUM_STATUS) || "free";
+  if (planType === "cancel") {
+    localStorage.setItem(STORAGE_KEYS.PREMIUM_STATUS, "free");
+    window.toast("המנוי הועבר למסלול החינמי (הדגמה ללא חיוב).");
+  } else {
+    localStorage.setItem(STORAGE_KEYS.PREMIUM_STATUS, "active");
+    localStorage.setItem("tzadiktok_premium_plan", planType || "חודשי - 35 ₪ לחודש (דמו)");
+    window.toast("מנוי צדיק-טוק Premium הופעל בהדגמה! כל פרקי ה-Premium פתוחים כעת לצפייה.");
+  }
+  window.renderOrdersAndSubscriptionInMyZone();
+};
+
+window.renderOrdersAndSubscriptionInMyZone = function() {
+  var isPrem = localStorage.getItem(STORAGE_KEYS.PREMIUM_STATUS) === "active";
+  var planName = localStorage.getItem("tzadiktok_premium_plan") || "חודשי - 35 ₪ לחודש (זמני לדמו)";
+  var premBadge = document.getElementById("myzone-premium-status-text");
+  if (premBadge) {
+    premBadge.textContent = isPrem ? ("מנוי פעיל: " + planName + " ✔") : "מסלול נוכחי: חינמי (ניתן לשדרג ל-Premium בהדגמה)";
+  }
+
+  var ordBox = document.getElementById("myzone-orders-history-list");
+  if (ordBox) {
+    var orders = window.getStorageJson(STORAGE_KEYS.ORDERS_HISTORY, [
+      { id: "ORD-8821", date: "השבוע (נתוני הדגמה)", items: "פמוטי שבת מהודרים + סידור קודש", total: "₪340", status: "במשלוח • מעקב פעיל" }
+    ]);
+    ordBox.innerHTML = orders.map(function(o) {
+      return `
+      <div class="bg-[#F8F3E8] border border-[#E5DBC7] p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div>
+          <span class="text-xs font-bold text-[#0F2340]">מספר הזמנה: ${o.id} • ${o.date}</span>
+          <h4 class="text-sm font-bold text-[#0F2340]">${o.items}</h4>
+          <p class="text-xs text-[#5C4938]">סכום: ${o.total}</p>
+        </div>
+        <span class="px-3 py-1 bg-white border border-[#C9A227] rounded-lg text-xs font-bold text-[#0F2340]">${o.status}</span>
+      </div>`;
+    }).join("");
+  }
+};
+
+// 14. פאנל ניהול מרכזי נפרד ומסודר (#view-admin) + הרשאות לפי תפקיד + יומן פעולות מנהלים
+window.setAdminRole = function(roleName) {
+  activeAdminRole = roleName;
+  localStorage.setItem(STORAGE_KEYS.ADMIN_ROLE, roleName);
+  var roleLabel = document.getElementById("admin-active-role-badge");
+  if (roleLabel) roleLabel.textContent = "הרשאה פעילה: " + roleName;
+  window.renderAdminPanel();
+  window.toast("תפקיד הניהול בפאנל עודכן ל: " + roleName);
+};
+
+window.addAdminAuditLog = function(role, actionText, statusText) {
+  var logs = window.getStorageJson(STORAGE_KEYS.ADMIN_LOGS, window.INITIAL_ADMIN_LOGS || []);
+  logs.unshift({
+    id: "aud_" + Date.now(),
+    time: "עכשיו",
+    role: role || activeAdminRole,
+    action: actionText,
+    status: statusText || "בוצע ✔"
+  });
+  window.setStorageJson(STORAGE_KEYS.ADMIN_LOGS, logs);
+};
+
+window.renderAdminPanel = function() {
+  var pendingBox = document.getElementById("admin-pending-queue-list");
+  var logsBox = document.getElementById("admin-audit-log-list");
+  var mySubs = window.getStorageJson(STORAGE_KEYS.MY_SUBMISSIONS, window.DEFAULT_MY_SUBMISSIONS || []);
+
+  if (pendingBox) {
+    pendingBox.innerHTML = mySubs.map(function(s) {
+      var isPending = s.status && s.status.indexOf("ממתין") !== -1;
+      return `
+      <div class="bg-[#F8F3E8] border border-[#E5DBC7] p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <span class="text-xs font-bold text-[#5C4938]">${s.type} • ${s.date} • <strong>${s.status}</strong></span>
+          <h4 class="text-sm font-bold text-[#0F2340] mt-0.5">${s.title}</h4>
+          <p class="text-xs text-[#5C4938]">${s.details}</p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          ${isPending
+            ? `<button onclick="approveSubmissionInMyZone('${s.id}');addAdminAuditLog(activeAdminRole, 'אישור תוכן: ${s.title.replace(/'/g, "")}', 'אומת ופורסם ✔');renderAdminPanel();" class="px-3.5 py-1.5 bg-amber-500 text-white font-bold rounded-lg text-xs">אשר פרסום</button>`
+            : `<span class="px-3 py-1 bg-white border border-[#C9A227] rounded-lg text-xs font-bold text-[#0F2340]">מאושר בקהילה</span>`
+          }
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  if (logsBox) {
+    var logs = window.getStorageJson(STORAGE_KEYS.ADMIN_LOGS, window.INITIAL_ADMIN_LOGS || []);
+    logsBox.innerHTML = logs.map(function(l) {
+      return `
+      <div class="bg-[#F8F3E8] border border-[#E5DBC7] p-3.5 rounded-xl flex items-center justify-between gap-2 text-xs">
+        <div>
+          <span class="font-bold text-[#0F2340]">[${l.role}]</span>
+          <span class="text-[#5C4938] mr-1">${l.action}</span>
+        </div>
+        <span class="text-[#5C4938] shrink-0">${l.time} • <strong>${l.status}</strong></span>
+      </div>`;
+    }).join("");
+  }
+};
+
+// מסך התראות מרכזי
+window.openNotificationsModal = function() {
+  var box = document.getElementById("notifications-list-container");
+  if (box && window.INITIAL_NOTIFICATIONS) {
+    box.innerHTML = window.INITIAL_NOTIFICATIONS.map(function(n) {
+      return `
+      <div class="bg-[#F8F3E8] border border-[#E5DBC7] p-3.5 rounded-xl space-y-1">
+        <div class="flex items-center justify-between">
+          <h4 class="text-sm font-bold text-[#0F2340]">${n.title}</h4>
+          <span class="text-[11px] text-[#5C4938]">${n.time}</span>
+        </div>
+        <p class="text-xs text-[#5C4938]">${n.body}</p>
+      </div>`;
+    }).join("");
+  }
+  var modal = document.getElementById("modal-notifications-center");
+  if (modal) modal.classList.remove("hidden");
 };
