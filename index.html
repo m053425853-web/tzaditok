@@ -33,6 +33,31 @@
 </head>
 <body class="min-h-screen select-none">
 
+  <header class="main-header" style="background: #1a2238; color: white; padding: 10px; position: sticky; top: 0; z-index: 100;">
+  <div class="header-top" style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px;">
+    <div class="logo" style="font-size: 24px; font-weight: bold; color: #e6b95c;">צדיק-טוק ⭐</div>
+    <button onclick="window.toggleSidebar()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">☰</button>
+  </div>
+  
+  <div class="header-bottom" style="display: flex; justify-content: space-around; gap: 10px;">
+    <button onclick="window.toggleSearch()" style="background: #2a3654; color: white; border: 1px solid #e6b95c; border-radius: 20px; padding: 5px 15px; cursor: pointer;">🔍 חיפוש</button>
+    <button onclick="window.toggleShabbatMode()" style="background: #2a3654; color: white; border: 1px solid #e6b95c; border-radius: 20px; padding: 5px 15px; cursor: pointer;">🕯️ מצב שבת</button>
+    <button onclick="window.openProfileModal()" style="background: #2a3654; color: white; border: 1px solid #e6b95c; border-radius: 20px; padding: 5px 15px; cursor: pointer;">👤 התחברות</button>
+  </div>
+</header>
+
+<div id="sideMenu" class="sidebar hidden" style="position: fixed; top: 0; right: 0; width: 250px; height: 100vh; background: #1a2238; color: white; z-index: 1000; transition: transform 0.3s; box-shadow: -2px 0 10px rgba(0,0,0,0.5); transform: translateX(100%);">
+  <div class="sidebar-header" style="display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #2a3654;">
+    <h3>תפריט</h3>
+    <button onclick="window.toggleSidebar()" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">✖</button>
+  </div>
+  <ul class="sidebar-list" style="list-style: none; padding: 0; margin: 0;">
+    <li><a href="#home" onclick="window.toggleSidebar()" style="display: block; padding: 15px; color: white; text-decoration: none; border-bottom: 1px solid #2a3654;">🏠 דף הבית</a></li>
+    <li><a href="#learn" onclick="window.toggleSidebar()" style="display: block; padding: 15px; color: white; text-decoration: none; border-bottom: 1px solid #2a3654;">📚 ללמוד</a></li>
+    <li><a href="#pray" onclick="window.toggleSidebar()" style="display: block; padding: 15px; color: white; text-decoration: none; border-bottom: 1px solid #2a3654;">🙏 להתפלל</a></li>
+    <li><a href="#find" onclick="window.toggleSidebar()" style="display: block; padding: 15px; color: white; text-decoration: none; border-bottom: 1px solid #2a3654;">📍 למצוא</a></li>
+  </ul>
+</div>
   <!-- Toast Notification -->
   <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none transition-all duration-300 opacity-0 -translate-y-4 max-w-sm w-11/12">
     <div class="bg-amber-500 text-slate-950 font-black px-4 py-3 rounded-2xl shadow-2xl flex items-center justify-between text-sm border border-amber-300">
