@@ -255,3 +255,106 @@ body.shabbat-mode-active .shabbat-readonly-hide {
   border-color: #C9A227 !important;
   font-weight: 900;
 }
+
+
+/* ==========================================================================
+   V31 — ניווט חדש: כותרת מסודרת, תפריט צד, מצב מיקוד (Progressive Disclosure),
+   כרטיס "היום ביהדות" לחיץ, מרחק GPS. אותה פלטה: קרם / כחול עמוק / זהב / לבן.
+   ========================================================================== */
+
+/* כותרת: שורה 1 = לוגו + המבורגר, שורה 2 = אזור אישי + מצב שבת */
+.tt-hdr-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 12px;
+  background: rgba(255,255,255,0.10); border: 1px solid rgba(201,162,39,0.6);
+  color: #FDF8EF !important; font-size: 12px; font-weight: 700; line-height: 1.2;
+  transition: background 0.15s ease;
+}
+.tt-hdr-btn:hover { background: rgba(255,255,255,0.20); }
+.tt-hdr-btn.tt-hdr-primary { background: #C9A227; border-color: #B38E1E; color: #FFFFFF !important; font-weight: 800; }
+.tt-hdr-btn.tt-hdr-primary:hover { background: #B38E1E; }
+.tt-hdr-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+.tt-hdr-btn .tt-hdr-label { max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: inherit !important; }
+.tt-burger { width: 40px; height: 40px; padding: 0; justify-content: center; }
+.tt-burger svg { width: 20px; height: 20px; }
+
+/* תפריט צד (המבורגר) */
+#tt-menu-overlay {
+  position: fixed; inset: 0; z-index: 70; background: rgba(15, 35, 64, 0.55);
+  backdrop-filter: blur(2px); opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+}
+#tt-side-menu {
+  position: fixed; top: 0; bottom: 0; right: 0; z-index: 71; width: min(86vw, 340px);
+  background: #FFFFFF; border-left: 2px solid #C9A227; box-shadow: -6px 0 24px rgba(15,35,64,0.18);
+  transform: translateX(100%); transition: transform 0.22s ease; overflow-y: auto;
+  padding: 0 0 24px; direction: rtl;
+}
+body.tt-menu-open #tt-menu-overlay { opacity: 1; pointer-events: auto; }
+body.tt-menu-open #tt-side-menu { transform: translateX(0); }
+body.tt-menu-open { overflow: hidden; }
+.tt-menu-head {
+  position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; background: #0F2340; border-bottom: 2px solid #C9A227;
+}
+.tt-menu-head span { color: #FDF8EF !important; font-family: 'Frank Ruhl Libre','Heebo',serif; font-weight: 900; font-size: 20px; }
+.tt-menu-head button { color: #FDF8EF !important; font-size: 20px; font-weight: 700; padding: 4px 8px; }
+.tt-menu-group { padding: 14px 16px 4px; font-size: 12px; font-weight: 900; color: #5C4938; letter-spacing: 0.02em; }
+.tt-menu-item {
+  display: block; width: 100%; text-align: right; padding: 10px 16px; font-size: 14px; font-weight: 700;
+  color: #0F2340; border-bottom: 1px solid #F1E9D8; background: #FFFFFF; transition: background 0.12s ease;
+}
+.tt-menu-item:hover, .tt-menu-item:focus-visible { background: #F6EFE2; outline: none; }
+.tt-menu-item.tt-menu-strong { color: #0F2340; background: #F6EFE2; border-inline-start: 3px solid #C9A227; }
+
+/* מצב מיקוד: בתוך מדור פנימי נשארים רק הכותרת, חיפוש מקומי וכפתור חזרה */
+#tt-focus-bar {
+  background: #FFFFFF; border: 1px solid #E5DBC7; border-radius: 16px; padding: 12px 14px;
+  box-shadow: 0 2px 10px rgba(15,35,64,0.05); margin-bottom: 16px;
+}
+.tt-back-btn {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 12px;
+  background: #0F2340; color: #FFFFFF !important; font-size: 12px; font-weight: 800;
+}
+.tt-more-btn {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 12px;
+  background: #FFFFFF; color: #0F2340 !important; border: 1px solid #D8CBB5; font-size: 12px; font-weight: 700;
+}
+.tt-more-btn.active { background: #F6EFE2; border-color: #C9A227; }
+#tt-focus-crumb { font-size: 11px; font-weight: 700; color: #5C4938; }
+body.focus-mode .tt-navcard, body.focus-mode .tt-tool { display: none !important; }
+body.focus-mode.focus-more .tt-tool { display: block !important; }
+body.focus-mode nav.heritage-bottom-nav,
+body.focus-mode #floating-shabbat-readonly-btn { display: none !important; }
+
+/* דף "למצוא" / האזור האישי כרשת אריחים */
+.tt-tile {
+  display: flex; flex-direction: column; gap: 3px; text-align: right; padding: 14px 14px;
+  background: #FFFFFF; border: 1px solid #D8CBB5; border-radius: 16px; color: #0F2340;
+  box-shadow: 0 2px 8px rgba(15,35,64,0.04); transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.tt-tile:hover, .tt-tile:focus-visible { border-color: #C9A227; outline: none; }
+.tt-tile strong { font-size: 15px; font-weight: 900; color: #0F2340 !important; font-family: 'Frank Ruhl Libre','Heebo',serif; }
+.tt-tile span { font-size: 11.5px; font-weight: 500; color: #5C4938 !important; line-height: 1.4; }
+.tt-tile.tt-tile-gold { background: #F6EFE2; border-color: #C9A227; }
+
+/* כרטיס "היום ביהדות": 3 חלקים לחיצים */
+.tt-today-part {
+  display: flex; flex-direction: column; gap: 2px; text-align: right; padding: 12px 14px; border-radius: 14px;
+  background: #F8F3E8; border: 1px solid #E5DBC7; color: #0F2340; transition: border-color 0.15s ease, background 0.15s ease;
+}
+.tt-today-part:hover, .tt-today-part:focus-visible { border-color: #C9A227; background: #F6EFE2; outline: none; }
+.tt-today-label { font-size: 11px; font-weight: 800; color: #5C4938 !important; }
+.tt-today-main { font-size: 15px; font-weight: 900; color: #0F2340 !important; font-family: 'Frank Ruhl Libre','Heebo',serif; line-height: 1.35; }
+.tt-today-sub { font-size: 12px; font-weight: 700; color: #0F2340 !important; }
+.tt-today-cta { font-size: 11px; font-weight: 800; color: #B38E1E !important; margin-top: 2px; }
+
+/* מרחק GPS על כרטיסים */
+.tt-has-dist { position: relative; }
+.tt-dist {
+  position: absolute; top: 10px; left: 12px; z-index: 2; padding: 2px 9px; border-radius: 999px;
+  background: #F6EFE2; border: 1px solid #C9A227; color: #0F2340 !important; font-size: 11px; font-weight: 800;
+}
+.tt-geo-on { background: #F6EFE2 !important; color: #0F2340 !important; border: 1px solid #C9A227 !important; }
+
+/* עוגנים בדפים (גלילה מתחת לכותרת הדביקה) */
+.tt-anchor { scroll-margin-top: 150px; }
