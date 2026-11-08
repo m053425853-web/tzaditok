@@ -658,3 +658,32 @@
     window.ttLoadCustoms(true);
   });
 })();
+// --- פונקציות תפריט וניווט שהושלמו ידנית ---
+window.toggleSidebar = function() {
+    const sidebar = document.getElementById('sideMenu');
+    if (sidebar) {
+        if (sidebar.style.transform === 'translateX(0%)') {
+            sidebar.style.transform = 'translateX(100%)'; // סגור
+        } else {
+            sidebar.style.transform = 'translateX(0%)'; // פתוח
+        }
+    }
+};
+
+window.toggleSearch = function() {
+    // פונקציה בסיסית לחיפוש (אפשר לשפר אותה בהמשך)
+    const query = prompt("מה תרצה לחפש?");
+    if (query) {
+        alert("מחפש את: " + query);
+    }
+};
+
+window.toggleShabbatMode = function() {
+    // פונקציה בסיסית למצב שבת
+    alert("מצב שבת מופעל! (בשלב זה האתר יציג הודעת שבת)");
+};
+
+window.openProfileModal = function() {
+    // פונקציה בסיסית לאזור אישי
+    alert("כאן יפתח חלון ההתחברות שלך!");
+};
