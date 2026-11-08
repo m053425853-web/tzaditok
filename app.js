@@ -208,11 +208,11 @@ window.switchRashiTab = function(t) {
 // 2. הספרייה המרכזית (Library): תורה (54 פרשיות) | נביאים וכתובים | היסטוריה ודורות | סדרות AI
 // ============================================================================
 window.switchLibrarySubTab = function(subId) {
-  ["torah", "nach", "generations", "aiseries"].forEach(function(k) {
+  ["weekseries", "music", "torah", "nach", "generations", "aiseries"].forEach(function(k) {
     var box = document.getElementById("lib-sub-" + k);
     var btn = document.getElementById("lib-btn-" + k);
     if (box) {
-      if (k === subId) box.classList.remove("hidden");
+      if (k === subId || (subId === "generations" && k === "aiseries")) box.classList.remove("hidden");
       else box.classList.add("hidden");
     }
     if (btn) {
@@ -1110,6 +1110,9 @@ window.addEventListener("DOMContentLoaded", function() {
   window.renderFullDonorsPage();
   window.renderMusicTracks('all');
   window.renderMyZoneAll();
+  window.refreshAllCommunityViews();
+  window.updateAuthHeaderBadge();
+  window.renderHalachaQABank('');
   window.renderZmanim();
   window.renderCheshbon();
   window.renderRabbis(window.RABBIS_DATA);
@@ -1247,7 +1250,7 @@ window.renderFullDonorsPage = function() {
 
 // האזור שלי (My Zone): שמורים, היסטוריה, יארצייטים אישיים, הגדרות
 window.switchMyZoneSubTab = function(subTab) {
-  ["saved", "history", "yahrzeits", "settings"].forEach(function(k) {
+  ["saved", "history", "yahrzeits", "submissions", "settings"].forEach(function(k) {
     var box = document.getElementById("myzone-sub-" + k);
     var btn = document.getElementById("myzone-btn-" + k);
     if (box) {
@@ -1272,6 +1275,9 @@ window.saveItemToMyZone = function(itemType, itemTitle, targetTab) {
   });
   window.setStorageJson(STORAGE_KEYS.SAVED_ITEMS, list);
   window.renderMyZoneAll();
+  window.refreshAllCommunityViews();
+  window.updateAuthHeaderBadge();
+  window.renderHalachaQABank('');
   window.toast("נשמר ב'האזור שלי' -> הדברים השמורים שלי ⭐");
 };
 
@@ -1280,6 +1286,9 @@ window.removeSavedItem = function(itemId) {
   list = list.filter(function(x) { return x.id !== itemId; });
   window.setStorageJson(STORAGE_KEYS.SAVED_ITEMS, list);
   window.renderMyZoneAll();
+  window.refreshAllCommunityViews();
+  window.updateAuthHeaderBadge();
+  window.renderHalachaQABank('');
   window.toast("הוסר מהשמורים");
 };
 
@@ -1304,6 +1313,9 @@ window.addPersonalYahrzeit = function() {
   if (relEl) relEl.value = "";
   if (dateEl) dateEl.value = "";
   window.renderMyZoneAll();
+  window.refreshAllCommunityViews();
+  window.updateAuthHeaderBadge();
+  window.renderHalachaQABank('');
   window.toast("היארצייט האישי נשמר בלוח שלך 🕯️");
 };
 
@@ -1312,11 +1324,17 @@ window.removePersonalYahrzeit = function(id) {
   list = list.filter(function(x) { return x.id !== id; });
   window.setStorageJson(STORAGE_KEYS.MY_YAHRZEITS, list);
   window.renderMyZoneAll();
+  window.refreshAllCommunityViews();
+  window.updateAuthHeaderBadge();
+  window.renderHalachaQABank('');
 };
 
 window.clearMyHistory = function() {
   window.setStorageJson(STORAGE_KEYS.HISTORY_ITEMS, []);
   window.renderMyZoneAll();
+  window.refreshAllCommunityViews();
+  window.updateAuthHeaderBadge();
+  window.renderHalachaQABank('');
   window.toast("היסטוריית הצפייה והלימוד נוקתה");
 };
 
@@ -1380,10 +1398,888 @@ window.renderMyZoneAll = function() {
           <p class="text-xs text-slate-300">${y.notes}</p>
         </div>
         <div class="flex items-center gap-2 shrink-0">
+          <button onclick="openEntityFullPage('yahrzeit_' + '${y.id}', 'דף אישיות ביארצייט', '${y.name}', '${y.relation} • ${y.hebDate}', 'לוח יארצייטים אישי', 'יום הזיכרון: ${y.hebDate}', '', '${y.notes}', 'סיפורים • זיכרונות • דברי תורה')" class="px-3 py-2 bg-slate-800 text-amber-300 border border-amber-500/40 font-black rounded-xl text-xs">👤 דף אישיות ותגובות</button>
           <button onclick="openCandleModal('${y.name}')" class="px-3 py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">🕯️ הדלק נר</button>
           <button onclick="removePersonalYahrzeit('${y.id}')" class="px-2.5 py-2 bg-slate-900 text-slate-400 hover:text-red-400 border border-slate-800 rounded-xl text-xs">מחק</button>
         </div>
       </div>`;
     }).join("");
   }
+};
+
+
+// ============================================================================
+// V21 COMMUNITY ENGINE: משתמש רשום (Auth), מודרציה, דירוג כוכבים, תגובות ודפי ישות מלאים
+// ============================================================================
+
+var currentUserAccount = window.getStorageJson(STORAGE_KEYS.USER_ACCOUNT, {
+  isRegistered: true,
+  name: "חבר קהילת צדיק-טוק",
+  phone: "052-0000000",
+  city: "בני ברק",
+  role: "משתמש רשום ומאומת ✔"
+});
+
+var activeEntityContext = {
+  key: "minyan_m1",
+  typeLabel: "מניין תפילה",
+  title: "",
+  subtitle: "",
+  address: "",
+  hours: "",
+  phone: "",
+  story: "",
+  criteriaHint: "המקום • האווירה • הדיוק בזמנים"
+};
+
+var selectedStarRating = 5;
+var activeAddFormType = "minyan";
+var minyanPrayerFilter = "all";
+var halachaUrgencyMode = "normal";
+
+window.requireRegisteredUser = function(actionCallback) {
+  var acc = window.getStorageJson(STORAGE_KEYS.USER_ACCOUNT, currentUserAccount);
+  if (!acc || !acc.isRegistered) {
+    var modal = document.getElementById("modal-auth-register");
+    if (modal) modal.classList.remove("hidden");
+    window.toast("🔒 פעולה זו זמינה למשתמשים רשומים בלבד – הירשם בחינם כעת");
+    return false;
+  }
+  if (typeof actionCallback === "function") actionCallback();
+  return true;
+};
+
+window.openAuthModal = function() {
+  var acc = window.getStorageJson(STORAGE_KEYS.USER_ACCOUNT, currentUserAccount);
+  var nameInput = document.getElementById("auth-input-name");
+  var phoneInput = document.getElementById("auth-input-phone");
+  var cityInput = document.getElementById("auth-input-city");
+  if (nameInput && acc) nameInput.value = acc.name || "";
+  if (phoneInput && acc) phoneInput.value = acc.phone || "";
+  if (cityInput && acc) cityInput.value = acc.city || "בני ברק";
+  var modal = document.getElementById("modal-auth-register");
+  if (modal) modal.classList.remove("hidden");
+};
+
+window.saveUserRegistration = function() {
+  var nameVal = (document.getElementById("auth-input-name").value || "").trim();
+  var phoneVal = (document.getElementById("auth-input-phone").value || "").trim();
+  var cityVal = (document.getElementById("auth-input-city").value || "בני ברק").trim();
+  if (!nameVal) {
+    window.toast("נא להזין שם מלא להרשמה");
+    return;
+  }
+  currentUserAccount = {
+    isRegistered: true,
+    name: nameVal,
+    phone: phoneVal || "050-0000000",
+    city: cityVal,
+    role: "משתמש רשום ומאומת ✔"
+  };
+  window.setStorageJson(STORAGE_KEYS.USER_ACCOUNT, currentUserAccount);
+  window.updateAuthHeaderBadge();
+  window.closeModal("modal-auth-register");
+  window.toast("🎉 ברוך הבא " + nameVal + "! החשבון שלך פעיל וכעת תוכל להוסיף תוכן, לדרג ולהגיב.");
+};
+
+window.toggleGuestOrRegistered = function() {
+  currentUserAccount.isRegistered = !currentUserAccount.isRegistered;
+  window.setStorageJson(STORAGE_KEYS.USER_ACCOUNT, currentUserAccount);
+  window.updateAuthHeaderBadge();
+  window.toast(currentUserAccount.isRegistered ? "מחובר כמשתמש רשום ✔" : "עברת למצב אורח (לא רשום)");
+};
+
+window.updateAuthHeaderBadge = function() {
+  var acc = window.getStorageJson(STORAGE_KEYS.USER_ACCOUNT, currentUserAccount);
+  var badge = document.getElementById("user-auth-status-badge");
+  if (badge) {
+    badge.textContent = (acc && acc.isRegistered) ? ("✔ " + acc.name) : "התחבר / הירשם";
+  }
+};
+
+window.getEntityReviews = function(entityKey) {
+  var allRevs = window.getStorageJson(STORAGE_KEYS.COMMUNITY_REVIEWS, window.INITIAL_COMMUNITY_REVIEWS || {});
+  return allRevs[entityKey] || [];
+};
+
+window.getEntityStats = function(entityKey, defaultRating) {
+  var revs = window.getEntityReviews(entityKey);
+  if (!revs || revs.length === 0) {
+    return { avg: (defaultRating || 4.9).toFixed(1), count: 1 };
+  }
+  var sum = 0;
+  for (var i = 0; i < revs.length; i++) sum += (Number(revs[i].rating) || 5);
+  return { avg: (sum / revs.length).toFixed(1), count: revs.length };
+};
+
+// פתיחת דף ישות מלא + תגובות ודירוג כוכבים (מניין, רב/קו, גמ"ח, קבר צדיק, אישיות ביארצייט, מקווה, מסעדה, בית חב"ד)
+window.openEntityFullPage = function(entityKey, typeLabel, title, subtitle, address, hours, phone, story, criteriaHint, imageUrl) {
+  activeEntityContext = {
+    key: entityKey,
+    typeLabel: typeLabel || "כרטיס מידע קהילתי",
+    title: title || "",
+    subtitle: subtitle || "",
+    address: address || "",
+    hours: hours || "",
+    phone: phone || "",
+    story: story || "",
+    criteriaHint: criteriaHint || "השירות • הזמינות • היחס",
+    imageUrl: imageUrl || ""
+  };
+
+  document.getElementById("entity-modal-badge").textContent = activeEntityContext.typeLabel;
+  document.getElementById("entity-modal-title").textContent = activeEntityContext.title;
+  document.getElementById("entity-modal-subtitle").textContent = activeEntityContext.subtitle;
+
+  var imgBox = document.getElementById("entity-modal-image-box");
+  var imgEl = document.getElementById("entity-modal-image");
+  if (imgBox && imgEl) {
+    if (imageUrl) {
+      imgEl.src = imageUrl;
+      imgBox.classList.remove("hidden");
+    } else {
+      imgBox.classList.add("hidden");
+    }
+  }
+
+  var infoHtml = "";
+  if (address) infoHtml += '<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="text-slate-400 block text-[10px]">📍 כתובת ומיקום / הגעה:</span><span class="text-white font-bold text-xs">' + address + '</span></div>';
+  if (hours) infoHtml += '<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="text-slate-400 block text-[10px]">⏰ שעות פעילות / זמנים:</span><span class="text-amber-300 font-bold text-xs">' + hours + '</span></div>';
+  if (phone) infoHtml += '<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="text-slate-400 block text-[10px]">📞 טלפון ישיר:</span><a href="tel:' + phone + '" class="text-cyan-400 font-black text-xs hover:underline">' + phone + ' (חייג כעת)</a></div>';
+  document.getElementById("entity-modal-info-grid").innerHTML = infoHtml;
+
+  var storyBox = document.getElementById("entity-modal-story");
+  if (storyBox) {
+    storyBox.innerHTML = story ? ('<strong class="text-amber-400 block mb-1">📖 פרטים מלאים / סיפור ותולדות:</strong>' + story) : "";
+    storyBox.style.display = story ? "block" : "none";
+  }
+
+  var critEl = document.getElementById("entity-modal-criteria-label");
+  if (critEl) critEl.textContent = "דירוג וחוות דעת על: " + activeEntityContext.criteriaHint;
+
+  window.setReviewStarRating(5);
+  window.renderActiveEntityReviews();
+  document.getElementById("modal-entity-details").classList.remove("hidden");
+};
+
+window.setReviewStarRating = function(stars) {
+  selectedStarRating = stars;
+  for (var i = 1; i <= 5; i++) {
+    var b = document.getElementById("star-select-" + i);
+    if (b) {
+      b.className = (i <= stars)
+        ? "text-2xl text-amber-400 transition-transform scale-110"
+        : "text-2xl text-slate-600";
+    }
+  }
+};
+
+window.renderActiveEntityReviews = function() {
+  var listEl = document.getElementById("entity-reviews-list");
+  if (!listEl) return;
+  var revs = window.getEntityReviews(activeEntityContext.key);
+  var stats = window.getEntityStats(activeEntityContext.key, 5.0);
+  var avgEl = document.getElementById("entity-modal-avg-rating");
+  if (avgEl) avgEl.textContent = "★ " + stats.avg + " (" + revs.length + " תגובות ודירוגים)";
+
+  if (revs.length === 0) {
+    listEl.innerHTML = '<div class="text-xs text-slate-400 p-3 bg-slate-950 rounded-xl border border-slate-800">היה הראשון לדרג ולשתף חוות דעת או סיפור עבור ' + activeEntityContext.title + '!</div>';
+    return;
+  }
+  listEl.innerHTML = revs.map(function(r) {
+    var starsStr = "★★★★★".slice(0, r.rating) + "☆☆☆☆☆".slice(0, 5 - r.rating);
+    var statusBadge = (r.status && r.status.indexOf("ממתין") !== -1)
+      ? '<span class="px-2 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-md text-[10px]">⏳ ממתין למודרציה</span>'
+      : '<span class="px-2 py-0.5 bg-emerald-500/15 text-emerald-300 rounded-md text-[10px]">✔ מאושר</span>';
+    return `
+    <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-2xl space-y-1.5">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-black text-white">👤 ${r.user}</span>
+          ${statusBadge}
+        </div>
+        <span class="text-xs font-black text-amber-400">${starsStr}</span>
+      </div>
+      ${r.criteria ? `<p class="text-[11px] text-cyan-300 font-bold">${r.criteria}</p>` : ""}
+      <p class="text-xs text-slate-200 leading-relaxed">${r.text}</p>
+      <span class="text-[10px] text-slate-500 block">${r.date || "היום"}</span>
+    </div>`;
+  }).join("");
+};
+
+window.submitEntityReview = function() {
+  window.requireRegisteredUser(function() {
+    var textEl = document.getElementById("entity-review-input");
+    var critInputEl = document.getElementById("entity-review-criteria-input");
+    var txt = (textEl ? textEl.value : "").trim();
+    if (!txt) {
+      window.toast("נא לכתוב תגובה, חוות דעת או סיפור לפני השליחה");
+      return;
+    }
+    var acc = window.getStorageJson(STORAGE_KEYS.USER_ACCOUNT, currentUserAccount);
+    var allRevs = window.getStorageJson(STORAGE_KEYS.COMMUNITY_REVIEWS, window.INITIAL_COMMUNITY_REVIEWS || {});
+    if (!allRevs[activeEntityContext.key]) allRevs[activeEntityContext.key] = [];
+
+    var newRev = {
+      user: acc.name + " (" + acc.city + ")",
+      rating: selectedStarRating,
+      criteria: (critInputEl && critInputEl.value.trim()) ? critInputEl.value.trim() : activeEntityContext.criteriaHint,
+      text: txt,
+      date: "עכשיו",
+      status: "⏳ ממתין לאישור מודרציה"
+    };
+    allRevs[activeEntityContext.key].unshift(newRev);
+    window.setStorageJson(STORAGE_KEYS.COMMUNITY_REVIEWS, allRevs);
+
+    // שמירה גם תחת "התכנים שהוספתי" באזור האישי
+    var mySubs = window.getStorageJson(STORAGE_KEYS.MY_SUBMISSIONS, window.DEFAULT_MY_SUBMISSIONS || []);
+    mySubs.unshift({
+      id: "sub_rev_" + Date.now(),
+      type: "תגובה ודירוג (" + activeEntityContext.typeLabel + ")",
+      title: activeEntityContext.title + " • " + selectedStarRating + " כוכבים ★",
+      details: txt,
+      date: "עכשיו",
+      status: "⏳ ממתין לאישור מודרציה"
+    });
+    window.setStorageJson(STORAGE_KEYS.MY_SUBMISSIONS, mySubs);
+
+    if (textEl) textEl.value = "";
+    if (critInputEl) critInputEl.value = "";
+    window.renderActiveEntityReviews();
+    window.renderMyZoneAll();
+  window.refreshAllCommunityViews();
+  window.updateAuthHeaderBadge();
+  window.renderHalachaQABank('');
+    window.refreshAllCommunityViews();
+    window.toast("✅ התגובה והדירוג נשלחו למודרציה ונשמרו ב'התכנים שהוספתי' באזור האישי!");
+  });
+};
+
+// ============================================================================
+// פתיחת טופס הוספת תוכן קהילתי (רק למשתמש רשום • עובר מודרציה לפני שעולה)
+// תומך ב: minyan | minyan_call | rabbi | gemach | tzaddik | yahrzeit | mikvah | restaurant | chabad
+// ============================================================================
+window.openCommunityAddModal = function(formType) {
+  window.requireRegisteredUser(function() {
+    activeAddFormType = formType;
+    var titles = {
+      minyan: "🕍 הוספת מניין חדש (שחרית / מנחה / ערבית)",
+      minyan_call: "📢 שליחת הודעת קריאת מניין בזמן אמת (חסר עשירי!)",
+      rabbi: "📞 הוספת רב פוסק / קו הלכה ובית הוראה",
+      gemach: "🤝 הוספת גמ״ח חדש / ארגון סיוע וחסד",
+      tzaddik: "🕯️ הוספת קבר צדיק חדש למדריך",
+      yahrzeit: "📅 הוספת יארצייט אישי / דף אישיות ביומן היארצייטים",
+      mikvah: "💧 הוספת מקווה טהרה חדש",
+      restaurant: "🍽️ הוספת מסעדה כשרה חדשה",
+      chabad: "🏛️ הוספת בית חב״ד בעולם"
+    };
+    var placeholders = {
+      minyan: { f1: "שם בית הכנסת / המניין", f2: "סוג תפילה ושעה (למשל: מנחה 13:45 / ערבית 20:00)", f3: "עיר וכתובת מדויקת", f4: "נוסח תפילה והערות (נגישות, שיעור, קפה)" },
+      minyan_call: { f1: "כותרת הקריאה (למשל: חסרים 2 לעשירי במנחה!)", f2: "שעה מדויקת (למשל: עכשיו / בעוד 5 דקות)", f3: "מיקום מדויק וכתובת", f4: "טלפון איש קשר במקום" },
+      rabbi: { f1: "שם הרב הפוסק / שם קו ההלכה", f2: "תחום התמחות ונוסח (אורח חיים, שבת, כשרות, טהרה)", f3: "מספר טלפון לחיוג ישיר / וואטסאפ", f4: "שעות מענה ופרטים נוספים" },
+      gemach: { f1: "שם הגמ״ח / הארגון", f2: "קטגוריה (עזר מציון / יד שרה / ידידים / איחוד הצלה / גמ״חי שמחות / עריסות לתינוקות)", f3: "עיר, כתובת ושעות פעילות", f4: "טלפון ופירוט הציוד להשאלה" },
+      tzaddik: { f1: "שם הצדיק זיע״א", f2: "עיר / אזור בארץ ובעולם", f3: "הוראות הגעה מדויקות וקישור לקבוצת וואטסאפ", f4: "תולדות הצדיק, סיפור מופת וסגולת הציון" },
+      yahrzeit: { f1: "שם האישיות / הנפטר/ת (למשל: רבי אברהם בן שרה ז״ל)", f2: "תאריך הפטירה העברי (למשל: י״ד בכסלו)", f3: "מקום מנוחה / קרבה משפחתית", f4: "תקציר היסטוריה, סיפור חיים ודברי תורה לעילוי נשמתו/ה" },
+      mikvah: { f1: "שם המקווה", f2: "סוג (מקווה נשים / גברים / כלים)", f3: "עיר, כתובת ושעות פתיחה", f4: "טלפון והערות על ניקיון ונגישות" },
+      restaurant: { f1: "שם המסעדה הכשרה", f2: "סוג (בשרי / חלבי / פרווה) וגוף הכשרות (בד״ץ / מהדרין)", f3: "עיר, כתובת ושעות פתיחה", f4: "טלפון ומומלצי התפריט" },
+      chabad: { f1: "שם בית חב״ד (עיר ומדינה)", f2: "שם השליח הראשי", f3: "כתובת מלאה ושירותים (מסעדה כשרה, מניינים, שבת)", f4: "טלפון ווואטסאפ ליצירת קשר" }
+    };
+
+    var cfg = placeholders[formType] || placeholders.minyan;
+    document.getElementById("comm-add-modal-title").textContent = titles[formType] || "הוספת תוכן קהילתי";
+    document.getElementById("comm-add-f1").placeholder = cfg.f1;
+    document.getElementById("comm-add-f2").placeholder = cfg.f2;
+    document.getElementById("comm-add-f3").placeholder = cfg.f3;
+    document.getElementById("comm-add-f4").placeholder = cfg.f4;
+    document.getElementById("comm-add-f1").value = "";
+    document.getElementById("comm-add-f2").value = "";
+    document.getElementById("comm-add-f3").value = "";
+    document.getElementById("comm-add-f4").value = "";
+
+    document.getElementById("modal-community-add").classList.remove("hidden");
+  });
+};
+
+window.submitCommunityAddForm = function() {
+  window.requireRegisteredUser(function() {
+    var f1 = (document.getElementById("comm-add-f1").value || "").trim();
+    var f2 = (document.getElementById("comm-add-f2").value || "").trim();
+    var f3 = (document.getElementById("comm-add-f3").value || "").trim();
+    var f4 = (document.getElementById("comm-add-f4").value || "").trim();
+
+    if (!f1 || !f2) {
+      window.toast("נא למלא לפחות את שני השדות הראשונים");
+      return;
+    }
+
+    var acc = window.getStorageJson(STORAGE_KEYS.USER_ACCOUNT, currentUserAccount);
+    var typeNames = {
+      minyan: "מניין חדש",
+      minyan_call: "הודעת קריאת מניין",
+      rabbi: "רב / קו הלכה",
+      gemach: "גמ״ח חדש",
+      tzaddik: "קבר צדיק",
+      yahrzeit: "יארצייט אישי / צדיק",
+      mikvah: "מקווה טהרה",
+      restaurant: "מסעדה כשרה",
+      chabad: "בית חב״ד"
+    };
+
+    // שמירה ברשימת "התכנים שהוספתי" באזור האישי עם חותמת מודרציה
+    var mySubs = window.getStorageJson(STORAGE_KEYS.MY_SUBMISSIONS, window.DEFAULT_MY_SUBMISSIONS || []);
+    mySubs.unshift({
+      id: "sub_" + Date.now(),
+      type: typeNames[activeAddFormType] || "תוכן קהילתי",
+      title: f1,
+      details: f2 + (f3 ? (" • " + f3) : "") + (f4 ? (" • " + f4) : ""),
+      date: "עכשיו (ע״י " + acc.name + ")",
+      status: "⏳ ממתין לאישור מודרציה"
+    });
+    window.setStorageJson(STORAGE_KEYS.MY_SUBMISSIONS, mySubs);
+
+    // הוספה גם לתצוגה החיה (עם תגית 'נוסף ע״י הקהילה • בבדיקת מודרציה') כדי שהמשתמש יראה את הפריט שלו מיד!
+    if (activeAddFormType === "minyan_call") {
+      var calls = window.getStorageJson(STORAGE_KEYS.MINYAN_CALLS, window.INITIAL_MINYAN_CALLS || []);
+      calls.unshift({
+        id: "mc_" + Date.now(),
+        title: "📢 " + f1,
+        location: f3 || acc.city,
+        time: f2,
+        user: acc.name + " (משתמש רשום ✔)",
+        phone: f4 || acc.phone,
+        status: "⏳ בבדיקת מודרציה"
+      });
+      window.setStorageJson(STORAGE_KEYS.MINYAN_CALLS, calls);
+    } else if (activeAddFormType === "minyan") {
+      window.MINYANIM_DATA.unshift({
+        id: "m_usr_" + Date.now(),
+        name: f1 + " (⏳ במודרציה)",
+        nusach: f4 || "כלל ישראל",
+        city: f3 || acc.city,
+        shacharit: f2.indexOf("שחרית") !== -1 ? f2 : "07:00, 08:00",
+        mincha: f2.indexOf("מנחה") !== -1 ? f2 : f2,
+        arvit: f2.indexOf("ערבית") !== -1 ? f2 : "20:00, 21:00",
+        distanceKm: 0.2,
+        lat: 32.08,
+        lng: 34.83
+      });
+    } else if (activeAddFormType === "rabbi") {
+      window.RABBIS_DATA.unshift({
+        id: "rab_usr_" + Date.now(),
+        name: f1 + " (⏳ במודרציה)",
+        title: f2,
+        phone: f3 || "073-3570000",
+        hours: f4 || "זמין למענה הלכתי",
+        city: acc.city,
+        available: true
+      });
+    } else if (activeAddFormType === "gemach") {
+      window.GEMACHIM_DATA.unshift({
+        id: "gm_usr_" + Date.now(),
+        name: f1 + " (⏳ במודרציה)",
+        category: f2 || "גמ״חי שמחות",
+        city: f3 || acc.city,
+        address: f3 || acc.city,
+        hours: "בתיאום טלפוני",
+        phone: f4 || acc.phone,
+        description: f4 || "גמ״ח קהילתי שנוסף על ידי משתמש רשום.",
+        rating: 5.0
+      });
+    } else if (activeAddFormType === "tzaddik") {
+      window.TZADDIKIM_DATA.unshift({
+        id: "tz_usr_" + Date.now(),
+        name: f1 + " (⏳ במודרציה)",
+        title: "ציון קדוש שנוסף ע״י הקהילה",
+        region: "north",
+        city: f2 || "ישראל",
+        segula: f4 || "תפילה וישועה",
+        story: f4 || f3,
+        whatsappGroup: "https://wa.me/",
+        lat: 32.9,
+        lng: 35.4
+      });
+    } else if (activeAddFormType === "yahrzeit") {
+      window.YAHRZEITS_CALENDAR.unshift({
+        id: "yh_usr_" + Date.now(),
+        date: f2,
+        name: f1 + " (⏳ במודרציה)",
+        title: f3 || "לעילוי נשמתו/ה",
+        location: f3 || "ישראל",
+        segula: f4 || "לימוד משניות והדלקת נר לעילוי נשמה",
+        biography: f4 || "נוסף על ידי חבר קהילה רשום.",
+        image: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80"
+      });
+      var pyList = window.getStorageJson(STORAGE_KEYS.MY_YAHRZEITS, window.DEFAULT_PERSONAL_YAHRZEITS || []);
+      pyList.unshift({
+        id: "py_" + Date.now(),
+        name: f1,
+        relation: f3 || "לוח יארצייטים",
+        hebDate: f2,
+        notes: f4 || "הדלקת נר ולימוד משניות."
+      });
+      window.setStorageJson(STORAGE_KEYS.MY_YAHRZEITS, pyList);
+    }
+
+    window.closeModal("modal-community-add");
+    window.refreshAllCommunityViews();
+    window.renderMyZoneAll();
+  window.refreshAllCommunityViews();
+  window.updateAuthHeaderBadge();
+  window.renderHalachaQABank('');
+    window.toast("✅ נשלח למודרציה! התוכן מופיע כעת תחת 'התכנים שהוספתי' באזור האישי שלך.");
+  });
+};
+
+window.approveSubmissionInMyZone = function(subId) {
+  var mySubs = window.getStorageJson(STORAGE_KEYS.MY_SUBMISSIONS, window.DEFAULT_MY_SUBMISSIONS || []);
+  for (var i = 0; i < mySubs.length; i++) {
+    if (mySubs[i].id === subId) {
+      mySubs[i].status = "מאושר בקהילה ✔";
+    }
+  }
+  window.setStorageJson(STORAGE_KEYS.MY_SUBMISSIONS, mySubs);
+  window.renderMyZoneAll();
+  window.refreshAllCommunityViews();
+  window.updateAuthHeaderBadge();
+  window.renderHalachaQABank('');
+  window.toast("✔ הפריט אושר במערכת המודרציה ופורסם לקהילה!");
+};
+
+// ============================================================================
+// רינדור משודרג לכל המודולים עם כפתורי דף מלא, דירוג כוכבים ותגובות קהילה
+// ============================================================================
+
+// 1. מניינים + קריאות מניין + סינון שחרית/מנחה/ערבית + תגובות ודירוג
+window.renderMinyanCallsBanner = function() {
+  var box = document.getElementById("minyan-live-calls-container");
+  if (!box) return;
+  var calls = window.getStorageJson(STORAGE_KEYS.MINYAN_CALLS, window.INITIAL_MINYAN_CALLS || []);
+  box.innerHTML = calls.map(function(c) {
+    return `
+    <div class="bg-gradient-to-r from-red-950/60 via-slate-900 to-slate-950 border border-red-500/40 p-3.5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+      <div class="space-y-0.5">
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-0.5 bg-red-600 text-white font-black rounded-md text-[10px] animate-pulse">קריאת מניין חיה</span>
+          <span class="text-[11px] text-amber-300 font-bold">⏰ ${c.time}</span>
+          <span class="text-[10px] text-slate-400">${c.user}</span>
+        </div>
+        <h4 class="text-sm font-black text-white">${c.title}</h4>
+        <p class="text-xs text-slate-300">📍 ${c.location}</p>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <a href="tel:${c.phone}" class="px-3 py-2 bg-emerald-500 text-slate-950 font-black rounded-xl text-xs">📞 אני מגיע (${c.phone})</a>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+window.filterMinyanimByPrayer = function(prayerType) {
+  minyanPrayerFilter = prayerType;
+  ["all", "shacharit", "mincha", "arvit"].forEach(function(k) {
+    var b = document.getElementById("minyan-filter-" + k);
+    if (b) {
+      b.className = (k === prayerType)
+        ? "px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs shrink-0"
+        : "px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs shrink-0";
+    }
+  });
+  window.renderMinyanim(window.MINYANIM_DATA);
+};
+
+window.renderMinyanim = function(list) {
+  window.renderMinyanCallsBanner();
+  var grid = document.getElementById("minyanim-container");
+  if (!grid) return;
+  grid.innerHTML = (list || []).map(function(m) {
+    var eKey = "minyan_" + m.id;
+    var stats = window.getEntityStats(eKey, 4.9);
+    var safeName = (m.name || "").replace(/'/g, "");
+    var safeCity = (m.city || "").replace(/'/g, "");
+    var hoursSummary = "שחרית: " + m.shacharit + " | מנחה: " + m.mincha + " | ערבית: " + m.arvit;
+    return `
+    <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-3 flex flex-col justify-between hover:border-amber-500/40 transition-all">
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-lg">נוסח ${m.nusach}</span>
+          <button onclick="openEntityFullPage('${eKey}', 'מניין תפילה ובית כנסת', '${safeName}', 'נוסח ${m.nusach} • ${safeCity}', '${safeCity}', '${hoursSummary}', '', 'בית כנסת פעיל עם מניינים קבועים לשחרית, מנחה וערבית.', 'המקום • האווירה • הדיוק בזמנים')" class="text-xs font-black text-amber-400 hover:underline flex items-center gap-1">
+            <span>★ ${stats.avg}</span> <span class="text-slate-400">(${stats.count} תגובות)</span>
+          </button>
+        </div>
+        <h3 class="text-lg font-black text-white">${m.name}</h3>
+        <p class="text-xs text-slate-400">📍 ${m.city} • ${m.distanceKm || "0.4"} ק״מ ממך</p>
+        <div class="grid grid-cols-3 gap-2 pt-2 text-center text-xs">
+          <div class="bg-slate-950 p-2 rounded-xl border ${minyanPrayerFilter==='shacharit'?'border-amber-500':'border-slate-800'}"><span class="text-slate-400 block text-[10px]">☀️ שחרית</span><span class="font-bold text-white">${m.shacharit}</span></div>
+          <div class="bg-slate-950 p-2 rounded-xl border ${minyanPrayerFilter==='mincha'?'border-amber-500':'border-slate-800'}"><span class="text-slate-400 block text-[10px]">🌤️ מנחה</span><span class="font-bold text-amber-300">${m.mincha}</span></div>
+          <div class="bg-slate-950 p-2 rounded-xl border ${minyanPrayerFilter==='arvit'?'border-amber-500':'border-slate-800'}"><span class="text-slate-400 block text-[10px]">🌙 ערבית</span><span class="font-bold text-cyan-300">${m.arvit}</span></div>
+        </div>
+      </div>
+      <div class="pt-3 border-t border-slate-800 grid grid-cols-2 gap-2">
+        <button onclick="openEntityFullPage('${eKey}', 'מניין תפילה ובית כנסת', '${safeName}', 'נוסח ${m.nusach} • ${safeCity}', '${safeCity}', '${hoursSummary}', '', 'מניין קבוע ומדויק. דרגו את המקום, האווירה והדיוק בזמנים!', 'המקום • האווירה • הדיוק בזמנים')" class="py-2 bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 font-black rounded-xl text-xs">
+          ⭐ תגובות ודירוג (${stats.count})
+        </button>
+        <a href="${window.buildWazeUrl(m.lat || 32.08, m.lng || 34.83)}" target="_blank" class="py-2 bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 font-bold rounded-xl text-xs text-center">
+          🚗 ניווט Waze
+        </a>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+// 2. קו הלכה ישיר ובתי הוראה ארציים (שאלה דחופה | שאלה רגילה | חיפוש תשובות | הוספת רב/קו | תגובות ודירוג)
+window.switchHalachaMode = function(mode) {
+  halachaUrgencyMode = mode;
+  ["urgent", "normal", "search"].forEach(function(m) {
+    var btn = document.getElementById("halacha-mode-btn-" + m);
+    var box = document.getElementById("halacha-mode-box-" + m);
+    if (btn) {
+      btn.className = (m === mode)
+        ? "px-4 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs shrink-0 shadow"
+        : "px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 font-bold text-xs shrink-0";
+    }
+    if (box) {
+      if (m === mode) box.classList.remove("hidden");
+      else box.classList.add("hidden");
+    }
+  });
+  if (mode === "search") window.renderHalachaQABank("");
+};
+
+window.renderHalachaQABank = function(query) {
+  var container = document.getElementById("halacha-qa-results");
+  if (!container || !window.HALACHA_QA_DATA) return;
+  var q = (query || "").trim().toLowerCase();
+  var list = window.HALACHA_QA_DATA.filter(function(item) {
+    return !q || item.question.toLowerCase().indexOf(q) !== -1 || item.answer.toLowerCase().indexOf(q) !== -1 || item.category.toLowerCase().indexOf(q) !== -1;
+  });
+  container.innerHTML = list.map(function(item) {
+    return `
+    <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-1.5">
+      <div class="flex items-center justify-between">
+        <span class="px-2.5 py-0.5 bg-amber-500/15 text-amber-300 rounded-lg text-[10px] font-black">${item.category}</span>
+        <span class="text-[11px] text-slate-400">פסק: ${item.rabbi}</span>
+      </div>
+      <h4 class="text-sm font-black text-white">❓ ${item.question}</h4>
+      <p class="text-xs text-slate-300 leading-relaxed">✅ ${item.answer}</p>
+    </div>`;
+  }).join("");
+};
+
+window.renderRabbis = function(list) {
+  var grid = document.getElementById("rabbis-container");
+  if (!grid) return;
+  grid.innerHTML = (list || []).map(function(r, idx) {
+    var rid = r.id || ("rab" + (idx + 1));
+    var eKey = "rabbi_" + rid;
+    var stats = window.getEntityStats(eKey, 5.0);
+    var safeName = (r.name || "").replace(/'/g, "");
+    var safeTitle = (r.title || r.specialty || "פוסק הלכה").replace(/'/g, "");
+    var phone = r.phone || "073-3570000";
+    var hours = r.hours || "מענה הלכתי לאורך היום";
+    return `
+    <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-3 flex flex-col justify-between hover:border-amber-500/40 transition-all">
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">🟢 זמין למענה הלכתי</span>
+          <button onclick="openEntityFullPage('${eKey}', 'קו הלכה ורב פוסק', '${safeName}', '${safeTitle}', '${r.city || "מענה ארצי"}', '${hours}', '${phone}', 'מענה הלכתי לשאלות דחופות ורגילות. דרגו את הזמינות, היחס והמענה!', 'הזמינות • היחס • בהירות המענה')" class="text-xs font-black text-amber-400 hover:underline">
+            ★ ${stats.avg} (${stats.count} דירוגים)
+          </button>
+        </div>
+        <h3 class="text-lg font-black text-white">${r.name}</h3>
+        <p class="text-xs text-amber-300 font-bold">${safeTitle}</p>
+        <p class="text-xs text-slate-400">⏰ ${hours} • 📞 ${phone}</p>
+      </div>
+      <div class="pt-3 border-t border-slate-800 grid grid-cols-3 gap-2">
+        <a href="tel:${phone}" class="py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs text-center">📞 חייג</a>
+        <a href="https://wa.me/972${phone.replace(/[^0-9]/g, '').replace(/^0/, '')}?text=${encodeURIComponent('שלום כבוד הרב, שאלה בהלכה מאפליקציית צדיק-טוק:')}" target="_blank" class="py-2 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold rounded-xl text-xs text-center">💬 שאלה</a>
+        <button onclick="openEntityFullPage('${eKey}', 'קו הלכה ורב פוסק', '${safeName}', '${safeTitle}', '${r.city || "מענה ארצי"}', '${hours}', '${phone}', 'בית הוראה וקו הלכה ישיר. שתפו חוות דעת על הזמינות, היחס והמענה.', 'הזמינות • היחס • המענה')" class="py-2 bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 font-bold rounded-xl text-xs">
+          ⭐ דרג (${stats.count})
+        </button>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+// 3. אינדקס גמ"חים, רפואה וארגוני הצלה (סינון לפי תתי-הסעיפים + דף גמ"ח מלא + תגובות ודירוג)
+window.filterGemachimByCategory = function(catQuery) {
+  if (!catQuery || catQuery === "all") {
+    window.renderGemachim(window.GEMACHIM_DATA);
+    return;
+  }
+  var filtered = (window.GEMACHIM_DATA || []).filter(function(g) {
+    return (g.name && g.name.indexOf(catQuery) !== -1) || (g.category && g.category.indexOf(catQuery) !== -1) || (g.description && g.description.indexOf(catQuery) !== -1);
+  });
+  window.renderGemachim(filtered);
+};
+
+window.renderGemachim = function(list) {
+  var grid = document.getElementById("gemachim-grid-container");
+  if (!grid) return;
+  grid.innerHTML = (list || []).map(function(g, idx) {
+    var gid = g.id || ("gm" + (idx + 1));
+    var eKey = "gemach_" + gid;
+    var stats = window.getEntityStats(eKey, g.rating || 4.9);
+    var safeName = (g.name || "").replace(/'/g, "");
+    var safeCat = (g.category || "גמ״ח וחסד").replace(/'/g, "");
+    var safeAddr = (g.address || g.city || "פריסה ארצית").replace(/'/g, "");
+    var safeHours = (g.hours || "א׳-ה׳ 09:00-21:00").replace(/'/g, "");
+    var safeDesc = (g.description || "").replace(/'/g, "");
+    return `
+    <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-3 flex flex-col justify-between hover:border-amber-500/40 transition-all">
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="px-2.5 py-1 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[11px] font-black">${g.category}</span>
+          <button onclick="openEntityFullPage('${eKey}', 'דף גמ״ח וארגון חסד', '${safeName}', '${safeCat}', '${safeAddr}', '${safeHours}', '${g.phone}', '${safeDesc}', 'השירות • הזמינות • היחס')" class="text-xs font-black text-amber-400 hover:underline">
+            ★ ${stats.avg} (${stats.count} חוות דעת)
+          </button>
+        </div>
+        <h3 class="text-lg font-black text-white">${g.name}</h3>
+        <p class="text-xs text-slate-300 leading-relaxed">${g.description}</p>
+        <div class="text-[11px] text-slate-400 space-y-0.5 pt-1">
+          <div>📍 <strong>כתובת:</strong> ${safeAddr}</div>
+          <div>⏰ <strong>שעות:</strong> ${safeHours}</div>
+          <div>📞 <strong>טלפון:</strong> ${g.phone}</div>
+        </div>
+      </div>
+      <div class="pt-3 border-t border-slate-800 grid grid-cols-3 gap-2">
+        <button onclick="openEntityFullPage('${eKey}', 'דף גמ״ח וארגון חסד', '${safeName}', '${safeCat}', '${safeAddr}', '${safeHours}', '${g.phone}', '${safeDesc}', 'השירות • הזמינות • היחס')" class="py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">
+          📄 דף גמ״ח ודירוג
+        </button>
+        <a href="tel:${g.phone}" class="py-2 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-black rounded-xl text-xs text-center">
+          📞 חייג
+        </a>
+        <a href="${window.buildWazeUrl(g.lat || 32.08, g.lng || 34.83)}" target="_blank" class="py-2 bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-bold rounded-xl text-xs text-center">
+          🚗 Waze
+        </a>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+// 4. מדריך 22 קברי צדיקים + דף קבר מלא + תגובות וסיפורים על הצדיק + יומן יארצייטים משולב
+window.renderTzaddikim = function(list) {
+  var grid = document.getElementById("tzaddikim-grid-container");
+  if (!grid) return;
+  grid.innerHTML = (list || []).map(function(t, idx) {
+    var tid = t.id || ("tz" + (idx + 1));
+    var eKey = "tzaddik_" + tid;
+    var stats = window.getEntityStats(eKey, 5.0);
+    var safeName = (t.name || "").replace(/'/g, "");
+    var safeTitle = (t.title || "").replace(/'/g, "");
+    var safeCity = (t.city || "").replace(/'/g, "");
+    var safeStory = ((t.story || "") + " • סגולה מיוחדת: " + (t.segula || "")).replace(/'/g, "");
+    var imgUrl = t.image || "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80";
+    return `
+    <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-3 flex flex-col justify-between hover:border-amber-500/50 transition-all">
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="px-2.5 py-0.5 bg-amber-500/15 text-amber-300 rounded-full text-[11px] font-bold">📍 ${t.city}</span>
+          <button onclick="openEntityFullPage('${eKey}', 'דף קבר צדיק וסיפורי ישועות', '${safeName}', '${safeTitle}', 'ציון הקודש ב${safeCity} (ניווט Waze ישיר)', 'פתוח 24/7 לתפילה והדלקת נרות', '', '${safeStory}', 'סיפורים • חוויות מהציון • בקשות תפילה', '${imgUrl}')" class="text-xs font-black text-amber-400 hover:underline">
+            ★ ${stats.avg} (${stats.count} סיפורים)
+          </button>
+        </div>
+        <h3 class="text-lg font-black text-white">${t.name}</h3>
+        <p class="text-xs text-amber-200/90 font-medium">${t.title || ""}</p>
+        <p class="text-xs text-slate-300 bg-slate-950 p-2.5 rounded-xl border border-slate-800/80">✨ <strong>סגולה:</strong> ${t.segula}</p>
+      </div>
+      <div class="pt-2 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="openEntityFullPage('${eKey}', 'דף קבר צדיק וסיפורי ישועות', '${safeName}', '${safeTitle}', 'ציון הקודש ב${safeCity}', 'פתוח 24/7', '', '${safeStory}', 'סיפורים • חוויות מהציון • בקשות תפילה', '${imgUrl}')" class="py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">
+            📄 דף קבר וסיפורים
+          </button>
+          <button onclick="openCandleModal('${safeName}')" class="py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 font-black rounded-xl text-xs">
+            🕯️ הדלק נר
+          </button>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <a href="${window.buildWazeUrl(t.lat || 32.9, t.lng || 35.4)}" target="_blank" class="py-1.5 bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-bold rounded-xl text-[11px] text-center">🚗 הוראות הגעה</a>
+          <a href="${t.whatsappGroup || 'https://wa.me/'}" target="_blank" class="py-1.5 bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-bold rounded-xl text-[11px] text-center">💬 קבוצת וואטסאפ</a>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+
+  // רינדור יומן היארצייטים המשולב גם בתוך עמוד קברי צדיקים וגם בעמוד זמני היום
+  window.renderYahrzeitSharedCards("tzaddikim-yahrzeits-container");
+  window.renderYahrzeitSharedCards("zmanim-yahrzeits-container");
+};
+
+window.renderYahrzeitSharedCards = function(containerId) {
+  var box = document.getElementById(containerId);
+  if (!box || !window.YAHRZEITS_CALENDAR) return;
+  box.innerHTML = window.YAHRZEITS_CALENDAR.map(function(y, idx) {
+    var yid = y.id || ("yh_" + (idx + 1));
+    var eKey = "yahrzeit_" + yid;
+    var stats = window.getEntityStats(eKey, 5.0);
+    var safeName = (y.name || "").replace(/'/g, "");
+    var safeTitle = (y.title || "").replace(/'/g, "");
+    var safeLoc = (y.location || "").replace(/'/g, "");
+    var safeBio = (y.biography || y.segula || "").replace(/'/g, "");
+    var imgUrl = y.image || "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80";
+    return `
+    <div class="bg-slate-950 border border-amber-500/30 p-4 rounded-2xl flex flex-col justify-between space-y-3 hover:border-amber-400 transition-all">
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="px-2.5 py-0.5 bg-amber-500 text-slate-950 font-black rounded-lg text-[10px]">📅 ${y.date}</span>
+          <button onclick="openEntityFullPage('${eKey}', 'דף אישיות ביארצייט והילולא', '${safeName}', '${safeTitle} • ${y.date}', 'מקום מנוחה: ${safeLoc}', 'יום הילולא: ${y.date}', '', '${safeBio}', 'סיפורים • זיכרונות • דברי תורה לעילוי נשמתו', '${imgUrl}')" class="text-[11px] font-black text-amber-400 hover:underline">
+            ★ ${stats.avg} (${stats.count} תגובות)
+          </button>
+        </div>
+        <h4 class="text-sm font-black text-white">${y.name}</h4>
+        <p class="text-[11px] text-amber-300 font-bold">${y.title} • 📍 ${y.location}</p>
+        <p class="text-xs text-slate-300 leading-relaxed line-clamp-2">${y.segula}</p>
+      </div>
+      <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800/80">
+        <button onclick="openEntityFullPage('${eKey}', 'דף אישיות ביארצייט והילולא', '${safeName}', '${safeTitle} • ${y.date}', 'מקום מנוחה: ${safeLoc}', 'יום הילולא: ${y.date}', '', '${safeBio}', 'סיפורים • זיכרונות • דברי תורה לעילוי נשמתו', '${imgUrl}')" class="py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">
+          👤 דף אישיות ותגובות
+        </button>
+        <button onclick="openCandleModal('${safeName}')" class="py-2 bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/40 font-black rounded-xl text-xs">
+          🕯️ הדלק נר
+        </button>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+// רינדור "התכנים שהוספתי" באזור האישי שלי
+window.renderMySubmissionsList = function() {
+  var subContainer = document.getElementById("myzone-submissions-list");
+  if (!subContainer) return;
+  var mySubs = window.getStorageJson(STORAGE_KEYS.MY_SUBMISSIONS, window.DEFAULT_MY_SUBMISSIONS || []);
+  if (mySubs.length === 0) {
+    subContainer.innerHTML = '<div class="text-xs text-slate-400 p-4 bg-slate-950 rounded-2xl border border-slate-800">עדיין לא הוספת תכנים לקהילה.</div>';
+    return;
+  }
+  subContainer.innerHTML = mySubs.map(function(s) {
+    var isPending = s.status && s.status.indexOf("ממתין") !== -1;
+    return `
+    <div class="bg-slate-950 border ${isPending ? 'border-amber-500/50' : 'border-slate-800'} p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-0.5 bg-amber-500/15 text-amber-300 font-black rounded-md text-[10px]">${s.type}</span>
+          <span class="px-2.5 py-0.5 ${isPending ? 'bg-amber-500/20 text-amber-300' : 'bg-emerald-500/20 text-emerald-300'} font-bold rounded-md text-[10px]">${s.status}</span>
+          <span class="text-[10px] text-slate-500">${s.date}</span>
+        </div>
+        <h4 class="text-sm font-black text-white">${s.title}</h4>
+        <p class="text-xs text-slate-300">${s.details}</p>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        ${isPending ? `<button onclick="approveSubmissionInMyZone('${s.id}')" class="px-3 py-1.5 bg-emerald-500 text-slate-950 font-black rounded-xl text-xs">✔ אשר מודרציה כעת</button>` : ""}
+      </div>
+    </div>`;
+  }).join("");
+};
+
+
+// 5. שדרוג מקוואות, מסעדות כשרות, בתי חב"ד וחנות יודאיקה עם דף מלא, תגובות ודירוג כוכבים!
+window.renderMikvaot = function(list) {
+  var grid = document.getElementById("mikvaot-grid-container");
+  if (!grid) return;
+  grid.innerHTML = (list || []).map(function(m, idx) {
+    var mid = m.id || ("mk" + (idx + 1));
+    var eKey = "mikvah_" + mid;
+    var stats = window.getEntityStats(eKey, m.rating || 4.9);
+    var safeName = (m.name || "").replace(/'/g, "");
+    var safeCity = (m.city || "").replace(/'/g, "");
+    var safeHours = (m.hours || "פתוח מערב שבת וחול").replace(/'/g, "");
+    return `
+    <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-3 flex flex-col justify-between hover:border-blue-500/40 transition-all">
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="px-2.5 py-0.5 bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-full text-[11px] font-black">${m.type || "מקווה טהרה"}</span>
+          <button onclick="openEntityFullPage('${eKey}', 'דף מקווה טהרה וביקורות', '${safeName}', '${safeCity}', '${safeCity}', '${safeHours}', '${m.phone || ""}', 'מקווה טהרה מהודר ונקי. דרגו את הניקיון, השירות ושעות הפעילות.', 'ניקיון והידור • שעות פעילות • יחס ושירות')" class="text-xs font-black text-amber-400 hover:underline">
+            ★ ${stats.avg} (${stats.count} תגובות)
+          </button>
+        </div>
+        <h3 class="text-lg font-black text-white">${m.name}</h3>
+        <p class="text-xs text-slate-300">📍 ${m.city} • ⏰ ${safeHours}</p>
+      </div>
+      <div class="pt-3 border-t border-slate-800 grid grid-cols-3 gap-2">
+        <button onclick="openEntityFullPage('${eKey}', 'דף מקווה טהרה וביקורות', '${safeName}', '${safeCity}', '${safeCity}', '${safeHours}', '${m.phone || ""}', 'מקווה טהרה מהודר ונקי.', 'ניקיון והידור • שעות פעילות • יחס ושירות')" class="py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">
+          ⭐ דף ודירוג
+        </button>
+        <a href="tel:${m.phone || "035700000"}" class="py-2 bg-slate-800 text-white font-bold rounded-xl text-xs text-center">📞 חייג</a>
+        <a href="${window.buildWazeUrl(m.lat || 32.08, m.lng || 34.83)}" target="_blank" class="py-2 bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-bold rounded-xl text-xs text-center">🚗 Waze</a>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+window.renderRestaurants = function(list) {
+  var grid = document.getElementById("restaurants-grid-container");
+  if (!grid) return;
+  grid.innerHTML = (list || []).map(function(r, idx) {
+    var rid = r.id || ("rst" + (idx + 1));
+    var eKey = "rest_" + rid;
+    var stats = window.getEntityStats(eKey, 4.9);
+    var safeName = (r.name || "").replace(/'/g, "");
+    var safeCity = (r.city || "").replace(/'/g, "");
+    var safeHech = (r.hechsher || "מהדרין").replace(/'/g, "");
+    return `
+    <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-3 flex flex-col justify-between hover:border-emerald-500/40 transition-all">
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full text-[11px] font-black">${r.type || "כשר"} • ${r.hechsher}</span>
+          <button onclick="openEntityFullPage('${eKey}', 'דף מסעדה כשרה וביקורות', '${safeName}', '${r.type || ""} • ${safeHech}', '${safeCity}', 'פתוח א-ה ומוצ״ש', '${r.phone || ""}', 'מסעדה כשרה בפיקוח ${safeHech}. שתפו חוות דעת על האוכל, השירות והכשרות!', 'טעם וטריות • רמת כשרות • שירות ומחיר')" class="text-xs font-black text-amber-400 hover:underline">
+            ★ ${stats.avg} (${stats.count} ביקורות)
+          </button>
+        </div>
+        <h3 class="text-lg font-black text-white">${r.name}</h3>
+        <p class="text-xs text-slate-300">📍 ${r.city} • 🛡️ ${r.hechsher}</p>
+      </div>
+      <div class="pt-3 border-t border-slate-800 grid grid-cols-3 gap-2">
+        <button onclick="openEntityFullPage('${eKey}', 'דף מסעדה כשרה וביקורות', '${safeName}', '${r.type || ""} • ${safeHech}', '${safeCity}', 'פתוח א-ה ומוצ״ש', '${r.phone || ""}', 'מסעדה כשרה בפיקוח ${safeHech}.', 'טעם וטריות • רמת כשרות • שירות ומחיר')" class="py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">
+          ⭐ דרג והגב
+        </button>
+        <a href="tel:${r.phone || "035700000"}" class="py-2 bg-slate-800 text-white font-bold rounded-xl text-xs text-center">📞 הזמן</a>
+        <a href="${window.buildWazeUrl(r.lat || 32.08, r.lng || 34.83)}" target="_blank" class="py-2 bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-bold rounded-xl text-xs text-center">🚗 Waze</a>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+window.renderChabad = function(list) {
+  var grid = document.getElementById("chabad-grid-container");
+  if (!grid) return;
+  grid.innerHTML = (list || []).map(function(c, idx) {
+    var cid = c.id || ("chb" + (idx + 1));
+    var eKey = "chabad_" + cid;
+    var stats = window.getEntityStats(eKey, 5.0);
+    var safeName = (c.name || "").replace(/'/g, "");
+    var safeRabbi = (c.rabbi || "").replace(/'/g, "");
+    var safeAddr = (c.address || c.country || "").replace(/'/g, "");
+    return `
+    <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-3 flex flex-col justify-between hover:border-amber-500/40 transition-all">
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="px-2.5 py-0.5 bg-amber-500/15 text-amber-300 rounded-full text-[11px] font-black">🌍 ${c.country || "בעולם"}</span>
+          <button onclick="openEntityFullPage('${eKey}', 'דף בית חב״ד בעולם', '${safeName}', 'השליח: ${safeRabbi}', '${safeAddr}', 'פתוח למניינים, אוכל כשר ושבתות', '${c.phone || ""}', 'בית חב״ד פתוח לכל יהודי במאור פנים.', 'אירוח שבת • אוכל כשר • מניינים ויחס חם')" class="text-xs font-black text-amber-400 hover:underline">
+            ★ ${stats.avg} (${stats.count} המלצות)
+          </button>
+        </div>
+        <h3 class="text-lg font-black text-white">${c.name}</h3>
+        <p class="text-xs text-amber-300 font-bold">השליח: ${c.rabbi}</p>
+        <p class="text-xs text-slate-400">📍 ${safeAddr}</p>
+      </div>
+      <div class="pt-3 border-t border-slate-800 grid grid-cols-3 gap-2">
+        <button onclick="openEntityFullPage('${eKey}', 'דף בית חב״ד בעולם', '${safeName}', 'השליח: ${safeRabbi}', '${safeAddr}', 'פתוח למניינים, אוכל כשר ושבתות', '${c.phone || ""}', 'בית חב״ד פתוח לכל יהודי.', 'אירוח שבת • אוכל כשר • מניינים ויחס חם')" class="py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">
+          ⭐ דף והמלצות
+        </button>
+        <a href="tel:${c.phone || ""}" class="py-2 bg-slate-800 text-white font-bold rounded-xl text-xs text-center">📞 חייג</a>
+        <a href="${window.buildWazeUrl(c.lat || 32.08, c.lng || 34.83)}" target="_blank" class="py-2 bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-bold rounded-xl text-xs text-center">🚗 Waze</a>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+window.refreshAllCommunityViews = function() {
+  window.renderMikvaot(window.MIKVAOT_DATA);
+  window.renderRestaurants(window.RESTAURANTS_DATA);
+  window.renderChabad(window.CHABAD_DATA);
+  window.renderMinyanim(window.MINYANIM_DATA);
+  window.renderRabbis(window.RABBIS_DATA);
+  window.renderGemachim(window.GEMACHIM_DATA);
+  window.renderTzaddikim(window.TZADDIKIM_DATA);
+  window.renderYahrzeitSharedCards("tzaddikim-yahrzeits-container");
+  window.renderYahrzeitSharedCards("zmanim-yahrzeits-container");
+  window.renderMySubmissionsList();
 };
