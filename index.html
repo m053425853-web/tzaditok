@@ -100,64 +100,182 @@
         <button onclick="toggleShabbatOverlay(true)" title="מצב שבת קודש" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 text-xs font-bold flex items-center gap-1">
           <span>🕯️</span> <span class="hidden sm:inline">מצב שבת</span>
         </button>
-        <button onclick="document.getElementById('modal-user-profile').classList.remove('hidden')" title="פרופיל והגדרות אישיות" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-xs shadow-md flex items-center gap-1.5 active:scale-95 transition-all">
-          <span>👤</span> <span>האזור שלי</span>
-        </button>
+        <button onclick="cycleAppLanguage()" class="px-2.5 py-1.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-amber-400 text-xs font-bold text-amber-300 flex items-center gap-1" title="החלף שפה / Change Language">
+            <span id="header-lang-label">🇮🇱 עברית</span>
+          </button>
+
+          <button onclick="switchTab('myzone')" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-md">
+            <span>👤</span>
+            <span>האזור שלי</span>
+          </button>
       </div>
     </div>
 
-    <!-- Desktop Navigation Bar -->
-    <div class="hidden md:flex max-w-6xl mx-auto px-4 py-2 overflow-x-auto hide-scrollbar items-center gap-1.5 border-t border-slate-800/70 text-xs font-bold">
-      <button onclick="openSuperDrawer()" class="shrink-0 px-3 py-1.5 rounded-xl border border-amber-500/40 bg-amber-500/15 text-amber-300 transition-all">⚡ עוד כלים</button>
-      <button onclick="switchTab('series')" id="pill-series" class="pill-btn shrink-0 px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 transition-all">📚 ספרייה (9)</button>
-      <button onclick="switchTab('siddur')" id="pill-siddur" class="pill-btn shrink-0 px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 transition-all">🕍 יהדות וסידור</button>
-      <button onclick="switchTab('zmanim')" id="pill-zmanim" class="pill-btn shrink-0 px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 transition-all">⏰ זמנים וחשבון נפש</button>
-      <button onclick="switchTab('feed')" id="pill-feed" class="pill-btn active shrink-0 px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 transition-all">🎬 פיד רילס 9:16</button>
-      <button onclick="switchTab('tzaddikim')" id="pill-tzaddikim" class="pill-btn shrink-0 px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 transition-all">🕯️ קברי צדיקים (22)</button>
-      <button onclick="switchTab('mikvaot')" id="pill-mikvaot" class="pill-btn shrink-0 px-3 py-1.5 rounded-xl border border-blue-500/40 bg-blue-500/10 text-blue-300 transition-all">💧 מקוואות טהרה</button>
-      <button onclick="switchTab('restaurants')" id="pill-restaurants" class="pill-btn shrink-0 px-3 py-1.5 rounded-xl border border-emerald-500/40 bg-emerald-500/10 text-emerald-300 transition-all">🍽️ מסעדות כשרות</button>
-      <button onclick="switchTab('gemachim')" id="pill-gemachim" class="pill-btn shrink-0 px-3 py-1.5 rounded-xl border border-cyan-500/40 bg-cyan-500/10 text-cyan-300 transition-all">🤝 גמ״חים וחסד</button>
-      <button onclick="switchTab('chabad')" id="pill-chabad" class="pill-btn shrink-0 px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 transition-all">🌍 בתי חב״ד בעולם</button>
-      <button onclick="switchTab('minyanim')" id="pill-minyanim" class="pill-btn shrink-0 px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 transition-all">⏱️ מניינים חיים</button>
-      <button onclick="switchTab('live')" id="pill-live" class="pill-btn shrink-0 px-3 py-1.5 rounded-xl border border-red-500/40 bg-red-500/10 text-red-400 transition-all">🔴 שידור חי</button>
-      <button onclick="switchTab('raffles')" id="pill-raffles" class="pill-btn shrink-0 px-3 py-1.5 rounded-xl border border-amber-500/40 bg-amber-500/10 text-amber-300 transition-all">🎟️ הגרלות וקמפיינים</button>
-      <button onclick="switchTab('judaica')" id="pill-judaica" class="pill-btn shrink-0 px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 transition-all">🛍️ חנות יודאיקה</button>
-    </div>
-  </header>
+    <!-- Category Navigation Bar (תפריט ראשי קבוע: בית | ללמוד | להתפלל | למצוא | לתת ולקנות | האזור שלי) -->
+      <div class="max-w-7xl mx-auto px-4 pb-2.5 flex items-center gap-2 overflow-x-auto hide-scrollbar text-xs font-bold">
+        <button onclick="switchTab('feed')" id="pill-feed" class="pill-btn active px-3.5 py-1.5 rounded-xl border border-slate-800 bg-slate-900/90 shrink-0 flex items-center gap-1.5">
+          <span>🏠</span> <span>בית</span>
+        </button>
+        <button onclick="switchTab('series')" id="pill-series" class="pill-btn px-3.5 py-1.5 rounded-xl border border-slate-800 bg-slate-900/90 shrink-0 flex items-center gap-1.5">
+          <span>📚</span> <span>ללמוד</span>
+        </button>
+        <button onclick="switchTab('siddur')" id="pill-siddur" class="pill-btn px-3.5 py-1.5 rounded-xl border border-slate-800 bg-slate-900/90 shrink-0 flex items-center gap-1.5">
+          <span>🙏</span> <span>להתפלל</span>
+        </button>
+        <button onclick="switchTab('find')" id="pill-find" class="pill-btn px-3.5 py-1.5 rounded-xl border border-slate-800 bg-slate-900/90 shrink-0 flex items-center gap-1.5">
+          <span>📍</span> <span>למצוא</span>
+        </button>
+        <button onclick="switchTab('givebuy')" id="pill-givebuy" class="pill-btn px-3.5 py-1.5 rounded-xl border border-slate-800 bg-slate-900/90 shrink-0 flex items-center gap-1.5">
+          <span>💝</span> <span>לתת ולקנות</span>
+        </button>
+        <button onclick="switchTab('myzone')" id="pill-myzone" class="pill-btn px-3.5 py-1.5 rounded-xl border border-amber-500/40 bg-slate-900/90 text-amber-300 shrink-0 flex items-center gap-1.5">
+          <span>👤</span> <span>האזור שלי</span>
+        </button>
+        <button onclick="switchTab('zmanim')" id="pill-zmanim" class="pill-btn px-3.5 py-1.5 rounded-xl border border-slate-800 bg-slate-900/90 shrink-0 flex items-center gap-1.5">
+          <span>⏰</span> <span>זמני היום ולוח</span>
+        </button>
+      </div>
+    </header>
 
   <!-- Main Content Container -->
   <main class="max-w-6xl mx-auto px-4 py-4">
 
-    <!-- 1. MAIN HOME & REELS VIEW -->
+    <!-- 1. MAIN HOME & REELS VIEW (דף הבית המרכזי) -->
     <section id="view-feed" class="view-section active space-y-4">
-      
-      <!-- א. סרטון היכרות + סרטון פרשת השבוע -->
-      <div class="bg-gradient-to-r from-amber-950/60 via-slate-900 to-slate-900 border border-amber-500/40 p-4 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xl">
-        <div class="flex items-center gap-2.5">
-          <span class="px-2.5 py-1 bg-amber-500 text-slate-950 font-black rounded-xl text-[11px] shrink-0">⭐ ראשי</span>
-          <div>
-            <h2 class="text-sm sm:text-base font-black text-white">ברוכים הבאים לצדיק-טוק • פרשת השבוע והיכרות</h2>
-            <p class="text-[11px] text-slate-300">צפה בסרטון ההיכרות של האפליקציה ובסרטון פרשת השבוע המרכזי</p>
+
+      <!-- 1. חיפוש בכל האפליקציה (בראש הדף לפני הסרטון) -->
+      <div class="bg-slate-900/95 border-2 border-amber-500/40 p-3.5 rounded-3xl shadow-xl space-y-2.5">
+        <div class="relative flex items-center">
+          <span class="absolute right-3.5 text-amber-400 text-base">🔍</span>
+          <input id="home-search-input" type="text" onkeydown="if(event.key==='Enter'){document.getElementById('global-search-input').value=this.value;handleGlobalSearch(event);}" placeholder="חיפוש בכל האפליקציה: פרשה, סידור, מניין, מקווה, מסעדה, בית חב״ד..." class="w-full bg-slate-950 border border-slate-800 focus:border-amber-400 rounded-2xl py-2.5 pr-10 pl-20 text-xs sm:text-sm text-white placeholder-slate-400 outline-none">
+          <button onclick="var v=document.getElementById('home-search-input').value;if(v){document.getElementById('global-search-input').value=v;handleGlobalSearch({key:'Enter'});}else{toast('הקלד מילת חיפוש');}" class="absolute left-1.5 px-3.5 py-1.5 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">
+            חפש
+          </button>
+        </div>
+        <div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar text-[11px]">
+          <span class="text-slate-400 font-bold shrink-0">חיפוש מהיר:</span>
+          <button onclick="switchTab('series')" class="px-2.5 py-1 rounded-lg bg-slate-950 text-amber-300 border border-slate-800 shrink-0">📜 פרשת השבוע</button>
+          <button onclick="switchTab('siddur')" class="px-2.5 py-1 rounded-lg bg-slate-950 text-slate-300 border border-slate-800 shrink-0">🙏 סידור תפילה</button>
+          <button onclick="switchTab('minyanim')" class="px-2.5 py-1 rounded-lg bg-slate-950 text-slate-300 border border-slate-800 shrink-0">🕍 מניין קרוב</button>
+          <button onclick="switchTab('mikvaot')" class="px-2.5 py-1 rounded-lg bg-slate-950 text-slate-300 border border-slate-800 shrink-0">💧 מקווה</button>
+          <button onclick="switchTab('restaurants')" class="px-2.5 py-1 rounded-lg bg-slate-950 text-slate-300 border border-slate-800 shrink-0">🍽️ מסעדות כשרות</button>
+          <button onclick="switchTab('chabad')" class="px-2.5 py-1 rounded-lg bg-slate-950 text-slate-300 border border-slate-800 shrink-0">🏛️ בית חב״ד</button>
+        </div>
+      </div>
+
+      <!-- 2. הסרטון הראשי בכניסה: סרטון פרשת השבוע + סרטון היכרות -->
+      <div class="relative rounded-3xl overflow-hidden border-2 border-amber-500/50 bg-slate-900 shadow-2xl">
+        <div class="relative h-52 sm:h-64 w-full overflow-hidden flex items-center justify-center">
+          <img src="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1000&q=80" alt="פרשת השבוע" class="absolute inset-0 w-full h-full object-cover opacity-65">
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent"></div>
+          <button onclick="openParashaViewer('bereishit', 'חיי שרה')" class="relative z-10 w-16 h-16 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 flex items-center justify-center text-2xl font-black shadow-2xl active:scale-95 transition-all">
+            ▶
+          </button>
+          <div class="absolute top-3 right-3 flex items-center gap-2">
+            <span class="px-3 py-1 bg-amber-500 text-slate-950 font-black rounded-full text-xs shadow">🎬 סרטון פרשת השבוע: חיי שרה</span>
+          </div>
+          <button onclick="openIntroModal()" class="absolute top-3 left-3 px-3 py-1 bg-slate-950/85 hover:bg-slate-900 text-cyan-300 border border-cyan-500/40 font-black rounded-full text-xs">
+            👋 סרטון היכרות לאפליקציה
+          </button>
+          <div class="absolute bottom-3 right-4 left-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+            <div>
+              <h2 class="text-lg sm:text-xl font-black text-white">פרשת חיי שרה • חומש בראשית</h2>
+              <p class="text-xs text-slate-200">קניית מערת המכפלה בחברון, שליחות אליעזר ונישואי יצחק ורבקה • פירוש רש״י ומדרשים</p>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="openParashaViewer('bereishit', 'חיי שרה')" class="px-3.5 py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">📖 לצפייה ולימוד הפרשה</button>
+            </div>
           </div>
         </div>
-        <div class="flex items-center gap-2 w-full sm:w-auto">
-          <button onclick="openIntroModal()" class="flex-1 sm:flex-initial px-3.5 py-2.5 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 font-black rounded-xl text-xs">
-            👋 סרטון היכרות
+      </div>
+
+      <!-- 3. ארבעת העולמות הראשיים: ללמוד | להתפלל | למצוא | לתת ולקנות -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        <button onclick="switchTab('series')" class="bg-gradient-to-br from-slate-900 to-slate-950 hover:border-amber-400 border border-slate-800 p-3.5 rounded-2xl text-right space-y-1 shadow-lg transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-2xl">📚</span>
+            <span class="text-[10px] font-black text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-md">54 פרשיות ונ״ך</span>
+          </div>
+          <h3 class="text-sm font-black text-white">ללמוד</h3>
+          <p class="text-[11px] text-slate-400 line-clamp-1">תורה, נ״ך, דורות וסדרות</p>
+        </button>
+
+        <button onclick="switchTab('siddur')" class="bg-gradient-to-br from-slate-900 to-slate-950 hover:border-amber-400 border border-slate-800 p-3.5 rounded-2xl text-right space-y-1 shadow-lg transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-2xl">🙏</span>
+            <span class="text-[10px] font-black text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded-md">סידור ומניינים</span>
+          </div>
+          <h3 class="text-sm font-black text-white">להתפלל</h3>
+          <p class="text-[11px] text-slate-400 line-clamp-1">סידור, מאתר מניינים וקו הלכה</p>
+        </button>
+
+        <button onclick="switchTab('find')" class="bg-gradient-to-br from-slate-900 to-slate-950 hover:border-amber-400 border border-slate-800 p-3.5 rounded-2xl text-right space-y-1 shadow-lg transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-2xl">📍</span>
+            <span class="text-[10px] font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md">מפה וניווט</span>
+          </div>
+          <h3 class="text-sm font-black text-white">למצוא</h3>
+          <p class="text-[11px] text-slate-400 line-clamp-1">חב״ד, מקווה, מסעדות, צדיקים וגמ״ח</p>
+        </button>
+
+        <button onclick="switchTab('givebuy')" class="bg-gradient-to-br from-slate-900 to-slate-950 hover:border-amber-400 border border-slate-800 p-3.5 rounded-2xl text-right space-y-1 shadow-lg transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-2xl">💝</span>
+            <span class="text-[10px] font-black text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-md">צדקה וקדושה</span>
+          </div>
+          <h3 class="text-sm font-black text-white">לתת ולקנות</h3>
+          <p class="text-[11px] text-slate-400 line-clamp-1">תרומות, חנות, הגרלות וספר הפרנסים</p>
+        </button>
+      </div>
+
+      <!-- 4. סדרת השבוע -->
+      <div class="bg-gradient-to-r from-amber-950/50 via-slate-900 to-slate-900 border border-amber-500/40 p-4 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xl">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 bg-amber-500 text-slate-950 font-black rounded-full text-[11px]">⭐ סדרת השבוע</span>
+            <span class="text-xs text-amber-300 font-bold">10 פרקים מלאים • AI 4K</span>
+          </div>
+          <h3 class="text-base font-black text-white">יוסף הצדיק • שליט על מצרים</h3>
+          <p class="text-xs text-slate-300">מותאם לפרשיות ספר בראשית • מבוסס על מדרשי חז״ל ופירוש רש״י הקדוש</p>
+        </div>
+        <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+          <button onclick="openSeriesEpisodes('s_joseph')" class="flex-1 sm:flex-initial px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs">
+            📺 צפה בפרקים (25 דק׳)
           </button>
-          <button onclick="openParashaViewer('bereishit', 'חיי שרה')" class="flex-1 sm:flex-initial px-3.5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs">
-            🎬 סרטון פרשת השבוע
+          <button onclick="openRashiDrawer('r1')" class="px-3.5 py-2.5 bg-slate-800 text-amber-300 border border-slate-700 font-bold rounded-xl text-xs">
+            📖 פניני רש״י
           </button>
         </div>
       </div>
 
-      <!-- ב. לוח היום: תאריך עברי + זמנים לחוצים במהלך היום (שקיעה, סוף זמן שמע, מנחה) -->
+      <!-- 5. מוזיקה וניגוני קודש -->
+      <div class="bg-slate-900 border border-slate-800 p-4 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-2xl shrink-0">🎵</div>
+          <div>
+            <span class="text-[10px] font-black text-amber-400 block">היכל המוזיקה וניגוני הקודש</span>
+            <h3 class="text-sm font-black text-white" id="home-music-now-playing">ניגון ארבע בבות • חב״ד ופיוטי קודש</h3>
+            <p class="text-[11px] text-slate-400">ניגוני נשמה, חסידי, מזרחי ופיוטים, שירי שבת ומוזיקה ווקאלית</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+          <button onclick="toggleHomeMusicPlay()" id="home-music-play-btn" class="flex-1 sm:flex-initial px-4 py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">
+            ▶ נגן ניגון
+          </button>
+          <button onclick="openMusicModal()" class="flex-1 sm:flex-initial px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-bold rounded-xl text-xs">
+            🎼 כל סוגי המוזיקה
+          </button>
+        </div>
+      </div>
+
+      <!-- 6. זמני היום בהלכה -->
       <div class="bg-slate-900 border border-slate-800 p-4 rounded-3xl space-y-3 shadow-lg">
         <div class="flex items-center justify-between border-b border-slate-800 pb-2">
           <div class="flex items-center gap-2">
-            <span class="text-base">📅</span>
-            <h3 class="text-xs sm:text-sm font-black text-white">זמני היום הדחופים • <span id="home-hebrew-date" class="text-amber-400">כ״ח במרחשוון תשפ״ז</span></h3>
+            <span class="text-base">⏰</span>
+            <h3 class="text-xs sm:text-sm font-black text-white">זמני היום (<span class="user-city-label text-cyan-400">בני ברק</span>) • <span id="home-hebrew-date" class="text-amber-400">כ״ח במרחשוון תשפ״ז</span></h3>
           </div>
-          <button onclick="switchTab('zmanim')" class="text-[11px] text-amber-400 font-bold hover:underline">לכל הזמנים והלוח ←</button>
+          <button onclick="switchTab('zmanim')" class="text-[11px] text-amber-400 font-bold hover:underline">ללוח השנה וכל הזמנים ←</button>
         </div>
         <div class="grid grid-cols-4 gap-2 text-center">
           <div class="bg-slate-950 border border-slate-800/90 p-2 rounded-2xl">
@@ -179,9 +297,23 @@
         </div>
       </div>
 
-      <!-- ג. יארצייט היומי + קו שיעורים ושידור חי -->
+      <!-- 7. מניין קרוב + יארצייט היומי -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <!-- הילולא / יארצייט היומי -->
+        <!-- מניין קרוב -->
+        <div class="bg-slate-900 border border-cyan-500/30 p-4 rounded-3xl flex items-center justify-between gap-3">
+          <div class="space-y-0.5">
+            <span class="text-[10px] font-black text-cyan-400 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> 🕍 מניין קרוב אליך כעת</span>
+            <h4 class="text-sm font-black text-white">בית הכנסת המרכזי • מנחה וערבית</h4>
+            <p class="text-[11px] text-slate-400">מנחה: 16:25 • ערבית: 17:15 • 180 מ׳ ממך</p>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button onclick="switchTab('minyanim')" class="px-3 py-2 bg-cyan-500 text-slate-950 font-black rounded-xl text-xs">
+              🕍 כל המניינים
+            </button>
+          </div>
+        </div>
+
+        <!-- יארצייט היומי -->
         <div class="bg-slate-900 border border-amber-500/30 p-4 rounded-3xl flex items-center justify-between gap-3">
           <div class="space-y-0.5">
             <span class="text-[10px] font-black text-amber-400 block">🕯️ הילולא ויארצייט היום</span>
@@ -192,38 +324,9 @@
             🕯️ הדלק נר
           </button>
         </div>
-
-        <!-- קו השיעורים ושידור חי -->
-        <div class="bg-slate-900 border border-red-500/30 p-4 rounded-3xl flex items-center justify-between gap-3">
-          <div class="space-y-0.5">
-            <span class="text-[10px] font-black text-red-400 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> שידור חי וקו השיעורים</span>
-            <h4 class="text-sm font-black text-white">בית המדרש החי & קו הלכה</h4>
-            <p class="text-[11px] text-slate-400">שיעורי תורה בשידור חי וחיוג מהיר</p>
-          </div>
-          <div class="flex items-center gap-1.5 shrink-0">
-            <button onclick="switchTab('live')" class="px-3 py-2 bg-red-600 text-white font-black rounded-xl text-xs">
-              🔴 צפה בחי
-            </button>
-            <a href="tel:0733570000" class="px-3 py-2 bg-slate-800 text-amber-300 border border-slate-700 font-bold rounded-xl text-xs">
-              📞 קו שיעורים
-            </a>
-          </div>
-        </div>
       </div>
 
-      <!-- ד. תקציר פרשת השבוע הנוכחית וגישה לחומשים -->
-      <div class="bg-slate-900 border border-slate-800 p-4 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <div>
-          <span class="text-[10px] font-black text-cyan-400 block">📖 פרשת השבוע הנוכחית</span>
-          <h4 class="text-sm font-black text-white">פרשת חיי שרה • חומש בראשית</h4>
-          <p class="text-xs text-slate-300 mt-0.5">קניית מערת המכפלה בחברון, שליחות אליעזר למציאת רבקה אמנו ונישואי יצחק ורבקה.</p>
-        </div>
-        <button onclick="switchTab('series')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 font-black rounded-xl text-xs shrink-0">
-          📚 לכל 54 הפרשיות בספרייה ←
-        </button>
-      </div>
-
-      <!-- ה. המשך גלילה למטה: פיד סרטוני הרילס (9:16) -->
+      <!-- 8. פיד סרטוני הרילס (בגלילה למטה) -->
       <div class="pt-2 space-y-3">
         <div class="flex items-center justify-between">
           <h3 class="text-sm font-black text-white flex items-center gap-1.5"><span>🎬</span> פיד סרטוני חיזוק ורילס (גלול למטה)</h3>
@@ -242,8 +345,8 @@
       <div class="bg-gradient-to-r from-amber-950/50 via-slate-900 to-slate-900 p-5 rounded-3xl border border-amber-500/40 space-y-3">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <span class="text-[10px] font-black text-amber-400 bg-amber-500/15 px-2.5 py-0.5 rounded-full border border-amber-500/30">הספרייה הקדושה המלאה</span>
-            <h2 class="text-xl font-black text-white mt-1">📚 חמישה חומשי תורה (54 פרשיות), נ״ך ותולדות הדורות</h2>
+            <span class="text-[10px] font-black text-amber-400 bg-amber-500/15 px-2.5 py-0.5 rounded-full border border-amber-500/30">מרכז הלמידה (ללמוד)</span>
+            <h2 class="text-xl font-black text-white mt-1">📚 ללמוד • חמישה חומשי תורה (54 פרשיות), נ״ך, דורות וסדרות</h2>
             <p class="text-xs text-slate-300">בחר חומש ופרשה לפי הסדר, ספרי נביאים וכתובים, או היסטוריה של תנאים, אמוראים, ראשונים ואחרונים.</p>
           </div>
           <button onclick="openAiStudioModal()" class="px-4 py-2 bg-cyan-500 text-slate-950 font-black rounded-xl text-xs shrink-0 self-start">
@@ -304,6 +407,27 @@
 
     <!-- 3. JUDAICA E-COMMERCE MARKETPLACE (10 PRODUCTS) -->
     <section id="view-judaica" class="view-section space-y-5">
+      <!-- סרגל ניווט פנימי: לתת ולקנות (תרומות וקמפיינים | חנויות יהדות | הגרלות | ספר הפרנסים) -->
+      <div class="bg-slate-900/95 border border-rose-500/30 p-3 rounded-3xl space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <span class="text-xs font-black text-rose-400">💝 מרכז צדקה, קדושה ושותפות (לתת ולקנות)</span>
+          <span class="text-[11px] text-slate-400">תרומות, חנות תשמישי קדושה, הגרלות וספר הפרנסים</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-black">
+          <button onclick="switchTab('donate')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-rose-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>❤️</span> <span>תרומות וקמפיינים</span>
+          </button>
+          <button onclick="switchTab('judaica')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>🛍️</span> <span>חנויות יהדות וקודש</span>
+          </button>
+          <button onclick="switchTab('raffles')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-cyan-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>🎟️</span> <span>הגרלות ופרסים</span>
+          </button>
+          <button onclick="switchTab('donors')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-400 border border-amber-500/40 flex items-center justify-center gap-1">
+            <span>📜</span> <span>ספר הפרנסים</span>
+          </button>
+        </div>
+      </div>
       <div class="bg-gradient-to-r from-amber-950/40 via-slate-900 to-slate-900 p-5 rounded-3xl border border-amber-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
           <span class="text-[10px] font-black text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/30">מרקטפלייס קודש פרימיום</span>
@@ -328,21 +452,25 @@
 
     <!-- 4. YAHADUT & DIVIDED SIDDUR (לשונית יהדות וסידור תפילה מחולק) -->
     <section id="view-siddur" class="view-section space-y-4">
-      <!-- סרגל בחירה ראשי ביהדות (סידור | קו הלכה ורבנים | מנהגים ושירותים | קברי צדיקים) -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-900 p-2 rounded-2xl border border-slate-800 text-xs font-black">
-        <button onclick="switchTab('siddur')" class="py-2.5 px-3 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center gap-1.5 shadow">
-          <span>🙏</span> <span>סידור תפילה</span>
-        </button>
-        <button onclick="switchTab('rabbis')" class="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1.5">
-          <span>📞</span> <span>קו הלכה ורבנים</span>
-        </button>
-        <button onclick="switchTab('customs')" class="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-200 border border-slate-800 flex items-center justify-center gap-1.5">
-          <span>🕎</span> <span>מנהגים ושירותים</span>
-        </button>
-        <button onclick="switchTab('tzaddikim')" class="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1.5">
-          <span>🕯️</span> <span>קברי צדיקים (22)</span>
-        </button>
+      <!-- סרגל ניווט פנימי: להתפלל (סידור וכל התפילות | מאתר מניינים | קו ההלכה ורבנים) -->
+      <div class="bg-slate-900/95 border border-amber-500/30 p-3 rounded-3xl space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <span class="text-xs font-black text-amber-400">🙏 מרכז התפילה וההלכה (להתפלל)</span>
+          <span class="text-[11px] text-slate-400">בחר: סידור תפילה, מאתר מניינים או קו ההלכה</span>
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-xs font-black">
+          <button onclick="switchTab('siddur')" class="py-2.5 px-3 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center gap-1.5 shadow">
+            <span>📖</span> <span>סידור ותפילות</span>
+          </button>
+          <button onclick="switchTab('minyanim')" class="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-cyan-300 border border-slate-800 flex items-center justify-center gap-1.5">
+            <span>🕍</span> <span>מאתר מניינים</span>
+          </button>
+          <button onclick="switchTab('rabbis')" class="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1.5">
+            <span>📞</span> <span>קו ההלכה ורבנים</span>
+          </button>
+        </div>
       </div>
+      
 
       <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-4">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
@@ -383,21 +511,31 @@
 
     <!-- 5. KIVREI TZADDIKIM (22 SITES + WAZE + VIRTUAL CANDLE + WHATSAPP) -->
     <section id="view-tzaddikim" class="view-section space-y-5">
-      <!-- סרגל בחירה ראשי ביהדות (סידור | קו הלכה ורבנים | מנהגים ושירותים | קברי צדיקים) -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-900 p-2 rounded-2xl border border-slate-800 text-xs font-black">
-        <button onclick="switchTab('siddur')" class="py-2.5 px-3 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center gap-1.5 shadow">
-          <span>🙏</span> <span>סידור תפילה</span>
-        </button>
-        <button onclick="switchTab('rabbis')" class="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1.5">
-          <span>📞</span> <span>קו הלכה ורבנים</span>
-        </button>
-        <button onclick="switchTab('customs')" class="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-200 border border-slate-800 flex items-center justify-center gap-1.5">
-          <span>🕎</span> <span>מנהגים ושירותים</span>
-        </button>
-        <button onclick="switchTab('tzaddikim')" class="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1.5">
-          <span>🕯️</span> <span>קברי צדיקים (22)</span>
-        </button>
+      <!-- סרגל ניווט פנימי: למצוא (בתי חב״ד | מקוואות | מסעדות כשרות | קברי צדיקים | גמ״חים) -->
+      <div class="bg-slate-900/95 border border-emerald-500/30 p-3 rounded-3xl space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <span class="text-xs font-black text-emerald-400">📍 מרכז איתור וניווט (למצוא)</span>
+          <span class="text-[11px] text-slate-400">בחר מה ברצונך למצוא בקרבתך</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs font-black">
+          <button onclick="switchTab('chabad')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>🏛️</span> <span>בתי חב״ד</span>
+          </button>
+          <button onclick="switchTab('mikvaot')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-cyan-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>💧</span> <span>מקוואות</span>
+          </button>
+          <button onclick="switchTab('restaurants')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-emerald-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>🍽️</span> <span>מסעדות כשרות</span>
+          </button>
+          <button onclick="switchTab('tzaddikim')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-400 border border-slate-800 flex items-center justify-center gap-1">
+            <span>🕯️</span> <span>קברי צדיקים</span>
+          </button>
+          <button onclick="switchTab('gemachim')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-purple-300 border border-slate-800 flex items-center justify-center gap-1 col-span-2 sm:col-span-1">
+            <span>🤝</span> <span>גמ״חים</span>
+          </button>
+        </div>
       </div>
+      
       <div class="bg-gradient-to-r from-amber-950/40 via-slate-900 to-slate-900 p-5 rounded-3xl border border-amber-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
           <span class="text-[10px] font-black text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/30">מדריך 22 קברי צדיקים ויומן יארצייטים</span>
@@ -423,6 +561,30 @@
 
     <!-- 6. MIKVAOT TAHARA LOCATOR (COMPLETE) -->
     <section id="view-mikvaot" class="view-section space-y-5">
+      <!-- סרגל ניווט פנימי: למצוא (בתי חב״ד | מקוואות | מסעדות כשרות | קברי צדיקים | גמ״חים) -->
+      <div class="bg-slate-900/95 border border-emerald-500/30 p-3 rounded-3xl space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <span class="text-xs font-black text-emerald-400">📍 מרכז איתור וניווט (למצוא)</span>
+          <span class="text-[11px] text-slate-400">בחר מה ברצונך למצוא בקרבתך</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs font-black">
+          <button onclick="switchTab('chabad')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>🏛️</span> <span>בתי חב״ד</span>
+          </button>
+          <button onclick="switchTab('mikvaot')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-cyan-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>💧</span> <span>מקוואות</span>
+          </button>
+          <button onclick="switchTab('restaurants')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-emerald-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>🍽️</span> <span>מסעדות כשרות</span>
+          </button>
+          <button onclick="switchTab('tzaddikim')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-400 border border-slate-800 flex items-center justify-center gap-1">
+            <span>🕯️</span> <span>קברי צדיקים</span>
+          </button>
+          <button onclick="switchTab('gemachim')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-purple-300 border border-slate-800 flex items-center justify-center gap-1 col-span-2 sm:col-span-1">
+            <span>🤝</span> <span>גמ״חים</span>
+          </button>
+        </div>
+      </div>
       <div class="bg-slate-900 border border-blue-500/30 p-6 rounded-3xl space-y-3">
         <h2 class="text-xl font-black text-white flex items-center gap-2">
           <span>💧</span> מאתר מקוואות טהרה עולמי (Mikveh Locator)
@@ -440,6 +602,30 @@
 
     <!-- 7. KOSHER RESTAURANTS DIRECTORY (COMPLETE) -->
     <section id="view-restaurants" class="view-section space-y-5">
+      <!-- סרגל ניווט פנימי: למצוא (בתי חב״ד | מקוואות | מסעדות כשרות | קברי צדיקים | גמ״חים) -->
+      <div class="bg-slate-900/95 border border-emerald-500/30 p-3 rounded-3xl space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <span class="text-xs font-black text-emerald-400">📍 מרכז איתור וניווט (למצוא)</span>
+          <span class="text-[11px] text-slate-400">בחר מה ברצונך למצוא בקרבתך</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs font-black">
+          <button onclick="switchTab('chabad')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>🏛️</span> <span>בתי חב״ד</span>
+          </button>
+          <button onclick="switchTab('mikvaot')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-cyan-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>💧</span> <span>מקוואות</span>
+          </button>
+          <button onclick="switchTab('restaurants')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-emerald-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>🍽️</span> <span>מסעדות כשרות</span>
+          </button>
+          <button onclick="switchTab('tzaddikim')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-400 border border-slate-800 flex items-center justify-center gap-1">
+            <span>🕯️</span> <span>קברי צדיקים</span>
+          </button>
+          <button onclick="switchTab('gemachim')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-purple-300 border border-slate-800 flex items-center justify-center gap-1 col-span-2 sm:col-span-1">
+            <span>🤝</span> <span>גמ״חים</span>
+          </button>
+        </div>
+      </div>
       <div class="bg-slate-900 border border-emerald-500/30 p-6 rounded-3xl space-y-3">
         <h2 class="text-xl font-black text-white flex items-center gap-2">
           <span>🍽️</span> מסעדות כשרות בסביבה (Kosher Directory)
@@ -476,6 +662,30 @@
 
     <!-- 8. GEMACHIM & CHESED HUB (COMPLETE SPEC SECTION 4) -->
     <section id="view-gemachim" class="view-section space-y-5">
+      <!-- סרגל ניווט פנימי: למצוא (בתי חב״ד | מקוואות | מסעדות כשרות | קברי צדיקים | גמ״חים) -->
+      <div class="bg-slate-900/95 border border-emerald-500/30 p-3 rounded-3xl space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <span class="text-xs font-black text-emerald-400">📍 מרכז איתור וניווט (למצוא)</span>
+          <span class="text-[11px] text-slate-400">בחר מה ברצונך למצוא בקרבתך</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs font-black">
+          <button onclick="switchTab('chabad')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>🏛️</span> <span>בתי חב״ד</span>
+          </button>
+          <button onclick="switchTab('mikvaot')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-cyan-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>💧</span> <span>מקוואות</span>
+          </button>
+          <button onclick="switchTab('restaurants')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-emerald-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>🍽️</span> <span>מסעדות כשרות</span>
+          </button>
+          <button onclick="switchTab('tzaddikim')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-400 border border-slate-800 flex items-center justify-center gap-1">
+            <span>🕯️</span> <span>קברי צדיקים</span>
+          </button>
+          <button onclick="switchTab('gemachim')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-purple-300 border border-slate-800 flex items-center justify-center gap-1 col-span-2 sm:col-span-1">
+            <span>🤝</span> <span>גמ״חים</span>
+          </button>
+        </div>
+      </div>
       <div class="bg-slate-900 border border-cyan-500/30 p-6 rounded-3xl space-y-2">
         <h2 class="text-xl font-black text-white flex items-center gap-2">
           <span>🤝</span> אינדקס גמ״חים, רפואה וארגוני הצלה (Chesed Hub)
@@ -487,6 +697,30 @@
 
     <!-- 9. GLOBAL CHABAD LOCATOR (SPEC SECTION 4) -->
     <section id="view-chabad" class="view-section space-y-5">
+      <!-- סרגל ניווט פנימי: למצוא (בתי חב״ד | מקוואות | מסעדות כשרות | קברי צדיקים | גמ״חים) -->
+      <div class="bg-slate-900/95 border border-emerald-500/30 p-3 rounded-3xl space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <span class="text-xs font-black text-emerald-400">📍 מרכז איתור וניווט (למצוא)</span>
+          <span class="text-[11px] text-slate-400">בחר מה ברצונך למצוא בקרבתך</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs font-black">
+          <button onclick="switchTab('chabad')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>🏛️</span> <span>בתי חב״ד</span>
+          </button>
+          <button onclick="switchTab('mikvaot')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-cyan-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>💧</span> <span>מקוואות</span>
+          </button>
+          <button onclick="switchTab('restaurants')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-emerald-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>🍽️</span> <span>מסעדות כשרות</span>
+          </button>
+          <button onclick="switchTab('tzaddikim')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-400 border border-slate-800 flex items-center justify-center gap-1">
+            <span>🕯️</span> <span>קברי צדיקים</span>
+          </button>
+          <button onclick="switchTab('gemachim')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-purple-300 border border-slate-800 flex items-center justify-center gap-1 col-span-2 sm:col-span-1">
+            <span>🤝</span> <span>גמ״חים</span>
+          </button>
+        </div>
+      </div>
       <div class="bg-slate-900 border border-amber-500/30 p-6 rounded-3xl space-y-2">
         <h2 class="text-xl font-black text-white flex items-center gap-2">
           <span>🌍</span> רשת בתי חב״ד עולמית (Chabad Locator)
@@ -498,6 +732,24 @@
 
     <!-- 10. LIVE MINYAN FINDER WITH "CALL FOR MINYAN" ALERT -->
     <section id="view-minyanim" class="view-section space-y-5">
+      <!-- סרגל ניווט פנימי: להתפלל (סידור וכל התפילות | מאתר מניינים | קו ההלכה ורבנים) -->
+      <div class="bg-slate-900/95 border border-amber-500/30 p-3 rounded-3xl space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <span class="text-xs font-black text-amber-400">🙏 מרכז התפילה וההלכה (להתפלל)</span>
+          <span class="text-[11px] text-slate-400">בחר: סידור תפילה, מאתר מניינים או קו ההלכה</span>
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-xs font-black">
+          <button onclick="switchTab('siddur')" class="py-2.5 px-3 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center gap-1.5 shadow">
+            <span>📖</span> <span>סידור ותפילות</span>
+          </button>
+          <button onclick="switchTab('minyanim')" class="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-cyan-300 border border-slate-800 flex items-center justify-center gap-1.5">
+            <span>🕍</span> <span>מאתר מניינים</span>
+          </button>
+          <button onclick="switchTab('rabbis')" class="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1.5">
+            <span>📞</span> <span>קו ההלכה ורבנים</span>
+          </button>
+        </div>
+      </div>
       <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 class="text-xl font-black text-white">⏱️ מאתר מניינים חי בזמן אמת</h2>
@@ -597,21 +849,25 @@
 
     <!-- 14. RABBIS & DIRECT HALACHA HOTLINES -->
     <section id="view-rabbis" class="view-section space-y-5">
-      <!-- סרגל בחירה ראשי ביהדות (סידור | קו הלכה ורבנים | מנהגים ושירותים | קברי צדיקים) -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-900 p-2 rounded-2xl border border-slate-800 text-xs font-black">
-        <button onclick="switchTab('siddur')" class="py-2.5 px-3 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center gap-1.5 shadow">
-          <span>🙏</span> <span>סידור תפילה</span>
-        </button>
-        <button onclick="switchTab('rabbis')" class="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1.5">
-          <span>📞</span> <span>קו הלכה ורבנים</span>
-        </button>
-        <button onclick="switchTab('customs')" class="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-200 border border-slate-800 flex items-center justify-center gap-1.5">
-          <span>🕎</span> <span>מנהגים ושירותים</span>
-        </button>
-        <button onclick="switchTab('tzaddikim')" class="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1.5">
-          <span>🕯️</span> <span>קברי צדיקים (22)</span>
-        </button>
+      <!-- סרגל ניווט פנימי: להתפלל (סידור וכל התפילות | מאתר מניינים | קו ההלכה ורבנים) -->
+      <div class="bg-slate-900/95 border border-amber-500/30 p-3 rounded-3xl space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <span class="text-xs font-black text-amber-400">🙏 מרכז התפילה וההלכה (להתפלל)</span>
+          <span class="text-[11px] text-slate-400">בחר: סידור תפילה, מאתר מניינים או קו ההלכה</span>
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-xs font-black">
+          <button onclick="switchTab('siddur')" class="py-2.5 px-3 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center gap-1.5 shadow">
+            <span>📖</span> <span>סידור ותפילות</span>
+          </button>
+          <button onclick="switchTab('minyanim')" class="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-cyan-300 border border-slate-800 flex items-center justify-center gap-1.5">
+            <span>🕍</span> <span>מאתר מניינים</span>
+          </button>
+          <button onclick="switchTab('rabbis')" class="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1.5">
+            <span>📞</span> <span>קו ההלכה ורבנים</span>
+          </button>
+        </div>
       </div>
+      
       <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-2">
         <h2 class="text-xl font-black text-white">📜 קו הלכה ישיר ובתי הוראה ארציים</h2>
         <p class="text-xs text-slate-400">מענה הלכתי דחוף 24 שעות ביממה מפי מורי הוראה ודיינים מוסמכים.</p>
@@ -621,21 +877,7 @@
 
     <!-- 15. CUSTOMS BY TRADITION & PROFESSIONAL SERVICES -->
     <section id="view-customs" class="view-section space-y-6">
-      <!-- סרגל בחירה ראשי ביהדות (סידור | קו הלכה ורבנים | מנהגים ושירותים | קברי צדיקים) -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-900 p-2 rounded-2xl border border-slate-800 text-xs font-black">
-        <button onclick="switchTab('siddur')" class="py-2.5 px-3 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center gap-1.5 shadow">
-          <span>🙏</span> <span>סידור תפילה</span>
-        </button>
-        <button onclick="switchTab('rabbis')" class="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1.5">
-          <span>📞</span> <span>קו הלכה ורבנים</span>
-        </button>
-        <button onclick="switchTab('customs')" class="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-200 border border-slate-800 flex items-center justify-center gap-1.5">
-          <span>🕎</span> <span>מנהגים ושירותים</span>
-        </button>
-        <button onclick="switchTab('tzaddikim')" class="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1.5">
-          <span>🕯️</span> <span>קברי צדיקים (22)</span>
-        </button>
-      </div>
+      
       <div class="space-y-3">
         <h2 class="text-xl font-black text-white">🕎 מנהגים לפי 6 עדות ישראל</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="customs-grid-container"></div>
@@ -646,29 +888,202 @@
       </div>
     </section>
 
+  
+    <!-- 16. SEFER HAPARNASIM / DONORS WALL VIEW (ספר הפרנסים ולוח התורמים) -->
+    <section id="view-donors" class="view-section space-y-5">
+      <!-- סרגל ניווט פנימי: לתת ולקנות (תרומות וקמפיינים | חנויות יהדות | הגרלות | ספר הפרנסים) -->
+      <div class="bg-slate-900/95 border border-rose-500/30 p-3 rounded-3xl space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <span class="text-xs font-black text-rose-400">💝 מרכז צדקה, קדושה ושותפות (לתת ולקנות)</span>
+          <span class="text-[11px] text-slate-400">תרומות, חנות תשמישי קדושה, הגרלות וספר הפרנסים</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-black">
+          <button onclick="switchTab('donate')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-rose-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>❤️</span> <span>תרומות וקמפיינים</span>
+          </button>
+          <button onclick="switchTab('judaica')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>🛍️</span> <span>חנויות יהדות וקודש</span>
+          </button>
+          <button onclick="switchTab('raffles')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-cyan-300 border border-slate-800 flex items-center justify-center gap-1">
+            <span>🎟️</span> <span>הגרלות ופרסים</span>
+          </button>
+          <button onclick="switchTab('donors')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-400 border border-amber-500/40 flex items-center justify-center gap-1">
+            <span>📜</span> <span>ספר הפרנסים</span>
+          </button>
+        </div>
+      </div>
+      <div class="bg-gradient-to-r from-amber-950/60 via-slate-900 to-slate-900 border-2 border-amber-500/50 p-6 rounded-3xl space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <span class="px-3 py-1 bg-amber-500 text-slate-950 font-black rounded-full text-xs">👑 ספר הפרנסים המוזהב</span>
+            <h2 class="text-2xl font-black text-white mt-2">📜 לוח התורמים והנצחת יקירים</h2>
+            <p class="text-xs text-slate-300">כל תרומה להפצת תורה וחסד נחקקת בלוח התורמים החי לזכות, לרפואה, להצלחה או לעילוי נשמה.</p>
+          </div>
+          <button onclick="openDonateModal('ספר הפרנסים - הקדשה אישית')" class="px-5 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-2xl text-xs shrink-0 shadow-xl">
+            ✍️ הוסף את שמך לספר הפרנסים
+          </button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="full-donors-wall-grid"></div>
+      </div>
+    </section>
+
+    <!-- 17. MY ZONE VIEW (האזור שלי: הדברים השמורים שלי | ההיסטוריה שלי | היארצייטים שלי | ההגדרות שלי) -->
+    <section id="view-myzone" class="view-section space-y-5">
+      <div class="bg-gradient-to-r from-amber-950/50 via-slate-900 to-slate-900 border border-amber-500/40 p-5 rounded-3xl space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500 text-slate-950 font-black flex items-center justify-center text-2xl shadow-lg">👤</div>
+            <div>
+              <h2 class="text-xl font-black text-white">האזור האישי שלי בצדיק-טוק</h2>
+              <p class="text-xs text-slate-300">הדברים השמורים שלך, היסטוריית לימוד, לוח יארצייטים אישי והגדרות (שפה, נוסח, מיקום ומצב שבת)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Sub-Tabs inside My Zone -->
+        <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pt-1">
+          <button onclick="switchMyZoneSubTab('saved')" id="myzone-btn-saved" class="px-4 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs shrink-0 shadow">
+            ⭐ הדברים השמורים שלי
+          </button>
+          <button onclick="switchMyZoneSubTab('history')" id="myzone-btn-history" class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 font-bold text-xs shrink-0">
+            🕒 ההיסטוריה שלי
+          </button>
+          <button onclick="switchMyZoneSubTab('yahrzeits')" id="myzone-btn-yahrzeits" class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 font-bold text-xs shrink-0">
+            🕯️ היארצייטים שלי
+          </button>
+          <button onclick="switchMyZoneSubTab('settings')" id="myzone-btn-settings" class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 font-bold text-xs shrink-0">
+            ⚙️ ההגדרות שלי
+          </button>
+        </div>
+      </div>
+
+      <!-- SUB 1: הדברים השמורים שלי -->
+      <div id="myzone-sub-saved" class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-base font-black text-white">⭐ הדברים השמורים שלי (מועדפים)</h3>
+          <span class="text-xs text-amber-400">גישה מהירה לתכנים ששמרת</span>
+        </div>
+        <div id="myzone-saved-list" class="space-y-2.5"></div>
+      </div>
+
+      <!-- SUB 2: ההיסטוריה שלי -->
+      <div id="myzone-sub-history" class="hidden bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-base font-black text-white">🕒 ההיסטוריה שלי (נצפו ונקראו לאחרונה)</h3>
+          <button onclick="clearMyHistory()" class="px-3 py-1 bg-slate-800 hover:bg-red-950 text-slate-300 hover:text-red-300 rounded-xl text-xs font-bold">נקה היסטוריה</button>
+        </div>
+        <div id="myzone-history-list" class="space-y-2.5"></div>
+      </div>
+
+      <!-- SUB 3: היארצייטים שלי -->
+      <div id="myzone-sub-yahrzeits" class="hidden bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+          <div>
+            <h3 class="text-base font-black text-white">🕯️ לוח היארצייטים האישי שלי</h3>
+            <p class="text-xs text-slate-400">שמור תאריכי פטירה של יקיריך לתזכורת שנתית, אמירת תהילים והדלקת נר.</p>
+          </div>
+        </div>
+
+        <!-- הוספת יארצייט חדש -->
+        <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl grid grid-cols-1 sm:grid-cols-4 gap-2.5">
+          <input id="new-yahrzeit-name" type="text" placeholder="שם הנפטר/ת (למשל: אברהם בן שרה)" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none">
+          <input id="new-yahrzeit-rel" type="text" placeholder="קרבה (סבא / סבתא / אבא...)" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none">
+          <input id="new-yahrzeit-date" type="text" placeholder="תאריך עברי (למשל: י״ד בכסלו)" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none">
+          <button onclick="addPersonalYahrzeit()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl py-2 px-4 text-xs">
+            + הוסף יארצייט אישי
+          </button>
+        </div>
+
+        <div id="myzone-yahrzeits-list" class="space-y-3"></div>
+      </div>
+
+      <!-- SUB 4: ההגדרות שלי (שפה, נוסח, מיקום, מצב שבת) -->
+      <div id="myzone-sub-settings" class="hidden bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-5">
+        <h3 class="text-base font-black text-white border-b border-slate-800 pb-2">⚙️ ההגדרות האישיות שלי</h3>
+
+        <!-- 1. בחירת שפה -->
+        <div class="space-y-2">
+          <label class="text-xs font-black text-amber-400 block">🌐 שפת האפליקציה (Language):</label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button onclick="setAppLanguage('he')" id="lang-btn-he" class="px-3 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs">🇮🇱 עברית</button>
+            <button onclick="setAppLanguage('en')" id="lang-btn-en" class="px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 font-bold text-xs">🇺🇸 English</button>
+            <button onclick="setAppLanguage('fr')" id="lang-btn-fr" class="px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 font-bold text-xs">🇫🇷 Français</button>
+            <button onclick="setAppLanguage('ru')" id="lang-btn-ru" class="px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 font-bold text-xs">🇷🇺 Русский</button>
+          </div>
+        </div>
+
+        <!-- 2. נוסח תפילה קבוע -->
+        <div class="space-y-2">
+          <label class="text-xs font-black text-amber-400 block">🙏 נוסח תפילה קבוע בסידור:</label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button onclick="setNusach('mizrach');toast('נוסח עדות המזרח נשמר כברירת מחדל');" class="px-3 py-2.5 rounded-xl bg-slate-950 border border-amber-500/40 text-amber-300 font-bold text-xs">עדות המזרח</button>
+            <button onclick="setNusach('ashkenaz');toast('נוסח אשכנז נשמר כברירת מחדל');" class="px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 font-bold text-xs">אשכנז</button>
+            <button onclick="setNusach('sefarad');toast('נוסח ספרד נשמר כברירת מחדל');" class="px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 font-bold text-xs">ספרד (חסידי)</button>
+            <button onclick="setNusach('teiman');toast('נוסח תימן נשמר כברירת מחדל');" class="px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 font-bold text-xs">תימן</button>
+          </div>
+        </div>
+
+        <!-- 3. מיקום ועיר לזמני היום ומניינים -->
+        <div class="space-y-2">
+          <label class="text-xs font-black text-amber-400 block">📍 המיקום שלי (לזמני היום, שקיעה ומניינים קרובים):</label>
+          <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
+            <button onclick="setUserCity('ירושלים')" class="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 font-bold text-xs hover:border-amber-400">ירושלים</button>
+            <button onclick="setUserCity('בני ברק')" class="px-3 py-2 rounded-xl bg-slate-950 border border-amber-500/40 text-amber-300 font-bold text-xs hover:border-amber-400">בני ברק</button>
+            <button onclick="setUserCity('תל אביב')" class="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 font-bold text-xs hover:border-amber-400">תל אביב</button>
+            <button onclick="setUserCity('צפת')" class="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 font-bold text-xs hover:border-amber-400">צפת</button>
+            <button onclick="setUserCity('חיפה')" class="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 font-bold text-xs hover:border-amber-400">חיפה</button>
+            <button onclick="setUserCity('ניו יורק')" class="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 font-bold text-xs hover:border-amber-400">ניו יורק</button>
+          </div>
+        </div>
+
+        <!-- 4. מצב שבת וגודל גופן -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex items-center justify-between">
+            <div>
+              <h4 class="text-xs font-black text-white">🕯️ מצב שבת אוטומטי</h4>
+              <p class="text-[11px] text-slate-400">חסימת שידורים והשתקת התראות בכניסת שבת</p>
+            </div>
+            <button onclick="toggleShabbatOverlay()" class="px-3.5 py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">הפעל כעת</button>
+          </div>
+
+          <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex items-center justify-between">
+            <div>
+              <h4 class="text-xs font-black text-white">אA גודל טקסט בסידור ובפרשה</h4>
+              <p class="text-[11px] text-slate-400">הגדלה או הקטנה של האותיות לנוחות הקריאה</p>
+            </div>
+            <button onclick="adjustGlobalFontSize()" class="px-3.5 py-2 bg-slate-800 text-amber-300 border border-slate-700 font-black rounded-xl text-xs">שנה גודל אות</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
-  <!-- Mobile Bottom Navigation Bar (5 Core Pillars + Super-App Drawer) -->
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#070C18]/95 backdrop-blur-xl border-t border-slate-800 px-2 py-1.5 flex items-center justify-around shadow-2xl">
-    <button onclick="openSuperDrawer()" class="bottom-nav-item flex flex-col items-center gap-0.5 text-[11px] font-bold text-amber-400">
-      <div class="nav-icon-bg w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/40 flex items-center justify-center text-base">⚡</div>
-      <span>עוד כלים</span>
+  <!-- Mobile Bottom Navigation Bar (תפריט תחתון קבוע: בית | ללמוד | להתפלל | למצוא | לתת ולקנות | האזור שלי) -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#070C18]/95 backdrop-blur-xl border-t border-amber-500/30 flex items-center justify-around py-2 px-1 shadow-2xl">
+    <button onclick="switchTab('feed')" id="bnav-feed" class="bottom-nav-item active flex flex-col items-center gap-0.5 text-slate-400">
+      <span class="text-lg">🏠</span>
+      <span class="text-[10px] font-black">בית</span>
     </button>
-    <button onclick="switchTab('series')" id="bnav-series" class="bottom-nav-item flex flex-col items-center gap-0.5 text-[11px] font-bold text-slate-400">
-      <div class="nav-icon-bg w-8 h-8 rounded-xl flex items-center justify-center text-base border border-transparent">📚</div>
-      <span>ספרייה</span>
+    <button onclick="switchTab('series')" id="bnav-series" class="bottom-nav-item flex flex-col items-center gap-0.5 text-slate-400">
+      <span class="text-lg">📚</span>
+      <span class="text-[10px] font-black">ללמוד</span>
     </button>
-    <button onclick="switchTab('siddur')" id="bnav-siddur" class="bottom-nav-item flex flex-col items-center gap-0.5 text-[11px] font-bold text-slate-400">
-      <div class="nav-icon-bg w-8 h-8 rounded-xl flex items-center justify-center text-base border border-transparent">🕍</div>
-      <span>יהדות</span>
+    <button onclick="switchTab('siddur')" id="bnav-siddur" class="bottom-nav-item flex flex-col items-center gap-0.5 text-slate-400">
+      <span class="text-lg">🙏</span>
+      <span class="text-[10px] font-black">להתפלל</span>
     </button>
-    <button onclick="switchTab('zmanim')" id="bnav-zmanim" class="bottom-nav-item flex flex-col items-center gap-0.5 text-[11px] font-bold text-slate-400">
-      <div class="nav-icon-bg w-8 h-8 rounded-xl flex items-center justify-center text-base border border-transparent">⏰</div>
-      <span>זמנים</span>
+    <button onclick="switchTab('find')" id="bnav-find" class="bottom-nav-item flex flex-col items-center gap-0.5 text-slate-400">
+      <span class="text-lg">📍</span>
+      <span class="text-[10px] font-black">למצוא</span>
     </button>
-    <button onclick="switchTab('feed')" id="bnav-feed" class="bottom-nav-item active flex flex-col items-center gap-0.5 text-[11px] font-bold text-slate-400">
-      <div class="nav-icon-bg w-8 h-8 rounded-xl flex items-center justify-center text-base border border-transparent">🎬</div>
-      <span>רילס</span>
+    <button onclick="switchTab('givebuy')" id="bnav-givebuy" class="bottom-nav-item flex flex-col items-center gap-0.5 text-slate-400">
+      <span class="text-lg">💝</span>
+      <span class="text-[10px] font-black">לתת ולקנות</span>
+    </button>
+    <button onclick="switchTab('myzone')" id="bnav-myzone" class="bottom-nav-item flex flex-col items-center gap-0.5 text-amber-400">
+      <span class="text-lg">👤</span>
+      <span class="text-[10px] font-black">האזור שלי</span>
     </button>
   </nav>
 
@@ -1016,6 +1431,28 @@
           </button>
         </div>
       </div>
+    </div>
+  </div>
+
+  
+  <!-- 14. Music & Niggunim Full Modal -->
+  <div id="modal-music-library" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border-2 border-amber-500/40 rounded-3xl max-w-lg w-full p-6 space-y-4 relative shadow-2xl max-h-[85vh] overflow-y-auto">
+      <button onclick="closeModal('modal-music-library')" class="absolute top-4 left-4 text-slate-400 hover:text-white text-lg">✕</button>
+      <div>
+        <span class="text-[10px] font-black text-amber-400 bg-amber-500/15 px-2.5 py-0.5 rounded-full">היכל הניגונים ומוזיקת קודש</span>
+        <h3 class="text-xl font-black text-white mt-1">🎵 כל סוגי המוזיקה והניגונים</h3>
+        <p class="text-xs text-slate-400">בחר סגנון מוזיקה להאזנה או שמירה באזור האישי שלך:</p>
+      </div>
+      <div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar text-xs">
+        <button onclick="renderMusicTracks('all')" class="px-3 py-1.5 rounded-xl bg-amber-500 text-slate-950 font-black shrink-0">הכל</button>
+        <button onclick="renderMusicTracks('חסידי')" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-200 font-bold shrink-0">חסידי וניגוני נשמה</button>
+        <button onclick="renderMusicTracks('פיוטים')" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-200 font-bold shrink-0">פיוטים ומזרחי</button>
+        <button onclick="renderMusicTracks('שבת')" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-200 font-bold shrink-0">שירי שבת</button>
+        <button onclick="renderMusicTracks('ווקאלי')" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-200 font-bold shrink-0">ווקאלי</button>
+      </div>
+      <div id="music-tracks-container" class="space-y-2.5"></div>
+      <button onclick="closeModal('modal-music-library')" class="w-full py-2.5 bg-slate-800 text-white font-bold rounded-xl text-xs">סגור חלון</button>
     </div>
   </div>
 

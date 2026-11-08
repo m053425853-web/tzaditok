@@ -11,6 +11,11 @@ var restHechFilter = "all";
 var MITZVOT_LIST = window.getStorageJson(STORAGE_KEYS.CUSTOM_MITZVOT, window.DEFAULT_MITZVOT_DATA);
 
 window.switchTab = function(tabId) {
+  if (tabId === "learn") tabId = "series";
+  if (tabId === "pray") tabId = "siddur";
+  if (tabId === "find") tabId = "chabad";
+  if (tabId === "givebuy") tabId = "donate";
+
   currentTab = tabId;
   var sections = document.querySelectorAll(".view-section");
   for (var i = 0; i < sections.length; i++) {
@@ -19,22 +24,26 @@ window.switchTab = function(tabId) {
   var target = document.getElementById("view-" + tabId);
   if (target) target.classList.add("active");
 
+  var parentHub = tabId;
+  if (["series"].indexOf(tabId) !== -1) parentHub = "series";
+  else if (["siddur", "minyanim", "rabbis"].indexOf(tabId) !== -1) parentHub = "siddur";
+  else if (["chabad", "mikvaot", "restaurants", "tzaddikim", "gemachim"].indexOf(tabId) !== -1) parentHub = "find";
+  else if (["donate", "judaica", "raffles", "donors"].indexOf(tabId) !== -1) parentHub = "givebuy";
+  else if (["myzone"].indexOf(tabId) !== -1) parentHub = "myzone";
+  else if (["feed"].indexOf(tabId) !== -1) parentHub = "feed";
+
   var pills = document.querySelectorAll(".pill-btn");
   for (var j = 0; j < pills.length; j++) {
     pills[j].classList.remove("active");
   }
-  var activePill = document.getElementById("pill-" + tabId);
+  var activePill = document.getElementById("pill-" + parentHub) || document.getElementById("pill-" + tabId);
   if (activePill) activePill.classList.add("active");
 
   var bnavs = document.querySelectorAll(".bottom-nav-item");
   for (var k = 0; k < bnavs.length; k++) {
     bnavs[k].classList.remove("active");
   }
-  var bnavId = tabId;
-  if (tabId === "rabbis" || tabId === "customs" || tabId === "tzaddikim") {
-    bnavId = "siddur"; // תחת לשונית יהדות
-  }
-  var activeBNav = document.getElementById("bnav-" + bnavId);
+  var activeBNav = document.getElementById("bnav-" + parentHub) || document.getElementById("bnav-" + tabId);
   if (activeBNav) activeBNav.classList.add("active");
 
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1098,6 +1107,9 @@ window.addEventListener("DOMContentLoaded", function() {
   window.renderRaffles(window.RAFFLES_DATA);
   window.renderCampaigns(window.CAMPAIGNS_DATA);
   window.renderDonorsBook(window.DONORS_DATA);
+  window.renderFullDonorsPage();
+  window.renderMusicTracks('all');
+  window.renderMyZoneAll();
   window.renderZmanim();
   window.renderCheshbon();
   window.renderRabbis(window.RABBIS_DATA);
@@ -1111,3 +1123,267 @@ window.addEventListener("DOMContentLoaded", function() {
     }, 600);
   }
 });
+
+
+// ============================================================================
+// V20 ADDITIONS: שפות, נגן מוזיקה, ספר הפרנסים, והאזור האישי שלי (שמורים, היסטוריה, יארצייטים, הגדרות)
+// ============================================================================
+var currentLang = localStorage.getItem(STORAGE_KEYS.LANGUAGE) || "he";
+var currentCity = localStorage.getItem(STORAGE_KEYS.CITY_LOC) || "בני ברק";
+var activeMusicGenre = "all";
+var currentPlayingTrackId = "m1";
+var isMusicPlaying = false;
+
+window.setAppLanguage = function(langCode) {
+  currentLang = langCode;
+  localStorage.setItem(STORAGE_KEYS.LANGUAGE, langCode);
+  var labels = { he: "🇮🇱 עברית", en: "🇺🇸 English", fr: "🇫🇷 Français", ru: "🇷🇺 Русский" };
+  var headerLangBtn = document.getElementById("header-lang-label");
+  if (headerLangBtn) headerLangBtn.textContent = labels[langCode] || "🇮🇱 עברית";
+  var selectEl = document.getElementById("myzone-lang-select");
+  if (selectEl) selectEl.value = langCode;
+  ["he", "en", "fr", "ru"].forEach(function(l) {
+    var b = document.getElementById("lang-btn-" + l);
+    if (b) {
+      b.className = (l === langCode)
+        ? "px-3 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs"
+        : "px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 font-bold text-xs";
+    }
+  });
+  window.toast("שפת הממשק עודכנה ל: " + (labels[langCode] || langCode));
+};
+
+window.cycleAppLanguage = function() {
+  var order = ["he", "en", "fr", "ru"];
+  var idx = (order.indexOf(currentLang) + 1) % order.length;
+  window.setAppLanguage(order[idx]);
+};
+
+window.setUserCity = function(cityName) {
+  currentCity = cityName;
+  localStorage.setItem(STORAGE_KEYS.CITY_LOC, cityName);
+  var cityBadges = document.querySelectorAll(".user-city-label");
+  for (var i = 0; i < cityBadges.length; i++) {
+    cityBadges[i].textContent = cityName;
+  }
+  window.toast("המיקום לזמני היום ומניינים עודכן ל: " + cityName + " 📍");
+};
+
+// מוזיקה וניגוני קודש
+window.openMusicModal = function() {
+  window.renderMusicTracks(activeMusicGenre);
+  var el = document.getElementById("modal-music-library");
+  if (el) el.classList.remove("hidden");
+};
+
+window.playMusicTrack = function(trackId) {
+  currentPlayingTrackId = trackId;
+  isMusicPlaying = true;
+  var tr = (window.MUSIC_TRACKS_DATA || []).find(function(t) { return t.id === trackId; }) || window.MUSIC_TRACKS_DATA[0];
+  var titleEl = document.getElementById("home-music-now-playing");
+  if (titleEl && tr) titleEl.textContent = "מתנגן כעת: " + tr.title + " (" + tr.artist + ")";
+  var btnEl = document.getElementById("home-music-play-btn");
+  if (btnEl) btnEl.textContent = "⏸ השהה";
+  window.renderMusicTracks(activeMusicGenre);
+  if (tr) window.toast("🎵 מנגן: " + tr.title);
+};
+
+window.toggleHomeMusicPlay = function() {
+  isMusicPlaying = !isMusicPlaying;
+  var btnEl = document.getElementById("home-music-play-btn");
+  if (btnEl) btnEl.textContent = isMusicPlaying ? "⏸ השהה" : "▶ נגן ניגון";
+  var tr = (window.MUSIC_TRACKS_DATA || []).find(function(t) { return t.id === currentPlayingTrackId; }) || window.MUSIC_TRACKS_DATA[0];
+  window.toast(isMusicPlaying ? ("🎵 מנגן: " + tr.title) : "⏸ הניגון הושהה");
+};
+
+window.renderMusicTracks = function(genreFilter) {
+  activeMusicGenre = genreFilter || "all";
+  var container = document.getElementById("music-tracks-container");
+  if (!container || !window.MUSIC_TRACKS_DATA) return;
+  var list = (activeMusicGenre === "all")
+    ? window.MUSIC_TRACKS_DATA
+    : window.MUSIC_TRACKS_DATA.filter(function(t) { return t.genre.indexOf(activeMusicGenre) !== -1; });
+
+  container.innerHTML = list.map(function(t) {
+    var active = (t.id === currentPlayingTrackId && isMusicPlaying);
+    return `
+    <div class="bg-slate-950 border ${active ? "border-amber-500" : "border-slate-800"} p-3.5 rounded-2xl flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <button onclick="playMusicTrack('${t.id}')" class="w-10 h-10 rounded-xl ${active ? "bg-amber-500 text-slate-950" : "bg-slate-800 text-amber-400"} font-black flex items-center justify-center text-sm shrink-0">
+          ${active ? "⏸" : "▶"}
+        </button>
+        <div>
+          <h4 class="text-xs sm:text-sm font-black text-white">${t.title}</h4>
+          <p class="text-[11px] text-slate-400">${t.artist} • <span class="text-amber-400">${t.genre}</span> • ${t.duration}</p>
+        </div>
+      </div>
+      <button onclick="saveItemToMyZone('ניגון', '${t.title}', 'feed')" class="px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-amber-300 border border-slate-700 rounded-xl text-[11px] font-bold shrink-0">
+        ⭐ שמור
+      </button>
+    </div>`;
+  }).join("");
+};
+
+// ספר הפרנסים ולוח התורמים המלא
+window.renderFullDonorsPage = function() {
+  var grid = document.getElementById("full-donors-wall-grid");
+  if (!grid || !window.DONORS_DATA) return;
+  grid.innerHTML = window.DONORS_DATA.map(function(d) {
+    return `
+    <div class="bg-gradient-to-br from-amber-950/40 via-slate-900 to-slate-950 border-2 border-amber-500/40 p-5 rounded-3xl space-y-2 shadow-xl">
+      <div class="flex items-center justify-between">
+        <span class="px-2.5 py-0.5 bg-amber-500 text-slate-950 font-black rounded-full text-[10px]">👑 ספר הפרנסים</span>
+        <span class="text-base font-black text-amber-400">${d.amount || "₪180"}</span>
+      </div>
+      <h4 class="text-base font-black text-white">${d.name}</h4>
+      <p class="text-xs text-amber-200 font-medium">${d.dedication}</p>
+      <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+        <span>📍 ${d.city || "ישראל"}</span>
+        <button onclick="toast('ברכה נשלחה לתורם! 🙌')" class="text-amber-400 font-bold hover:underline">🙌 שלח ברכת יישר כוח</button>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+// האזור שלי (My Zone): שמורים, היסטוריה, יארצייטים אישיים, הגדרות
+window.switchMyZoneSubTab = function(subTab) {
+  ["saved", "history", "yahrzeits", "settings"].forEach(function(k) {
+    var box = document.getElementById("myzone-sub-" + k);
+    var btn = document.getElementById("myzone-btn-" + k);
+    if (box) {
+      if (k === subTab) box.classList.remove("hidden");
+      else box.classList.add("hidden");
+    }
+    if (btn) {
+      btn.className = (k === subTab)
+        ? "px-4 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs shrink-0 shadow"
+        : "px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 font-bold text-xs shrink-0";
+    }
+  });
+};
+
+window.saveItemToMyZone = function(itemType, itemTitle, targetTab) {
+  var list = window.getStorageJson(STORAGE_KEYS.SAVED_ITEMS, window.DEFAULT_SAVED_ITEMS || []);
+  list.unshift({
+    id: "sv_" + Date.now(),
+    type: itemType,
+    title: itemTitle,
+    tab: targetTab || "feed"
+  });
+  window.setStorageJson(STORAGE_KEYS.SAVED_ITEMS, list);
+  window.renderMyZoneAll();
+  window.toast("נשמר ב'האזור שלי' -> הדברים השמורים שלי ⭐");
+};
+
+window.removeSavedItem = function(itemId) {
+  var list = window.getStorageJson(STORAGE_KEYS.SAVED_ITEMS, window.DEFAULT_SAVED_ITEMS || []);
+  list = list.filter(function(x) { return x.id !== itemId; });
+  window.setStorageJson(STORAGE_KEYS.SAVED_ITEMS, list);
+  window.renderMyZoneAll();
+  window.toast("הוסר מהשמורים");
+};
+
+window.addPersonalYahrzeit = function() {
+  var nameEl = document.getElementById("new-yahrzeit-name");
+  var relEl = document.getElementById("new-yahrzeit-rel");
+  var dateEl = document.getElementById("new-yahrzeit-date");
+  if (!nameEl || !nameEl.value.trim()) {
+    window.toast("נא להזין את שם הנפטר/ת");
+    return;
+  }
+  var list = window.getStorageJson(STORAGE_KEYS.MY_YAHRZEITS, window.DEFAULT_PERSONAL_YAHRZEITS || []);
+  list.unshift({
+    id: "py_" + Date.now(),
+    name: nameEl.value.trim(),
+    relation: (relEl && relEl.value.trim()) ? relEl.value.trim() : "בן/בת משפחה",
+    hebDate: (dateEl && dateEl.value.trim()) ? dateEl.value.trim() : "כ״ח במרחשוון",
+    notes: "להדליק נר נשמה, לתת צדקה ולומר תהילים לעילוי נשמתו/ה."
+  });
+  window.setStorageJson(STORAGE_KEYS.MY_YAHRZEITS, list);
+  nameEl.value = "";
+  if (relEl) relEl.value = "";
+  if (dateEl) dateEl.value = "";
+  window.renderMyZoneAll();
+  window.toast("היארצייט האישי נשמר בלוח שלך 🕯️");
+};
+
+window.removePersonalYahrzeit = function(id) {
+  var list = window.getStorageJson(STORAGE_KEYS.MY_YAHRZEITS, window.DEFAULT_PERSONAL_YAHRZEITS || []);
+  list = list.filter(function(x) { return x.id !== id; });
+  window.setStorageJson(STORAGE_KEYS.MY_YAHRZEITS, list);
+  window.renderMyZoneAll();
+};
+
+window.clearMyHistory = function() {
+  window.setStorageJson(STORAGE_KEYS.HISTORY_ITEMS, []);
+  window.renderMyZoneAll();
+  window.toast("היסטוריית הצפייה והלימוד נוקתה");
+};
+
+window.renderMyZoneAll = function() {
+  // 1. Saved items
+  var savedContainer = document.getElementById("myzone-saved-list");
+  var savedList = window.getStorageJson(STORAGE_KEYS.SAVED_ITEMS, window.DEFAULT_SAVED_ITEMS || []);
+  if (savedContainer) {
+    if (savedList.length === 0) {
+      savedContainer.innerHTML = '<div class="text-xs text-slate-400 p-4 bg-slate-950 rounded-2xl border border-slate-800">עדיין לא שמרת פריטים. לחץ על ⭐ ליד פרשיות, תפילות או ניגונים כדי לשמור אותם כאן.</div>';
+    } else {
+      savedContainer.innerHTML = savedList.map(function(item) {
+        return `
+        <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex items-center justify-between gap-3">
+          <div>
+            <span class="text-[10px] font-black text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-md">${item.type}</span>
+            <h4 class="text-sm font-black text-white mt-1">${item.title}</h4>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button onclick="switchTab('${item.tab || "feed"}')" class="px-3 py-1.5 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">פתח ←</button>
+            <button onclick="removeSavedItem('${item.id}')" class="px-2.5 py-1.5 bg-slate-900 text-slate-400 hover:text-red-400 border border-slate-800 rounded-xl text-xs">✕</button>
+          </div>
+        </div>`;
+      }).join("");
+    }
+  }
+
+  // 2. History items
+  var histContainer = document.getElementById("myzone-history-list");
+  var histList = window.getStorageJson(STORAGE_KEYS.HISTORY_ITEMS, window.DEFAULT_HISTORY_ITEMS || []);
+  if (histContainer) {
+    if (histList.length === 0) {
+      histContainer.innerHTML = '<div class="text-xs text-slate-400 p-4 bg-slate-950 rounded-2xl border border-slate-800">ההיסטוריה ריקה כעת.</div>';
+    } else {
+      histContainer.innerHTML = histList.map(function(h) {
+        return `
+        <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-2xl flex items-center justify-between">
+          <div>
+            <h4 class="text-xs sm:text-sm font-black text-white">${h.title}</h4>
+            <p class="text-[11px] text-slate-400">${h.time} • <span class="text-amber-400">${h.category}</span></p>
+          </div>
+          <span class="text-xs text-slate-500">🕒</span>
+        </div>`;
+      }).join("");
+    }
+  }
+
+  // 3. Personal Yahrzeits
+  var yContainer = document.getElementById("myzone-yahrzeits-list");
+  var yList = window.getStorageJson(STORAGE_KEYS.MY_YAHRZEITS, window.DEFAULT_PERSONAL_YAHRZEITS || []);
+  if (yContainer) {
+    yContainer.innerHTML = yList.map(function(y) {
+      return `
+      <div class="bg-slate-950 border border-amber-500/30 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 bg-amber-500/20 text-amber-300 font-black rounded-lg text-[11px]">📅 ${y.hebDate}</span>
+            <span class="text-[11px] text-slate-400">${y.relation}</span>
+          </div>
+          <h4 class="text-sm font-black text-white">🕯️ ${y.name}</h4>
+          <p class="text-xs text-slate-300">${y.notes}</p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button onclick="openCandleModal('${y.name}')" class="px-3 py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">🕯️ הדלק נר</button>
+          <button onclick="removePersonalYahrzeit('${y.id}')" class="px-2.5 py-2 bg-slate-900 text-slate-400 hover:text-red-400 border border-slate-800 rounded-xl text-xs">מחק</button>
+        </div>
+      </div>`;
+    }).join("");
+  }
+};
