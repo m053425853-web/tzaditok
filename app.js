@@ -221,32 +221,8 @@ window.switchRashiTab = function(t) {
 // 2. הספרייה המרכזית (Library): תורה (54 פרשיות) | נביאים וכתובים | היסטוריה ודורות | סדרות AI
 // ============================================================================
 window.switchLibrarySubTab = function(subId) {
-  var allSubIds = ["weekseries", "music", "torah", "nach", "generations", "aiseries", "eduvideos", "chassidut", "courses", "mishnah", "liveshiurim", "quizzes"];
-  var overviewGrid = document.getElementById("learn-departments-overview");
-  var backBar = document.getElementById("learn-back-to-departments");
-  var libInternalNav = document.getElementById("library-internal-subnav");
-
-  if (subId === "overview") {
-    if (overviewGrid) overviewGrid.classList.remove("hidden");
-    if (backBar) backBar.classList.add("hidden");
-    if (libInternalNav) libInternalNav.classList.add("hidden");
-    allSubIds.forEach(function(k) {
-      var box = document.getElementById("lib-sub-" + k);
-      if (box) box.classList.add("hidden");
-    });
-    return;
-  }
-
-  if (overviewGrid) overviewGrid.classList.add("hidden");
-  if (backBar) backBar.classList.remove("hidden");
-
-  // אם נכנסו ל"ספרייה" (library או torah/nach/generations/chassidut/mishnah/courses/weekseries) - נציג את סרגל הספרייה הפנימי
-  var librarySubTabs = ["torah", "nach", "generations", "chassidut", "mishnah", "courses", "weekseries"];
-  if (subId === "library") subId = "torah";
-  if (libInternalNav) {
-    if (librarySubTabs.indexOf(subId) !== -1) libInternalNav.classList.remove("hidden");
-    else libInternalNav.classList.add("hidden");
-  }
+  if (subId === "overview" || subId === "library") subId = "torah";
+  var allSubIds = ["torah", "nach", "generations", "mishnah", "chassidut", "courses", "liveshiurim", "eduvideos", "weekseries", "music", "aiseries"];
 
   allSubIds.forEach(function(k) {
     var box = document.getElementById("lib-sub-" + k);
@@ -257,8 +233,8 @@ window.switchLibrarySubTab = function(subId) {
     }
     if (btn) {
       btn.className = (k === subId)
-        ? "px-4 py-2 rounded-xl bg-amber-500 text-white font-black shrink-0 shadow-sm"
-        : "px-4 py-2 rounded-xl bg-white text-[#0F2340] border border-[#D8CBB5] font-bold shrink-0";
+        ? "hub-grid-btn active"
+        : "hub-grid-btn";
     }
   });
 };
@@ -2343,6 +2319,7 @@ window.refreshAllCommunityViews = function() {
   window.renderRabbiShiurimList('');
   window.renderDailyCustomsCalendar();
   window.renderChavrutaDirectory('all');
+  window.initFloatingShabbatButton();
 };
 
 
@@ -2739,6 +2716,7 @@ window.setMitzvahTrackerStatus = function(itemId, newStatus) {
   window.renderRabbiShiurimList('');
   window.renderDailyCustomsCalendar();
   window.renderChavrutaDirectory('all');
+  window.initFloatingShabbatButton();
   window.toast(newStatus === "done" ? "אשריך! סומן 'עשיתי' במעקב היומי ✔" : "סומן 'לא עשיתי' – תמיד אפשר להשלים או להפעיל נודניק 🔔");
 };
 
@@ -2769,6 +2747,7 @@ window.toggleMitzvahSnooze = function(itemId) {
   window.renderRabbiShiurimList('');
   window.renderDailyCustomsCalendar();
   window.renderChavrutaDirectory('all');
+  window.initFloatingShabbatButton();
 };
 
 window.addNewMitzvahTrackerGoal = function() {
@@ -2805,6 +2784,7 @@ window.addNewMitzvahTrackerGoal = function() {
   window.renderRabbiShiurimList('');
   window.renderDailyCustomsCalendar();
   window.renderChavrutaDirectory('all');
+  window.initFloatingShabbatButton();
   window.toast("✨ הקבלה האישית נוספה למעקב היומי עם תזכורת נודניק!");
 };
 
@@ -3039,6 +3019,7 @@ window.handleCustomLogoUpload = function(inputEl) {
   window.renderRabbiShiurimList('');
   window.renderDailyCustomsCalendar();
   window.renderChavrutaDirectory('all');
+  window.initFloatingShabbatButton();
     window.toast("הלוגו שלך עודכן בכותרת הראשית בהצלחה!");
   };
   reader.readAsDataURL(inputEl.files[0]);
@@ -3220,6 +3201,7 @@ window.saveStudioDraft = function(sendToAdmin) {
   window.renderRabbiShiurimList('');
   window.renderDailyCustomsCalendar();
   window.renderChavrutaDirectory('all');
+  window.initFloatingShabbatButton();
   window.toast(sendToAdmin ? "הסרטון נשלח לאישור מנהל לפני פרסום ומופיע בפאנל הניהול!" : "הטיוטה נשמרה בהצלחה בסטודיו.");
 };
 
@@ -3327,6 +3309,7 @@ window.submitTzaddikStoryWithSource = function() {
   window.renderRabbiShiurimList('');
   window.renderDailyCustomsCalendar();
   window.renderChavrutaDirectory('all');
+  window.initFloatingShabbatButton();
     window.toast("הסיפור על הצדיק נשלח עם המקור למערכת הניהול לבדיקה ואישור לפני פרסום!");
   });
 };
@@ -3508,6 +3491,7 @@ window.setAdminRole = function(roleName) {
   window.renderRabbiShiurimList('');
   window.renderDailyCustomsCalendar();
   window.renderChavrutaDirectory('all');
+  window.initFloatingShabbatButton();
   window.toast("תפקיד הניהול בפאנל עודכן ל: " + roleName);
 };
 
@@ -3877,4 +3861,89 @@ window.addNewChavrutaOffer = function() {
     window.renderChavrutaDirectory("all");
     window.toast("הצעת החברותא פורסמה ונשלחה למודרציה!");
   });
+};
+
+
+// ============================================================================
+// V26 ENGINE: אקורדיונים בדף הבית, כרטיס 'היום ביהדות', סינון לפי עדה/נושא/מיקום, וכפתור צף למצב שבת (צפייה בלבד)
+// ============================================================================
+
+window.toggleHomeAccordion = function(accId) {
+  var bodyEl = document.getElementById(accId);
+  var iconEl = document.getElementById(accId + "-icon");
+  if (!bodyEl) return;
+  var isHidden = bodyEl.classList.contains("hidden");
+  if (isHidden) {
+    bodyEl.classList.remove("hidden");
+    if (iconEl) iconEl.textContent = "▲ סגור";
+  } else {
+    bodyEl.classList.add("hidden");
+    if (iconEl) iconEl.textContent = "▼ פתח";
+  }
+};
+
+window.triggerHeaderSearch = function() {
+  window.switchTab("feed");
+  var box = document.getElementById("home-acc-search");
+  if (box && box.classList.contains("hidden")) {
+    box.classList.remove("hidden");
+  }
+  var inp = document.getElementById("home-search-input");
+  if (inp) {
+    setTimeout(function() { inp.focus(); }, 150);
+  }
+};
+
+// סינון מאוחד בספרייה (ללמוד) ובמדריכים (למצוא) לפי עדה/נוסח, נושא ומיקום
+window.applyUnifiedDirectoryFilter = function(contextType) {
+  var edahEl = document.getElementById(contextType + "-filter-edah");
+  var topicEl = document.getElementById(contextType + "-filter-topic");
+  var locEl = document.getElementById(contextType + "-filter-loc");
+
+  var edah = edahEl ? edahEl.value : "all";
+  var topic = topicEl ? topicEl.value : "all";
+  var loc = locEl ? locEl.value : "all";
+
+  if (contextType === "learn") {
+    var qParts = [];
+    if (edah !== "all") qParts.push(edah);
+    if (topic !== "all") qParts.push(topic);
+    if (loc !== "all") qParts.push(loc);
+    if (qParts.length === 0) {
+      window.handleLearnGlobalSearch("");
+      window.toast("מוצגים כל תכני הספרייה ובית המדרש");
+    } else {
+      window.handleLearnGlobalSearch(topic !== "all" ? topic : edah);
+      window.toast("סונן לפי: " + qParts.join(" • "));
+    }
+  } else if (contextType === "find") {
+    var queryStr = loc !== "all" ? loc : (edah !== "all" ? edah : (topic !== "all" ? topic : ""));
+    window.filterFindSectionByQuery(currentTab, queryStr);
+    window.toast(queryStr ? ("סונן במדריך לפי: " + queryStr) : "מוצגים כל המקומות במדריך");
+  }
+};
+
+// בדיקה אוטומטית של יום שישי / ערב חג להצגת הכפתור הצף של מצב שבת (צפייה בלבד)
+window.initFloatingShabbatButton = function() {
+  var floatBtn = document.getElementById("floating-shabbat-readonly-btn");
+  if (!floatBtn) return;
+  var dayOfWeek = new Date().getDay(); // 5 = יום שישי, 6 = שבת
+  // מציג את הכפתור הצף תמיד באופן אלגנטי עם חיווי מיוחד לימי שישי/שבת וחג
+  var labelEl = document.getElementById("floating-shabbat-btn-label");
+  var isShabbat = document.body.classList.contains("shabbat-mode-active");
+  if (labelEl) {
+    if (isShabbat) {
+      labelEl.textContent = "מצב שבת (צפייה בלבד) פעיל • לחץ ליציאה";
+    } else if (dayOfWeek === 5 || dayOfWeek === 6) {
+      labelEl.textContent = "שבת שלום • הפעל מצב צפייה בלבד";
+    } else {
+      labelEl.textContent = "מצב שבת וחג (צפייה בלבד)";
+    }
+  }
+};
+
+var origToggleShabbat = window.toggleShabbatOverlay;
+window.toggleShabbatOverlay = function() {
+  origToggleShabbat();
+  window.initFloatingShabbatButton();
 };

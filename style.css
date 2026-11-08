@@ -229,3 +229,29 @@ body.shabbat-mode-active #home-hero-video-section,
 body.shabbat-mode-active #home-quick-media-bar {
   display: none !important;
 }
+
+
+/* V26 Read-Only Shabbat Mode & Accordion Polish */
+body.shabbat-mode-active input,
+body.shabbat-mode-active textarea,
+body.shabbat-mode-active select,
+body.shabbat-mode-active .shabbat-readonly-hide {
+  pointer-events: none !important;
+  opacity: 0.5 !important;
+}
+.hub-grid-btn {
+  padding: 11px 10px;
+  border-radius: 14px;
+  background-color: #FFFFFF;
+  color: #0F2340;
+  border: 1px solid #D8CBB5;
+  font-weight: 700;
+  font-size: 13px;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+.hub-grid-btn.active, .hub-grid-btn:hover {
+  background-color: #F6EFE2 !important;
+  border-color: #C9A227 !important;
+  font-weight: 900;
+}
