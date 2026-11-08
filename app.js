@@ -1,15 +1,14 @@
 /* ==========================================================================
-   צדיק-טוק (TzadikTok Super-App) - מנוע האפליקציה והאינטראקציות (app.js)
+   צדיק-טוק (TzadikTok Super-App) - מנוע האפליקציה והאינטראקציות (app.js - V19)
    ========================================================================== */
 
 var currentTab = "feed";
 var currentNusach = localStorage.getItem(STORAGE_KEYS.NUSACH) || "mizrach";
-var activePrayerKey = "mazon";
-var activeMusicTrackId = "m1";
+var activePrayerKey = "hashachar";
+var activeChumashId = "bereishit";
 var restTypeFilter = "all";
 var restHechFilter = "all";
 var MITZVOT_LIST = window.getStorageJson(STORAGE_KEYS.CUSTOM_MITZVOT, window.DEFAULT_MITZVOT_DATA);
-var USER_MUSIC_LIST = window.getStorageJson(STORAGE_KEYS.CUSTOM_MUSIC, window.MUSIC_LIBRARY);
 
 window.switchTab = function(tabId) {
   currentTab = tabId;
@@ -31,7 +30,11 @@ window.switchTab = function(tabId) {
   for (var k = 0; k < bnavs.length; k++) {
     bnavs[k].classList.remove("active");
   }
-  var activeBNav = document.getElementById("bnav-" + tabId);
+  var bnavId = tabId;
+  if (tabId === "rabbis" || tabId === "customs" || tabId === "tzaddikim") {
+    bnavId = "siddur"; // תחת לשונית יהדות
+  }
+  var activeBNav = document.getElementById("bnav-" + bnavId);
   if (activeBNav) activeBNav.classList.add("active");
 
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -52,7 +55,6 @@ window.closeModal = function(id) {
   if (el) el.classList.add("hidden");
 };
 
-// סרטון היכרות קופץ בכניסה לאפליקציה
 window.openIntroModal = function() {
   var el = document.getElementById("modal-intro-welcome");
   if (el) el.classList.remove("hidden");
@@ -72,19 +74,25 @@ window.handleGlobalSearch = function(e) {
   if (e.key === "Enter") {
     if (q.includes("מקווה") || q.includes("טבילה")) window.switchTab("mikvaot");
     else if (q.includes("מסעד") || q.includes("אוכל") || q.includes("כשר")) window.switchTab("restaurants");
-    else if (q.includes("מוזיק") || q.includes("ניגון") || q.includes("שיר")) window.switchTab("music");
     else if (q.includes("גמח") || q.includes("גמ״ח") || q.includes("יד שרה") || q.includes("עזר")) window.switchTab("gemachim");
     else if (q.includes("חבד") || q.includes("חב״ד") || q.includes("שליח")) window.switchTab("chabad");
     else if (q.includes("הגרל") || q.includes("קמפיין") || q.includes("תרומ")) window.switchTab("raffles");
     else if (q.includes("סידור") || q.includes("תפיל") || q.includes("שחרית")) window.switchTab("siddur");
     else if (q.includes("צדיק") || q.includes("קבר") || q.includes("מירון")) window.switchTab("tzaddikim");
     else if (q.includes("מניין") || q.includes("מנין")) window.switchTab("minyanim");
-    else if (q.includes("סדר") || q.includes("ספרי") || q.includes("יוסף") || q.includes("דוד")) window.switchTab("series");
+    else if (q.includes("ספרי") || q.includes("חומש") || q.includes("פרש") || q.includes("נביא") || q.includes("ראשונים")) window.switchTab("series");
     else window.toast('חיפוש מהיר עבור: "' + q + '"');
   }
 };
 
-// 1. פיד רילס אנכי מותאם למסך טלפון מלא (ללא שוליים מיותרים)
+// ============================================================================
+// 1. מסך ראשי (Home / Feed): לוח היום + זמנים דחופים + יארצייט יומי + שיעורים + פרשה + רילס
+// ============================================================================
+window.renderHomeDashboard = function() {
+  var hebDateEl = document.getElementById("home-hebrew-date");
+  if (hebDateEl) hebDateEl.textContent = window.getHebrewDateString();
+};
+
 window.renderFeedCards = function(cards) {
   var container = document.getElementById("feed-cards-container");
   if (!container) return;
@@ -95,7 +103,6 @@ window.renderFeedCards = function(cards) {
       var totalLikes = (item.likes + (likesState[item.id] || 0)).toLocaleString();
       return `
       <div class="mobile-full-bleed relative bg-slate-950 border border-slate-800/80 rounded-3xl overflow-hidden shadow-2xl">
-        <!-- Top Overlay -->
         <div class="absolute top-0 left-0 right-0 z-20 p-3.5 bg-gradient-to-b from-black/90 via-black/40 to-transparent flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="w-8 h-8 rounded-full bg-amber-500 text-slate-950 font-black flex items-center justify-center text-xs">צ</span>
@@ -109,16 +116,14 @@ window.renderFeedCards = function(cards) {
           </button>
         </div>
 
-        <!-- Full Mobile Height Video Container -->
-        <div class="relative w-full h-[74vh] sm:h-[640px] bg-slate-950 flex items-center justify-center overflow-hidden">
+        <div class="relative w-full h-[72vh] sm:h-[620px] bg-slate-950 flex items-center justify-center overflow-hidden">
           <img src="${item.image}" alt="${item.title}" class="absolute inset-0 w-full h-full object-cover">
           <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/95"></div>
 
-          <button onclick="toast('מנגן סרטון רילס ב-4K (100% כיסוי ראש מלא)')" class="relative z-10 w-16 h-16 rounded-full bg-amber-500/95 hover:bg-amber-400 text-slate-950 flex items-center justify-center text-2xl font-black shadow-2xl active:scale-95 transition-all">
+          <button onclick="toast('מנגן סרטון רילס ב-4K')" class="relative z-10 w-16 h-16 rounded-full bg-amber-500/95 hover:bg-amber-400 text-slate-950 flex items-center justify-center text-2xl font-black shadow-2xl active:scale-95 transition-all">
             ▶
           </button>
 
-          <!-- Side Action Buttons -->
           <div class="absolute right-3 bottom-20 z-20 flex flex-col items-center gap-3.5">
             <button onclick="toggleLike('${item.id}')" class="flex flex-col items-center gap-0.5">
               <div class="w-10 h-10 rounded-full bg-slate-900/85 border border-slate-700 flex items-center justify-center text-red-500 text-lg shadow-lg">❤️</div>
@@ -134,7 +139,6 @@ window.renderFeedCards = function(cards) {
             </button>
           </div>
 
-          <!-- Bottom Text Details -->
           <div class="absolute bottom-0 left-0 right-16 z-20 p-4 space-y-1.5 text-right">
             <h3 class="text-base font-black text-white">${item.title}</h3>
             <p class="text-xs text-amber-200 font-serif line-clamp-2">${item.quote}</p>
@@ -191,7 +195,149 @@ window.switchRashiTab = function(t) {
   }
 };
 
-// 2. ספרייה: סדרות ההיסטוריה + מעבר מהיר להיכל המוזיקה והניגונים
+// ============================================================================
+// 2. הספרייה המרכזית (Library): תורה (54 פרשיות) | נביאים וכתובים | היסטוריה ודורות | סדרות AI
+// ============================================================================
+window.switchLibrarySubTab = function(subId) {
+  ["torah", "nach", "generations", "aiseries"].forEach(function(k) {
+    var box = document.getElementById("lib-sub-" + k);
+    var btn = document.getElementById("lib-btn-" + k);
+    if (box) {
+      if (k === subId) box.classList.remove("hidden");
+      else box.classList.add("hidden");
+    }
+    if (btn) {
+      btn.className = (k === subId)
+        ? "px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-black shrink-0 shadow-md"
+        : "px-4 py-2 rounded-xl bg-slate-800 text-slate-300 border border-slate-700 font-bold shrink-0";
+    }
+  });
+};
+
+window.selectChumash = function(chumashId) {
+  activeChumashId = chumashId;
+  var chObj = window.CHUMASHIM_PARASHOT.find(function(c) { return c.id === chumashId; }) || window.CHUMASHIM_PARASHOT[0];
+  ["bereishit", "shemot", "vayikra", "bamidbar", "devarim"].forEach(function(id) {
+    var b = document.getElementById("chumash-btn-" + id);
+    if (b) {
+      b.className = (id === chumashId)
+        ? "px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs shrink-0"
+        : "px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 font-bold text-xs shrink-0 hover:border-amber-500/40";
+    }
+  });
+
+  var headerTitle = document.getElementById("chumash-display-title");
+  var headerSub = document.getElementById("chumash-display-subtitle");
+  if (headerTitle) headerTitle.textContent = chObj.title;
+  if (headerSub) headerSub.textContent = chObj.subtitle;
+
+  var grid = document.getElementById("parashot-grid-container");
+  if (!grid) return;
+  grid.innerHTML = chObj.parashot
+    .map(function(p, idx) {
+      return `
+      <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex flex-col justify-between space-y-3 hover:border-amber-500/50 transition-all">
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] px-2 py-0.5 bg-amber-500/15 text-amber-300 border border-amber-500/30 rounded-md font-bold">פרשה ${idx + 1} • ${chObj.title}</span>
+            <span class="text-[10px] font-bold text-emerald-400">🎬 ${p.videoStatus}</span>
+          </div>
+          <h4 class="text-base font-black text-white mt-1.5">פרשת ${p.name}</h4>
+          <p class="text-xs text-slate-300 leading-relaxed mt-1">${p.summary}</p>
+          <p class="text-[11px] text-amber-300/90 mt-2 bg-slate-950 p-2 rounded-xl border border-slate-800/80">📖 <strong>פניני רש״י:</strong> ${p.rashi}</p>
+        </div>
+        <div class="flex items-center gap-2 pt-2 border-t border-slate-800 text-xs">
+          <button onclick="openParashaViewer('${chObj.id}', '${p.name}')" class="flex-1 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black rounded-xl text-center">
+            ▶ סרטון ותוכן הפרשה
+          </button>
+          <a href="https://www.sefaria.org/search?q=${encodeURIComponent("פרשת " + p.name)}" target="_blank" class="px-3 py-2 bg-slate-800 text-amber-300 font-bold rounded-xl">
+            ספריא ↗
+          </a>
+        </div>
+      </div>
+    `;
+    })
+    .join("");
+};
+
+window.openParashaViewer = function(chumashId, parashaName) {
+  var chObj = window.CHUMASHIM_PARASHOT.find(function(c) { return c.id === chumashId; }) || window.CHUMASHIM_PARASHOT[0];
+  var pObj = chObj.parashot.find(function(p) { return p.name === parashaName; }) || chObj.parashot[0];
+  document.getElementById("parasha-modal-title").textContent = "פרשת " + pObj.name + " (" + chObj.title + ")";
+  document.getElementById("parasha-modal-summary").textContent = pObj.summary;
+  document.getElementById("parasha-modal-rashi").textContent = pObj.rashi;
+  document.getElementById("modal-parasha-viewer").classList.remove("hidden");
+};
+
+window.renderNachBooks = function() {
+  var c = document.getElementById("nach-books-container");
+  if (!c) return;
+  c.innerHTML = window.NACH_BOOKS.map(function(grp) {
+    return `
+      <div class="space-y-3">
+        <h3 class="text-base font-black text-amber-400 border-b border-slate-800 pb-1.5">📜 ${grp.group}</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          ${grp.books
+            .map(function(b) {
+              return `
+              <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex flex-col justify-between space-y-3 hover:border-amber-500/40">
+                <div>
+                  <span class="text-[10px] px-2 py-0.5 bg-slate-800 text-amber-300 rounded font-bold">${b.chapters}</span>
+                  <h4 class="text-sm font-black text-white mt-1.5">${b.name}</h4>
+                  <p class="text-xs text-slate-300 mt-1 leading-relaxed">${b.desc}</p>
+                </div>
+                <div class="flex items-center gap-2 pt-2 border-t border-slate-800 text-xs">
+                  <button onclick="toast('פותח חדר לימוד וסרטון עבור ' + '${b.name}')" class="flex-1 py-1.5 bg-amber-500 text-slate-950 font-black rounded-xl">🎬 צפה וקרא</button>
+                </div>
+              </div>
+            `;
+            })
+            .join("")}
+        </div>
+      </div>
+    `;
+  }).join("");
+};
+
+window.renderGenerationsHistory = function() {
+  var c = document.getElementById("generations-history-container");
+  if (!c) return;
+  c.innerHTML = window.GENERATIONS_HISTORY.map(function(gen) {
+    return `
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+          <div>
+            <span class="text-[11px] font-black text-amber-400">${gen.years}</span>
+            <h3 class="text-lg font-black text-white">${gen.era}</h3>
+            <p class="text-xs text-slate-300">${gen.desc}</p>
+          </div>
+          <button onclick="toast('ניתן להוסיף דמויות ורבנים לתקופה זו')" class="px-3 py-1.5 bg-slate-800 text-amber-300 border border-slate-700 rounded-xl text-xs font-bold self-start">
+            ➕ הוסף דמות / רב לדור זה
+          </button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+          ${gen.figures
+            .map(function(f) {
+              return `
+              <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-2xl space-y-1.5 flex flex-col justify-between">
+                <div>
+                  <span class="text-[10px] text-amber-400 font-bold block">${f.role}</span>
+                  <h4 class="text-sm font-black text-white">${f.name}</h4>
+                  <p class="text-xs text-slate-300 mt-1 leading-relaxed">${f.story}</p>
+                </div>
+                <button onclick="toast('פותח סרטון ותולדות חייו של ' + '${f.name}')" class="w-full mt-2 py-1.5 bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-amber-300 font-bold rounded-xl text-xs transition-colors">
+                  📖 סרטון ותולדות הצדיק
+                </button>
+              </div>
+            `;
+            })
+            .join("")}
+        </div>
+      </div>
+    `;
+  }).join("");
+};
+
 window.renderSeries = function(seriesList) {
   var c = document.getElementById("series-grid-container");
   if (!c) return;
@@ -247,86 +393,9 @@ window.openSeriesEpisodes = function(seriesId) {
   document.getElementById("modal-episodes").classList.remove("hidden");
 };
 
-// 2B. היכל המוזיקה, הפיוטים והניגונים (במקום הנגן הצף שהפריע במסך!)
-window.renderMusicLibrary = function(tracks) {
-  var c = document.getElementById("music-grid-container");
-  if (!c) return;
-  c.innerHTML = tracks
-    .map(function(tr) {
-      var isPlayingNow = activeMusicTrackId === tr.id;
-      return `
-      <div class="bg-slate-900 border ${isPlayingNow ? "border-amber-500" : "border-slate-800"} p-5 rounded-3xl space-y-3 flex flex-col justify-between shadow-xl">
-        <div>
-          <div class="flex items-center justify-between">
-            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">${tr.category}</span>
-            <span class="text-xs font-mono text-slate-400">⏱️ ${tr.duration}</span>
-          </div>
-          <h3 class="text-base font-black text-white mt-2">${tr.title}</h3>
-          <p class="text-xs text-amber-400 font-bold mt-0.5">🎙️ ${tr.artist}</p>
-          <p class="text-xs text-slate-300 leading-relaxed mt-2">${tr.desc || ""}</p>
-        </div>
-        <div class="pt-3 border-t border-slate-800 flex items-center gap-2">
-          <button onclick="playMusicTrack('${tr.id}')" class="flex-1 py-2.5 ${isPlayingNow ? "bg-emerald-500 text-slate-950" : "bg-amber-500 text-slate-950"} font-black rounded-xl text-xs flex items-center justify-center gap-1.5">
-            <span>${isPlayingNow ? "⏸ מתנגן כעת" : "▶ נגן ניגון"}</span>
-          </button>
-        </div>
-      </div>
-    `;
-    })
-    .join("");
-};
-
-window.filterMusicCategory = function(cat) {
-  var btns = document.querySelectorAll(".music-cat-btn");
-  for (var i = 0; i < btns.length; i++) {
-    btns[i].className = "music-cat-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 shrink-0";
-  }
-  var ev = (typeof window !== "undefined" && window.event) || (typeof event !== "undefined" ? event : null);
-  if (ev && ev.target) {
-    ev.target.className = "music-cat-btn active px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shrink-0";
-  }
-  if (cat === "all") window.renderMusicLibrary(USER_MUSIC_LIST);
-  else window.renderMusicLibrary(USER_MUSIC_LIST.filter(function(t) { return t.category === cat; }));
-};
-
-window.playMusicTrack = function(id) {
-  activeMusicTrackId = id;
-  var tr = USER_MUSIC_LIST.find(function(i) { return i.id === id; });
-  var nowTitle = document.getElementById("music-now-playing-title");
-  var nowArtist = document.getElementById("music-now-playing-artist");
-  if (tr && nowTitle && nowArtist) {
-    nowTitle.textContent = tr.title;
-    nowArtist.textContent = tr.artist + " • " + tr.category;
-  }
-  window.renderMusicLibrary(USER_MUSIC_LIST);
-  if (tr) window.toast("🎵 מנגן כעת: " + tr.title);
-};
-
-window.openUploadMusicModal = function() {
-  document.getElementById("modal-upload-music").classList.remove("hidden");
-};
-
-window.saveUploadedMusic = function() {
-  var title = document.getElementById("new-music-title").value.trim();
-  var artist = document.getElementById("new-music-artist").value.trim() || "אמן קודש";
-  var cat = document.getElementById("new-music-cat").value;
-  var desc = document.getElementById("new-music-desc").value.trim() || "ניגון קודש שהועלה על ידי הקהילה.";
-  if (!title) return window.toast("נא להזין את שם הניגון");
-  USER_MUSIC_LIST.unshift({
-    id: "m_custom_" + Date.now(),
-    title: title,
-    artist: artist,
-    duration: "3:30",
-    category: cat,
-    desc: desc
-  });
-  window.setStorageJson(STORAGE_KEYS.CUSTOM_MUSIC, USER_MUSIC_LIST);
-  window.renderMusicLibrary(USER_MUSIC_LIST);
-  window.closeModal("modal-upload-music");
-  window.toast("🎵 הניגון נוסף להיכל המוזיקה בהצלחה!");
-};
-
+// ============================================================================
 // 3. חנות יודאיקה
+// ============================================================================
 window.renderJudaica = function(products) {
   var c = document.getElementById("judaica-grid-container");
   if (!c) return;
@@ -460,7 +529,9 @@ window.buyNowWhatsApp = function(id) {
   window.open(window.buildWhatsAppUrl("972500000000", "שלום, מעוניין להזמין: " + p.name), "_blank");
 };
 
-// 4. סידור תפילה רב-נוסחי (4 נוסחים)
+// ============================================================================
+// 4. יהדות וסידור תפילה מחולק ומלא (ללא מוזיקה)
+// ============================================================================
 window.setNusach = function(n) {
   currentNusach = n;
   localStorage.setItem(STORAGE_KEYS.NUSACH, n);
@@ -488,7 +559,7 @@ window.selectPrayer = function(k) {
 };
 
 window.loadPrayer = function(k) {
-  var p = window.PRAYERS_DATA[k];
+  var p = window.PRAYERS_DATA[k] || window.PRAYERS_DATA["hashachar"];
   if (!p) return;
   document.getElementById("prayer-display-title").textContent = p.title;
   var body = (p.texts && p.texts[currentNusach]) || p.text || (p.texts && p.texts["mizrach"]) || "";
@@ -668,7 +739,7 @@ window.filterRestHechsher = function(h) {
   window.applyRestaurantFilters();
 };
 
-// 8-15. גמ״חים, חב״ד, מניינים, הגרלות, זמנים, רבנים, מנהגים
+// 8-15. גמ״חים, חב״ד, מניינים, הגרלות, זמנים + לוח שנה ויארצייטים, רבנים, מנהגים
 window.renderGemachim = function(list) {
   var c = document.getElementById("gemachim-grid-container");
   if (!c) return;
@@ -822,16 +893,21 @@ window.renderDonorsBook = function(list) {
     .join("");
 };
 
+// זמני היום + לוח שנה ויארצייטים (בלשונית זמנים)
 window.renderZmanim = function() {
   var g = document.getElementById("zmanim-grid");
   if (!g) return;
   var tms = [
+    { n: "עלות השחר", t: "04:52" },
     { n: "הנץ החמה", t: "06:07" },
     { n: "סוף זמן שמע", t: "08:37" },
+    { n: "סוף זמן תפילה", t: "09:42" },
     { n: "חצות היום", t: "12:20" },
     { n: "מנחה גדולה", t: "12:50" },
+    { n: "פלג המנחה", t: "15:42" },
     { n: "שקיעת החמה", t: "16:50" },
-    { n: "צאת הכוכבים", t: "17:15" }
+    { n: "צאת הכוכבים", t: "17:15" },
+    { n: "זמן רבינו תם", t: "18:02" }
   ];
   g.innerHTML = tms
     .map(function(t) {
@@ -843,6 +919,28 @@ window.renderZmanim = function() {
     `;
     })
     .join("");
+
+  var yContainer = document.getElementById("zmanim-yahrzeits-container");
+  if (yContainer && window.YAHRZEITS_CALENDAR) {
+    yContainer.innerHTML = window.YAHRZEITS_CALENDAR.map(function(y) {
+      return `
+        <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl flex flex-col justify-between space-y-2 text-xs">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded font-bold text-[10px]">🕯️ ${y.date}</span>
+              <span class="text-[11px] text-slate-400">📍 ${y.location}</span>
+            </div>
+            <h4 class="text-sm font-black text-white mt-1.5">${y.name}</h4>
+            <p class="text-[11px] text-amber-400 font-bold">${y.title}</p>
+            <p class="text-xs text-slate-300 mt-1 leading-relaxed">${y.segula}</p>
+          </div>
+          <button onclick="openCandleModal('${y.name}')" class="w-full py-2 bg-amber-500/20 hover:bg-amber-500 hover:text-slate-950 text-amber-300 border border-amber-500/40 font-black rounded-xl text-xs transition-colors">
+            🕯️ הדלק נר לעילוי נשמתו
+          </button>
+        </div>
+      `;
+    }).join("");
+  }
 };
 
 window.renderCheshbon = function() {
@@ -893,7 +991,7 @@ window.renderRabbis = function(list) {
         <span class="text-amber-400 font-bold">${r.role}</span>
         <h4 class="font-black text-white text-sm">${r.name}</h4>
         <p class="text-slate-400">${r.city} • ${r.desc}</p>
-        <a href="${window.buildTelUrl(r.phone)}" class="block mt-2 py-1.5 bg-slate-800 text-amber-300 font-bold rounded-xl text-center">📞 חייג לבית ההוראה: ${r.phone}</a>
+        <a href="${window.buildTelUrl(r.phone)}" class="block mt-2 py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-center">📞 חייג לבית ההוראה: ${r.phone}</a>
       </div>
     `;
     })
@@ -983,9 +1081,12 @@ window.adjustGlobalFontSize = function() {
 
 window.addEventListener("DOMContentLoaded", function() {
   window.updateTodayDate();
+  window.renderHomeDashboard();
   window.renderFeedCards(window.REEL_FEED);
+  window.selectChumash("bereishit");
+  window.renderNachBooks();
+  window.renderGenerationsHistory();
   window.renderSeries(window.SERIES_LIBRARY);
-  window.renderMusicLibrary(USER_MUSIC_LIST);
   window.renderJudaica(window.JUDAICA_PRODUCTS);
   window.setNusach(currentNusach);
   window.renderTzaddikim(window.TZADDIKIM_DATA);
@@ -1004,7 +1105,6 @@ window.addEventListener("DOMContentLoaded", function() {
   window.renderServices(window.SERVICES_DATA);
   window.updateCartBadge();
 
-  // הצגת סרטון היכרות קופץ בכניסה הראשונה לאפליקציה
   if (!localStorage.getItem(STORAGE_KEYS.INTRO_SEEN)) {
     setTimeout(function() {
       window.openIntroModal();
