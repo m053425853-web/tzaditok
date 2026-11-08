@@ -4068,3 +4068,201 @@ window.uploadNewRabbiShiur = function() {
     });
   }
 };
+
+
+// ============================================================================
+// V29 LIVE SUPABASE DATABASE HOOKS: קריאה וכתיבה לכל הטבלאות ב-Supabase
+// ============================================================================
+
+window.syncAllTablesFromSupabase = async function() {
+  if (!window.supabaseClient) return;
+  try {
+    // 1. שיעורים (lessons)
+    await window.fetchLessonsFromSupabase();
+
+    // 2. חברותא (chavruta)
+    var chRes = await window.supabaseClient.from("chavruta").select("*").order("created_at", { ascending: false });
+    if (chRes.data && chRes.data.length > 0) {
+      var dbChav = chRes.data.map(function(row) {
+        return {
+          id: "sb_chv_" + row.id,
+          name: row.name,
+          topic: row.topic,
+          mode: row.mode || "פנים אל פנים / טלפוני",
+          city: row.city || "ישראל",
+          hours: row.hours || "בתיאום אישי",
+          phone: row.phone || "",
+          description: row.description || "",
+          verification: "מסונכרן מ-Supabase ✔"
+        };
+      });
+      window.CHAVRUTA_DATA = dbChav.concat(window.CHAVRUTA_DATA || []);
+      window.renderChavrutaDirectory("all");
+    }
+
+    // 3. מניינים (minyanim)
+    var minRes = await window.supabaseClient.from("minyanim").select("*").order("created_at", { ascending: false });
+    if (minRes.data && minRes.data.length > 0) {
+      var dbMin = minRes.data.map(function(row) {
+        return {
+          id: "sb_min_" + row.id,
+          name: row.name,
+          nusach: row.nusach || "כלל ישראל",
+          city: row.city || "ישראל",
+          address: row.address || row.city || "",
+          shacharit: row.shacharit || "07:00, 08:00",
+          mincha: row.mincha || "13:30, 16:20",
+          arvit: row.arvit || "17:15, 20:30",
+          phone: row.phone || "",
+          distanceKm: 0.3,
+          lat: row.lat || 32.0840,
+          lng: row.lng || 34.8352
+        };
+      });
+      window.MINYANIM_DATA = dbMin.concat(window.MINYANIM_DATA || []);
+      window.renderMinyanim(window.MINYANIM_DATA);
+    }
+
+    // 4. מוקד תפילות ונרות (prayer_wall)
+    var pwRes = await window.supabaseClient.from("prayer_wall").select("*").order("created_at", { ascending: false });
+    if (pwRes.data && pwRes.data.length > 0) {
+      var dbPw = pwRes.data.map(function(row) {
+        return {
+          id: "sb_pw_" + row.id,
+          prayerForName: row.prayer_for_name,
+          category: row.category || "לרפואה שלמה",
+          tzaddikName: row.tzaddik_name || "כלל צדיקי הדורות",
+          requestText: row.request_text || "",
+          submittedBy: row.submitted_by || "חבר קהילה",
+          amenCount: row.amen_count || 1,
+          time: "מסונכרן מ-Supabase ✔"
+        };
+      });
+      window.setStorageJson(STORAGE_KEYS.PRAYER_WALL, dbPw.concat(window.INITIAL_PRAYER_WALL || []));
+      window.renderCommunityPrayerWall();
+    }
+
+    // 5. פורום הקהילה (forum_posts)
+    var fpRes = await window.supabaseClient.from("forum_posts").select("*").order("created_at", { ascending: false });
+    if (fpRes.data && fpRes.data.length > 0) {
+      var dbFp = fpRes.data.map(function(row) {
+        return {
+          id: "sb_fp_" + row.id,
+          category: row.category || "דברי תורה",
+          title: row.title,
+          author: row.author,
+          content: row.content,
+          likes: row.likes || 1,
+          repliesCount: row.replies_count || 0,
+          status: row.status || "מאושר ✔",
+          time: "מסונכרן מ-Supabase ✔"
+        };
+      });
+      window.setStorageJson(STORAGE_KEYS.FORUM_POSTS, dbFp.concat(window.INITIAL_FORUM_POSTS || []));
+      window.renderForumPosts("all");
+    }
+  } catch (err) {
+    console.warn("Supabase full sync info:", err);
+  }
+};
+
+// שמירה אוטומטית של הצעת חברותא חדשה לטבלת chavruta ב-Supabase
+var origAddChavruta = window.addNewChavrutaOffer;
+window.addNewChavrutaOffer = function() {
+  var nameEl = document.getElementById("chavruta-new-name");
+  var topicEl = document.getElementById("chavruta-new-topic");
+  var cityEl = document.getElementById("chavruta-new-city");
+  var phoneEl = document.getElementById("chavruta-new-phone");
+  var nVal = nameEl ? nameEl.value.trim() : "";
+  var tVal = topicEl ? topicEl.value.trim() : "";
+  var cVal = cityEl ? cityEl.value.trim() : "ישראל";
+  var pVal = phoneEl ? phoneEl.value.trim() : "050-0000000";
+
+  origAddChavruta();
+
+  if (window.supabaseClient && nVal && tVal) {
+    window.supabaseClient.from("chavruta").insert([{
+      name: nVal,
+      topic: tVal,
+      city: cVal || "ישראל",
+      phone: pVal || "050-0000000"
+    }]).then(function() {});
+  }
+};
+
+// שמירה אוטומטית של מניינים/רבנים/גמ"חים/צדיקים חדשים לטבלאות ב-Supabase
+var origSubmitCommAdd = window.submitCommunityAddForm;
+window.submitCommunityAddForm = function() {
+  var f1 = (document.getElementById("comm-add-f1").value || "").trim();
+  var f2 = (document.getElementById("comm-add-f2").value || "").trim();
+  var f3 = (document.getElementById("comm-add-f3").value || "").trim();
+  var f4 = (document.getElementById("comm-add-f4").value || "").trim();
+  var fType = activeAddFormType;
+
+  origSubmitCommAdd();
+
+  if (window.supabaseClient && f1 && f2) {
+    if (fType === "minyan") {
+      window.supabaseClient.from("minyanim").insert([{ name: f1, city: f3 || "ישראל", mincha: f2, nusach: f4 || "כלל ישראל" }]).then(function() {});
+    } else if (fType === "rabbi") {
+      window.supabaseClient.from("rabbis").insert([{ name: f1, title: f2, phone: f3 || "073-3570000", hours: f4 || "" }]).then(function() {});
+    } else if (fType === "gemach") {
+      window.supabaseClient.from("gemachim").insert([{ name: f1, category: f2, city: f3 || "ישראל", phone: f4 || "03-6144444", description: f4 }]).then(function() {});
+    } else if (fType === "tzaddik") {
+      window.supabaseClient.from("tzaddikim").insert([{ name: f1, city: f2 || "ישראל", address: f3, story: f4, segula: f4 }]).then(function() {});
+    }
+  }
+};
+
+// שמירה אוטומטית של תפילות ונרות לטבלת prayer_wall ב-Supabase
+var origAddPrayerWall = window.addPrayerWallDedication;
+window.addPrayerWallDedication = function() {
+  var nameEl = document.getElementById("pw-name-input");
+  var catEl = document.getElementById("pw-cat-select");
+  var tzEl = document.getElementById("pw-tzaddik-input");
+  var reqEl = document.getElementById("pw-request-input");
+  var nVal = nameEl ? nameEl.value.trim() : "";
+  var cVal = catEl ? catEl.value : "לרפואה שלמה";
+  var tzVal = tzEl ? tzEl.value.trim() : "כלל צדיקי הדורות";
+  var rVal = reqEl ? reqEl.value.trim() : "";
+
+  origAddPrayerWall();
+
+  if (window.supabaseClient && nVal) {
+    window.supabaseClient.from("prayer_wall").insert([{
+      prayer_for_name: nVal,
+      category: cVal,
+      tzaddik_name: tzVal || "כלל צדיקי הדורות",
+      request_text: rVal
+    }]).then(function() {});
+  }
+};
+
+// שמירה אוטומטית של אשכולות פורום לטבלת forum_posts ב-Supabase
+var origAddForum = window.addNewForumPost;
+window.addNewForumPost = function() {
+  var titleEl = document.getElementById("forum-new-title");
+  var catEl = document.getElementById("forum-new-cat");
+  var bodyEl = document.getElementById("forum-new-body");
+  var tVal = titleEl ? titleEl.value.trim() : "";
+  var cVal = catEl ? catEl.value : "דברי תורה";
+  var bVal = bodyEl ? bodyEl.value.trim() : "";
+
+  origAddForum();
+
+  if (window.supabaseClient && tVal && bVal) {
+    window.supabaseClient.from("forum_posts").insert([{
+      category: cVal,
+      title: tVal,
+      author: (currentUserAccount && currentUserAccount.name) ? currentUserAccount.name : "חבר קהילה",
+      content: bVal
+    }]).then(function() {});
+  }
+};
+
+// הפעלה אוטומטית של הסנכרון מול Supabase בעת טעינת האתר
+document.addEventListener("DOMContentLoaded", function() {
+  setTimeout(function() {
+    if (window.syncAllTablesFromSupabase) window.syncAllTablesFromSupabase();
+  }, 400);
+});
