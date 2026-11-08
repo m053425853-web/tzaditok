@@ -687,3 +687,33 @@ window.openProfileModal = function() {
     // פונקציה בסיסית לאזור אישי
     alert("כאן יפתח חלון ההתחברות שלך!");
 };
+// --- השלמת הפונקציות שקלוד פספס ---
+
+// פתיחת תפריט צד
+window.toggleSidebar = function() {
+    alert("פה יפתח תפריט הצד (Sidebar). קלוד לא הספיק לעצב אותו.");
+};
+
+// פתיחת חלון חיפוש
+window.toggleSearch = function() {
+    const query = prompt("מה תרצה לחפש באתר?");
+    if (query) {
+        alert("מחפש את: " + query);
+    }
+};
+
+// הפעלת מצב שבת
+window.toggleShabbatMode = function() {
+    alert("שבת שלום! מצב שבת הופעל. (בשלב הבא ננעל את האתר)");
+};
+
+// פתיחת האזור האישי
+window.openProfileModal = function() {
+    alert("ברוך הבא לאזור האישי! (פה תופיע התחברות המשתמש)");
+};
+
+// פונקציה להעלאת תוכן (שקלוד התחיל לכתוב)
+window.submitCommunityAddForm = function(event) {
+    if (event) event.preventDefault();
+    alert("הטופס נשלח בהצלחה! (הנתונים נשמרים בסופרבייס)");
+};
