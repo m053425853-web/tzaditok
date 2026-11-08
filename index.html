@@ -83,6 +83,10 @@
           <svg class="w-3.5 h-3.5 text-[#C9A227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2c1.5 2.5 1.5 5 0 7-1.5-2-1.5-4.5 0-7z"/><rect x="9" y="9" width="6" height="12" rx="1"/></svg>
           <span>מצב שבת</span>
         </button>
+        <button id="header-auth-btn" onclick="openAuthModal()" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-[#C9A227]/60 text-xs font-bold text-[#FDF8EF] flex items-center gap-1.5 max-w-[130px]" title="התחברות / הרשמה">
+          <svg class="w-3.5 h-3.5 text-[#C9A227] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
+          <span id="header-auth-label" class="truncate" style="color:#FDF8EF !important;">התחברות / הרשמה</span>
+        </button>
         <button onclick="switchTab('myzone')" class="px-3.5 py-1.5 rounded-xl bg-[#C9A227] hover:bg-[#B38E1E] text-white font-black text-xs flex items-center gap-1.5 shadow-sm shrink-0">
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
           <span>אזור אישי</span>
@@ -299,8 +303,14 @@
             <input type="text" oninput="renderRabbiShiurimList(this.value)" placeholder="חיפוש שיעור או שידור חי לפי שם הרב, נושא השיעור או בית מדרש..." class="w-full bg-transparent text-xs sm:text-sm text-[#0F2340] outline-none">
           </div>
 
-          <!-- העלאת שיעור / שידור חי חדש (למשתמש רשום) -->
-          <div class="bg-[#F8F3E8] border border-[#E5DBC7] p-4 rounded-2xl space-y-2.5">
+          <!-- למשתמש לא מחובר: הזמנה להתחבר -->
+          <div id="lesson-upload-guest" class="bg-[#F8F3E8] border border-[#E5DBC7] p-4 rounded-2xl flex flex-wrap items-center justify-between gap-2">
+            <p class="text-xs font-bold text-[#0F2340]">רוצה להעלות שיעור או שידור חי? התחבר או הירשם בחינם.</p>
+            <button onclick="openAuthModal()" class="px-4 py-2 bg-amber-500 text-white font-bold rounded-xl text-xs">התחברות / הרשמה</button>
+          </div>
+
+          <!-- העלאת שיעור / שידור חי חדש (מוצג רק למשתמש מחובר) -->
+          <div id="lesson-upload-box" class="hidden bg-[#F8F3E8] border border-[#E5DBC7] p-4 rounded-2xl space-y-2.5">
             <h4 class="text-xs font-bold text-[#0F2340]">העלאת שיעור תורה / קישור לשידור חי (למשתמש רשום):</h4>
             <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
               <input id="new-shiur-rabbi" type="text" placeholder="שם הרב המוסר" class="bg-white border border-[#D8CBB5] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">
@@ -308,7 +318,7 @@
               <input id="new-shiur-topic" type="text" placeholder="נושא (הלכה / פרשה / אמונה)" class="bg-white border border-[#D8CBB5] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">
               <input id="new-shiur-url" type="text" placeholder="קישור לווידאו / YouTube Live" class="bg-white border border-[#D8CBB5] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">
             </div>
-            <button onclick="uploadNewRabbiShiur()" class="px-5 py-2 bg-amber-500 text-white font-bold rounded-xl text-xs">העלה שיעור / שידור חי</button>
+            <button id="lesson-upload-btn" onclick="uploadNewRabbiShiur()" class="px-5 py-2 bg-amber-500 text-white font-bold rounded-xl text-xs">העלה שיעור / שידור חי</button>
           </div>
 
           <div id="rabbi-shiurim-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
@@ -1526,8 +1536,9 @@
           <div class="flex items-center gap-3">
             <div class="w-12 h-12 rounded-2xl bg-amber-500 text-slate-950 font-black flex items-center justify-center text-2xl shadow-lg">👤</div>
             <div>
-              <h2 class="text-xl font-black text-white">האזור האישי שלי בצדיק-טוק</h2>
+              <h2 id="myzone-user-title" class="text-xl font-black text-white">שלום, אורח</h2>
               <p class="text-xs text-slate-300">הדברים השמורים שלך, היסטוריית לימוד, לוח יארצייטים אישי והגדרות (שפה, נוסח, מיקום ומצב שבת)</p>
+              <button id="myzone-auth-btn" onclick="openAuthModal()" class="mt-2 px-3.5 py-1.5 bg-amber-500 text-white font-bold rounded-xl text-xs">התחברות / הרשמה</button>
             </div>
           </div>
         </div>
@@ -2647,34 +2658,45 @@
 
   <!-- 17. Registered User Account Modal (הרשמה / ניהול חשבון משתמש רשום) -->
   <div id="modal-auth-register" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 border-2 border-amber-500/50 rounded-3xl max-w-md w-full p-6 space-y-4 relative shadow-2xl">
-      <button onclick="closeModal('modal-auth-register')" class="absolute top-4 left-4 text-slate-400 hover:text-white text-lg">✕</button>
-      <div class="space-y-1">
-        <span class="px-2.5 py-0.5 bg-amber-500 text-slate-950 rounded-full text-[10px] font-black">חשבון קהילת צדיק-טוק</span>
-        <h3 class="text-xl font-black text-white pt-1"> חשבון משתמש רשום</h3>
-        <p class="text-xs text-slate-300">כלל ברזל: רק משתמש רשום עם חשבון יכול להוסיף מניינים, קווי הלכה, גמ״חים, קברי צדיקים, יארצייטים, תגובות ודירוגים.</p>
+    <div class="bg-white border-2 border-[#C9A227] rounded-2xl max-w-md w-full p-6 space-y-4 relative shadow-xl" dir="rtl">
+      <button onclick="closeModal('modal-auth-register')" class="absolute top-4 left-4 text-[#5C4938] hover:text-[#0F2340] text-lg font-bold">✕</button>
+
+      <!-- מצב אורח: התחברות / הרשמה -->
+      <div id="auth-guest-view" class="space-y-4">
+        <div>
+          <h3 class="text-xl font-bold text-[#0F2340] serif-heading">התחברות / הרשמה</h3>
+          <p class="text-xs text-[#5C4938]">משתמש רשום יכול להעלות שיעורים, להוסיף מניינים, גמ״חים וחברותא, לדרג ולהגיב.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <button id="auth-tab-login" onclick="setAuthMode('login')" class="hub-grid-btn active">התחברות</button>
+          <button id="auth-tab-register" onclick="setAuthMode('register')" class="hub-grid-btn">הרשמה</button>
+        </div>
+        <div class="space-y-2.5">
+          <div id="auth-name-wrap" class="hidden">
+            <label class="text-[11px] text-[#5C4938] block mb-1">שם להצגה בקהילה:</label>
+            <input id="auth-input-name" type="text" autocomplete="name" placeholder="למשל: ישראל ישראלי" class="w-full bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-3.5 py-2.5 text-xs text-[#0F2340] outline-none">
+          </div>
+          <div>
+            <label class="text-[11px] text-[#5C4938] block mb-1">אימייל:</label>
+            <input id="auth-email" type="email" autocomplete="email" dir="ltr" placeholder="name@example.com" class="w-full bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-3.5 py-2.5 text-xs text-[#0F2340] outline-none">
+          </div>
+          <div>
+            <label class="text-[11px] text-[#5C4938] block mb-1">סיסמה (לפחות 6 תווים):</label>
+            <input id="auth-password" type="password" autocomplete="current-password" dir="ltr" placeholder="••••••" class="w-full bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-3.5 py-2.5 text-xs text-[#0F2340] outline-none">
+          </div>
+        </div>
+        <p id="auth-msg" class="text-xs font-bold min-h-[1rem]"></p>
+        <button id="auth-submit-btn" onclick="handleAuthSubmit()" class="w-full py-3 bg-amber-500 text-white font-bold rounded-xl text-xs shadow-sm">✔ התחברות</button>
       </div>
-      <div class="space-y-2.5">
+
+      <!-- מצב מחובר -->
+      <div id="auth-user-view" class="hidden space-y-4">
         <div>
-          <label class="text-[11px] text-slate-400 block mb-1">שם מלא לתצוגה בקהילה:</label>
-          <input id="auth-input-name" type="text" placeholder="למשל: ישראל ישראלי" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none">
+          <span class="px-2.5 py-0.5 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-md text-xs font-bold">מחובר ✔</span>
+          <h3 class="text-xl font-bold text-[#0F2340] serif-heading mt-2">שלום, <span id="auth-user-name">אורח</span></h3>
+          <p id="auth-user-email" class="text-xs text-[#5C4938]" dir="ltr"></p>
         </div>
-        <div>
-          <label class="text-[11px] text-slate-400 block mb-1">טלפון נייד (לאימות ותזכורות):</label>
-          <input id="auth-input-phone" type="text" placeholder="052-0000000" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none">
-        </div>
-        <div>
-          <label class="text-[11px] text-slate-400 block mb-1">עיר מגורים:</label>
-          <input id="auth-input-city" type="text" placeholder="בני ברק / ירושלים / תל אביב..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none">
-        </div>
-      </div>
-      <div class="flex flex-col gap-2">
-        <button onclick="saveUserRegistration()" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs shadow-lg">
-          ✔ שמור והתחבר כמשתמש רשום
-        </button>
-        <button onclick="toggleGuestOrRegistered()" class="w-full py-2 bg-slate-800 text-slate-300 font-bold rounded-xl text-[11px]">
-          החלף מצב בדיקה (משתמש רשום ↔ אורח לא רשום)
-        </button>
+        <button onclick="logoutUser()" class="w-full py-3 bg-white text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs">התנתקות</button>
       </div>
     </div>
   </div>

@@ -11,7 +11,9 @@ window.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_FRh1RR6YT_3tUl1lo9
   var key = localStorage.getItem("tzadiktok_supabase_anon_key") || window.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
   if (window.supabase && typeof window.supabase.createClient === "function" && url && key) {
-    window.supabaseClient = window.supabase.createClient(url, key);
+    window.supabaseClient = window.supabase.createClient(url, key, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+    });
     console.log("צדיק-טוק מחובר ל-Supabase בהצלחה:", url);
   } else {
     window.supabaseClient = null;
