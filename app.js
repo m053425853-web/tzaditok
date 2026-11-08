@@ -24,3 +24,22 @@ window.openProfileModal = function() {
         alert("כאן יפתח האזור האישי. (הפונקציה המקורית לא נמצאה)");
     }
 };
+// פתרון לכפתור התפריט
+window.toggleSidebar = function() {
+    const sidebar = document.getElementById('sideMenu');
+    if (sidebar) {
+        // אם התפריט מוסתר, נפתח אותו
+        if (sidebar.classList.contains('hidden')) {
+            sidebar.classList.remove('hidden');
+            sidebar.style.transform = 'translateX(0%)';
+        } else {
+            sidebar.classList.add('hidden');
+            sidebar.style.transform = 'translateX(100%)';
+        }
+    }
+};
+
+// פתרון לאזור האישי (פשוט כדי שיראה שזה עובד)
+window.openProfileModal = function() {
+    alert("כאן ייפתח האזור האישי שלך. (בשלב הבא נחבר את זה לסופרבייס)");
+};
