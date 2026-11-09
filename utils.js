@@ -1,9 +1,9 @@
 /* ==========================================================================
-   צדיק-טוק (TzadikTok Super-App) - פונקציות עזר גלובליות ואבטחה (utils.js - V36)
+   צדיק-טוק (TzadikTok Super-App) - פונקציות עזר גלובליות ואבטחה (utils.js - V37)
    כולל:
-   1. כל מפתחות ה-STORAGE_KEYS המלאים (למניעת דריסת נתונים תחת undefined)
-   2. פונקציית אבטחה escapeHtml() למניעת XSS בכל תצוגת innerHTML
-   3. נירמול חיפוש בעברית (הסרת ניקוד, האחדת גרשיים) + מילון כינויים וראשי תיבות
+   1. כל 37 מפתחות ה-STORAGE_KEYS המלאים + מחיקה אוטומטית של localStorage.removeItem("undefined")
+   2. פונקציית escapeHtml() להגנת XSS
+   3. נירמול טקסט חיפוש בעברית (הסרת ניקוד, האחדת גרשיים) + מילון כינויים
    4. פונקציית השהיית הקלדה debounce(fn, 200)
    ========================================================================== */
 
@@ -23,29 +23,29 @@ var STORAGE_KEYS = {
   ADMIN_LOGS: "tzadiktok_admin_logs_v18",
   MY_SUBMISSIONS: "tzadiktok_my_submissions_v18",
 
-  // 20 המפתחות שהיו חסרים וגרמו לדריסת נתונים תחת undefined
-  ADMIN_ROLE: "tzadiktok_admin_role_v36",
-  CHAVRUTA_LIST: "tzadiktok_chavruta_list_v36",
-  CUSTOM_LOGO: "tzadiktok_custom_logo_v36",
-  EDU_VIDEOS: "tzadiktok_edu_videos_v36",
-  FOLLOWED_CREATORS: "tzadiktok_followed_creators_v36",
-  FORUM_POSTS: "tzadiktok_forum_posts_v36",
-  HISTORY_ITEMS: "tzadiktok_history_items_v36",
-  MINYAN_CALLS: "tzadiktok_minyan_calls_v36",
-  MITZVAH_TRACKER: "tzadiktok_mitzvah_tracker_v36",
-  MY_YAHRZEITS: "tzadiktok_my_yahrzeits_v36",
-  ORDERS_HISTORY: "tzadiktok_orders_history_v36",
-  PRAYER_WALL: "tzadiktok_prayer_wall_v36",
-  PREMIUM_STATUS: "tzadiktok_premium_status_v36",
-  QUIZ_RESULTS: "tzadiktok_quiz_results_v36",
-  RABBI_SHIURIM: "tzadiktok_rabbi_shiurim_v36",
-  REL_SERVICES: "tzadiktok_rel_services_v36",
-  SAVED_ITEMS: "tzadiktok_saved_items_v36",
-  STREAK_POINTS: "tzadiktok_streak_points_v36",
-  STUDIO_DRAFTS: "tzadiktok_studio_drafts_v36",
-  WATCHED_EPISODES: "tzadiktok_watched_episodes_v36",
+  // 20 המפתחות שהיו חסרים וגרמו לשמירה תחת "undefined"
+  ADMIN_ROLE: "tzadiktok_admin_role_v37",
+  CHAVRUTA_LIST: "tzadiktok_chavruta_list_v37",
+  CUSTOM_LOGO: "tzadiktok_custom_logo_v37",
+  EDU_VIDEOS: "tzadiktok_edu_videos_v37",
+  FOLLOWED_CREATORS: "tzadiktok_followed_creators_v37",
+  FORUM_POSTS: "tzadiktok_forum_posts_v37",
+  HISTORY_ITEMS: "tzadiktok_history_items_v37",
+  MINYAN_CALLS: "tzadiktok_minyan_calls_v37",
+  MITZVAH_TRACKER: "tzadiktok_mitzvah_tracker_v37",
+  MY_YAHRZEITS: "tzadiktok_my_yahrzeits_v37",
+  ORDERS_HISTORY: "tzadiktok_orders_history_v37",
+  PRAYER_WALL: "tzadiktok_prayer_wall_v37",
+  PREMIUM_STATUS: "tzadiktok_premium_status_v37",
+  QUIZ_RESULTS: "tzadiktok_quiz_results_v37",
+  RABBI_SHIURIM: "tzadiktok_rabbi_shiurim_v37",
+  REL_SERVICES: "tzadiktok_rel_services_v37",
+  SAVED_ITEMS: "tzadiktok_saved_items_v37",
+  STREAK_POINTS: "tzadiktok_streak_points_v37",
+  STUDIO_DRAFTS: "tzadiktok_studio_drafts_v37",
+  WATCHED_EPISODES: "tzadiktok_watched_episodes_v37",
 
-  // מפתחות שדרוגי תוכן V35-V36
+  // מפתחות קורסים, סיפורי צדיקים וסורק ברקוד
   WEEKLY_COURSES: "tzadiktok_weekly_courses_v35",
   JOINED_COURSES: "tzadiktok_joined_courses_v35",
   TZADDIKIM_STORIES: "tzadiktok_stories_learn_v35",
@@ -53,7 +53,12 @@ var STORAGE_KEYS = {
 };
 window.STORAGE_KEYS = STORAGE_KEYS;
 
-// 1. הגנת XSS מלאה: ניקוי כל מחרוזת שמגיעה מהמשתמש או ממסד הנתונים לפני הצגה ב-innerHTML
+// ניקוי מיידי של המפתח השבור "undefined" מ-localStorage
+try {
+  localStorage.removeItem("undefined");
+} catch (e) {}
+
+// הגנת XSS לכל טקסט שמוצג ב-innerHTML
 window.escapeHtml = function(val) {
   if (val === null || val === undefined) return "";
   return String(val)
@@ -64,7 +69,6 @@ window.escapeHtml = function(val) {
     .replace(/'/g, "&#39;");
 };
 
-// קיצור נוח לשימוש בתבניות HTML ובאטריביוטים של onclick
 window.escAttr = function(val) {
   if (val === null || val === undefined) return "";
   return String(val)
@@ -76,18 +80,17 @@ window.escAttr = function(val) {
     .replace(/`/g, "");
 };
 
-// 2. נירמול טקסט חיפוש בעברית: הסרת ניקוד וטעמים, האחדת והסרת גרשיים/מרכאות ורווחים כפולים
+// נירמול טקסט חיפוש בעברית: הסרת ניקוד וטעמים, האחדת גרשיים ומרכאות
 window.normalizeHebrewSearch = function(str) {
   if (!str) return "";
   return String(str)
-    .replace(/[\u0591-\u05C7]/g, "") // הסרת ניקוד וטעמי המקרא
-    .replace(/["'״׳’‘”“`´\-–—•]/g, " ") // האחדת גרשיים, מרכאות ומקפים לרווח
+    .replace(/[\u0591-\u05C7]/g, "")
+    .replace(/["'״׳’‘”“`´\-–—•]/g, " ")
     .replace(/\s+/g, " ")
     .trim()
     .toLowerCase();
 };
 
-// גרסה ללא רווחים להשוואת ראשי תיבות (כגון רשב"י -> רשבי)
 window.normalizeCompactHebrew = function(str) {
   if (!str) return "";
   return String(str)
@@ -96,31 +99,24 @@ window.normalizeCompactHebrew = function(str) {
     .toLowerCase();
 };
 
-// 3. מילון כינויים וראשי תיבות דו-כיווני לחיפוש חכם (צדיקים, רבנים, ערים ומושגים)
 window.SEARCH_ALIASES = [
-  ["רשבי", "רבי שמעון בר יוחאי", "שמעון בר יוחאי", "מירון", "בר יוחאי", "הילולת רשבי"],
-  ["הארי", "אריזל", "האריזל", "רבי יצחק לוריא", "יצחק לוריא", "הארי הקדוש"],
+  ["רשבי", "רבי שמעון בר יוחאי", "שמעון בר יוחאי", "מירון", "בר יוחאי"],
+  ["הארי", "אריזל", "האריזל", "רבי יצחק לוריא", "יצחק לוריא", "צפת"],
   ["רמבם", "הרמבם", "רבי משה בן מימון", "משה בן מימון", "הנשר הגדול"],
-  ["בבא סאלי", "הבבא סאלי", "סידנא בבא סאלי", "רבי ישראל אבוחצירא", "ישראל אבוחצירא", "אבוחצירא"],
-  ["בעשט", "הבעשט", "בעל שם טוב", "הבעל שם טוב", "ישראל בן אליעזר", "מזיבוז"],
-  ["מוהרן", "רבי נחמן", "נחמן מברסלב", "ברסלב", "אומן", "ליקוטי מוהרן"],
-  ["חפץ חיים", "החפץ חיים", "ישראל מאיר הכהן", "ראדין", "שמירת הלשון"],
+  ["בבא סאלי", "הבבא סאלי", "סידנא בבא סאלי", "רבי ישראל אבוחצירא", "ישראל אבוחצירא", "נתיבות"],
+  ["בעשט", "הבעשט", "בעל שם טוב", "הבעל שם טוב", "ישראל בן אליעזר"],
+  ["מוהרן", "רבי נחמן", "נחמן מברסלב", "ברסלב", "אומן"],
+  ["חפץ חיים", "החפץ חיים", "ישראל מאיר הכהן", "שמירת הלשון"],
   ["חזון איש", "החזון איש", "אברהם ישעיהו קרליץ"],
   ["אור החיים", "אור החיים הקדוש", "חיים בן עטר"],
   ["רבי מאיר", "רבי מאיר בעל הנס", "מאיר בעל הנס"],
-  ["החידא", "חידא", "חיים יוסף דוד אזולאי"],
   ["מרן", "הרב עובדיה", "עובדיה יוסף", "יביע אומר", "יחוה דעת"],
-  ["רשי", "רבי שלמה יצחקי", "שלמה יצחקי"],
-  ["רמבן", "הרמבן", "רבי משה בן נחמן", "משה בן נחמן"],
-  ["רבי אלימלך", "אלימלך מליזנסק", "ליזנסק", "נועם אלימלך"],
-  ["רבי ישעיהלה", "ישעיהו מקרעסטיר", "קרעסטיר", "קרסטיר"],
   ["גמח", "גמחים", "גמילות חסדים", "השאלת ציוד", "חסד"],
   ["יד שרה", "עזר מציון", "ציוד רפואי", "כיסא גלגלים", "מחולל חמצן"],
   ["ידידים", "סיוע בדרכים", "כבלים לרכב", "בוסטר"],
-  ["איחוד הצלה", "הצלה", "עזרה ראשונה", "חובשים"]
+  ["איחוד הצלה", "הצלה", "עזרה ראשונה"]
 ];
 
-// בניית מערך מונחי חיפוש מורחב עבור שאילתה
 window.expandSearchQueryTerms = function(rawQuery) {
   var norm = window.normalizeHebrewSearch(rawQuery);
   var compact = window.normalizeCompactHebrew(rawQuery);
@@ -129,13 +125,13 @@ window.expandSearchQueryTerms = function(rawQuery) {
   if (compact && terms.indexOf(compact) === -1) terms.push(compact);
 
   (window.SEARCH_ALIASES || []).forEach(function(group) {
-    var matchedGroup = group.some(function(alias) {
+    var hit = group.some(function(alias) {
       var na = window.normalizeHebrewSearch(alias);
       var ca = window.normalizeCompactHebrew(alias);
       return (norm.length >= 2 && (na.indexOf(norm) !== -1 || norm.indexOf(na) !== -1)) ||
              (compact.length >= 2 && (ca.indexOf(compact) !== -1 || compact.indexOf(ca) !== -1));
     });
-    if (matchedGroup) {
+    if (hit) {
       group.forEach(function(alias) {
         var na = window.normalizeHebrewSearch(alias);
         var ca = window.normalizeCompactHebrew(alias);
@@ -147,7 +143,6 @@ window.expandSearchQueryTerms = function(rawQuery) {
   return terms;
 };
 
-// בדיקה חכמה האם אובייקט/טקסט תואם לשאילתת חיפוש (כולל תיאורים וכינויים)
 window.matchesSmartSearch = function(haystackParts, rawQuery) {
   var q = (rawQuery || "").trim();
   if (!q || q === "all") return true;
@@ -161,7 +156,7 @@ window.matchesSmartSearch = function(haystackParts, rawQuery) {
   });
 };
 
-// 4. השהיית הקלדה (Debounce) של 200ms למניעת עומס וקריסות בזמן הקלדה מהירה
+// השהיית הקלדה (Debounce) של 200ms
 window.debounce = function(fn, delay) {
   var wait = typeof delay === "number" ? delay : 200;
   var timer = null;
@@ -207,7 +202,6 @@ window.updateTodayDate = function() {
   if (el) el.textContent = hebStr;
 };
 
-// קישור ניווט Waze אמיתי ותקני: https://waze.com/ul?q=[הכתובת]
 window.buildWazeUrl = function(query, query2) {
   if (typeof query === "number" && typeof query2 === "number") {
     return "https://waze.com/ul?ll=" + query + "," + query2 + "&navigate=yes";
@@ -221,7 +215,6 @@ window.buildGoogleMapsUrl = function(name, city) {
   return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
 };
 
-// קישור וואטסאפ ישיר ותקני: https://wa.me/972[הטלפון בלי אפס]
 window.buildWhatsAppUrl = function(phone, textMessage) {
   var cleanPhone = String(phone || "").replace(/[^0-9]/g, "");
   if (cleanPhone.indexOf("972") === 0) cleanPhone = cleanPhone.slice(3);
@@ -250,7 +243,10 @@ window.calculateGpsDistanceKm = function(lat1, lon1, lat2, lon2) {
 
 window.getStorageJson = function(key, fallbackVal) {
   try {
-    if (!key || key === "undefined") return fallbackVal;
+    if (!key || key === "undefined") {
+      localStorage.removeItem("undefined");
+      return fallbackVal;
+    }
     var raw = localStorage.getItem(key);
     return raw ? JSON.parse(raw) : fallbackVal;
   } catch (e) {
@@ -260,7 +256,10 @@ window.getStorageJson = function(key, fallbackVal) {
 
 window.setStorageJson = function(key, val) {
   try {
-    if (!key || key === "undefined") return;
+    if (!key || key === "undefined") {
+      localStorage.removeItem("undefined");
+      return;
+    }
     localStorage.setItem(key, JSON.stringify(val));
   } catch (e) {}
 };

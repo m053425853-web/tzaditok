@@ -10,7 +10,7 @@ var restTypeFilter = "all";
 var restHechFilter = "all";
 var MITZVOT_LIST = window.getStorageJson(STORAGE_KEYS.CUSTOM_MITZVOT, window.DEFAULT_MITZVOT_DATA);
 
-window.__v36_prev_switchTab_1 = function(tabId) {
+window.__v37_prev_switchTab_1 = function(tabId) {
   if (tabId === "learn") tabId = "series";
   if (tabId === "pray") tabId = "siddur";
   if (tabId === "find") tabId = "minyanim";
@@ -78,7 +78,7 @@ window.closeIntroModal = function(dontShowAgain) {
 };
 
 // חיפוש חכם גלובלי
-window.__v36_prev_handleGlobalSearch_1 = function(e) {
+window.__v37_prev_handleGlobalSearch_1 = function(e) {
   var q = (document.getElementById("global-search-input").value || "").trim().toLowerCase();
   if (!q) return;
   if (e.key === "Enter") {
@@ -124,7 +124,7 @@ window.renderFeedCards = function(cards) {
             <div class="flex items-center gap-2">
               <span class="text-xs font-bold text-[#0F2340]">${item.creator}</span>
               <button onclick="toggleFollowCreator('${safeCreator}')" class="px-2 py-0.5 rounded-md text-[10px] font-bold ${isFollowing ? 'bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227]' : 'bg-amber-500 text-white'}">
-                ${isFollowing ? 'עוקב ' : '+ מעקב'}
+                ${isFollowing ? 'עוקב ✔' : '+ מעקב'}
               </button>
             </div>
             <span class="text-[11px] text-[#5C4938] block">${item.chumash} • מקור: <strong>${srcBadge}</strong></span>
@@ -220,7 +220,7 @@ window.switchRashiTab = function(t) {
 // ============================================================================
 // 2. הספרייה המרכזית (Library): תורה (54 פרשיות) | נביאים וכתובים | היסטוריה ודורות | סדרות AI
 // ============================================================================
-window.__v36_prev_switchLibrarySubTab_1 = function(subId) {
+window.__v37_prev_switchLibrarySubTab_1 = function(subId) {
   if (subId === "overview" || subId === "library") subId = "torah";
   var allSubIds = ["torah", "nach", "generations", "mishnah", "chassidut", "courses", "liveshiurim", "eduvideos", "weekseries", "music", "aiseries"];
 
@@ -312,7 +312,7 @@ window.renderNachBooks = function() {
                   <p class="text-xs text-slate-300 mt-1 leading-relaxed">${b.desc}</p>
                 </div>
                 <div class="flex items-center gap-2 pt-2 border-t border-slate-800 text-xs">
-                  <button onclick="toast('פותח חדר לימוד וסרטון עבור ' + '${b.name}')" class="flex-1 py-1.5 bg-amber-500 text-slate-950 font-black rounded-xl"> צפה וקרא</button>
+                  <button onclick="toast('פותח חדר לימוד וסרטון עבור ' + '${b.name}')" class="flex-1 py-1.5 bg-amber-500 text-slate-950 font-black rounded-xl">🎬 צפה וקרא</button>
                 </div>
               </div>
             `;
@@ -337,7 +337,7 @@ window.renderGenerationsHistory = function() {
             <p class="text-xs text-slate-300">${gen.desc}</p>
           </div>
           <button onclick="toast('ניתן להוסיף דמויות ורבנים לתקופה זו')" class="px-3 py-1.5 bg-slate-800 text-amber-300 border border-slate-700 rounded-xl text-xs font-bold self-start">
-             הוסף דמות / רב לדור זה
+            ➕ הוסף דמות / רב לדור זה
           </button>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
@@ -351,7 +351,7 @@ window.renderGenerationsHistory = function() {
                   <p class="text-xs text-slate-300 mt-1 leading-relaxed">${f.story}</p>
                 </div>
                 <button onclick="toast('פותח סרטון ותולדות חייו של ' + '${f.name}')" class="w-full mt-2 py-1.5 bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-amber-300 font-bold rounded-xl text-xs transition-colors">
-                   סרטון ותולדות הצדיק
+                  📖 סרטון ותולדות הצדיק
                 </button>
               </div>
             `;
@@ -383,7 +383,7 @@ window.renderSeries = function(seriesList) {
             <p class="text-xs text-slate-300 leading-relaxed mt-1.5">${s.desc}</p>
           </div>
           <button onclick="openSeriesEpisodes('${s.id}')" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black rounded-xl text-xs">
-             צפה ברשימת הפרקים (${s.episodes ? s.episodes.length : s.episodesCount})
+            🎬 צפה ברשימת הפרקים (${s.episodes ? s.episodes.length : s.episodesCount})
           </button>
         </div>
       </div>
@@ -392,7 +392,7 @@ window.renderSeries = function(seriesList) {
     .join("");
 };
 
-window.__v36_prev_openSeriesEpisodes_1 = function(seriesId) {
+window.__v37_prev_openSeriesEpisodes_1 = function(seriesId) {
   var s = window.SERIES_LIBRARY.find(function(i) { return i.id === seriesId; }) || window.SERIES_LIBRARY[0];
   document.getElementById("episodes-series-title").textContent = s.title;
   document.getElementById("episodes-series-status").textContent = s.season;
@@ -441,7 +441,7 @@ window.renderJudaica = function(products) {
             <p class="text-[10px] text-slate-400 mt-1.5">כשרות: ${p.hechsher}</p>
           </div>
           <div class="flex items-center gap-2 pt-2 border-t border-slate-800">
-            <button onclick="addToCart('${p.id}')" class="flex-1 py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs"> הוסף לעגלה</button>
+            <button onclick="addToCart('${p.id}')" class="flex-1 py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">🛒 הוסף לעגלה</button>
             <button onclick="buyNowWhatsApp('${p.id}')" class="px-3 py-2 bg-emerald-600 text-white font-bold rounded-xl text-xs">וואטסאפ</button>
           </div>
         </div>
@@ -572,7 +572,7 @@ window.setNusach = function(n) {
   window.loadPrayer(activePrayerKey);
 };
 
-window.__v36_prev_selectPrayer_1 = function(k) {
+window.__v37_prev_selectPrayer_1 = function(k) {
   activePrayerKey = k;
   var btns = document.querySelectorAll(".prayer-nav-btn");
   for (var i = 0; i < btns.length; i++) {
@@ -594,7 +594,7 @@ window.loadPrayer = function(k) {
 };
 
 // 5. קברי צדיקים
-window.__v36_prev_renderTzaddikim_1 = function(list) {
+window.__v37_prev_renderTzaddikim_1 = function(list) {
   var c = document.getElementById("tzaddikim-grid-container");
   if (!c) return;
   c.innerHTML = list
@@ -617,7 +617,7 @@ window.__v36_prev_renderTzaddikim_1 = function(list) {
           </div>
           <div class="pt-3 border-t border-slate-800 flex items-center gap-2">
             <a href="${window.buildWazeUrl(t.waze)}" target="_blank" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-amber-300 rounded-xl font-bold text-center">🚗 Waze</a>
-            <button onclick="openCandleModal('${t.name}')" class="flex-1 py-2 bg-amber-500 text-slate-950 font-black rounded-xl"> הדלק נר</button>
+            <button onclick="openCandleModal('${t.name}')" class="flex-1 py-2 bg-amber-500 text-slate-950 font-black rounded-xl">🕯️ הדלק נר</button>
           </div>
         </div>
       </div>
@@ -651,7 +651,7 @@ window.confirmLightCandle = function() {
 };
 
 // 6. מקוואות
-window.__v36_prev_renderMikvaot_1 = function(list) {
+window.__v37_prev_renderMikvaot_1 = function(list) {
   var c = document.getElementById("mikvaot-grid-container");
   if (!c) return;
   c.innerHTML = list
@@ -679,7 +679,7 @@ window.__v36_prev_renderMikvaot_1 = function(list) {
     .join("");
 };
 
-window.filterMikvaot = function(t) {
+window.__v37_prev_filterMikvaot_1 = function(t) {
   var btns = document.querySelectorAll(".mikvah-filter-btn");
   for (var i = 0; i < btns.length; i++) {
     btns[i].className = "mikvah-filter-btn px-4 py-2 rounded-xl font-bold bg-slate-800 text-slate-300 shrink-0";
@@ -694,7 +694,7 @@ window.filterMikvaot = function(t) {
 };
 
 // 7. מסעדות כשרות
-window.__v36_prev_renderRestaurants_1 = function(list) {
+window.__v37_prev_renderRestaurants_1 = function(list) {
   var c = document.getElementById("restaurants-grid-container");
   if (!c) return;
   c.innerHTML = list
@@ -765,7 +765,7 @@ window.filterRestHechsher = function(h) {
 };
 
 // 8-15. גמ״חים, חב״ד, מניינים, הגרלות, זמנים + לוח שנה ויארצייטים, רבנים, מנהגים
-window.__v36_prev_renderGemachim_1 = function(list) {
+window.__v37_prev_renderGemachim_1 = function(list) {
   var c = document.getElementById("gemachim-grid-container");
   if (!c) return;
   c.innerHTML = list
@@ -788,7 +788,7 @@ window.__v36_prev_renderGemachim_1 = function(list) {
     .join("");
 };
 
-window.__v36_prev_renderChabad_1 = function(list) {
+window.__v37_prev_renderChabad_1 = function(list) {
   var c = document.getElementById("chabad-grid-container");
   if (!c) return;
   c.innerHTML = list
@@ -811,7 +811,7 @@ window.__v36_prev_renderChabad_1 = function(list) {
     .join("");
 };
 
-window.__v36_prev_renderMinyanim_1 = function(list) {
+window.__v37_prev_renderMinyanim_1 = function(list) {
   var c = document.getElementById("minyanim-container");
   if (!c) return;
   c.innerHTML = list
@@ -828,7 +828,7 @@ window.__v36_prev_renderMinyanim_1 = function(list) {
           <p class="text-amber-200 font-mono mt-2">${m.times}</p>
         </div>
         <div class="pt-3 border-t border-slate-800 flex items-center gap-2">
-          <button onclick="toast('אישרת הגעה למניין!')" class="flex-1 py-2 bg-amber-500 text-slate-950 font-black rounded-xl"> אני מצטרף</button>
+          <button onclick="toast('אישרת הגעה למניין!')" class="flex-1 py-2 bg-amber-500 text-slate-950 font-black rounded-xl">✋ אני מצטרף</button>
           <a href="${window.buildWazeUrl(m.waze)}" target="_blank" class="px-3 py-2 bg-slate-800 text-white font-bold rounded-xl">🚗 Waze</a>
         </div>
       </div>
@@ -859,7 +859,7 @@ window.renderRaffles = function(list) {
           <div class="grid grid-cols-4 gap-1.5 text-xs">
             ${rf.prices
               .map(function(p) {
-                return `<button onclick="toast('נרכש כרטיס הגרלה בסך ₪${p} בהצלחה! ')" class="py-1.5 bg-slate-950 hover:bg-amber-500 hover:text-slate-950 border border-slate-700 rounded-lg font-bold text-amber-300 transition-colors">₪${p}</button>`;
+                return `<button onclick="toast('נרכש כרטיס הגרלה בסך ₪${p} בהצלחה! 🎟️')" class="py-1.5 bg-slate-950 hover:bg-amber-500 hover:text-slate-950 border border-slate-700 rounded-lg font-bold text-amber-300 transition-colors">₪${p}</button>`;
               })
               .join("")}
           </div>
@@ -891,7 +891,7 @@ window.renderCampaigns = function(list) {
             <div class="w-full h-2 bg-slate-950 rounded-full overflow-hidden">
               <div class="h-full bg-amber-500" style="width:${pct}%"></div>
             </div>
-            <button onclick="openDonateModal()" class="w-full py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs"> שותפות בקמפיין</button>
+            <button onclick="openDonateModal()" class="w-full py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">❤️ שותפות בקמפיין</button>
           </div>
         </div>
       `;
@@ -960,7 +960,7 @@ window.renderZmanim = function() {
             <p class="text-xs text-slate-300 mt-1 leading-relaxed">${y.segula}</p>
           </div>
           <button onclick="openCandleModal('${y.name}')" class="w-full py-2 bg-amber-500/20 hover:bg-amber-500 hover:text-slate-950 text-amber-300 border border-amber-500/40 font-black rounded-xl text-xs transition-colors">
-             הדלק נר לעילוי נשמתו
+            🕯️ הדלק נר לעילוי נשמתו
           </button>
         </div>
       `;
@@ -1006,7 +1006,7 @@ window.saveNewMitzvah = function() {
   window.toast("יעד מצווה אישי נוסף!");
 };
 
-window.__v36_prev_renderRabbis_1 = function(list) {
+window.__v37_prev_renderRabbis_1 = function(list) {
   var c = document.getElementById("rabbis-container");
   if (!c) return;
   c.innerHTML = list
@@ -1092,7 +1092,7 @@ window.openAdminModal = function() {
   document.getElementById("modal-admin").classList.remove("hidden");
 };
 
-window.__v36_prev_toggleShabbatOverlay_1 = function(show) {
+window.__v37_prev_toggleShabbatOverlay_1 = function(show) {
   var el = document.getElementById("shabbat-overlay");
   if (show) el.classList.remove("hidden");
   else el.classList.add("hidden");
@@ -1258,14 +1258,14 @@ window.renderFullDonorsPage = function() {
       <p class="text-xs text-amber-200 font-medium">${d.dedication}</p>
       <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
         <span>📍 ${d.city || "ישראל"}</span>
-        <button onclick="toast('ברכה נשלחה לתורם! ')" class="text-amber-400 font-bold hover:underline"> שלח ברכת יישר כוח</button>
+        <button onclick="toast('ברכה נשלחה לתורם! 🙌')" class="text-amber-400 font-bold hover:underline">🙌 שלח ברכת יישר כוח</button>
       </div>
     </div>`;
   }).join("");
 };
 
 // האזור שלי (My Zone): שמורים, היסטוריה, יארצייטים אישיים, הגדרות
-window.__v36_prev_switchMyZoneSubTab_1 = function(subTab) {
+window.__v37_prev_switchMyZoneSubTab_1 = function(subTab) {
   ["tracker", "community", "quizresults", "saved", "history", "yahrzeits", "submissions", "premium", "orders", "settings"].forEach(function(k) {
     var box = document.getElementById("myzone-sub-" + k);
     var btn = document.getElementById("myzone-btn-" + k);
@@ -1371,7 +1371,7 @@ window.renderMyZoneAll = function() {
           </div>
           <div class="flex items-center gap-2 shrink-0">
             <button onclick="switchTab('${item.tab || "feed"}')" class="px-3 py-1.5 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">פתח ←</button>
-            <button onclick="removeSavedItem('${item.id}')" class="px-2.5 py-1.5 bg-slate-900 text-slate-400 hover:text-red-400 border border-slate-800 rounded-xl text-xs"></button>
+            <button onclick="removeSavedItem('${item.id}')" class="px-2.5 py-1.5 bg-slate-900 text-slate-400 hover:text-red-400 border border-slate-800 rounded-xl text-xs">✕</button>
           </div>
         </div>`;
       }).join("");
@@ -1414,8 +1414,8 @@ window.renderMyZoneAll = function() {
           <p class="text-xs text-slate-300">${y.notes}</p>
         </div>
         <div class="flex items-center gap-2 shrink-0">
-          <button onclick="openEntityFullPage('yahrzeit_' + '${y.id}', 'דף אישיות ביארצייט', '${y.name}', '${y.relation} • ${y.hebDate}', 'לוח יארצייטים אישי', 'יום הזיכרון: ${y.hebDate}', '', '${y.notes}', 'סיפורים • זיכרונות • דברי תורה')" class="px-3 py-2 bg-slate-800 text-amber-300 border border-amber-500/40 font-black rounded-xl text-xs"> דף אישיות ותגובות</button>
-          <button onclick="openCandleModal('${y.name}')" class="px-3 py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs"> הדלק נר</button>
+          <button onclick="openEntityFullPage('yahrzeit_' + '${y.id}', 'דף אישיות ביארצייט', '${y.name}', '${y.relation} • ${y.hebDate}', 'לוח יארצייטים אישי', 'יום הזיכרון: ${y.hebDate}', '', '${y.notes}', 'סיפורים • זיכרונות • דברי תורה')" class="px-3 py-2 bg-slate-800 text-amber-300 border border-amber-500/40 font-black rounded-xl text-xs">👤 דף אישיות ותגובות</button>
+          <button onclick="openCandleModal('${y.name}')" class="px-3 py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">🕯️ הדלק נר</button>
           <button onclick="removePersonalYahrzeit('${y.id}')" class="px-2.5 py-2 bg-slate-900 text-slate-400 hover:text-red-400 border border-slate-800 rounded-xl text-xs">מחק</button>
         </div>
       </div>`;
@@ -1465,7 +1465,7 @@ window.requireRegisteredUser = function(actionCallback) {
   return true;
 };
 
-window.__v36_prev_openAuthModal_1 = function() {
+window.__v37_prev_openAuthModal_1 = function() {
   var acc = window.getStorageJson(STORAGE_KEYS.USER_ACCOUNT, currentUserAccount);
   var nameInput = document.getElementById("auth-input-name");
   var phoneInput = document.getElementById("auth-input-phone");
@@ -1477,7 +1477,7 @@ window.__v36_prev_openAuthModal_1 = function() {
   if (modal) modal.classList.remove("hidden");
 };
 
-window.__v36_prev_saveUserRegistration_1 = function() {
+window.__v37_prev_saveUserRegistration_1 = function() {
   var nameVal = (document.getElementById("auth-input-name").value || "").trim();
   var phoneVal = (document.getElementById("auth-input-phone").value || "").trim();
   var cityVal = (document.getElementById("auth-input-city").value || "בני ברק").trim();
@@ -1498,14 +1498,14 @@ window.__v36_prev_saveUserRegistration_1 = function() {
   window.toast("🎉 ברוך הבא " + nameVal + "! החשבון שלך פעיל וכעת תוכל להוסיף תוכן, לדרג ולהגיב.");
 };
 
-window.__v36_prev_toggleGuestOrRegistered_1 = function() {
+window.__v37_prev_toggleGuestOrRegistered_1 = function() {
   currentUserAccount.isRegistered = !currentUserAccount.isRegistered;
   window.setStorageJson(STORAGE_KEYS.USER_ACCOUNT, currentUserAccount);
   window.updateAuthHeaderBadge();
   window.toast(currentUserAccount.isRegistered ? "מחובר כמשתמש רשום ✔" : "עברת למצב אורח (לא רשום)");
 };
 
-window.__v36_prev_updateAuthHeaderBadge_1 = function() {
+window.__v37_prev_updateAuthHeaderBadge_1 = function() {
   var acc = window.getStorageJson(STORAGE_KEYS.USER_ACCOUNT, currentUserAccount);
   var badge = document.getElementById("user-auth-status-badge");
   if (badge) {
@@ -1623,7 +1623,7 @@ window.renderActiveEntityReviews = function() {
   }).join("");
 };
 
-window.__v36_prev_submitEntityReview_1 = function() {
+window.__v37_prev_submitEntityReview_1 = function() {
   window.requireRegisteredUser(function() {
     var textEl = document.getElementById("entity-review-input");
     var critInputEl = document.getElementById("entity-review-criteria-input");
@@ -1716,7 +1716,7 @@ window.openCommunityAddModal = function(formType) {
   });
 };
 
-window.__v36_prev_submitCommunityAddForm_1 = function() {
+window.__v37_prev_submitCommunityAddForm_1 = function() {
   window.requireRegisteredUser(function() {
     var f1 = (document.getElementById("comm-add-f1").value || "").trim();
     var f2 = (document.getElementById("comm-add-f2").value || "").trim();
@@ -1902,7 +1902,7 @@ window.filterMinyanimByPrayer = function(prayerType) {
   window.renderMinyanim(window.MINYANIM_DATA);
 };
 
-window.__v36_prev_renderMinyanim_2 = function(list) {
+window.__v37_prev_renderMinyanim_2 = function(list) {
   window.renderMinyanCallsBanner();
   var grid = document.getElementById("minyanim-container");
   if (!grid) return;
@@ -1918,7 +1918,7 @@ window.__v36_prev_renderMinyanim_2 = function(list) {
         <div class="flex items-center justify-between">
           <span class="text-xs font-black text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-lg">נוסח ${m.nusach}</span>
           <button onclick="openEntityFullPage('${eKey}', 'מניין תפילה ובית כנסת', '${safeName}', 'נוסח ${m.nusach} • ${safeCity}', '${safeCity}', '${hoursSummary}', '', 'בית כנסת פעיל עם מניינים קבועים לשחרית, מנחה וערבית.', 'המקום • האווירה • הדיוק בזמנים')" class="text-xs font-black text-amber-400 hover:underline flex items-center gap-1">
-            <span> ${stats.avg}</span> <span class="text-slate-400">(${stats.count} תגובות)</span>
+            <span>★ ${stats.avg}</span> <span class="text-slate-400">(${stats.count} תגובות)</span>
           </button>
         </div>
         <h3 class="text-lg font-black text-white">${m.name}</h3>
@@ -1980,7 +1980,7 @@ window.renderHalachaQABank = function(query) {
   }).join("");
 };
 
-window.__v36_prev_renderRabbis_2 = function(list) {
+window.__v37_prev_renderRabbis_2 = function(list) {
   var grid = document.getElementById("rabbis-container");
   if (!grid) return;
   grid.innerHTML = (list || []).map(function(r, idx) {
@@ -1997,7 +1997,7 @@ window.__v36_prev_renderRabbis_2 = function(list) {
         <div class="flex items-center justify-between">
           <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">🟢 זמין למענה הלכתי</span>
           <button onclick="openEntityFullPage('${eKey}', 'קו הלכה ורב פוסק', '${safeName}', '${safeTitle}', '${r.city || "מענה ארצי"}', '${hours}', '${phone}', 'מענה הלכתי לשאלות דחופות ורגילות. דרגו את הזמינות, היחס והמענה!', 'הזמינות • היחס • בהירות המענה')" class="text-xs font-black text-amber-400 hover:underline">
-             ${stats.avg} (${stats.count} דירוגים)
+            ★ ${stats.avg} (${stats.count} דירוגים)
           </button>
         </div>
         <h3 class="text-lg font-black text-white">${r.name}</h3>
@@ -2016,7 +2016,7 @@ window.__v36_prev_renderRabbis_2 = function(list) {
 };
 
 // 3. אינדקס גמ"חים, רפואה וארגוני הצלה (סינון לפי תתי-הסעיפים + דף גמ"ח מלא + תגובות ודירוג)
-window.filterGemachimByCategory = function(catQuery) {
+window.__v37_prev_filterGemachimByCategory_1 = function(catQuery) {
   if (!catQuery || catQuery === "all") {
     window.renderGemachim(window.GEMACHIM_DATA);
     return;
@@ -2027,7 +2027,7 @@ window.filterGemachimByCategory = function(catQuery) {
   window.renderGemachim(filtered);
 };
 
-window.__v36_prev_renderGemachim_2 = function(list) {
+window.__v37_prev_renderGemachim_2 = function(list) {
   var grid = document.getElementById("gemachim-grid-container");
   if (!grid) return;
   grid.innerHTML = (list || []).map(function(g, idx) {
@@ -2045,7 +2045,7 @@ window.__v36_prev_renderGemachim_2 = function(list) {
         <div class="flex items-center justify-between">
           <span class="px-2.5 py-1 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[11px] font-black">${g.category}</span>
           <button onclick="openEntityFullPage('${eKey}', 'דף גמ״ח וארגון חסד', '${safeName}', '${safeCat}', '${safeAddr}', '${safeHours}', '${g.phone}', '${safeDesc}', 'השירות • הזמינות • היחס')" class="text-xs font-black text-amber-400 hover:underline">
-             ${stats.avg} (${stats.count} חוות דעת)
+            ★ ${stats.avg} (${stats.count} חוות דעת)
           </button>
         </div>
         <h3 class="text-lg font-black text-white">${g.name}</h3>
@@ -2058,7 +2058,7 @@ window.__v36_prev_renderGemachim_2 = function(list) {
       </div>
       <div class="pt-3 border-t border-slate-800 grid grid-cols-3 gap-2">
         <button onclick="openEntityFullPage('${eKey}', 'דף גמ״ח וארגון חסד', '${safeName}', '${safeCat}', '${safeAddr}', '${safeHours}', '${g.phone}', '${safeDesc}', 'השירות • הזמינות • היחס')" class="py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">
-           דף גמ״ח ודירוג
+          📄 דף גמ״ח ודירוג
         </button>
         <a href="tel:${g.phone}" class="py-2 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-black rounded-xl text-xs text-center">
           📞 חייג
@@ -2072,7 +2072,7 @@ window.__v36_prev_renderGemachim_2 = function(list) {
 };
 
 // 4. מדריך 22 קברי צדיקים + דף קבר מלא + תגובות וסיפורים על הצדיק + יומן יארצייטים משולב
-window.__v36_prev_renderTzaddikim_2 = function(list) {
+window.__v37_prev_renderTzaddikim_2 = function(list) {
   var grid = document.getElementById("tzaddikim-grid-container");
   if (!grid) return;
   grid.innerHTML = (list || []).map(function(t, idx) {
@@ -2090,7 +2090,7 @@ window.__v36_prev_renderTzaddikim_2 = function(list) {
         <div class="flex items-center justify-between">
           <span class="px-2.5 py-0.5 bg-amber-500/15 text-amber-300 rounded-full text-[11px] font-bold">📍 ${t.city}</span>
           <button onclick="openEntityFullPage('${eKey}', 'דף קבר צדיק וסיפורי ישועות', '${safeName}', '${safeTitle}', 'ציון הקודש ב${safeCity} (ניווט Waze ישיר)', 'פתוח 24/7 לתפילה והדלקת נרות', '', '${safeStory}', 'סיפורים • חוויות מהציון • בקשות תפילה', '${imgUrl}')" class="text-xs font-black text-amber-400 hover:underline">
-             ${stats.avg} (${stats.count} סיפורים)
+            ★ ${stats.avg} (${stats.count} סיפורים)
           </button>
         </div>
         <h3 class="text-lg font-black text-white">${t.name}</h3>
@@ -2100,10 +2100,10 @@ window.__v36_prev_renderTzaddikim_2 = function(list) {
       <div class="pt-2 space-y-2">
         <div class="grid grid-cols-2 gap-2">
           <button onclick="openEntityFullPage('${eKey}', 'דף קבר צדיק וסיפורי ישועות', '${safeName}', '${safeTitle}', 'ציון הקודש ב${safeCity}', 'פתוח 24/7', '', '${safeStory}', 'סיפורים • חוויות מהציון • בקשות תפילה', '${imgUrl}')" class="py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">
-             דף קבר וסיפורים
+            📄 דף קבר וסיפורים
           </button>
           <button onclick="openCandleModal('${safeName}')" class="py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 font-black rounded-xl text-xs">
-             הדלק נר
+            🕯️ הדלק נר
           </button>
         </div>
         <div class="grid grid-cols-2 gap-2">
@@ -2137,7 +2137,7 @@ window.renderYahrzeitSharedCards = function(containerId) {
         <div class="flex items-center justify-between">
           <span class="px-2.5 py-0.5 bg-amber-500 text-slate-950 font-black rounded-lg text-[10px]">📅 ${y.date}</span>
           <button onclick="openEntityFullPage('${eKey}', 'דף אישיות ביארצייט והילולא', '${safeName}', '${safeTitle} • ${y.date}', 'מקום מנוחה: ${safeLoc}', 'יום הילולא: ${y.date}', '', '${safeBio}', 'סיפורים • זיכרונות • דברי תורה לעילוי נשמתו', '${imgUrl}')" class="text-[11px] font-black text-amber-400 hover:underline">
-             ${stats.avg} (${stats.count} תגובות)
+            ★ ${stats.avg} (${stats.count} תגובות)
           </button>
         </div>
         <h4 class="text-sm font-black text-white">${y.name}</h4>
@@ -2146,10 +2146,10 @@ window.renderYahrzeitSharedCards = function(containerId) {
       </div>
       <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800/80">
         <button onclick="openEntityFullPage('${eKey}', 'דף אישיות ביארצייט והילולא', '${safeName}', '${safeTitle} • ${y.date}', 'מקום מנוחה: ${safeLoc}', 'יום הילולא: ${y.date}', '', '${safeBio}', 'סיפורים • זיכרונות • דברי תורה לעילוי נשמתו', '${imgUrl}')" class="py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">
-           דף אישיות ותגובות
+          👤 דף אישיות ותגובות
         </button>
         <button onclick="openCandleModal('${safeName}')" class="py-2 bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/40 font-black rounded-xl text-xs">
-           הדלק נר
+          🕯️ הדלק נר
         </button>
       </div>
     </div>`;
@@ -2179,7 +2179,7 @@ window.renderMySubmissionsList = function() {
         <p class="text-xs text-slate-300">${s.details}</p>
       </div>
       <div class="flex items-center gap-2 shrink-0">
-        ${isPending ? `<button onclick="approveSubmissionInMyZone('${s.id}')" class="px-3 py-1.5 bg-emerald-500 text-slate-950 font-black rounded-xl text-xs"> אשר מודרציה כעת</button>` : ""}
+        ${isPending ? `<button onclick="approveSubmissionInMyZone('${s.id}')" class="px-3 py-1.5 bg-emerald-500 text-slate-950 font-black rounded-xl text-xs">✔ אשר מודרציה כעת</button>` : ""}
       </div>
     </div>`;
   }).join("");
@@ -2187,7 +2187,7 @@ window.renderMySubmissionsList = function() {
 
 
 // 5. שדרוג מקוואות, מסעדות כשרות, בתי חב"ד וחנות יודאיקה עם דף מלא, תגובות ודירוג כוכבים!
-window.__v36_prev_renderMikvaot_2 = function(list) {
+window.__v37_prev_renderMikvaot_2 = function(list) {
   var grid = document.getElementById("mikvaot-grid-container");
   if (!grid) return;
   grid.innerHTML = (list || []).map(function(m, idx) {
@@ -2203,7 +2203,7 @@ window.__v36_prev_renderMikvaot_2 = function(list) {
         <div class="flex items-center justify-between">
           <span class="px-2.5 py-0.5 bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-full text-[11px] font-black">${m.type || "מקווה טהרה"}</span>
           <button onclick="openEntityFullPage('${eKey}', 'דף מקווה טהרה וביקורות', '${safeName}', '${safeCity}', '${safeCity}', '${safeHours}', '${m.phone || ""}', 'מקווה טהרה מהודר ונקי. דרגו את הניקיון, השירות ושעות הפעילות.', 'ניקיון והידור • שעות פעילות • יחס ושירות')" class="text-xs font-black text-amber-400 hover:underline">
-             ${stats.avg} (${stats.count} תגובות)
+            ★ ${stats.avg} (${stats.count} תגובות)
           </button>
         </div>
         <h3 class="text-lg font-black text-white">${m.name}</h3>
@@ -2220,7 +2220,7 @@ window.__v36_prev_renderMikvaot_2 = function(list) {
   }).join("");
 };
 
-window.__v36_prev_renderRestaurants_2 = function(list) {
+window.__v37_prev_renderRestaurants_2 = function(list) {
   var grid = document.getElementById("restaurants-grid-container");
   if (!grid) return;
   grid.innerHTML = (list || []).map(function(r, idx) {
@@ -2236,7 +2236,7 @@ window.__v36_prev_renderRestaurants_2 = function(list) {
         <div class="flex items-center justify-between">
           <span class="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full text-[11px] font-black">${r.type || "כשר"} • ${r.hechsher}</span>
           <button onclick="openEntityFullPage('${eKey}', 'דף מסעדה כשרה וביקורות', '${safeName}', '${r.type || ""} • ${safeHech}', '${safeCity}', 'פתוח א-ה ומוצ״ש', '${r.phone || ""}', 'מסעדה כשרה בפיקוח ${safeHech}. שתפו חוות דעת על האוכל, השירות והכשרות!', 'טעם וטריות • רמת כשרות • שירות ומחיר')" class="text-xs font-black text-amber-400 hover:underline">
-             ${stats.avg} (${stats.count} ביקורות)
+            ★ ${stats.avg} (${stats.count} ביקורות)
           </button>
         </div>
         <h3 class="text-lg font-black text-white">${r.name}</h3>
@@ -2253,7 +2253,7 @@ window.__v36_prev_renderRestaurants_2 = function(list) {
   }).join("");
 };
 
-window.__v36_prev_renderChabad_2 = function(list) {
+window.__v37_prev_renderChabad_2 = function(list) {
   var grid = document.getElementById("chabad-grid-container");
   if (!grid) return;
   grid.innerHTML = (list || []).map(function(c, idx) {
@@ -2269,7 +2269,7 @@ window.__v36_prev_renderChabad_2 = function(list) {
         <div class="flex items-center justify-between">
           <span class="px-2.5 py-0.5 bg-amber-500/15 text-amber-300 rounded-full text-[11px] font-black">🌍 ${c.country || "בעולם"}</span>
           <button onclick="openEntityFullPage('${eKey}', 'דף בית חב״ד בעולם', '${safeName}', 'השליח: ${safeRabbi}', '${safeAddr}', 'פתוח למניינים, אוכל כשר ושבתות', '${c.phone || ""}', 'בית חב״ד פתוח לכל יהודי במאור פנים.', 'אירוח שבת • אוכל כשר • מניינים ויחס חם')" class="text-xs font-black text-amber-400 hover:underline">
-             ${stats.avg} (${stats.count} המלצות)
+            ★ ${stats.avg} (${stats.count} המלצות)
           </button>
         </div>
         <h3 class="text-lg font-black text-white">${c.name}</h3>
@@ -2325,7 +2325,7 @@ window.refreshAllCommunityViews = function() {
 
 
 
-window.__v36_prev_handleGlobalSearch_2 = function(e) {
+window.__v37_prev_handleGlobalSearch_2 = function(e) {
   var inp = document.getElementById("home-search-input");
   var q = (inp ? inp.value : "").trim().toLowerCase();
   if (!q) return;
@@ -2358,7 +2358,7 @@ var activeForumCategory = "all";
 var activeRelServiceCategory = "all";
 
 // 1. סרטונים חינוכיים (היסטוריה, רבנים, פרשה, ילדים) + הורדה/הוספה מיוטיוב
-window.__v36_prev_filterEduVideos_1 = function(cat) {
+window.__v37_prev_filterEduVideos_1 = function(cat) {
   activeEduCategory = cat || "all";
   var videos = window.getStorageJson(STORAGE_KEYS.EDU_VIDEOS, window.EDUCATIONAL_VIDEOS_DATA || []);
   var list = (activeEduCategory === "all")
@@ -2396,7 +2396,7 @@ window.__v36_prev_filterEduVideos_1 = function(cat) {
       </div>
       <div class="p-3 pt-0 grid grid-cols-2 gap-2">
         <button onclick="openEntityFullPage('${eKey}', 'סרטון חינוכי • ${v.category}', '${safeTitle}', '${safeSpeaker} • ${v.duration}', 'ספריית הווידאו החינוכית', 'אורך: ${v.duration}', '', '${safeDesc}', 'תוכן חינוכי • בהירות ההסבר • עניין וחיזוק', '${v.thumbnail}')" class="py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">
-           צפה ודרג (${stats.count})
+          🎬 צפה ודרג (${stats.count})
         </button>
         <button onclick="saveItemToMyZone('סרטון חינוכי', '${safeTitle}', 'series')" class="py-2 bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 font-bold rounded-xl text-xs">
           ⭐ שמור באזור שלי
@@ -2535,13 +2535,13 @@ window.renderQuizResultsInMyZone = function() {
         <h4 class="text-sm font-black text-white mt-1">${r.title}</h4>
         <p class="text-xs text-amber-300 font-bold">ציון: ${r.score} • ${r.date}</p>
       </div>
-      <button onclick="switchTab('kids')" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-amber-300 rounded-xl text-xs font-bold shrink-0">שחק שוב </button>
+      <button onclick="switchTab('kids')" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-amber-300 rounded-xl text-xs font-bold shrink-0">שחק שוב 🎮</button>
     </div>`;
   }).join("");
 };
 
 // 3. פורום קהילתי ובית מדרש חברתי
-window.__v36_prev_renderForumPosts_1 = function(catFilter) {
+window.renderForumPosts = function(catFilter) {
   activeForumCategory = catFilter || "all";
   var posts = window.getStorageJson(STORAGE_KEYS.FORUM_POSTS, window.INITIAL_FORUM_POSTS || []);
   var list = (activeForumCategory === "all")
@@ -2564,15 +2564,15 @@ window.__v36_prev_renderForumPosts_1 = function(catFilter) {
       <p class="text-xs text-slate-300 leading-relaxed">${p.content}</p>
       <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <button onclick="toast('יישר כוח נשלח למחבר! ')" class="px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 rounded-xl text-xs font-bold"> יישר כוח (${p.likes || 12})</button>
-          <button onclick="openEntityFullPage('${eKey}', 'אשכול בפורום • ${p.category}', '${safeTitle}', 'נכתב ע״י ${p.author}', 'פורום קהילת צדיק-טוק', '${p.time}', '', '${safeContent}', 'תגובות לאשכול • דברי תורה • עזרה הדדית')" class="px-3 py-1.5 bg-amber-500 text-slate-950 font-black rounded-xl text-xs"> תגובות לדיון (${p.repliesCount || 4})</button>
+          <button onclick="toast('יישר כוח נשלח למחבר! 👍')" class="px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 rounded-xl text-xs font-bold">👍 יישר כוח (${p.likes || 12})</button>
+          <button onclick="openEntityFullPage('${eKey}', 'אשכול בפורום • ${p.category}', '${safeTitle}', 'נכתב ע״י ${p.author}', 'פורום קהילת צדיק-טוק', '${p.time}', '', '${safeContent}', 'תגובות לאשכול • דברי תורה • עזרה הדדית')" class="px-3 py-1.5 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">💬 תגובות לדיון (${p.repliesCount || 4})</button>
         </div>
       </div>
     </div>`;
   }).join("");
 };
 
-window.__v36_prev_addNewForumPost_1 = function() {
+window.__v37_prev_addNewForumPost_1 = function() {
   window.requireRegisteredUser(function() {
     var titleEl = document.getElementById("forum-new-title");
     var catEl = document.getElementById("forum-new-cat");
@@ -2616,7 +2616,7 @@ window.__v36_prev_addNewForumPost_1 = function() {
 };
 
 // 4. שירותי דת בתוך "למצוא" (מוהלים, משגיחי כשרות, מדריכי חתנים, סופרי סת"ם, כלות)
-window.__v36_prev_renderReligiousServicesDirectory_1 = function(catFilter) {
+window.__v37_prev_renderReligiousServicesDirectory_1 = function(catFilter) {
   activeRelServiceCategory = catFilter || "all";
   var services = window.getStorageJson(STORAGE_KEYS.REL_SERVICES, window.RELIGIOUS_SERVICES_DATA || []);
   var list = (activeRelServiceCategory === "all")
@@ -2639,7 +2639,7 @@ window.__v36_prev_renderReligiousServicesDirectory_1 = function(catFilter) {
         <div class="flex items-center justify-between">
           <span class="px-2.5 py-0.5 bg-amber-500/15 text-amber-300 border border-amber-500/30 rounded-lg text-[10px] font-black">${s.category}</span>
           <button onclick="openEntityFullPage('${eKey}', 'שירותי דת • ${safeCat}', '${safeName}', '${safeCity}', '${safeCity}', 'בתיאום טלפוני', '${s.phone}', '${safeDesc}', 'מקצועיות ויראת שמיים • זמינות • יחס ושירות')" class="text-xs font-black text-amber-400 hover:underline">
-             ${stats.avg} (${stats.count} המלצות)
+            ★ ${stats.avg} (${stats.count} המלצות)
           </button>
         </div>
         <h3 class="text-base font-black text-white">${s.name}</h3>
@@ -2679,13 +2679,13 @@ window.renderMyZoneMitzvahTracker = function() {
       </div>
       <div class="flex items-center gap-1.5 shrink-0">
         <button onclick="setMitzvahTrackerStatus('${item.id}', 'done')" class="px-3 py-1.5 rounded-xl text-xs font-black ${isDone ? 'bg-emerald-500 text-slate-950 shadow' : 'bg-slate-900 text-slate-300 border border-slate-800 hover:border-emerald-500'}">
-           עשיתי
+          ✔ עשיתי
         </button>
         <button onclick="setMitzvahTrackerStatus('${item.id}', 'missed')" class="px-3 py-1.5 rounded-xl text-xs font-bold ${isMissed ? 'bg-red-600 text-white' : 'bg-slate-900 text-slate-400 border border-slate-800 hover:border-red-500'}">
-           לא עשיתי
+          ✗ לא עשיתי
         </button>
         <button onclick="toggleMitzvahSnooze('${item.id}')" class="px-3 py-1.5 rounded-xl text-xs font-bold ${item.snoozeActive ? 'bg-cyan-500 text-slate-950 font-black' : 'bg-slate-900 text-cyan-300 border border-cyan-500/30'}">
-           ${item.snoozeActive ? 'נודניק פעיל' : 'הפעל נודניק'}
+          🔔 ${item.snoozeActive ? 'נודניק פעיל' : 'הפעל נודניק'}
         </button>
       </div>
     </div>`;
@@ -2798,7 +2798,7 @@ window.addNewMitzvahTrackerGoal = function() {
 // ============================================================================
 
 // 1. ניווט פנימי בלשונית "להתפלל": סידור תפילה | ספר תהילים | מנהגים והלכות
-window.__v36_prev_switchPraySubTab_1 = function(subTab) {
+window.__v37_prev_switchPraySubTab_1 = function(subTab) {
   ["siddur", "tehillim", "customs"].forEach(function(k) {
     var box = document.getElementById("pray-sub-" + k);
     var btn = document.getElementById("pray-btn-" + k);
@@ -2838,7 +2838,7 @@ window.renderTehillimChapters = function(query) {
   }).join("");
 };
 
-window.__v36_prev_renderPrayCustoms_1 = function(query) {
+window.__v37_prev_renderPrayCustoms_1 = function(query) {
   var container = document.getElementById("pray-customs-container");
   if (!container || !window.CUSTOMS_DATA) return;
   var q = (query || "").trim().toLowerCase();
@@ -2895,7 +2895,7 @@ window.renderCoursesAndChassidut = function() {
 };
 
 // 3. חיפוש פרטני + איתור לפי מיקום GPS בכל דף בתוך "למצוא"
-window.__v36_prev_filterFindSectionByQuery_1 = function(sectionType, query) {
+window.__v37_prev_filterFindSectionByQuery_1 = function(sectionType, query) {
   var q = (query || "").trim().toLowerCase();
   if (sectionType === "minyanim") {
     var list = (window.MINYANIM_DATA || []).filter(function(m) {
@@ -2943,7 +2943,7 @@ window.__v36_prev_filterFindSectionByQuery_1 = function(sectionType, query) {
   }
 };
 
-window.__v36_prev_locateNearestByGPS_1 = function(sectionType) {
+window.__v37_prev_locateNearestByGPS_1 = function(sectionType) {
   window.toast("מאתר מיקום GPS נוכחי וממיין תוצאות לפי מרחק ממך...");
   var applySortByCoords = function(userLat, userLng, label) {
     var sortArr = function(arr) {
@@ -2983,7 +2983,7 @@ window.__v36_prev_locateNearestByGPS_1 = function(sectionType) {
 };
 
 // 4. מצב שבת הלכתי אמיתי: מכבה מוזיקה, סרטונים, חנות ותרומות, ומשאיר רק סידור, זמנים ומידע
-window.__v36_prev_toggleShabbatOverlay_2 = function() {
+window.__v37_prev_toggleShabbatOverlay_2 = function() {
   var isShabbat = document.body.classList.contains("shabbat-mode-active");
   if (!isShabbat) {
     document.body.classList.add("shabbat-mode-active");
@@ -3322,7 +3322,7 @@ window.submitTzaddikStoryWithSource = function() {
 };
 
 // 8 & 9. ישיבות ומוסדות תורה + מוקד תפילות קהילתי, נרות והקדשות
-window.__v36_prev_renderYeshivotAndMosdot_1 = function(query) {
+window.__v37_prev_renderYeshivotAndMosdot_1 = function(query) {
   var box = document.getElementById("yeshivot-grid-container");
   if (!box || !window.YESHIVOT_DATA) return;
   var q = (query || "").trim().toLowerCase();
@@ -3386,7 +3386,7 @@ window.sayAmenOnPrayer = function(pid) {
   window.toast("תפילתך צורפה למניין המתפללים!");
 };
 
-window.__v36_prev_addPrayerWallDedication_1 = function() {
+window.__v37_prev_addPrayerWallDedication_1 = function() {
   var nameEl = document.getElementById("pw-name-input");
   var catEl = document.getElementById("pw-cat-select");
   var tzEl = document.getElementById("pw-tzaddik-input");
@@ -3515,7 +3515,7 @@ window.addAdminAuditLog = function(role, actionText, statusText) {
   window.setStorageJson(STORAGE_KEYS.ADMIN_LOGS, logs);
 };
 
-window.__v36_prev_renderAdminPanel_1 = function() {
+window.__v37_prev_renderAdminPanel_1 = function() {
   var pendingBox = document.getElementById("admin-pending-queue-list");
   var logsBox = document.getElementById("admin-audit-log-list");
   var mySubs = window.getStorageJson(STORAGE_KEYS.MY_SUBMISSIONS, window.DEFAULT_MY_SUBMISSIONS || []);
@@ -3532,7 +3532,7 @@ window.__v36_prev_renderAdminPanel_1 = function() {
         </div>
         <div class="flex items-center gap-2 shrink-0">
           ${isPending
-            ? `<button onclick="approveSubmissionInMyZone('${s.id}');addAdminAuditLog(activeAdminRole, 'אישור תוכן: ${s.title.replace(/'/g, "")}', 'אומת ופורסם ');renderAdminPanel();" class="px-3.5 py-1.5 bg-amber-500 text-white font-bold rounded-lg text-xs">אשר פרסום</button>`
+            ? `<button onclick="approveSubmissionInMyZone('${s.id}');addAdminAuditLog(activeAdminRole, 'אישור תוכן: ${s.title.replace(/'/g, "")}', 'אומת ופורסם ✔');renderAdminPanel();" class="px-3.5 py-1.5 bg-amber-500 text-white font-bold rounded-lg text-xs">אשר פרסום</button>`
             : `<span class="px-3 py-1 bg-white border border-[#C9A227] rounded-lg text-xs font-bold text-[#0F2340]">מאושר בקהילה</span>`
           }
         </div>
@@ -3652,7 +3652,7 @@ window.handleLearnGlobalSearch = function(query) {
   }
 
   resBox.innerHTML = `<div class="bg-white border-2 border-[#C9A227] p-4 rounded-2xl space-y-2.5">
-    <div class="flex items-center justify-between"><span class="text-xs font-bold text-[#0F2340]">תוצאות חיפוש בללמוד (${matches.length}):</span><button onclick="handleLearnGlobalSearch('')" class="text-xs text-[#5C4938] font-bold">סגור </button></div>` +
+    <div class="flex items-center justify-between"><span class="text-xs font-bold text-[#0F2340]">תוצאות חיפוש בללמוד (${matches.length}):</span><button onclick="handleLearnGlobalSearch('')" class="text-xs text-[#5C4938] font-bold">סגור ✕</button></div>` +
     matches.slice(0, 8).map(function(m) {
       return `
       <div onclick="${m.action}" class="cursor-pointer bg-[#F8F3E8] hover:border-[#C9A227] border border-[#E5DBC7] p-3 rounded-xl flex items-center justify-between gap-2">
@@ -3667,7 +3667,7 @@ window.handleLearnGlobalSearch = function(query) {
 };
 
 // 2. שידור חי ושיעורי רבנים בתוך "ללמוד" (כולל חיפוש לפי רב + העלאת שיעור/שידור חדש)
-window.__v36_prev_renderRabbiShiurimList_1 = function(query) {
+window.__v37_prev_renderRabbiShiurimList_1 = function(query) {
   var box = document.getElementById("rabbi-shiurim-grid");
   if (!box) return;
   var list = window.getStorageJson(STORAGE_KEYS.RABBI_SHIURIM, window.RABBI_SHIURIM_DATA || []);
@@ -3699,7 +3699,7 @@ window.__v36_prev_renderRabbiShiurimList_1 = function(query) {
   }).join("");
 };
 
-window.__v36_prev_uploadNewRabbiShiur_1 = function() {
+window.__v37_prev_uploadNewRabbiShiur_1 = function() {
   window.requireRegisteredUser(function() {
     var rabbiEl = document.getElementById("new-shiur-rabbi");
     var titleEl = document.getElementById("new-shiur-title");
@@ -3743,7 +3743,7 @@ window.__v36_prev_uploadNewRabbiShiur_1 = function() {
 };
 
 // חיפוש לפי רב או נושא בתוך הסרטונים החינוכיים
-window.__v36_prev_searchEduVideosByRabbiOrTopic_1 = function(query) {
+window.__v37_prev_searchEduVideosByRabbiOrTopic_1 = function(query) {
   var q = (query || "").trim().toLowerCase();
   var videos = window.getStorageJson(STORAGE_KEYS.EDU_VIDEOS, window.EDUCATIONAL_VIDEOS_DATA || []);
   var filtered = videos.filter(function(v) {
@@ -3806,7 +3806,7 @@ window.renderDailyCustomsCalendar = function() {
 };
 
 // 4. מאתר חברותא בתוך "למצוא -> חברותא" (#view-chavruta) + חיפוש + GPS + הוספת חברותא
-window.__v36_prev_renderChavrutaDirectory_1 = function(query) {
+window.__v37_prev_renderChavrutaDirectory_1 = function(query) {
   var box = document.getElementById("chavruta-grid-container");
   if (!box) return;
   var list = window.getStorageJson(STORAGE_KEYS.CHAVRUTA_LIST, window.CHAVRUTA_DATA || []);
@@ -3839,7 +3839,7 @@ window.__v36_prev_renderChavrutaDirectory_1 = function(query) {
   }).join("");
 };
 
-window.__v36_prev_addNewChavrutaOffer_1 = function() {
+window.__v37_prev_addNewChavrutaOffer_1 = function() {
   window.requireRegisteredUser(function() {
     var nameEl = document.getElementById("chavruta-new-name");
     var topicEl = document.getElementById("chavruta-new-topic");
@@ -3950,8 +3950,8 @@ window.initFloatingShabbatButton = function() {
   }
 };
 
-var origToggleShabbat = window.__v36_prev_toggleShabbatOverlay_2;
-window.__v36_prev_toggleShabbatOverlay_3 = function() {
+var origToggleShabbat = window.__v37_prev_toggleShabbatOverlay_2;
+window.__v37_prev_toggleShabbatOverlay_3 = function() {
   origToggleShabbat();
   window.initFloatingShabbatButton();
 };
@@ -3961,7 +3961,7 @@ window.__v36_prev_toggleShabbatOverlay_3 = function() {
 // V27 SUPABASE INTEGRATION: משיכת והוספת שיעורים מהטבלה 'lessons' ב-Supabase
 // ============================================================================
 
-window.__v36_prev_fetchLessonsFromSupabase_1 = async function() {
+window.__v37_prev_fetchLessonsFromSupabase_1 = async function() {
   if (!window.supabaseClient) {
     // אם עדיין לא הוגדרו מפתחות Supabase בדפדפן, מציג את מאגר השיעורים המקומי
     window.renderRabbiShiurimList("");
@@ -4026,7 +4026,7 @@ window.saveSupabaseCredentialsInBrowser = function() {
   }
 };
 
-window.__v36_prev_syncAllTablesFromSupabase_1 = async function() {
+window.__v37_prev_syncAllTablesFromSupabase_1 = async function() {
   if (!window.supabaseClient) return;
   await window.fetchLessonsFromSupabase();
   try {
@@ -4042,8 +4042,8 @@ window.__v36_prev_syncAllTablesFromSupabase_1 = async function() {
 };
 
 // שדרוג uploadNewRabbiShiur כך שישמור גם ישירות לטבלת lessons ב-Supabase אם מחובר!
-var origUploadShiur = window.__v36_prev_uploadNewRabbiShiur_1;
-window.__v36_prev_uploadNewRabbiShiur_2 = function() {
+var origUploadShiur = window.__v37_prev_uploadNewRabbiShiur_1;
+window.__v37_prev_uploadNewRabbiShiur_2 = function() {
   var rabbiEl = document.getElementById("new-shiur-rabbi");
   var titleEl = document.getElementById("new-shiur-title");
   var topicEl = document.getElementById("new-shiur-topic");
@@ -4074,7 +4074,7 @@ window.__v36_prev_uploadNewRabbiShiur_2 = function() {
 // V29 LIVE SUPABASE DATABASE HOOKS: קריאה וכתיבה לכל הטבלאות ב-Supabase
 // ============================================================================
 
-window.__v36_prev_syncAllTablesFromSupabase_2 = async function() {
+window.__v37_prev_syncAllTablesFromSupabase_2 = async function() {
   if (!window.supabaseClient) return;
   try {
     // 1. שיעורים (lessons)
@@ -4167,8 +4167,8 @@ window.__v36_prev_syncAllTablesFromSupabase_2 = async function() {
 };
 
 // שמירה אוטומטית של הצעת חברותא חדשה לטבלת chavruta ב-Supabase
-var origAddChavruta = window.__v36_prev_addNewChavrutaOffer_1;
-window.__v36_prev_addNewChavrutaOffer_2 = function() {
+var origAddChavruta = window.__v37_prev_addNewChavrutaOffer_1;
+window.__v37_prev_addNewChavrutaOffer_2 = function() {
   var nameEl = document.getElementById("chavruta-new-name");
   var topicEl = document.getElementById("chavruta-new-topic");
   var cityEl = document.getElementById("chavruta-new-city");
@@ -4191,8 +4191,8 @@ window.__v36_prev_addNewChavrutaOffer_2 = function() {
 };
 
 // שמירה אוטומטית של מניינים/רבנים/גמ"חים/צדיקים חדשים לטבלאות ב-Supabase
-var origSubmitCommAdd = window.__v36_prev_submitCommunityAddForm_1;
-window.__v36_prev_submitCommunityAddForm_2 = function() {
+var origSubmitCommAdd = window.__v37_prev_submitCommunityAddForm_1;
+window.__v37_prev_submitCommunityAddForm_2 = function() {
   var f1 = (document.getElementById("comm-add-f1").value || "").trim();
   var f2 = (document.getElementById("comm-add-f2").value || "").trim();
   var f3 = (document.getElementById("comm-add-f3").value || "").trim();
@@ -4215,7 +4215,7 @@ window.__v36_prev_submitCommunityAddForm_2 = function() {
 };
 
 // שמירה אוטומטית של תפילות ונרות לטבלת prayer_wall ב-Supabase
-var origAddPrayerWall = window.__v36_prev_addPrayerWallDedication_1;
+var origAddPrayerWall = window.__v37_prev_addPrayerWallDedication_1;
 window.addPrayerWallDedication = function() {
   var nameEl = document.getElementById("pw-name-input");
   var catEl = document.getElementById("pw-cat-select");
@@ -4239,7 +4239,7 @@ window.addPrayerWallDedication = function() {
 };
 
 // שמירה אוטומטית של אשכולות פורום לטבלת forum_posts ב-Supabase
-var origAddForum = window.__v36_prev_addNewForumPost_1;
+var origAddForum = window.__v37_prev_addNewForumPost_1;
 window.addNewForumPost = function() {
   var titleEl = document.getElementById("forum-new-title");
   var catEl = document.getElementById("forum-new-cat");
@@ -4493,15 +4493,15 @@ document.addEventListener("DOMContentLoaded", function() {
   };
 
   // ריקון המיכל לפני הזרקה (התאמה מילולית לבקשה; הרינדור הקיים כבר מחליף innerHTML)
-  var prevRenderShiurim = window.__v36_prev_renderRabbiShiurimList_1;
-  window.__v36_prev_renderRabbiShiurimList_2 = function (q) {
+  var prevRenderShiurim = window.__v37_prev_renderRabbiShiurimList_1;
+  window.__v37_prev_renderRabbiShiurimList_2 = function (q) {
     var box = el("rabbi-shiurim-grid");
     if (box) box.innerHTML = "";
     return prevRenderShiurim(q);
   };
 
   // חברותא: אותו עיצוב בדיוק, אבל בלי "undefined" לעולם
-  window.__v36_prev_renderChavrutaDirectory_2 = function (query) {
+  window.renderChavrutaDirectory = function (query) {
     var box = el("chavruta-grid-container");
     if (!box) return;
     var list = window.getStorageJson(STORAGE_KEYS.CHAVRUTA_LIST, window.CHAVRUTA_DATA || []);
@@ -4583,7 +4583,7 @@ document.addEventListener("DOMContentLoaded", function() {
     window.updateAuthHeaderBadge();
   };
 
-  window.__v36_prev_updateAuthHeaderBadge_2 = function () {
+  window.__v37_prev_updateAuthHeaderBadge_2 = function () {
     var acc = window.getStorageJson(STORAGE_KEYS.USER_ACCOUNT, currentUserAccount) || currentUserAccount;
     var logged = !!(acc && acc.isRegistered);
     var name = logged ? acc.name : "אורח";
@@ -4714,7 +4714,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // ---------------------------------------------------------------------------
   // 4. הוספת תוכן: שיעור חדש -> supabase.from('lessons').insert(...) + רענון אוטומטי
   // ---------------------------------------------------------------------------
-  var prevUpload = window.__v36_prev_uploadNewRabbiShiur_2;   // הגרסה הישנה (V28) נשארת כגיבוי כשאין חיבור
+  var prevUpload = window.__v37_prev_uploadNewRabbiShiur_2;   // הגרסה הישנה (V28) נשארת כגיבוי כשאין חיבור
   window.uploadNewRabbiShiur = async function () {
     if (!sb()) { return prevUpload ? prevUpload() : window.toast("אין חיבור ל-Supabase"); }
     if (!window.__ttUser) { window.toast("🔒 העלאת שיעור זמינה למשתמשים מחוברים בלבד"); window.openAuthModal(); return; }
@@ -4744,7 +4744,7 @@ document.addEventListener("DOMContentLoaded", function() {
   };
 
   // חברותא חדשה -> טבלת chavruta (ואז רענון)
-  var prevAddChavruta = window.__v36_prev_addNewChavrutaOffer_2;
+  var prevAddChavruta = window.__v37_prev_addNewChavrutaOffer_2;
   window.addNewChavrutaOffer = async function () {
     if (!sb()) { return prevAddChavruta ? prevAddChavruta() : null; }
     if (!window.__ttUser) { window.toast("🔒 הוספת חברותא זמינה למשתמשים מחוברים בלבד"); window.openAuthModal(); return; }
@@ -4874,7 +4874,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   var TT = { ctx: null, pushed: false, chips: [] };
   var GEO_LISTS_KEYS = { minyanim: 1, mikvaot: 1, restaurants: 1, gemachim: 1, chabad: 1, tzaddikim: 1 };
-  var origLib = window.__v36_prev_switchLibrarySubTab_1, origPray = window.__v36_prev_switchPraySubTab_1, origMz = window.__v36_prev_switchMyZoneSubTab_1;
+  var origLib = window.__v37_prev_switchLibrarySubTab_1, origPray = window.__v37_prev_switchPraySubTab_1, origMz = window.__v37_prev_switchMyZoneSubTab_1;
 
   // ===========================================================================
   // 2. מצב מיקוד: כותרת/חיפוש מקומי/חזרה
@@ -5027,7 +5027,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // ===========================================================================
   // 3. switchTab חדש (הישן נשאר בקובץ). "find" הוא כעת דף-מדורים אמיתי ולא מניינים.
   // ===========================================================================
-  window.__v36_prev_switchTab_2 = function (tabId, mode) {
+  window.__v37_prev_switchTab_2 = function (tabId, mode) {
     var alias = { learn: "series", pray: "siddur", donate: "raffles", givebuy: "raffles" };
     if (alias[tabId]) tabId = alias[tabId];
     window.closeSideMenu();
@@ -5070,12 +5070,12 @@ document.addEventListener("DOMContentLoaded", function() {
   };
 
   // תתי-לשוניות: כל כניסה למדור פנימי עוברת למצב מיקוד
-  window.__v36_prev_switchLibrarySubTab_2 = function (sub) {
+  window.__v37_prev_switchLibrarySubTab_2 = function (sub) {
     if (sub === "overview" || sub === "library") sub = "torah";
     if (currentTab !== "series") window.switchTab("series");
     origLib(sub); enterSub("series", sub);
   };
-  window.__v36_prev_switchPraySubTab_2 = function (sub) {
+  window.__v37_prev_switchPraySubTab_2 = function (sub) {
     if (currentTab !== "siddur") window.switchTab("siddur");
     origPray(sub); enterSub("siddur", sub);
     if (sub === "customs") window.ttLoadCustoms(false);
@@ -5149,7 +5149,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  window.__v36_prev_openSideMenu_1 = function () {
+  window.__v37_prev_openSideMenu_1 = function () {
     buildMenu();
     body().classList.add("tt-menu-open");
     var m = el("tt-side-menu"); if (m) m.setAttribute("aria-hidden", "false");
@@ -5194,13 +5194,13 @@ document.addEventListener("DOMContentLoaded", function() {
     ["tzaddikim", "ציוני קודש, סגולות ונרות"], ["gemachim", "רפואה, הצלה וחסד"],
     ["customs", "מוהלים, משגיחים, סופרי סת״ם"], ["yeshivot", "ישיבות, כוללים ובתי מדרש"]
   ];
-  window.__v36_prev_renderFindHub_1 = function () {
+  window.__v37_prev_renderFindHub_1 = function () {
     var root = el("find-hub-root"); if (!root) return;
     root.innerHTML =
       '<div class="bg-white border border-[#E5DBC7] p-5 rounded-2xl space-y-3">' +
         '<div><h2 class="text-2xl font-black text-[#0F2340] serif-heading">למצוא</h2>' +
         '<p class="text-sm text-[#5C4938]">איתור שירותי יהדות, מניינים, רבנים וחסד. בחר מדור, ובתוכו תוכל לחפש ולמיין לפי מרחק ממך.</p></div>' +
-        '<button id="tt-geo-global" type="button" onclick="locateNearestByGPS()" class="px-4 py-2 bg-white text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs"> מיין תוצאות לפי מרחק ממני</button>' +
+        '<button id="tt-geo-global" type="button" onclick="locateNearestByGPS()" class="px-4 py-2 bg-white text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs">📍 מיין תוצאות לפי מרחק ממני</button>' +
       '</div>' +
       '<div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">' +
       FIND_TILES.map(function (t) {
@@ -5360,7 +5360,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  var prevBadge = window.__v36_prev_updateAuthHeaderBadge_2;
+  var prevBadge = window.__v37_prev_updateAuthHeaderBadge_2;
   window.updateAuthHeaderBadge = function () {
     if (prevBadge) prevBadge();
     var acc = window.getStorageJson(STORAGE_KEYS.USER_ACCOUNT, currentUserAccount) || currentUserAccount;
@@ -5407,9 +5407,9 @@ document.addEventListener("DOMContentLoaded", function() {
       "</div>" +
       '<div class="pt-3 border-t border-[#E5DBC7] flex items-center justify-between gap-2">' +
         '<span class="tt-stars" role="group" aria-label="דירוג בכוכבים">' +
-          [1, 2, 3, 4, 5].map(function (n) { return "<button type=\"button\" onclick=\"ttOpenCustom('" + c.id + "', " + n + ")\" aria-label=\"דרג " + n + " כוכבים\"></button>"; }).join("") +
+          [1, 2, 3, 4, 5].map(function (n) { return "<button type=\"button\" onclick=\"ttOpenCustom('" + c.id + "', " + n + ")\" aria-label=\"דרג " + n + " כוכבים\">☆</button>"; }).join("") +
         "</span>" +
-        "<button type=\"button\" onclick=\"ttOpenCustom('" + c.id + "', 5)\" class=\"px-3.5 py-2 bg-amber-500 text-white font-bold rounded-xl text-xs\"> הגב (" + revs.length + ")</button>" +
+        "<button type=\"button\" onclick=\"ttOpenCustom('" + c.id + "', 5)\" class=\"px-3.5 py-2 bg-amber-500 text-white font-bold rounded-xl text-xs\">💬 הגב (" + revs.length + ")</button>" +
       "</div></div>";
   }
 
@@ -5492,7 +5492,7 @@ document.addEventListener("DOMContentLoaded", function() {
   };
 
   // דירוג/תגובה על מנהג: ה-UI הקיים (openEntityFullPage) נשאר, ובנוסף נשמר ב-community_reviews ונטען לכל המשתמשים
-  var prevSubmitReview = window.__v36_prev_submitEntityReview_1;
+  var prevSubmitReview = window.__v37_prev_submitEntityReview_1;
   window.submitEntityReview = function () {
     var key = activeEntityContext && activeEntityContext.key;
     var txt = val("entity-review-input"), crit = val("entity-review-criteria-input"), rating = selectedStarRating;
@@ -5788,7 +5788,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // --------------------------------------------------------------------------
   // 3. קישורי Waze ו-וואטסאפ בכרטיסי גמ״חים, מקוואות וצדיקים (דף 'למצוא')
   // --------------------------------------------------------------------------
-  window.__v36_prev_renderGemachim_3 = function (list) {
+  window.__v37_prev_renderGemachim_3 = function (list) {
     var grid = el("gemachim-grid-container");
     if (!grid) return;
     grid.innerHTML = (list || []).map(function (g, idx) {
@@ -5811,7 +5811,7 @@ document.addEventListener("DOMContentLoaded", function() {
           <div class="flex items-center justify-between">
             <span class="px-2.5 py-1 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[11px] font-black">${safeCat}</span>
             <button onclick="openEntityFullPage('${eKey}', 'דף גמ״ח וארגון חסד', '${safeName}', '${safeCat}', '${safeAddr}', '${safeHours}', '${phone}', '${safeDesc}', 'השירות • הזמינות • היחס')" class="text-xs font-black text-amber-400 hover:underline">
-               ${stats.avg} (${stats.count} חוות דעת)
+              ★ ${stats.avg} (${stats.count} חוות דעת)
             </button>
           </div>
           <h3 class="text-lg font-black text-white">${g.name}</h3>
@@ -5825,7 +5825,7 @@ document.addEventListener("DOMContentLoaded", function() {
         <div class="pt-3 border-t border-slate-800 space-y-2">
           <div class="grid grid-cols-2 gap-2">
             <button onclick="openEntityFullPage('${eKey}', 'דף גמ״ח וארגון חסד', '${safeName}', '${safeCat}', '${safeAddr}', '${safeHours}', '${phone}', '${safeDesc}', 'השירות • הזמינות • היחס')" class="py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">
-               דף גמ״ח ודירוג
+              📄 דף גמ״ח ודירוג
             </button>
             <a href="tel:${phone}" class="py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold rounded-xl text-xs text-center flex items-center justify-center gap-1">
               📞 חייג
@@ -5844,7 +5844,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }).join("");
   };
 
-  window.__v36_prev_renderMikvaot_3 = function (list) {
+  window.__v37_prev_renderMikvaot_3 = function (list) {
     var grid = el("mikvaot-grid-container");
     if (!grid) return;
     grid.innerHTML = (list || []).map(function (m, idx) {
@@ -5866,7 +5866,7 @@ document.addEventListener("DOMContentLoaded", function() {
           <div class="flex items-center justify-between">
             <span class="px-2.5 py-0.5 bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-full text-[11px] font-black">${m.type || "מקווה טהרה"}</span>
             <button onclick="openEntityFullPage('${eKey}', 'דף מקווה טהרה וביקורות', '${safeName}', '${safeCity}', '${safeAddr}', '${safeHours}', '${phone}', 'מקווה טהרה מהודר ונקי. דרגו את הניקיון, השירות ושעות הפעילות.', 'ניקיון והידור • שעות פעילות • יחס ושירות')" class="text-xs font-black text-amber-400 hover:underline">
-               ${stats.avg} (${stats.count} תגובות)
+              ★ ${stats.avg} (${stats.count} תגובות)
             </button>
           </div>
           <h3 class="text-lg font-black text-white">${m.name}</h3>
@@ -5894,7 +5894,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }).join("");
   };
 
-  window.__v36_prev_renderTzaddikim_3 = function (list) {
+  window.__v37_prev_renderTzaddikim_3 = function (list) {
     var grid = el("tzaddikim-grid-container");
     if (!grid) return;
     grid.innerHTML = (list || []).map(function (t, idx) {
@@ -5918,7 +5918,7 @@ document.addEventListener("DOMContentLoaded", function() {
           <div class="flex items-center justify-between">
             <span class="px-2.5 py-0.5 bg-amber-500/15 text-amber-300 rounded-full text-[11px] font-bold">📍 ${safeCity}</span>
             <button onclick="openEntityFullPage('${eKey}', 'דף קבר צדיק וסיפורי ישועות', '${safeName}', '${safeTitle}', 'ציון הקודש ב${safeCity}', 'פתוח 24/7 לתפילה והדלקת נרות', '', '${safeStory}', 'סיפורים • חוויות מהציון • בקשות תפילה', '${imgUrl}')" class="text-xs font-black text-amber-400 hover:underline">
-               ${stats.avg} (${stats.count} סיפורים)
+              ★ ${stats.avg} (${stats.count} סיפורים)
             </button>
           </div>
           <h3 class="text-lg font-black text-white">${t.name}</h3>
@@ -5928,10 +5928,10 @@ document.addEventListener("DOMContentLoaded", function() {
         <div class="pt-2 space-y-2">
           <div class="grid grid-cols-2 gap-2">
             <button onclick="openEntityFullPage('${eKey}', 'דף קבר צדיק וסיפורי ישועות', '${safeName}', '${safeTitle}', 'ציון הקודש ב${safeCity}', 'פתוח 24/7', '', '${safeStory}', 'סיפורים • חוויות מהציון • בקשות תפילה', '${imgUrl}')" class="py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">
-               דף קבר וסיפורים
+              📄 דף קבר וסיפורים
             </button>
             <button onclick="openCandleModal('${safeName}')" class="py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 font-black rounded-xl text-xs">
-               הדלק נר
+              🕯️ הדלק נר
             </button>
           </div>
           <div class="grid grid-cols-2 gap-2">
@@ -6045,8 +6045,8 @@ document.addEventListener("DOMContentLoaded", function() {
             </div>
             <p class="text-xs text-[#0F2340] leading-relaxed">${rev.review_text || ""}</p>
             <div class="pt-2 border-t border-[#E5DBC7] flex items-center justify-end gap-2 text-xs">
-              ${!isApp ? `<button onclick="window.adminApproveReview(${rev.id})" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs"> אשר תגובה</button>` : `<span class="text-xs text-emerald-700 font-bold ml-1">מאושר ✓</span>`}
-              <button onclick="window.adminDeleteReview(${rev.id})" class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 border border-red-300 font-bold rounded-lg text-xs"> מחק</button>
+              ${!isApp ? `<button onclick="window.adminApproveReview(${rev.id})" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs">✔ אשר תגובה</button>` : `<span class="text-xs text-emerald-700 font-bold ml-1">מאושר ✓</span>`}
+              <button onclick="window.adminDeleteReview(${rev.id})" class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 border border-red-300 font-bold rounded-lg text-xs">🗑️ מחק</button>
             </div>
           </div>`;
         }).join("");
@@ -6135,7 +6135,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // --------------------------------------------------------------------------
   // 1. חיפוש וסרטון הסבר מתפריט הצד
   // --------------------------------------------------------------------------
-  window.__v36_prev_handleSideMenuSearch_1 = function () {
+  window.__v37_prev_handleSideMenuSearch_1 = function () {
     var inp = el("side-menu-search-input");
     var q = inp ? (inp.value || "").trim() : "";
     if (!q) return;
@@ -6306,7 +6306,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // --------------------------------------------------------------------------
   // 4. דריסת renderRabbiShiurimList להוספת לייקים ותגובות
   // --------------------------------------------------------------------------
-  window.__v36_prev_renderRabbiShiurimList_3 = function (query) {
+  window.__v37_prev_renderRabbiShiurimList_3 = function (query) {
     var box = el("rabbi-shiurim-grid");
     if (!box) return;
     var list = (window.getStorageJson && window.getStorageJson(STORAGE_KEYS.RABBI_SHIURIM, window.RABBI_SHIURIM_DATA)) || window.RABBI_SHIURIM_DATA || [];
@@ -6349,11 +6349,11 @@ document.addEventListener("DOMContentLoaded", function() {
           '<div class="flex items-center justify-between gap-2">' +
             '<div class="flex items-center gap-2">' +
               '<button type="button" onclick="window.toggleCardLike(\'' + itemKey + '\', this)" class="like-btn px-3 py-1.5 rounded-xl border border-[#D8CBB5] bg-[#FDF8EF] hover:bg-[#F6EFE2] text-xs font-bold flex items-center gap-1.5 text-[#0F2340] transition-all">' +
-                '<span class="like-icon">' + (likesData.isLiked ? "" : "") + '</span>' +
+                '<span class="like-icon">' + (likesData.isLiked ? "❤️" : "🤍") + '</span>' +
                 '<span class="like-count font-mono">' + likesData.count + '</span>' +
               '</button>' +
               '<button type="button" onclick="window.toggleCardCommentBox(\'' + boxId + '\')" class="px-3 py-1.5 rounded-xl border border-[#D8CBB5] bg-[#FDF8EF] hover:bg-[#F6EFE2] text-xs font-bold flex items-center gap-1.5 text-[#0F2340]">' +
-                '<span></span>' +
+                '<span>💬</span>' +
                 '<span>תגובות (<span id="count-' + boxId + '">' + comments.length + '</span>)</span>' +
               '</button>' +
             '</div>' +
@@ -6389,7 +6389,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // --------------------------------------------------------------------------
   // 5. דריסת renderRabbis להוספת לייקים ותגובות
   // --------------------------------------------------------------------------
-  window.__v36_prev_renderRabbis_3 = function (list) {
+  window.__v37_prev_renderRabbis_3 = function (list) {
     var grid = el("rabbis-container");
     if (!grid) return;
     grid.innerHTML = (list || []).map(function (r, idx) {
@@ -6410,7 +6410,7 @@ document.addEventListener("DOMContentLoaded", function() {
           '<div class="flex items-center justify-between">' +
             '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">🟢 זמין למענה הלכתי</span>' +
             '<button type="button" onclick="openEntityFullPage(\'' + eKey + '\', \'קו הלכה ורב פוסק\', \'' + safeName + '\', \'' + safeTitle + '\', \'' + (r.city || "מענה ארצי") + '\', \'' + hours + '\', \'' + phone + '\', \'מענה הלכתי לשאלות דחופות ורגילות. דרגו את הזמינות, היחס והמענה!\', \'הזמינות • היחס • בהירות המענה\')" class="text-xs font-black text-amber-400 hover:underline">' +
-              ' ' + stats.avg + ' (' + stats.count + ' דירוגים)' +
+              '★ ' + stats.avg + ' (' + stats.count + ' דירוגים)' +
             '</button>' +
           '</div>' +
           '<h3 class="text-lg font-black text-white">' + r.name + '</h3>' +
@@ -6422,11 +6422,11 @@ document.addEventListener("DOMContentLoaded", function() {
           '<div class="flex items-center justify-between gap-2">' +
             '<div class="flex items-center gap-2">' +
               '<button type="button" onclick="window.toggleCardLike(\'' + eKey + '\', this)" class="like-btn px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-xs font-bold flex items-center gap-1.5 text-slate-200 transition-all">' +
-                '<span class="like-icon">' + (likesData.isLiked ? "" : "") + '</span>' +
+                '<span class="like-icon">' + (likesData.isLiked ? "❤️" : "🤍") + '</span>' +
                 '<span class="like-count font-mono text-amber-400">' + likesData.count + '</span>' +
               '</button>' +
               '<button type="button" onclick="window.toggleCardCommentBox(\'' + boxId + '\')" class="px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-xs font-bold flex items-center gap-1.5 text-slate-200">' +
-                '<span></span>' +
+                '<span>💬</span>' +
                 '<span>תגובות (<span id="count-' + boxId + '">' + comments.length + '</span>)</span>' +
               '</button>' +
             '</div>' +
@@ -6485,7 +6485,7 @@ document.addEventListener("DOMContentLoaded", function() {
           '</div>' +
           '<div class="pt-2 border-t border-[#E5DBC7] flex items-center justify-between gap-2">' +
             '<button type="button" onclick="window.toggleCardLike(\'' + itemKey + '\', this)" class="like-btn px-2.5 py-1 rounded-lg border border-[#D8CBB5] bg-[#FDF8EF] text-xs font-bold flex items-center gap-1 text-[#0F2340]">' +
-              '<span class="like-icon">' + (likes.isLiked ? "" : "") + '</span>' +
+              '<span class="like-icon">' + (likes.isLiked ? "❤️" : "🤍") + '</span>' +
               '<span class="like-count font-mono text-[11px]">' + likes.count + '</span>' +
             '</button>' +
             '<button type="button" onclick="switchTab(\'series\'); switchLibrarySubTab(\'liveshiurim\');" class="px-3 py-1.5 bg-[#0F2340] hover:bg-[#16335c] text-white font-bold rounded-xl text-xs flex items-center gap-1" style="color:#FFFFFF !important;">' +
@@ -6549,7 +6549,7 @@ document.addEventListener("DOMContentLoaded", function() {
             '<p class="text-[11px] text-[#5C4938]">4 אפשרויות תשובה • הסבר הלכתי מפורט</p>' +
           '</div>' +
           '<button type="button" onclick="switchTab(\'kids\');" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all">' +
-            '<span></span> התחל אתגר ידע' +
+            '<span>🎮</span> התחל אתגר ידע' +
           '</button>' +
         '</div>';
       }).join("");
@@ -6679,16 +6679,16 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     html += '<div class="tt-menu-group" style="margin-top:8px;">קהילה וחשבון אישי</div>';
-    html += '<button type="button" class="tt-menu-sub-item" data-v35-special="forum"> פורום הקהילה וקבוצות</button>';
-    html += '<button type="button" class="tt-menu-main-cat" data-v35-special="personal"><span> האזור האישי שלי</span><span class="tt-main-cat-badge">פרופיל ←</span></button>';
+    html += '<button type="button" class="tt-menu-sub-item" data-v35-special="forum">💬 פורום הקהילה וקבוצות</button>';
+    html += '<button type="button" class="tt-menu-main-cat" data-v35-special="personal"><span>👤 האזור האישי שלי</span><span class="tt-main-cat-badge">פרופיל ←</span></button>';
     html += logged
-      ? '<button type="button" class="tt-menu-sub-item" data-v35-special="logout"> התנתקות מהחשבון</button>'
-      : '<button type="button" class="tt-menu-sub-item" data-v35-special="login"> התחברות / הרשמה בחינם</button>';
+      ? '<button type="button" class="tt-menu-sub-item" data-v35-special="logout">🚪 התנתקות מהחשבון</button>'
+      : '<button type="button" class="tt-menu-sub-item" data-v35-special="login">🔑 התחברות / הרשמה בחינם</button>';
 
     mb.innerHTML = html;
   }
 
-  window.__v36_prev_openSideMenu_2 = function () {
+  window.openSideMenu = function () {
     renderEnhancedSideMenu();
     document.body.classList.add("tt-menu-open");
     var m = el("tt-side-menu"); if (m) m.setAttribute("aria-hidden", "false");
@@ -6818,7 +6818,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // 2. מעבר בין 3 הלשוניות הראשיות במדור "ללמוד": ספריית AI | שיעורים | חידונים
-  window.switchLearnMainTab = function (tabKey) {
+  window.__v37_prev_switchLearnMainTab_1 = function (tabKey) {
     activeLearnMainTab = tabKey || "ai";
     ["ai", "shiurim", "quizzes"].forEach(function (k) {
       var btn = el("learn-main-tab-" + k);
@@ -6866,8 +6866,8 @@ document.addEventListener("DOMContentLoaded", function() {
   };
 
   // דריסת switchLibrarySubTab לתמיכה ב-3 הלשוניות הראשיות וב"סיפורי צדיקים"
-  var prevSwitchLibrarySubTab = window.__v36_prev_switchLibrarySubTab_2;
-  window.switchLibrarySubTab = function (sub) {
+  var prevSwitchLibrarySubTab = window.__v37_prev_switchLibrarySubTab_2;
+  window.__v37_prev_switchLibrarySubTab_3 = function (sub) {
     if (sub === "music") sub = "tzaddikim_stories";
     if (currentTab !== "series") window.switchTab("series");
 
@@ -7064,16 +7064,16 @@ document.addEventListener("DOMContentLoaded", function() {
           '<div class="flex flex-wrap items-center justify-between gap-2">' +
             '<div class="flex items-center gap-1.5">' +
               '<button type="button" onclick="window.toggleCardLike(\'' + itemKey + '\', this)" class="like-btn px-3 py-1.5 rounded-xl border border-[#D8CBB5] bg-[#FDF8EF] hover:bg-[#F6EFE2] text-xs font-bold flex items-center gap-1 text-[#0F2340]">' +
-                '<span class="like-icon">' + (likesData.isLiked ? "" : "") + '</span>' +
+                '<span class="like-icon">' + (likesData.isLiked ? "❤️" : "🤍") + '</span>' +
                 '<span class="like-count font-mono">' + likesData.count + '</span>' +
               '</button>' +
               '<button type="button" onclick="window.toggleCardCommentBox(\'' + boxId + '\')" class="px-3 py-1.5 rounded-xl border border-[#D8CBB5] bg-[#FDF8EF] hover:bg-[#F6EFE2] text-xs font-bold flex items-center gap-1 text-[#0F2340]">' +
-                '<span></span>' +
+                '<span>💬</span>' +
                 '<span>תגובות (<span id="count-' + boxId + '">' + comments.length + '</span>)</span>' +
               '</button>' +
             '</div>' +
             '<button type="button" onclick="' + donateAction + '" class="px-3.5 py-1.5 bg-[#F6EFE2] hover:bg-[#EDE1CC] text-[#0F2340] border-2 border-[#C9A227] font-black rounded-xl text-xs flex items-center gap-1 shadow-sm">' +
-              '<span></span> <span>תרומה לרב</span>' +
+              '<span>💝</span> <span>תרומה לרב</span>' +
             '</button>' +
           '</div>' +
 
@@ -7234,8 +7234,8 @@ document.addEventListener("DOMContentLoaded", function() {
         '</div>' +
         '<div class="pt-2 border-t border-[#E5DBC7] flex items-center gap-2">' +
           (isJoined
-            ? '<button type="button" class="w-full py-2.5 bg-emerald-700 text-white font-black rounded-xl text-xs" style="color:#FFFFFF !important;"> רשום לקורס (מפגש שבועי פעיל)</button>'
-            : '<button type="button" onclick="joinWeeklyCourse(\'' + c.id + '\', \'' + safeTitle + '\', ' + (c.isFree ? "true" : "false") + ')" class="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-white font-black rounded-xl text-xs shadow-sm"> הצטרפות לקורס ←</button>'
+            ? '<button type="button" class="w-full py-2.5 bg-emerald-700 text-white font-black rounded-xl text-xs" style="color:#FFFFFF !important;">✔ רשום לקורס (מפגש שבועי פעיל)</button>'
+            : '<button type="button" onclick="joinWeeklyCourse(\'' + c.id + '\', \'' + safeTitle + '\', ' + (c.isFree ? "true" : "false") + ')" class="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-white font-black rounded-xl text-xs shadow-sm">🎓 הצטרפות לקורס ←</button>'
           ) +
         '</div>' +
       '</div>';
@@ -7459,11 +7459,11 @@ document.addEventListener("DOMContentLoaded", function() {
           '<div class="flex items-center justify-between gap-2">' +
             '<div class="flex items-center gap-1.5">' +
               '<button type="button" onclick="window.toggleCardLike(\'' + itemKey + '\', this)" class="like-btn px-3 py-1.5 rounded-xl border border-[#D8CBB5] bg-white text-xs font-bold flex items-center gap-1 text-[#0F2340]">' +
-                '<span class="like-icon">' + (likesData.isLiked ? "" : "") + '</span>' +
+                '<span class="like-icon">' + (likesData.isLiked ? "❤️" : "🤍") + '</span>' +
                 '<span class="like-count font-mono">' + likesData.count + '</span>' +
               '</button>' +
               '<button type="button" onclick="window.toggleCardCommentBox(\'' + boxId + '\')" class="px-3 py-1.5 rounded-xl border border-[#D8CBB5] bg-white text-xs font-bold flex items-center gap-1 text-[#0F2340]">' +
-                '<span></span> <span>תגובות (<span id="count-' + boxId + '">' + comments.length + '</span>)</span>' +
+                '<span>💬</span> <span>תגובות (<span id="count-' + boxId + '">' + comments.length + '</span>)</span>' +
               '</button>' +
             '</div>' +
             '<a href="https://wa.me/?text=' + encodeURIComponent("👑 *" + s.title + "* (" + s.rabbi + ")\n\n" + s.story) + '" target="_blank" class="px-3 py-1.5 bg-amber-500 text-white font-bold rounded-xl text-xs">💬 שתף סיפור</a>' +
@@ -7636,7 +7636,7 @@ document.addEventListener("DOMContentLoaded", function() {
     chatzot:   { ref: "Psalms.137", fallbackRef: "Psalms.79", url: "https://www.sefaria.org/Psalms.137" }
   };
 
-  var origSelectPrayer = window.__v36_prev_selectPrayer_1;
+  var origSelectPrayer = window.__v37_prev_selectPrayer_1;
   window.selectPrayer = function (prayerKey) {
     currentSelectedPrayerKey = prayerKey || "hashachar";
     if (origSelectPrayer) origSelectPrayer(currentSelectedPrayerKey);
@@ -7774,8 +7774,8 @@ document.addEventListener("DOMContentLoaded", function() {
     restaurants: 1, tzaddikim: 1, gemachim: 1, customs: 1, yeshivot: 1
   };
 
-  var prevSwitchTabV31 = window.__v36_prev_switchTab_2;
-  window.__v36_prev_switchTab_3 = function (tabId, mode) {
+  var prevSwitchTabV31 = window.__v37_prev_switchTab_2;
+  window.__v37_prev_switchTab_3 = function (tabId, mode) {
     var alias = { learn: "series", pray: "siddur", donate: "raffles", givebuy: "raffles" };
     var resolvedTab = alias[tabId] || tabId;
 
@@ -7821,7 +7821,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // --------------------------------------------------------------------------
   // 4.2 קו הלכה ורבנים: העלאת רב חדש, תגובות ודירוגים, וקישור לתרומה
   // --------------------------------------------------------------------------
-  window.__v36_prev_renderRabbis_4 = function (list) {
+  window.__v37_prev_renderRabbis_4 = function (list) {
     var grid = el("rabbis-container");
     if (!grid) return;
     grid.innerHTML = (list || []).map(function (r, idx) {
@@ -7842,7 +7842,7 @@ document.addEventListener("DOMContentLoaded", function() {
           '<div class="flex items-center justify-between">' +
             '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300">🟢 זמין למענה הלכתי</span>' +
             '<button type="button" onclick="openEntityFullPage(\'' + eKey + '\', \'קו הלכה ורב פוסק\', \'' + safeName + '\', \'' + safeTitle + '\', \'' + (r.city || "מענה ארצי") + '\', \'' + hours + '\', \'' + phone + '\', \'מענה הלכתי לשאלות דחופות ורגילות. דרגו את הזמינות, היחס והמענה!\', \'הזמינות • היחס • בהירות המענה\')" class="text-xs font-black text-[#0F2340] hover:underline">' +
-              ' ' + stats.avg + ' (' + stats.count + ' דירוגים)' +
+              '★ ' + stats.avg + ' (' + stats.count + ' דירוגים)' +
             '</button>' +
           '</div>' +
           '<h3 class="text-lg font-black text-[#0F2340] serif-heading">' + r.name + '</h3>' +
@@ -7854,15 +7854,15 @@ document.addEventListener("DOMContentLoaded", function() {
           '<div class="flex flex-wrap items-center justify-between gap-2">' +
             '<div class="flex items-center gap-1.5">' +
               '<button type="button" onclick="window.toggleCardLike(\'' + eKey + '\', this)" class="like-btn px-3 py-1.5 rounded-xl border border-[#D8CBB5] bg-[#FDF8EF] text-xs font-bold flex items-center gap-1 text-[#0F2340]">' +
-                '<span class="like-icon">' + (likesData.isLiked ? "" : "") + '</span>' +
+                '<span class="like-icon">' + (likesData.isLiked ? "❤️" : "🤍") + '</span>' +
                 '<span class="like-count font-mono">' + likesData.count + '</span>' +
               '</button>' +
               '<button type="button" onclick="window.toggleCardCommentBox(\'' + boxId + '\')" class="px-3 py-1.5 rounded-xl border border-[#D8CBB5] bg-[#FDF8EF] text-xs font-bold flex items-center gap-1 text-[#0F2340]">' +
-                '<span></span> <span>תגובות (<span id="count-' + boxId + '">' + comments.length + '</span>)</span>' +
+                '<span>💬</span> <span>תגובות (<span id="count-' + boxId + '">' + comments.length + '</span>)</span>' +
               '</button>' +
             '</div>' +
             '<button type="button" onclick="openDonateModal(\'תרומה לבית ההוראה ולרב ' + safeName + '\')" class="px-3 py-1.5 bg-[#F6EFE2] text-[#0F2340] border-2 border-[#C9A227] font-black rounded-xl text-xs">' +
-              ' תרומה לרב' +
+              '💝 תרומה לרב' +
             '</button>' +
           '</div>' +
 
@@ -7955,7 +7955,7 @@ document.addEventListener("DOMContentLoaded", function() {
       return '<span class="px-3 py-1.5 rounded-xl bg-[#F6EFE2] border border-[#C9A227] text-xs font-bold text-[#0F2340] flex items-center gap-1.5">' +
         '<strong class="w-5 h-5 rounded-full bg-amber-500 text-white text-[11px] flex items-center justify-center">' + (idx + 1) + '</strong>' +
         '<span>' + s.name + ' (' + s.city + ')</span>' +
-        '<button type="button" onclick="toggleTzaddikRouteStop(\'' + safeN + '\')" class="text-red-600 font-black mr-1" title="הסר"></button>' +
+        '<button type="button" onclick="toggleTzaddikRouteStop(\'' + safeN + '\')" class="text-red-600 font-black mr-1" title="הסר">✕</button>' +
       '</span>';
     }).join('<span class="text-[#C9A227] font-black">←</span>');
 
@@ -7979,7 +7979,7 @@ document.addEventListener("DOMContentLoaded", function() {
     window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
   };
 
-  window.__v36_prev_renderTzaddikim_4 = function (list) {
+  window.renderTzaddikim = function (list) {
     var grid = el("tzaddikim-grid-container");
     if (!grid) return;
     grid.innerHTML = (list || []).map(function (t, idx) {
@@ -8005,7 +8005,7 @@ document.addEventListener("DOMContentLoaded", function() {
           '<div class="flex items-center justify-between gap-2">' +
             '<span class="px-2.5 py-0.5 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-full text-[11px] font-bold">📍 ' + safeCity + '</span>' +
             '<button type="button" onclick="openEntityFullPage(\'' + eKey + '\', \'דף קבר צדיק וסיפורי ישועות\', \'' + safeName + '\', \'' + safeTitle + '\', \'ציון הקודש ב' + safeCity + '\', \'פתוח 24/7 לתפילה ותהילים\', \'\', \'' + safeStory + '\', \'סיפורים • חוויות מהציון • בקשות תפילה\', \'' + imgUrl + '\')" class="text-xs font-black text-[#0F2340] hover:underline">' +
-              ' ' + stats.avg + ' (' + stats.count + ' סיפורים)' +
+              '★ ' + stats.avg + ' (' + stats.count + ' סיפורים)' +
             '</button>' +
           '</div>' +
           '<h3 class="text-lg font-black text-[#0F2340] serif-heading">' + t.name + '</h3>' +
@@ -8016,13 +8016,13 @@ document.addEventListener("DOMContentLoaded", function() {
           '<!-- שורה 1: תהילים (במקום הדלקת נר) + תרומה + מסלול ביקורים -->' +
           '<div class="grid grid-cols-3 gap-1.5">' +
             '<button type="button" onclick="openTzaddikTehillimModal(\'' + safeName + '\', 20)" class="py-2 bg-amber-500 text-white font-black rounded-xl text-xs flex items-center justify-center gap-1">' +
-              ' תהילים' +
+              '📖 תהילים' +
             '</button>' +
             '<button type="button" onclick="openDonateModal(\'תרומה להחזקת ציון ' + safeName + '\')" class="py-2 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] font-black rounded-xl text-xs flex items-center justify-center gap-1">' +
-              ' תרומה' +
+              '💝 תרומה' +
             '</button>' +
             '<button type="button" onclick="toggleTzaddikRouteStop(\'' + safeName + '\', \'' + safeCity + '\', \'' + safeAddr + '\')" class="py-2 ' + (inRoute ? "bg-emerald-700 text-white" : "bg-[#FDF8EF] text-[#0F2340] border border-[#D8CBB5]") + ' font-bold rounded-xl text-[11px] flex items-center justify-center gap-1">' +
-              (inRoute ? " במסלול" : " + מסלול") +
+              (inRoute ? "✓ במסלול" : "🗺️ + מסלול") +
             '</button>' +
           '</div>' +
 
@@ -8031,7 +8031,7 @@ document.addEventListener("DOMContentLoaded", function() {
             '<a href="' + wazeUrl + '" target="_blank" class="py-2 bg-[#FDF8EF] text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs text-center flex items-center justify-center gap-1">🚗 Waze</a>' +
             '<a href="' + waUrl + '" target="_blank" class="py-2 bg-[#FDF8EF] text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs text-center flex items-center justify-center gap-1">💬 וואטסאפ</a>' +
             '<button type="button" onclick="window.toggleCardCommentBox(\'' + boxId + '\')" class="py-2 bg-[#FDF8EF] text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs flex items-center justify-center gap-1">' +
-              ' תגובות (<span id="count-' + boxId + '">' + comments.length + '</span>)' +
+              '💬 תגובות (<span id="count-' + boxId + '">' + comments.length + '</span>)' +
             '</button>' +
           '</div>' +
 
@@ -8076,8 +8076,8 @@ document.addEventListener("DOMContentLoaded", function() {
     window.RELIGIOUS_SERVICES_DATA = base;
   }
 
-  var origRenderRelServices = window.__v36_prev_renderReligiousServicesDirectory_1;
-  window.__v36_prev_renderReligiousServicesDirectory_2 = function (filterType) {
+  var origRenderRelServices = window.__v37_prev_renderReligiousServicesDirectory_1;
+  window.renderReligiousServicesDirectory = function (filterType) {
     ensureAllReligiousServices();
     if (origRenderRelServices) origRenderRelServices(filterType);
   };
@@ -8160,7 +8160,7 @@ document.addEventListener("DOMContentLoaded", function() {
     window.renderChabad(list);
   };
 
-  window.__v36_prev_renderChabad_3 = function (list) {
+  window.renderChabad = function (list) {
     var grid = el("chabad-grid-container");
     if (!grid) return;
     grid.innerHTML = (list || []).map(function (c, idx) {
@@ -8183,7 +8183,7 @@ document.addEventListener("DOMContentLoaded", function() {
         '<div class="space-y-1.5">' +
           '<div class="flex items-center justify-between gap-2">' +
             '<span class="px-2.5 py-0.5 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-md text-xs font-bold">🌍 ' + safeCity + '</span>' +
-            '<button type="button" onclick="toggleChabadUploadForm(\'update\', {name:\'' + safeName + '\',shaliach:\'' + safeShaliach + '\',city:\'' + safeCity + '\',phone:\'' + phone + '\',services:\'' + safeServices + '\'})" class="text-xs font-bold text-[#5C4938] hover:text-[#0F2340] underline"> עדכן פרטים</button>' +
+            '<button type="button" onclick="toggleChabadUploadForm(\'update\', {name:\'' + safeName + '\',shaliach:\'' + safeShaliach + '\',city:\'' + safeCity + '\',phone:\'' + phone + '\',services:\'' + safeServices + '\'})" class="text-xs font-bold text-[#5C4938] hover:text-[#0F2340] underline">✏️ עדכן פרטים</button>' +
           '</div>' +
           '<h3 class="text-lg font-black text-[#0F2340] serif-heading">' + c.name + '</h3>' +
           '<p class="text-xs font-bold text-[#0F2340]">👑 השליח: ' + safeShaliach + '</p>' +
@@ -8197,7 +8197,7 @@ document.addEventListener("DOMContentLoaded", function() {
               '👥 קבוצת הקהילה / מטיילים' +
             '</a>' +
             '<button type="button" onclick="window.toggleCardCommentBox(\'' + boxId + '\')" class="py-2 bg-[#FDF8EF] text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs flex items-center justify-center gap-1">' +
-              ' תגובות (<span id="count-' + boxId + '">' + comments.length + '</span>)' +
+              '💬 תגובות (<span id="count-' + boxId + '">' + comments.length + '</span>)' +
             '</button>' +
           '</div>' +
           '<div class="grid grid-cols-2 gap-2">' +
@@ -8443,7 +8443,7 @@ document.addEventListener("DOMContentLoaded", function() {
     window.toast("📜 תעודת הכשרות עודכנה בהצלחה!");
   };
 
-  window.__v36_prev_renderRestaurants_3 = function (list) {
+  window.renderRestaurants = function (list) {
     var grid = el("restaurants-grid-container");
     if (!grid) return;
     grid.innerHTML = (list || []).map(function (r, idx) {
@@ -8471,7 +8471,7 @@ document.addEventListener("DOMContentLoaded", function() {
         '<div class="pt-2 border-t border-[#E5DBC7] space-y-2">' +
           '<div class="grid grid-cols-2 gap-2">' +
             '<button type="button" onclick="openKosherCertModal(\'' + rid + '\')" class="py-2 bg-amber-500 text-white font-black rounded-xl text-xs flex items-center justify-center gap-1">' +
-              ' תעודת כשרות' +
+              '📜 תעודת כשרות' +
             '</button>' +
             '<a href="' + websiteUrl + '" target="_blank" class="py-2 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] font-bold rounded-xl text-xs text-center flex items-center justify-center gap-1">' +
               '🌐 אתר המסעדה' +
@@ -8481,7 +8481,7 @@ document.addEventListener("DOMContentLoaded", function() {
             '<a href="' + wazeUrl + '" target="_blank" class="py-2 bg-[#FDF8EF] text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs text-center">🚗 Waze</a>' +
             '<a href="tel:' + phone + '" class="py-2 bg-[#FDF8EF] text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs text-center">📞 חייג</a>' +
             '<button type="button" onclick="window.toggleCardCommentBox(\'' + boxId + '\')" class="py-2 bg-[#FDF8EF] text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs">' +
-              ' תגובות (<span id="count-' + boxId + '">' + comments.length + '</span>)' +
+              '💬 תגובות (<span id="count-' + boxId + '">' + comments.length + '</span>)' +
             '</button>' +
           '</div>' +
           '<div id="' + boxId + '" class="hidden p-3 bg-[#F8F3E8] border border-[#E5DBC7] rounded-xl space-y-2 text-xs">' +
@@ -8573,7 +8573,7 @@ document.addEventListener("DOMContentLoaded", function() {
     window.toast("🤝 יישר כוח! הגמ״ח שלך נוסף למאגר החסד");
   };
 
-  window.__v36_prev_renderGemachim_4 = function (list) {
+  window.__v37_prev_renderGemachim_4 = function (list) {
     ensureRichGemachimData();
     var grid = el("gemachim-grid-container");
     if (!grid) return;
@@ -8597,14 +8597,14 @@ document.addEventListener("DOMContentLoaded", function() {
         '<div class="space-y-2">' +
           '<div class="flex items-center justify-between gap-2">' +
             '<span class="px-2.5 py-0.5 rounded-md bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] text-xs font-black">' + safeCat + '</span>' +
-            '<button type="button" onclick="openDonateModal(\'תרומה להחזקת ' + safeName + '\')" class="px-2.5 py-1 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-lg text-[11px] font-black"> תרומה לגמ״ח</button>' +
+            '<button type="button" onclick="openDonateModal(\'תרומה להחזקת ' + safeName + '\')" class="px-2.5 py-1 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-lg text-[11px] font-black">💝 תרומה לגמ״ח</button>' +
           '</div>' +
           '<h3 class="text-lg font-black text-[#0F2340] serif-heading">' + g.name + '</h3>' +
           '<p class="text-xs text-[#5C4938] leading-relaxed">' + safeDesc + '</p>' +
           '<div class="flex flex-wrap gap-1 pt-0.5">' +
             items.map(function (it) {
               var sIt = String(it).replace(/'/g, "");
-              return '<button type="button" onclick="searchGemachByItem(\'' + sIt + '\')" class="px-2 py-0.5 rounded bg-[#FDF8EF] border border-[#D8CBB5] text-[10px] font-bold text-[#0F2340]"> ' + it + '</button>';
+              return '<button type="button" onclick="searchGemachByItem(\'' + sIt + '\')" class="px-2 py-0.5 rounded bg-[#FDF8EF] border border-[#D8CBB5] text-[10px] font-bold text-[#0F2340]">🏷️ ' + it + '</button>';
             }).join("") +
           '</div>' +
           '<div class="text-[11px] text-[#5C4938] space-y-0.5 pt-1">' +
@@ -8620,7 +8620,7 @@ document.addEventListener("DOMContentLoaded", function() {
             '<a href="' + waUrl + '" target="_blank" class="py-2 bg-[#FDF8EF] text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs text-center">💬 וואטסאפ</a>' +
           '</div>' +
           '<button type="button" onclick="window.toggleCardCommentBox(\'' + boxId + '\')" class="w-full py-1.5 bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold rounded-xl text-xs">' +
-            ' תגובות ותודות (<span id="count-' + boxId + '">' + comments.length + '</span>)' +
+            '💬 תגובות ותודות (<span id="count-' + boxId + '">' + comments.length + '</span>)' +
           '</button>' +
           '<div id="' + boxId + '" class="hidden p-3 bg-[#F8F3E8] border border-[#E5DBC7] rounded-xl space-y-2 text-xs">' +
             '<div class="space-y-1.5 max-h-32 overflow-y-auto" id="list-' + boxId + '">' +
@@ -8680,7 +8680,7 @@ document.addEventListener("DOMContentLoaded", function() {
     window.toast("🏛️ הישיבה '" + name + "' נוספה בהצלחה למדריך עולם התורה!");
   };
 
-  window.__v36_prev_renderYeshivotAndMosdot_2 = function (query) {
+  window.renderYeshivotAndMosdot = function (query) {
     var grid = el("yeshivot-grid-container");
     if (!grid) return;
     var list = window.YESHIVOT_DATA || [];
@@ -8719,10 +8719,10 @@ document.addEventListener("DOMContentLoaded", function() {
         '<div class="pt-2 border-t border-[#E5DBC7] space-y-2">' +
           '<div class="grid grid-cols-2 gap-2">' +
             '<button type="button" onclick="' + donateClick + '" class="py-2 bg-amber-500 text-white font-black rounded-xl text-xs flex items-center justify-center gap-1">' +
-              ' תרומה לישיבה' +
+              '💝 תרומה לישיבה' +
             '</button>' +
             '<button type="button" onclick="window.toggleCardCommentBox(\'' + boxId + '\')" class="py-2 bg-white text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs flex items-center justify-center gap-1">' +
-              ' תגובות (<span id="count-' + boxId + '">' + comments.length + '</span>)' +
+              '💬 תגובות (<span id="count-' + boxId + '">' + comments.length + '</span>)' +
             '</button>' +
           '</div>' +
           '<div class="grid grid-cols-2 gap-2">' +
@@ -8780,10 +8780,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 // ============================================================================
-// V36 MASTER ARCHITECTURE, SECURITY (XSS), SMART HEBREW SEARCH & UNIFIED UI
+// V37 MASTER ENGINE — STORAGE_KEYS CLEANUP, MODAL BACKDROP & X BUTTON FIX,
+// DEBOUNCED HEBREW SEARCH, 5-TAB ARCHITECTURE, 2-COL LEARN GRID & UNIFIED CAROUSEL
 // ============================================================================
 (function () {
   "use strict";
+
+  // 1. מחיקה מיידית של המפתח השבור "undefined" מ-localStorage
+  try {
+    localStorage.removeItem("undefined");
+  } catch (e) {}
 
   var esc = window.escapeHtml || function (v) {
     if (v === null || v === undefined) return "";
@@ -8802,7 +8808,104 @@ document.addEventListener("DOMContentLoaded", function() {
     else fn();
   }
 
-  // עדכון מונה תוצאות חי ("מציג X תוצאות") בכל דפי הרשימה
+  // 2. תיקון מודאל ההלכה והדירוגים (#modal-entity-details וכל .modal-backdrop):
+  //    - לחיצה על הרקע הכהה מסביב סוגרת את החלון
+  //    - לחיצה על מקש Escape סוגרת את החלון
+  //    - וידוא כפתור X בולט בפינה העליונה של כל מודאל
+  function setupModalsBackdropAndCloseBtn() {
+    qsa(".modal-backdrop").forEach(function (backdrop) {
+      backdrop.addEventListener("click", function (ev) {
+        if (ev.target === backdrop && backdrop.id) {
+          if (backdrop.id === "modal-barcode-scanner" && window.stopBarcodeCamera) {
+            window.stopBarcodeCamera();
+          }
+          window.closeModal(backdrop.id);
+        }
+      });
+
+      // שדרוג כפתור ה-X הפנימי בכל המודאלים שיהיה בולט וברור
+      var closeBtns = qsa("button[onclick*='closeModal']", backdrop);
+      closeBtns.forEach(function (btn) {
+        if ((btn.textContent || "").trim() === "✕") {
+          btn.className = "modal-close-x-btn absolute top-4 left-4";
+          btn.innerHTML = "<span>✕</span><span>סגור</span>";
+        }
+      });
+    });
+
+    document.addEventListener("keydown", function (ev) {
+      if (ev.key === "Escape") {
+        qsa(".modal-backdrop:not(.hidden)").forEach(function (backdrop) {
+          if (backdrop.id) {
+            if (backdrop.id === "modal-barcode-scanner" && window.stopBarcodeCamera) {
+              window.stopBarcodeCamera();
+            }
+            window.closeModal(backdrop.id);
+          }
+        });
+      }
+    });
+  }
+
+  // 3. קרוסלה אחת מאוחדת של "תוכן מומלץ" בדף הבית (משלבת שיעורים וסרטונים)
+  window.renderHomeRecommendedCarousel = function () {
+    var box = el("home-recommended-carousel");
+    if (!box) return;
+
+    var shiurim = (window.RABBI_SHIURIM_DATA || []).slice(0, 4).map(function (s, idx) {
+      return {
+        key: "shiur_" + (s.id || ("s" + idx)),
+        badge: "שיעור מומלץ • " + (s.subCategory || s.topic || "תורה"),
+        title: s.title || "שיעור תורה",
+        speaker: s.rabbi || "רב בית המדרש",
+        duration: s.duration || "45:00",
+        desc: s.institution || "בית המדרש",
+        isVideo: false
+      };
+    });
+
+    var videos = (window.EDUCATIONAL_VIDEOS_DATA || []).slice(0, 4).map(function (v, idx) {
+      return {
+        key: "edu_" + (v.id || ("v" + idx)),
+        badge: "סרטון • " + (v.category || "חינוכי"),
+        title: v.title || "סרטון חינוכי",
+        speaker: v.speaker || "רב בית המדרש",
+        duration: v.duration || "20:00",
+        desc: v.description || "",
+        thumb: v.thumbnail || "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=600&q=80",
+        isVideo: true
+      };
+    });
+
+    // שילוב לסירוגין של שיעורים וסרטונים בקרוסלה אחת
+    var combined = [];
+    var maxLen = Math.max(shiurim.length, videos.length);
+    for (var i = 0; i < maxLen; i++) {
+      if (shiurim[i]) combined.push(shiurim[i]);
+      if (videos[i]) combined.push(videos[i]);
+    }
+
+    box.innerHTML = combined.map(function (item) {
+      return '<div class="shrink-0 w-64 sm:w-72 bg-[#FDF8EF] border border-[#E5DBC7] hover:border-[#C9A227] rounded-2xl p-4 flex flex-col justify-between gap-3 shadow-sm transition-all">' +
+        '<div class="space-y-2">' +
+          '<div class="flex items-center justify-between gap-2 text-xs">' +
+            '<span class="px-2.5 py-0.5 rounded-md bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] font-black">' + esc(item.badge) + '</span>' +
+            '<span class="font-mono text-[#5C4938] font-bold">' + esc(item.duration) + '</span>' +
+          '</div>' +
+          '<h4 class="text-base font-black text-[#0F2340] serif-heading leading-snug">' + esc(item.title) + '</h4>' +
+          '<p class="text-xs font-bold text-[#0F2340]">' + esc(item.speaker) + '</p>' +
+          (item.desc ? '<p class="text-xs text-[#5C4938] line-clamp-2">' + esc(item.desc) + '</p>' : '') +
+        '</div>' +
+        '<div class="pt-2 border-t border-[#E5DBC7] flex items-center justify-between gap-2">' +
+          '<button type="button" onclick="openEntityFullPage(\'' + escAttr(item.key) + '\', \'' + escAttr(item.badge) + '\', \'' + escAttr(item.title) + '\', \'' + escAttr(item.speaker) + '\', \'בית המדרש\', \'אורך: ' + escAttr(item.duration) + '\', \'\', \'' + escAttr(item.desc || item.title) + '\', \'בהירות • חיזוק\')" class="w-full py-2 bg-amber-500 hover:bg-amber-400 text-white font-black rounded-xl text-xs text-center">צפייה ותגובות</button>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  };
+
+  window.renderHomeCarousels = window.renderHomeRecommendedCarousel;
+
+  // 4. עדכון מונה תוצאות חי ("מציג X תוצאות") ותבנית דפי הרשימות
   window.updateLiveResultCounter = function (sectionKey, count, totalCount) {
     var badge = el("result-count-" + sectionKey);
     if (!badge) return;
@@ -8813,12 +8916,10 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   };
 
-  // הזרקת תבנית עיצוב אחידה לכל דפי הרשימות (שורת חיפוש Sticky + מונה תוצאות חי + כפתור צף "+ הוסף")
   var LIST_PAGE_CONFIGS = {
     minyanim: {
       viewId: "view-minyanim",
       title: "מניינים בזמן אמת",
-      subtitle: "שחרית, מנחה וערבית בבתי כנסת ושטיבלאך • קריאת מניין להשלמת עשירי",
       placeholder: "חיפוש מניין לפי שם בית כנסת, עיר, שכונה או נוסח...",
       addLabel: "+ הוסף מניין",
       addFn: function () { window.openCommunityAddModal("minyan"); }
@@ -8826,47 +8927,35 @@ document.addEventListener("DOMContentLoaded", function() {
     mikvaot: {
       viewId: "view-mikvaot",
       title: "מקוואות טהרה",
-      subtitle: "מקוואות נשים, גברים וכלים עם שעות פתיחה וניווט מהיר",
-      placeholder: "חיפוש מקווה לפי עיר, שכונה, כתובת או הערות...",
+      placeholder: "חיפוש מקווה לפי עיר, שכונה, כתובת או תיאור...",
       addLabel: "+ הוסף מקווה",
       addFn: function () { window.openCommunityAddModal("mikvah"); }
     },
     restaurants: {
       viewId: "view-restaurants",
       title: "מסעדות כשרות וסורק כשרות",
-      subtitle: "מסעדות כשרות למהדרין, תעודות כשרות מאומתות וסורק ברקוד מוצרים",
-      placeholder: "חיפוש מסעדה לפי שם, עיר, הכשר (בד״ץ / מהדרין) או תפריט...",
+      placeholder: "חיפוש מסעדה לפי שם, עיר, הכשר או תיאור...",
       addLabel: "+ הוסף מסעדה",
       addFn: function () {
         var box = el("inline-restaurant-upload-box");
-        if (box) {
-          box.classList.remove("hidden");
-          box.scrollIntoView({ behavior: "smooth", block: "center" });
-        } else {
-          window.openCommunityAddModal("restaurant");
-        }
+        if (box) { box.classList.remove("hidden"); box.scrollIntoView({ behavior: "smooth", block: "center" }); }
+        else window.openCommunityAddModal("restaurant");
       }
     },
     gemachim: {
       viewId: "view-gemachim",
       title: "גמ״חים וארגוני הצלה",
-      subtitle: "השאלת ציוד רפואי, תינוקות, שמחות, כלי עבודה וסיוע בדרכים",
-      placeholder: "חיפוש גמ״ח לפי פריט (עריסה, מחולל חמצן, מקדחה), תיאור או עיר...",
+      placeholder: "חיפוש גמ״ח לפי פריט, תיאור, קטגוריה או עיר...",
       addLabel: "+ הוסף גמ״ח",
       addFn: function () {
         var box = el("have-gemach-upload-box");
-        if (box) {
-          box.classList.remove("hidden");
-          box.scrollIntoView({ behavior: "smooth", block: "center" });
-        } else {
-          window.openCommunityAddModal("gemach");
-        }
+        if (box) { box.classList.remove("hidden"); box.scrollIntoView({ behavior: "smooth", block: "center" }); }
+        else window.openCommunityAddModal("gemach");
       }
     },
     rabbis: {
       viewId: "view-rabbis",
       title: "קו הלכה ורבנים פוסקים",
-      subtitle: "מענה הלכתי מפי רבנים ומורי הוראה, שליחת שאלה ותרומה להחזקת תורה",
       placeholder: "חיפוש רב פוסק או בית הוראה לפי שם, תחום הלכתי או עיר...",
       addLabel: "+ הוסף רב",
       addFn: function () { window.openCommunityAddModal("rabbi"); }
@@ -8874,37 +8963,30 @@ document.addEventListener("DOMContentLoaded", function() {
     chavruta: {
       viewId: "view-chavruta",
       title: "איתור חברותא ללימוד משותף",
-      subtitle: "לימוד גמרא, הלכה, פרשת השבוע או חסידות פנים אל פנים או בטלפון",
       placeholder: "חיפוש חברותא לפי נושא לימוד, שם או עיר...",
       addLabel: "+ הוסף חברותא",
       addFn: function () {
         var inp = el("chavruta-new-name");
-        if (inp) {
-          inp.scrollIntoView({ behavior: "smooth", block: "center" });
-          inp.focus();
-        }
+        if (inp) { inp.scrollIntoView({ behavior: "smooth", block: "center" }); inp.focus(); }
       }
     },
     customs: {
       viewId: "view-customs",
       title: "שירותי דת ובעלי מקצוע",
-      subtitle: "מוהלים מוסמכים, משגיחי כשרות, מדריכי חתנים, סופרי סת״ם ועורכי חופות",
-      placeholder: "חיפוש מוהל, משגיח כשרות, סופר סת״ם או מדריך חתנים לפי שם או עיר...",
+      placeholder: "חיפוש מוהל, משגיח כשרות, סופר סת״ם או מדריך חתנים...",
       addLabel: "+ הוסף שירות דת",
       addFn: function () { window.openCommunityAddModal("rabbi"); }
     },
     tzaddikim: {
       viewId: "view-tzaddikim",
       title: "קברי צדיקים, תהילים ומסלולי תפילה",
-      subtitle: "ציוני קודש בארץ ובעולם, אמירת תהילים בציון, תרומה ובניית מסלול ביקורים",
-      placeholder: "חיפוש צדיק לפי שם או כינוי (רשב״י, האר״י, בבא סאלי, רמב״ם), עיר או סגולה...",
+      placeholder: "חיפוש צדיק לפי שם, כינוי (רשב״י, האר״י, בבא סאלי), עיר או סגולה...",
       addLabel: "+ הוסף ציון צדיק",
       addFn: function () { window.openCommunityAddModal("tzaddik"); }
     },
     chabad: {
       viewId: "view-chabad",
       title: "בתי חב״ד בארץ ובעולם",
-      subtitle: "שלוחי חב״ד, תפילות, סעודות שבת, אוכל כשר וקבוצות וואטסאפ למטיילים",
       placeholder: "חיפוש בית חב״ד לפי עיר, מדינה, שם השליח או שירותים...",
       addLabel: "+ הוסף בית חב״ד",
       addFn: function () { window.toggleChabadUploadForm("new"); }
@@ -8912,24 +8994,18 @@ document.addEventListener("DOMContentLoaded", function() {
     yeshivot: {
       viewId: "view-yeshivot",
       title: "ישיבות, כוללים ומוסדות תורה",
-      subtitle: "מדריך עולם התורה, ראשי ישיבות, תרומה להחזקת תורה ותגובות",
       placeholder: "חיפוש ישיבה או כולל לפי שם המוסד, ראש הישיבה או עיר...",
       addLabel: "+ הוסף ישיבה",
       addFn: function () {
         var box = el("inline-yeshiva-upload-box");
-        if (box) {
-          box.classList.remove("hidden");
-          box.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
+        if (box) { box.classList.remove("hidden"); box.scrollIntoView({ behavior: "smooth", block: "center" }); }
       }
     }
   };
 
   window.triggerListFabAdd = function (sectionKey) {
     var cfg = LIST_PAGE_CONFIGS[sectionKey];
-    if (cfg && typeof cfg.addFn === "function") {
-      cfg.addFn();
-    }
+    if (cfg && typeof cfg.addFn === "function") cfg.addFn();
   };
 
   function setupUnifiedListPagesUI() {
@@ -8938,7 +9014,6 @@ document.addEventListener("DOMContentLoaded", function() {
       var view = el(cfg.viewId);
       if (!view) return;
 
-      // הזרקת סרגל חיפוש צמוד (Sticky) ומונה תוצאות חי בראש הדף אם טרם הוזרק
       if (!el("sticky-header-" + key)) {
         var stickyBar = document.createElement("div");
         stickyBar.id = "sticky-header-" + key;
@@ -8946,17 +9021,17 @@ document.addEventListener("DOMContentLoaded", function() {
         stickyBar.innerHTML =
           '<div class="flex flex-wrap items-center justify-between gap-2">' +
             '<div class="flex items-center gap-2">' +
-              '<button type="button" onclick="switchTab(\'find\')" class="px-3 py-1.5 rounded-xl bg-[#0F2340] text-white font-bold text-xs" style="color:#FFFFFF !important;">חזרה לקרוב אליי</button>' +
+              '<button type="button" onclick="switchTab(\'find\')" class="px-3 py-1.5 rounded-xl bg-[#0F766E] text-white font-bold text-xs" style="color:#FFFFFF !important;">חזרה לקרוב אליי</button>' +
               '<h3 class="text-base sm:text-lg font-black text-[#0F2340] serif-heading">' + esc(cfg.title) + '</h3>' +
             '</div>' +
             '<div class="flex items-center gap-2">' +
               '<span id="result-count-' + key + '" class="live-result-counter">מציג תוצאות</span>' +
-              '<button type="button" onclick="locateNearestByGPS(\'' + key + '\')" class="px-3 py-1.5 rounded-xl bg-white border border-[#C9A227] text-[#0F2340] font-bold text-xs">מיין לפי מרחק</button>' +
+              '<button type="button" onclick="locateNearestByGPS(\'' + key + '\')" class="px-3 py-1.5 rounded-xl bg-white border border-[#0D9488] text-[#0F766E] font-bold text-xs">מיין לפי מרחק</button>' +
             '</div>' +
           '</div>' +
           '<div class="flex items-center gap-2">' +
-            '<input id="sticky-search-input-' + key + '" type="search" placeholder="' + escAttr(cfg.placeholder) + '" class="flex-1 bg-white border border-[#D8CBB5] focus:border-[#C9A227] rounded-xl px-4 py-2.5 text-sm text-[#0F2340] outline-none">' +
-            (key === "restaurants" ? '<button type="button" onclick="openBarcodeScannerModal()" class="px-3.5 py-2.5 bg-amber-500 text-white font-black rounded-xl text-xs shrink-0">סורק ברקוד</button>' : '') +
+            '<input id="sticky-search-input-' + key + '" type="search" placeholder="' + escAttr(cfg.placeholder) + '" class="flex-1 bg-white border border-[#99F6E4] focus:border-[#0D9488] rounded-xl px-4 py-2.5 text-sm text-[#0F2340] outline-none">' +
+            (key === "restaurants" ? '<button type="button" onclick="openBarcodeScannerModal()" class="px-3.5 py-2.5 bg-[#0D9488] text-white font-black rounded-xl text-xs shrink-0" style="color:#FFFFFF !important;">סורק ברקוד</button>' : '') +
           '</div>';
 
         view.insertBefore(stickyBar, view.firstChild);
@@ -8972,7 +9047,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
       }
 
-      // הזרקת כפתור צף "+ הוסף" בפינת הדף
       if (!el("fab-add-" + key)) {
         var fab = document.createElement("button");
         fab.type = "button";
@@ -8984,7 +9058,7 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     });
 
-    // חיבור השהיית הקלדה (Debounce 200ms) לכל שאר שדות החיפוש בדפים
+    // חיבור השהיה (Debounce 200ms) לכל שדות החיפוש בדפים
     qsa("input[oninput*='filterFindSectionByQuery'], input[oninput*='renderYeshivotAndMosdot'], input[oninput*='renderRabbiShiurimList'], input[oninput*='handleLearnGlobalSearch'], #rest-search-input").forEach(function (inp) {
       var origAttr = inp.getAttribute("oninput");
       if (origAttr) {
@@ -9008,9 +9082,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-  // ==========================================================================
-  // שלב 1.3: תיקון חיפוש בתפריט הצד וחיפוש חכם בכל המדורים (עם נירמול וכינויים)
-  // ==========================================================================
+  // 5. תיקון חיפושים (נירמול עברית, Debounce, תפריט צד, וחיפוש בתיאורים בגמ"חים ובמקוואות ללא קריסות)
   window.handleGlobalSearch = function (e) {
     var rawQ = "";
     if (e && typeof e.targetValue === "string") {
@@ -9079,7 +9151,38 @@ document.addEventListener("DOMContentLoaded", function() {
     window.handleGlobalSearch({ key: "Enter", targetValue: q });
   };
 
-  // חיפוש חכם ומאוחד בכל מדורי "קרוב אליי" (כולל תיאורים, פריטים ומילון כינויים)
+  // תיקון קריסות וחיפוש בתיאורים בגמ"חים, מקוואות וכל מדורי "קרוב אליי"
+  window.filterGemachimByCategory = function (cat) {
+    var allGem = window.GEMACHIM_DATA || [];
+    if (!cat || cat === "all") {
+      window.renderGemachim(allGem);
+      return;
+    }
+    var filtered = allGem.filter(function (g) {
+      if (!g) return false;
+      var itemsStr = Array.isArray(g.items) ? g.items.join(" ") : String(g.items || "");
+      return window.matchesSmartSearch([g.name, g.category, g.city, g.address, g.description, g.desc, itemsStr], cat);
+    });
+    window.renderGemachim(filtered);
+  };
+
+  window.filterMikvaot = function (typeOrQuery) {
+    var allMik = window.MIKVAOT_DATA || [];
+    if (!typeOrQuery || typeOrQuery === "all") {
+      window.renderMikvaot(allMik);
+      return;
+    }
+    if (typeOrQuery === "open") {
+      window.renderMikvaot(allMik.filter(function (m) { return m && m.isOpen !== false; }));
+      return;
+    }
+    var filtered = allMik.filter(function (m) {
+      if (!m) return false;
+      return window.matchesSmartSearch([m.name, m.city, m.address, m.type, m.hours, m.notes, m.description, m.desc], typeOrQuery);
+    });
+    window.renderMikvaot(filtered);
+  };
+
   window.filterFindSectionByQuery = function (sectionType, query) {
     var q = (query || "").trim();
     var stickyInp = el("sticky-search-input-" + sectionType);
@@ -9088,46 +9191,40 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     if (sectionType === "minyanim") {
-      var allMinyanim = window.MINYANIM_DATA || [];
-      var listMin = allMinyanim.filter(function (m) {
-        return window.matchesSmartSearch([m.name, m.city, m.address, m.nusach, m.type, m.shacharit, m.mincha, m.arvit], q);
+      var listMin = (window.MINYANIM_DATA || []).filter(function (m) {
+        return m && window.matchesSmartSearch([m.name, m.city, m.address, m.nusach, m.type, m.shacharit, m.mincha, m.arvit], q);
       });
       window.renderMinyanim(listMin);
     } else if (sectionType === "rabbis") {
-      var allRabbis = window.RABBIS_DATA || [];
-      var listRab = allRabbis.filter(function (r) {
-        return window.matchesSmartSearch([r.name, r.title, r.specialty, r.city, r.hours, r.phone, r.description], q);
+      var listRab = (window.RABBIS_DATA || []).filter(function (r) {
+        return r && window.matchesSmartSearch([r.name, r.title, r.specialty, r.city, r.hours, r.phone, r.description], q);
       });
       window.renderRabbis(listRab);
     } else if (sectionType === "gemachim") {
-      var allGemachim = window.GEMACHIM_DATA || [];
-      var listGem = allGemachim.filter(function (g) {
+      var listGem = (window.GEMACHIM_DATA || []).filter(function (g) {
+        if (!g) return false;
         var itemsStr = Array.isArray(g.items) ? g.items.join(" ") : String(g.items || "");
         return window.matchesSmartSearch([g.name, g.category, g.city, g.address, g.description, g.desc, itemsStr, g.hours], q);
       });
       window.renderGemachim(listGem);
     } else if (sectionType === "mikvaot") {
-      var allMikvaot = window.MIKVAOT_DATA || [];
-      var listMik = allMikvaot.filter(function (m) {
-        return window.matchesSmartSearch([m.name, m.city, m.address, m.type, m.hours, m.notes, m.description, m.desc], q);
+      var listMik = (window.MIKVAOT_DATA || []).filter(function (m) {
+        return m && window.matchesSmartSearch([m.name, m.city, m.address, m.type, m.hours, m.notes, m.description, m.desc], q);
       });
       window.renderMikvaot(listMik);
     } else if (sectionType === "chabad") {
-      var allChabad = window.CHABAD_DATA || [];
-      var listChb = allChabad.filter(function (c) {
-        return window.matchesSmartSearch([c.name, c.city, c.country, c.shaliach, c.rabbi, c.address, c.services, c.description], q);
+      var listChb = (window.CHABAD_DATA || []).filter(function (c) {
+        return c && window.matchesSmartSearch([c.name, c.city, c.country, c.shaliach, c.rabbi, c.address, c.services, c.description], q);
       });
       window.renderChabad(listChb);
     } else if (sectionType === "tzaddikim") {
-      var allTz = window.TZADDIKIM_DATA || [];
-      var listTz = allTz.filter(function (t) {
-        return window.matchesSmartSearch([t.name, t.title, t.city, t.region, t.location, t.address, t.segula, t.story, t.description, t.desc], q);
+      var listTz = (window.TZADDIKIM_DATA || []).filter(function (t) {
+        return t && window.matchesSmartSearch([t.name, t.title, t.city, t.region, t.location, t.address, t.segula, t.story, t.description, t.desc], q);
       });
       window.renderTzaddikim(listTz);
     } else if (sectionType === "restaurants") {
-      var allRest = window.RESTAURANTS_DATA || [];
-      var listRest = allRest.filter(function (r) {
-        return window.matchesSmartSearch([r.name, r.city, r.address, r.type, r.hechsher, r.desc, r.description, r.kosherCertInfo], q);
+      var listRest = (window.RESTAURANTS_DATA || []).filter(function (r) {
+        return r && window.matchesSmartSearch([r.name, r.city, r.address, r.type, r.hechsher, r.desc, r.description, r.kosherCertInfo], q);
       });
       window.renderRestaurants(listRest);
     } else if (sectionType === "chavruta") {
@@ -9135,20 +9232,42 @@ document.addEventListener("DOMContentLoaded", function() {
     } else if (sectionType === "yeshivot") {
       window.renderYeshivotAndMosdot(q);
     } else if (sectionType === "customs") {
-      var allSrv = window.RELIGIOUS_SERVICES_DATA || [];
-      var listSrv = allSrv.filter(function (s) {
-        return window.matchesSmartSearch([s.name, s.category, s.city, s.description, s.phone], q);
+      var listSrv = (window.RELIGIOUS_SERVICES_DATA || []).filter(function (s) {
+        return s && window.matchesSmartSearch([s.name, s.category, s.city, s.description, s.phone], q);
       });
       window.renderReligiousServicesList(listSrv);
     }
   };
 
-  // ==========================================================================
-  // שלב 2: ארכיטקטורה וניווט — 5 טאבים בסרגל התחתון ובראשי:
-  // 1. בית (feed) | 2. ללמוד (series) | 3. תפילה וזמנים (siddur) | 4. קרוב אליי (find) | 5. קהילה (forum)
-  // ==========================================================================
+  // 6. עדכון ניווט רשת 2 העמודות הקומפקטית במדור "ללמוד"
+  function setActiveLearnCompactButton(activeId) {
+    qsa("#view-series .learn-compact-btn").forEach(function (b) {
+      b.classList.toggle("active", b.id === activeId);
+    });
+  }
 
-  // העברת תוכן הזמנים ולוח השנה לתוך לשונית "זמני היום ולוח השנה" בטאב "תפילה וזמנים"
+  var prevSwitchLearnMainTab = window.__v37_prev_switchLearnMainTab_1;
+  window.switchLearnMainTab = function (tabKey) {
+    if (prevSwitchLearnMainTab) prevSwitchLearnMainTab(tabKey);
+    if (tabKey === "shiurim") setActiveLearnCompactButton("learn-main-tab-shiurim");
+    else if (tabKey === "quizzes") setActiveLearnCompactButton("learn-main-tab-quizzes");
+  };
+
+  var prevSwitchLibSub = window.__v37_prev_switchLibrarySubTab_3;
+  window.switchLibrarySubTab = function (sub) {
+    if (prevSwitchLibSub) prevSwitchLibSub(sub);
+    if (sub === "courses") {
+      setActiveLearnCompactButton("learn-main-tab-courses");
+    } else if (sub === "liveshiurim") {
+      setActiveLearnCompactButton("learn-main-tab-shiurim");
+    } else if (sub === "quizzes") {
+      setActiveLearnCompactButton("learn-main-tab-quizzes");
+    } else {
+      setActiveLearnCompactButton("lib-btn-" + sub);
+    }
+  };
+
+  // 7. העברת זמני היום ולוח השנה לתוך טאב "תפילה וזמנים", והגרלות/צדקה לתוך טאב "קהילה"
   function mountZmanimInsidePrayTab() {
     var zView = el("view-zmanim");
     var zHost = el("pray-zmanim-host");
@@ -9159,7 +9278,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  // העברת הגרלות, צדקה ולוח תפילות לתוך לשוניות טאב "קהילה" (#view-forum)
   function mountCommunityPanels() {
     var rafHost = el("comm-raffles-host");
     var charHost = el("comm-charity-host");
@@ -9167,13 +9285,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (rafHost && !rafHost.innerHTML.trim()) {
       rafHost.innerHTML =
-        '<div class="bg-white border border-[#E5DBC7] p-5 rounded-2xl space-y-4 shadow-sm">' +
-          '<div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#E5DBC7] pb-3">' +
+        '<div class="bg-white border border-[#FED7AA] p-5 rounded-2xl space-y-4 shadow-sm">' +
+          '<div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#FED7AA] pb-3">' +
             '<div>' +
               '<h3 class="text-xl font-black text-[#0F2340] serif-heading">מערך ההגרלות והמכירות הסיניות</h3>' +
-              '<p class="text-xs text-[#5C4938]">הגרלות על ספר תורה, טיסה לקברי צדיקים ופרסים יקרי ערך להחזקת תורה וחסד</p>' +
+              '<p class="text-xs text-[#5C4938]">הגרלות על ספר תורה, טיסה לקברי צדיקים ופרסים להחזקת תורה וחסד</p>' +
             '</div>' +
-            '<button type="button" onclick="openDonateModal(\'השתתפות בהגרלות הקודש\')" class="px-4 py-2 bg-amber-500 text-white font-black rounded-xl text-xs">רכישת כרטיס הגרלה</button>' +
+            '<button type="button" onclick="openDonateModal(\'השתתפות בהגרלות הקודש\')" class="px-4 py-2 bg-[#EA580C] text-white font-black rounded-xl text-xs" style="color:#FFFFFF !important;">רכישת כרטיס הגרלה</button>' +
           '</div>' +
           '<div id="comm-raffles-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>' +
         '</div>';
@@ -9181,19 +9299,19 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (charHost && !charHost.innerHTML.trim()) {
       charHost.innerHTML =
-        '<div class="bg-white border border-[#E5DBC7] p-5 rounded-2xl space-y-5 shadow-sm">' +
-          '<div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#E5DBC7] pb-3">' +
+        '<div class="bg-white border border-[#FED7AA] p-5 rounded-2xl space-y-5 shadow-sm">' +
+          '<div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#FED7AA] pb-3">' +
             '<div>' +
               '<h3 class="text-xl font-black text-[#0F2340] serif-heading">קמפיינים לצדקה וספר הפרנסים</h3>' +
               '<p class="text-xs text-[#5C4938]">שותפות בהפצת תורה, סיוע למשפחות נזקקות והנצחת יקירים בלוח התורמים</p>' +
             '</div>' +
             '<div class="flex items-center gap-2">' +
-              '<button type="button" onclick="openDonateModal(\'תרומה כללית לצדקה וחסד\')" class="px-4 py-2 bg-amber-500 text-white font-black rounded-xl text-xs">תרום עכשיו</button>' +
-              '<button type="button" onclick="switchTab(\'judaica\')" class="px-3.5 py-2 bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold rounded-xl text-xs">חנות יודאיקה</button>' +
+              '<button type="button" onclick="openDonateModal(\'תרומה כללית לצדקה וחסד\')" class="px-4 py-2 bg-[#EA580C] text-white font-black rounded-xl text-xs" style="color:#FFFFFF !important;">תרום עכשיו</button>' +
+              '<button type="button" onclick="switchTab(\'judaica\')" class="px-3.5 py-2 bg-[#FFF7ED] border border-[#FDBA74] text-[#0F2340] font-bold rounded-xl text-xs">חנות יודאיקה</button>' +
             '</div>' +
           '</div>' +
           '<div id="comm-campaigns-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>' +
-          '<div class="pt-4 border-t border-[#E5DBC7] space-y-3">' +
+          '<div class="pt-4 border-t border-[#FED7AA] space-y-3">' +
             '<h4 class="text-lg font-black text-[#0F2340] serif-heading">ספר התורמים והפרנסים</h4>' +
             '<div id="comm-donors-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>' +
           '</div>' +
@@ -9202,23 +9320,23 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (prayHost && !prayHost.innerHTML.trim()) {
       prayHost.innerHTML =
-        '<div class="bg-white border border-[#E5DBC7] p-5 rounded-2xl space-y-4 shadow-sm">' +
-          '<div class="border-b border-[#E5DBC7] pb-3">' +
+        '<div class="bg-white border border-[#FED7AA] p-5 rounded-2xl space-y-4 shadow-sm">' +
+          '<div class="border-b border-[#FED7AA] pb-3">' +
             '<h3 class="text-xl font-black text-[#0F2340] serif-heading">לוח תפילות קהילתי והקדשות</h3>' +
-            '<p class="text-xs text-[#5C4938]">הוסיפו שם לתפילה לרפואה שלמה, זיווג הגון, פרנסה או עילוי נשמה והצטרפו באמירת אמן</p>' +
+            '<p class="text-xs text-[#5C4938]">הוסיפו שם לתפילה לרפואה שלמה, זיווג הגון, פרנסה או עילוי נשמה</p>' +
           '</div>' +
-          '<div class="bg-[#F8F3E8] border border-[#E5DBC7] p-4 rounded-xl grid grid-cols-1 sm:grid-cols-4 gap-2.5">' +
-            '<input id="comm-pw-name" type="text" placeholder="שם לתפילה (פלוני בן פלונית)" class="bg-white border border-[#D8CBB5] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">' +
-            '<select id="comm-pw-cat" class="bg-white border border-[#D8CBB5] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">' +
+          '<div class="bg-[#FFF7ED] border border-[#FED7AA] p-4 rounded-xl grid grid-cols-1 sm:grid-cols-4 gap-2.5">' +
+            '<input id="comm-pw-name" type="text" placeholder="שם לתפילה (פלוני בן פלונית)" class="bg-white border border-[#FDBA74] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">' +
+            '<select id="comm-pw-cat" class="bg-white border border-[#FDBA74] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">' +
               '<option value="לרפואה שלמה">לרפואה שלמה</option>' +
               '<option value="לזיווג הגון ופרי בטן">לזיווג הגון ופרי בטן</option>' +
               '<option value="לפרנסה והצלחה">לפרנסה והצלחה</option>' +
               '<option value="לעילוי נשמה">לעילוי נשמה</option>' +
             '</select>' +
-            '<input id="comm-pw-tzaddik" type="text" placeholder="בזכות הצדיק (למשל: רשב״י)" class="bg-white border border-[#D8CBB5] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">' +
-            '<input id="comm-pw-req" type="text" placeholder="בקשה קצרה..." class="bg-white border border-[#D8CBB5] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">' +
+            '<input id="comm-pw-tzaddik" type="text" placeholder="בזכות הצדיק (למשל: רשב״י)" class="bg-white border border-[#FDBA74] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">' +
+            '<input id="comm-pw-req" type="text" placeholder="בקשה קצרה..." class="bg-white border border-[#FDBA74] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">' +
           '</div>' +
-          '<button type="button" onclick="addCommunityPrayerFromHub()" class="px-5 py-2.5 bg-amber-500 text-white font-black rounded-xl text-xs">פרסם שם בלוח התפילות</button>' +
+          '<button type="button" onclick="addCommunityPrayerFromHub()" class="px-5 py-2.5 bg-[#EA580C] text-white font-black rounded-xl text-xs" style="color:#FFFFFF !important;">פרסם שם בלוח התפילות</button>' +
           '<div id="comm-prayer-wall-cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2"></div>' +
         '</div>';
     }
@@ -9232,8 +9350,10 @@ document.addEventListener("DOMContentLoaded", function() {
       var panel = el("comm-panel-" + k);
       if (btn) {
         btn.className = (k === active)
-          ? "py-2.5 px-3 rounded-xl bg-amber-500 text-white font-black text-xs shadow-sm"
-          : "py-2.5 px-3 rounded-xl bg-[#FDF8EF] text-[#0F2340] border border-[#D8CBB5] font-bold text-xs";
+          ? "py-2.5 px-3 rounded-xl bg-[#EA580C] text-white font-black text-xs shadow-sm"
+          : "py-2.5 px-3 rounded-xl bg-white text-[#0F2340] border border-[#FDBA74] font-bold text-xs";
+        if (k === active) btn.style.color = "#FFFFFF";
+        else btn.style.color = "";
       }
       if (panel) panel.classList.toggle("hidden", k !== active);
     });
@@ -9262,10 +9382,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var c = val("comm-pw-cat") || "לרפואה שלמה";
     var tz = val("comm-pw-tzaddik") || "כלל צדיקי הדורות";
     var r = val("comm-pw-req") || "לישועה וברכה";
-    if (!n) {
-      window.toast("נא להזין שם לתפילה");
-      return;
-    }
+    if (!n) { window.toast("נא להזין שם לתפילה"); return; }
     if (el("pw-name-input")) el("pw-name-input").value = n;
     if (el("pw-cat-select")) el("pw-cat-select").value = c;
     if (el("pw-tzaddik-input")) el("pw-tzaddik-input").value = tz;
@@ -9275,9 +9392,7 @@ document.addEventListener("DOMContentLoaded", function() {
     window.switchCommunitySubTab("prayers");
   };
 
-  // דף "קרוב אליי" (#view-find) מחולק ל-5 קבוצות ברורות:
-  // 1. תפילה (מניינים, מקוואות) | 2. אוכל (מסעדות, סורק ברקוד) | 3. חסד (גמ"חים, הצלה)
-  // 4. אנשים (רבנים, חברותא, שירותי דת) | 5. מקומות (קברי צדיקים, חב"ד, ישיבות)
+  // דף "קרוב אליי" (#view-find) מחולק ל-5 קבוצות עם עיצוב ירוק/טורקיז מזוהה
   var NEAR_ME_GROUPS = [
     {
       groupTitle: "1. תפילה",
@@ -9327,30 +9442,30 @@ document.addEventListener("DOMContentLoaded", function() {
     var root = el("find-hub-root");
     if (!root) return;
     root.innerHTML =
-      '<div class="bg-white border-2 border-[#C9A227] p-5 rounded-2xl space-y-3 shadow-sm">' +
+      '<div class="section-theme-banner p-5 rounded-2xl space-y-3 shadow-sm">' +
         '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">' +
           '<div>' +
-            '<span class="px-2.5 py-0.5 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-md text-xs font-black">קרוב אליי • 5 קבוצות מיקוד</span>' +
-            '<h2 class="text-2xl font-black text-[#0F2340] serif-heading mt-1">איתור שירותי יהדות, תפילה, אוכל, חסד, אנשים ומקומות</h2>' +
+            '<span class="px-2.5 py-0.5 bg-[#0D9488] text-white rounded-md text-xs font-black inline-block mb-1" style="color:#FFFFFF !important;">קרוב אליי • 5 קבוצות</span>' +
+            '<h2 class="text-2xl font-black text-[#0F2340] serif-heading">קרוב אליי • תפילה, אוכל, חסד, אנשים ומקומות</h2>' +
             '<p class="text-sm text-[#5C4938]">בחר קטגוריה מתוך 5 הקבוצות או חפש ישירות בכל המאגרים הקרובים אליך</p>' +
           '</div>' +
-          '<button id="tt-geo-global" type="button" onclick="locateNearestByGPS()" class="px-4 py-2.5 bg-amber-500 text-white font-black rounded-xl text-xs shrink-0 shadow-sm">מיין לפי מרחק GPS ממני</button>' +
+          '<button id="tt-geo-global" type="button" onclick="locateNearestByGPS()" class="px-4 py-2.5 bg-[#0D9488] text-white font-black rounded-xl text-xs shrink-0 shadow-sm" style="color:#FFFFFF !important;">מיין לפי מרחק GPS ממני</button>' +
         '</div>' +
         '<div class="pt-1">' +
-          '<input id="near-me-master-search" type="search" placeholder="חיפוש מהיר בקרוב אליי (למשל: רשב״י, מקווה, מסעדה בבני ברק, עריסה לתינוק)..." class="w-full bg-[#FDF8EF] border border-[#D8CBB5] focus:border-[#C9A227] rounded-xl px-4 py-2.5 text-sm text-[#0F2340] outline-none">' +
+          '<input id="near-me-master-search" type="search" placeholder="חיפוש מהיר בקרוב אליי (למשל: רשב״י, מקווה, מסעדה בבני ברק, עריסה לתינוק)..." class="w-full bg-white border border-[#0D9488] rounded-xl px-4 py-2.5 text-sm text-[#0F2340] outline-none">' +
         '</div>' +
       '</div>' +
       '<div class="space-y-4 mt-4">' +
         NEAR_ME_GROUPS.map(function (grp) {
           return '<div class="near-me-group-card space-y-3">' +
-            '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-[#E5DBC7] pb-2">' +
+            '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-[#99F6E4] pb-2">' +
               '<h3 class="text-lg font-black text-[#0F2340] serif-heading">' + esc(grp.groupTitle) + '</h3>' +
-              '<span class="text-xs text-[#5C4938] font-bold">' + esc(grp.groupDesc) + '</span>' +
+              '<span class="text-xs text-[#0F766E] font-bold">' + esc(grp.groupDesc) + '</span>' +
             '</div>' +
             '<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">' +
               grp.items.map(function (it) {
                 var clickAttr = it.action ? it.action : ("switchTab('" + it.tab + "')");
-                return '<button type="button" onclick="' + clickAttr + '" class="tt-tile hover:bg-[#FDF8EF]">' +
+                return '<button type="button" onclick="' + clickAttr + '" class="tt-tile hover:bg-[#F0FDFA]">' +
                   '<strong>' + esc(it.title) + '</strong>' +
                   '<span>' + esc(it.desc) + '</span>' +
                 '</button>';
@@ -9370,7 +9485,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   };
 
-  // ניווט 4 לשוניות בטאב "תפילה וזמנים": סידור תפילה | ספר תהילים | זמני היום ולוח השנה | מנהגים
   window.switchPraySubTab = function (sub) {
     mountZmanimInsidePrayTab();
     var targetSub = sub || "siddur";
@@ -9382,8 +9496,10 @@ document.addEventListener("DOMContentLoaded", function() {
       var panel = el("pray-sub-" + k);
       if (btn) {
         btn.className = (k === targetSub)
-          ? "py-3 px-4 rounded-2xl bg-amber-500 text-white font-black text-sm flex items-center justify-center gap-2 shadow-sm"
-          : "py-3 px-4 rounded-2xl bg-white text-[#0F2340] border border-[#D8CBB5] font-bold text-sm flex items-center justify-center gap-2";
+          ? "py-3 px-4 rounded-2xl bg-[#7E22CE] text-white font-black text-sm flex items-center justify-center gap-2 shadow-sm"
+          : "py-3 px-4 rounded-2xl bg-white text-[#0F2340] border border-[#D8B4FE] font-bold text-sm flex items-center justify-center gap-2";
+        if (k === targetSub) btn.style.color = "#FFFFFF";
+        else btn.style.color = "";
       }
       if (panel) panel.classList.toggle("hidden", k !== targetSub);
     });
@@ -9399,20 +9515,14 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   };
 
-  // ניווט ראשי switchTab מותאם ל-5 הטאבים החדשים
   window.switchTab = function (tabId, mode) {
     mountZmanimInsidePrayTab();
     mountCommunityPanels();
 
-    var alias = {
-      learn: "series",
-      pray: "siddur",
-      community: "forum"
-    };
+    var alias = { learn: "series", pray: "siddur", community: "forum" };
     if (alias[tabId]) tabId = alias[tabId];
     if (window.closeSideMenu) window.closeSideMenu();
 
-    // אם ביקשו זמנים ולוח שנה -> פותח את טאב "תפילה וזמנים" בלשונית "זמני היום ולוח השנה"
     if (tabId === "zmanim") {
       currentTab = "siddur";
       qsa(".view-section").forEach(function (s) { s.classList.remove("active"); });
@@ -9424,7 +9534,6 @@ document.addEventListener("DOMContentLoaded", function() {
       return;
     }
 
-    // אם ביקשו הגרלות / תרומות / לתת ולקנות -> פותח את טאב "קהילה" בלשונית המתאימה
     if (tabId === "raffles" || tabId === "givebuy" || tabId === "donate" || tabId === "donors") {
       currentTab = "forum";
       qsa(".view-section").forEach(function (s) { s.classList.remove("active"); });
@@ -9445,7 +9554,6 @@ document.addEventListener("DOMContentLoaded", function() {
     var fbar = el("tt-focus-bar");
     if (fbar) fbar.classList.add("hidden");
 
-    // חשיפת כל התוכן בתתי-המדורים של קרוב אליי וללמוד
     if (target) {
       Array.prototype.slice.call(target.children).forEach(function (child) {
         if (!child.classList.contains("find-top-cat-nav")) {
@@ -9474,198 +9582,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (ab) ab.classList.add("active");
   }
 
-  // ==========================================================================
-  // תפריט צד (☰) מעודכן ל-5 הקטגוריות הראשיות של V36 (ללא אימוג'ים בכפתורים)
-  // ==========================================================================
-  var V36_SIDE_MENU = [
-    {
-      title: "בית",
-      badge: "ראשי",
-      mainAction: function () { window.switchTab("feed"); },
-      subs: [
-        { t: "היום ביהדות ופרשת השבוע", fn: function () { window.switchTab("feed"); } },
-        { t: "סרטון יומי וחדשות עולם התורה", fn: function () { window.switchTab("feed"); } },
-        { t: "פינת החיזוק היומי", fn: function () { window.switchTab("feed"); } },
-        { t: "מצב שבת וחג", fn: function () { window.switchTab("myzone"); if (window.switchMyZoneSubTab) window.switchMyZoneSubTab("settings"); } }
-      ]
-    },
-    {
-      title: "ללמוד",
-      badge: "בית המדרש",
-      mainAction: function () { window.switchTab("series"); window.switchLibrarySubTab("torah"); },
-      subs: [
-        { t: "פרשה וחמישה חומשי תורה", fn: function () { window.switchTab("series"); window.switchLibrarySubTab("torah"); } },
-        { t: "תנ״ך (נביאים וכתובים)", fn: function () { window.switchTab("series"); window.switchLibrarySubTab("nach"); } },
-        { t: "שיעורי תורה (הלכה, אמונה, חסידות)", fn: function () { window.switchTab("series"); window.switchLearnMainTab("shiurim"); } },
-        { t: "קורסים שבועיים (חינם ובתשלום)", fn: function () { window.switchTab("series"); window.switchLibrarySubTab("courses"); } },
-        { t: "סיפורי צדיקים", fn: function () { window.switchTab("series"); window.switchLibrarySubTab("tzaddikim_stories"); } },
-        { t: "חידונים ואתגרי ידע", fn: function () { window.switchTab("series"); window.switchLearnMainTab("quizzes"); } }
-      ]
-    },
-    {
-      title: "תפילה וזמנים",
-      badge: "סידור ולוח",
-      mainAction: function () { window.switchTab("siddur"); window.switchPraySubTab("siddur"); },
-      subs: [
-        { t: "סידור תפילה המלא", fn: function () { window.switchTab("siddur"); window.switchPraySubTab("siddur"); } },
-        { t: "ספר תהילים (פרקים א׳–ק״נ)", fn: function () { window.switchTab("siddur"); window.switchPraySubTab("tehillim"); } },
-        { t: "זמני היום בהלכה ולוח השנה", fn: function () { window.switchTab("siddur"); window.switchPraySubTab("zmanim"); } },
-        { t: "מנהגי ישראל והלכות היום", fn: function () { window.switchTab("siddur"); window.switchPraySubTab("customs"); } }
-      ]
-    },
-    {
-      title: "קרוב אליי",
-      badge: "5 קבוצות",
-      mainAction: function () { window.switchTab("find"); },
-      subs: [
-        { t: "תפילה: מניינים ומקוואות", fn: function () { window.switchTab("minyanim"); } },
-        { t: "אוכל: מסעדות כשרות וסורק ברקוד", fn: function () { window.switchTab("restaurants"); } },
-        { t: "חסד: גמ״חים וארגוני הצלה", fn: function () { window.switchTab("gemachim"); } },
-        { t: "אנשים: רבנים, חברותא ושירותי דת", fn: function () { window.switchTab("rabbis"); } },
-        { t: "מקומות: קברי צדיקים, חב״ד וישיבות", fn: function () { window.switchTab("tzaddikim"); } }
-      ]
-    },
-    {
-      title: "קהילה",
-      badge: "פורום וחסד",
-      mainAction: function () { window.switchTab("forum"); window.switchCommunitySubTab("forum"); },
-      subs: [
-        { t: "פורום הקהילה ובית המדרש החברתי", fn: function () { window.switchTab("forum"); window.switchCommunitySubTab("forum"); } },
-        { t: "הגרלות הקודש", fn: function () { window.switchTab("forum"); window.switchCommunitySubTab("raffles"); } },
-        { t: "צדקה, קמפיינים וספר הפרנסים", fn: function () { window.switchTab("forum"); window.switchCommunitySubTab("charity"); } },
-        { t: "לוח תפילות קהילתי", fn: function () { window.switchTab("forum"); window.switchCommunitySubTab("prayers"); } },
-        { t: "חנות יודאיקה וספרי קודש", fn: function () { window.switchTab("judaica"); } }
-      ]
-    }
-  ];
-
-  window.openSideMenu = function () {
-    var mb = el("tt-menu-body");
-    if (mb) {
-      var logged = !!window.__ttUser || !!(typeof currentUserAccount !== "undefined" && currentUserAccount && currentUserAccount.isRegistered);
-      var html = "";
-      V36_SIDE_MENU.forEach(function (cat, ci) {
-        html += '<button type="button" class="tt-menu-main-cat" data-v36-main="' + ci + '">' +
-          '<span>' + esc(cat.title) + '</span>' +
-          '<span class="tt-main-cat-badge">' + esc(cat.badge) + ' ←</span>' +
-        '</button>';
-        cat.subs.forEach(function (sub, si) {
-          html += '<button type="button" class="tt-menu-sub-item" data-v36-cat="' + ci + '" data-v36-sub="' + si + '">• ' + esc(sub.t) + '</button>';
-        });
-      });
-      html += '<div class="tt-menu-group" style="margin-top:8px;">חשבון וניהול</div>';
-      html += '<button type="button" class="tt-menu-main-cat" data-v36-special="personal"><span>האזור האישי שלי</span><span class="tt-main-cat-badge">פרופיל ←</span></button>';
-      html += '<button type="button" class="tt-menu-sub-item" data-v36-special="admin">• פאנל ניהול מערכת (Admin)</button>';
-      html += logged
-        ? '<button type="button" class="tt-menu-sub-item" data-v36-special="logout">• התנתקות מהחשבון</button>'
-        : '<button type="button" class="tt-menu-sub-item" data-v36-special="login">• התחברות / הרשמה בחינם</button>';
-      mb.innerHTML = html;
-    }
-    document.body.classList.add("tt-menu-open");
-    var m = el("tt-side-menu"); if (m) m.setAttribute("aria-hidden", "false");
-    var b = el("tt-burger-btn"); if (b) b.setAttribute("aria-expanded", "true");
-  };
-
-  onReady(function () {
-    var mb = el("tt-menu-body");
-    if (mb) {
-      mb.addEventListener("click", function (ev) {
-        var mainBtn = ev.target.closest ? ev.target.closest("[data-v36-main]") : null;
-        if (mainBtn) {
-          ev.stopPropagation();
-          var ci = Number(mainBtn.getAttribute("data-v36-main"));
-          window.closeSideMenu();
-          if (V36_SIDE_MENU[ci] && V36_SIDE_MENU[ci].mainAction) V36_SIDE_MENU[ci].mainAction();
-          return;
-        }
-        var subBtn = ev.target.closest ? ev.target.closest("[data-v36-sub]") : null;
-        if (subBtn) {
-          ev.stopPropagation();
-          var cIdx = Number(subBtn.getAttribute("data-v36-cat"));
-          var sIdx = Number(subBtn.getAttribute("data-v36-sub"));
-          window.closeSideMenu();
-          if (V36_SIDE_MENU[cIdx] && V36_SIDE_MENU[cIdx].subs[sIdx]) V36_SIDE_MENU[cIdx].subs[sIdx].fn();
-          return;
-        }
-        var spBtn = ev.target.closest ? ev.target.closest("[data-v36-special]") : null;
-        if (spBtn) {
-          ev.stopPropagation();
-          var sp = spBtn.getAttribute("data-v36-special");
-          window.closeSideMenu();
-          if (sp === "personal") window.openPersonalArea();
-          else if (sp === "admin") { window.switchTab("admin"); if (window.renderAdminPanel) window.renderAdminPanel(); }
-          else if (sp === "login") window.openAuthModal();
-          else if (sp === "logout") window.logoutUser();
-        }
-      }, true);
-    }
-  });
-
-  // ==========================================================================
-  // רינדור רכיבי דף הבית החדשים: סרטון יומי בגלילה אופקית + חדשות עולם התורה
-  // ==========================================================================
-  var DAILY_SHORT_VIDEOS = [
-    { id: "dv_1", title: "הלכה בדקה: ברכות השחר וכוונת הלב", speaker: "הרב יצחק יוסף שליט״א", duration: "01:15", tag: "הלכה יומית", thumb: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=600&q=80" },
-    { id: "dv_2", title: "מסר יומי: איך להפוך כל קושי למנוף של אמונה", speaker: "הרב יגאל כהן שליט״א", duration: "01:40", tag: "חיזוק יומי", thumb: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=600&q=80" },
-    { id: "dv_3", title: "פנינה מפרשת השבוע: סוד הכנסת האורחים", speaker: "הרב ברוך רוזנבלום שליט״א", duration: "02:05", tag: "פרשת השבוע", thumb: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=600&q=80" },
-    { id: "dv_4", title: "סיפור מופת קצר: כוחה של תפילה בציון הצדיק", speaker: "הרב שמואל אליהו שליט״א", duration: "01:50", tag: "סיפורי צדיקים", thumb: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=600&q=80" }
-  ];
-
-  var TORAH_NEWS_ITEMS = [
-    { id: "nw_1", category: "עולם התורה", time: "היום", title: "אלפים בעצרות חיזוק ולימוד לקראת שבת פרשת השבוע בבתי המדרש ברחבי הארץ", summary: "שורה של שיעורי הכנה וכינוסי תורה מרכזיים מתקיימים השבוע בירושלים, בני ברק, צפת וערים נוספות." },
-    { id: "nw_2", category: "הלכה ומועדים", time: "השבוע", title: "מדריך הלכתי מיוחד: זמני תפילה והנהגות החודש בבתי הכנסת", summary: "ריכוז ההלכות והמנהגים המעשיים לימים אלו לפי כל עדות ישראל בסידור ובלוח השנה." },
-    { id: "nw_3", category: "חסד וקהילה", time: "עדכון חי", title: "מיזם החסד הארצי: מאות גמ״חים ומוקדי סיוע חדשים חוברו למאגר הקרוב אליי", summary: "משתמשי האפליקציה ממשיכים להוסיף מניינים, גמ״חים ושיעורי תורה לזיכוי הרבים." }
-  ];
-
-  window.renderHomeV36Widgets = function () {
-    var strip = el("home-daily-video-strip");
-    if (strip) {
-      strip.innerHTML = DAILY_SHORT_VIDEOS.map(function (v) {
-        return '<div class="shrink-0 w-60 bg-[#FDF8EF] border border-[#E5DBC7] rounded-2xl overflow-hidden flex flex-col justify-between shadow-sm">' +
-          '<div>' +
-            '<div class="relative h-32 bg-[#0F2340] overflow-hidden">' +
-              '<img src="' + escAttr(v.thumb) + '" alt="' + escAttr(v.title) + '" class="w-full h-full object-cover opacity-85">' +
-              '<span class="absolute top-2 right-2 px-2 py-0.5 rounded bg-amber-500 text-white text-[11px] font-bold">' + esc(v.tag) + '</span>' +
-              '<span class="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-white text-[#0F2340] font-mono text-[11px] font-bold">' + esc(v.duration) + '</span>' +
-            '</div>' +
-            '<div class="p-3 space-y-1">' +
-              '<h4 class="text-sm font-black text-[#0F2340] leading-snug">' + esc(v.title) + '</h4>' +
-              '<p class="text-xs text-[#5C4938] font-bold">' + esc(v.speaker) + '</p>' +
-            '</div>' +
-          '</div>' +
-          '<div class="p-3 pt-0">' +
-            '<button type="button" onclick="openEntityFullPage(\'' + escAttr(v.id) + '\', \'סרטון יומי\', \'' + escAttr(v.title) + '\', \'' + escAttr(v.speaker) + '\', \'הסרטון היומי\', \'אורך: ' + escAttr(v.duration) + '\', \'\', \'' + escAttr(v.title) + '\', \'חיזוק • בהירות\')" class="w-full py-2 bg-amber-500 text-white font-black rounded-xl text-xs">צפה בסרטון היומי</button>' +
-          '</div>' +
-        '</div>';
-      }).join("");
-    }
-
-    var newsGrid = el("home-news-feed-grid");
-    if (newsGrid) {
-      newsGrid.innerHTML = TORAH_NEWS_ITEMS.map(function (n) {
-        return '<div class="bg-[#FDF8EF] border border-[#E5DBC7] p-4 rounded-2xl space-y-2 flex flex-col justify-between">' +
-          '<div class="space-y-1.5">' +
-            '<div class="flex items-center justify-between text-xs">' +
-              '<span class="px-2.5 py-0.5 rounded bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] font-bold">' + esc(n.category) + '</span>' +
-              '<span class="text-[#5C4938] font-bold">' + esc(n.time) + '</span>' +
-            '</div>' +
-            '<h4 class="text-sm sm:text-base font-black text-[#0F2340] serif-heading leading-snug">' + esc(n.title) + '</h4>' +
-            '<p class="text-xs text-[#5C4938] leading-relaxed">' + esc(n.summary) + '</p>' +
-          '</div>' +
-          '<div class="pt-2 border-t border-[#E5DBC7]">' +
-            '<button type="button" onclick="switchTab(\'forum\')" class="text-xs font-black text-[#0F2340] hover:underline">קרא עוד והגב בקהילה ←</button>' +
-          '</div>' +
-        '</div>';
-      }).join("");
-    }
-  };
-
-  // ==========================================================================
-  // שלב 1.1 + שלב 3 + שלב 4: רינדור מאובטח (escapeHtml) ותבנית כרטיסים אוורירית
-  // עם 2 כפתורים מרכזיים ומונה תוצאות חי בכל דפי הרשימות
-  // ==========================================================================
-
-  // 1. מניינים
+  // רינדור אחיד של הכרטיסים במדורים עם הגנת XSS ומונה תוצאות חי
   window.renderMinyanim = function (list) {
     if (window.renderMinyanCallsBanner) window.renderMinyanCallsBanner();
     var grid = el("minyanim-container");
@@ -9674,7 +9591,7 @@ document.addEventListener("DOMContentLoaded", function() {
     window.updateLiveResultCounter("minyanim", items.length, (window.MINYANIM_DATA || []).length);
 
     if (!items.length) {
-      grid.innerHTML = '<div class="col-span-full p-6 bg-white border border-[#E5DBC7] rounded-2xl text-center text-sm text-[#5C4938]">לא נמצאו מניינים התואמים לחיפוש. לחץ על "+ הוסף מניין" להוספת מניין חדש.</div>';
+      grid.innerHTML = '<div class="col-span-full p-6 bg-white border border-[#E5DBC7] rounded-2xl text-center text-sm text-[#5C4938]">לא נמצאו מניינים התואמים לחיפוש.</div>';
       return;
     }
 
@@ -9694,7 +9611,7 @@ document.addEventListener("DOMContentLoaded", function() {
       return '<div class="airy-list-card">' +
         '<div class="space-y-2.5">' +
           '<div class="flex items-center justify-between gap-2">' +
-            '<span class="px-2.5 py-0.5 rounded-md bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] text-xs font-black">נוסח ' + nusach + '</span>' +
+            '<span class="px-2.5 py-0.5 rounded-md bg-[#CCFBF1] text-[#0F766E] border border-[#0D9488] text-xs font-black">נוסח ' + nusach + '</span>' +
             '<button type="button" onclick="openEntityFullPage(\'' + escAttr(eKey) + '\', \'מניין ובית כנסת\', \'' + escAttr(m.name) + '\', \'נוסח ' + escAttr(m.nusach) + '\', \'' + escAttr(m.city) + '\', \'שחרית: ' + escAttr(m.shacharit) + '\', \'\', \'מניין קבוע לתפילות שחרית, מנחה וערבית.\', \'דיוק בזמנים • אווירה\')" class="text-xs font-bold text-[#5C4938] hover:text-[#0F2340] underline">דירוג ' + esc(stats.avg) + ' (' + esc(stats.count) + ' תגובות)</button>' +
           '</div>' +
           '<h3 class="text-lg font-black text-[#0F2340] serif-heading">' + name + '</h3>' +
@@ -9713,7 +9630,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }).join("");
   };
 
-  // 2. מקוואות טהרה
   window.renderMikvaot = function (list) {
     var grid = el("mikvaot-grid-container");
     if (!grid) return;
@@ -9733,18 +9649,19 @@ document.addEventListener("DOMContentLoaded", function() {
       var type = esc(m.type || "מקווה טהרה");
       var addr = esc(m.address || (m.name + " " + (m.city || "")));
       var hours = esc(m.hours || "פתוח מערב שבת וחול");
+      var desc = esc(m.notes || m.description || m.desc || "מקווה טהרה מהודר ונקי");
       var phone = String(m.phone || m.whatsapp || "035700000").replace(/[^0-9+\-]/g, "");
       var wazeUrl = window.buildWazeUrl(m.address || (m.name + " " + (m.city || "")));
 
       return '<div class="airy-list-card">' +
         '<div class="space-y-2">' +
           '<div class="flex items-center justify-between gap-2">' +
-            '<span class="px-2.5 py-0.5 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-md text-xs font-black">' + type + '</span>' +
-            '<button type="button" onclick="openEntityFullPage(\'' + escAttr(eKey) + '\', \'מקווה טהרה\', \'' + escAttr(m.name) + '\', \'' + escAttr(m.city) + '\', \'' + escAttr(m.address) + '\', \'' + escAttr(m.hours) + '\', \'' + escAttr(phone) + '\', \'מקווה טהרה מהודר ונקי.\', \'ניקיון • שעות פתיחה\')" class="text-xs font-bold text-[#5C4938] hover:text-[#0F2340] underline">דירוג ' + esc(stats.avg) + ' (' + esc(stats.count) + ' תגובות)</button>' +
+            '<span class="px-2.5 py-0.5 bg-[#CCFBF1] text-[#0F766E] border border-[#0D9488] rounded-md text-xs font-black">' + type + '</span>' +
+            '<button type="button" onclick="openEntityFullPage(\'' + escAttr(eKey) + '\', \'מקווה טהרה\', \'' + escAttr(m.name) + '\', \'' + escAttr(m.city) + '\', \'' + escAttr(m.address) + '\', \'' + escAttr(m.hours) + '\', \'' + escAttr(phone) + '\', \'' + escAttr(m.notes || m.description || m.desc || "מקווה טהרה מהודר ונקי.") + '\', \'ניקיון • שעות פתיחה\')" class="text-xs font-bold text-[#5C4938] hover:text-[#0F2340] underline">דירוג ' + esc(stats.avg) + ' (' + esc(stats.count) + ' תגובות)</button>' +
           '</div>' +
           '<h3 class="text-lg font-black text-[#0F2340] serif-heading">' + name + '</h3>' +
-          '<p class="text-xs text-[#5C4938]">כתובת: <strong>' + addr + '</strong></p>' +
-          '<p class="text-xs text-[#5C4938]">שעות פעילות: ' + hours + ' • טלפון: ' + esc(phone) + '</p>' +
+          '<p class="text-xs text-[#5C4938]">' + desc + '</p>' +
+          '<p class="text-xs text-[#5C4938]">כתובת: <strong>' + addr + '</strong> • שעות: ' + hours + '</p>' +
         '</div>' +
         '<div class="airy-card-primary-actions">' +
           '<a href="' + escAttr(wazeUrl) + '" target="_blank" class="airy-btn-primary">ניווט ב-Waze</a>' +
@@ -9754,53 +9671,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }).join("");
   };
 
-  // 3. מסעדות כשרות (עם תעודת כשרות, אתר ו-2 כפתורי פעולה מרכזיים)
-  window.renderRestaurants = function (list) {
-    var grid = el("restaurants-grid-container");
-    if (!grid) return;
-    var items = list || window.RESTAURANTS_DATA || [];
-    window.updateLiveResultCounter("restaurants", items.length, (window.RESTAURANTS_DATA || []).length);
-
-    if (!items.length) {
-      grid.innerHTML = '<div class="col-span-full p-6 bg-white border border-[#E5DBC7] rounded-2xl text-center text-sm text-[#5C4938]">לא נמצאו מסעדות כשרות התואמות לחיפוש.</div>';
-      return;
-    }
-
-    grid.innerHTML = items.map(function (r, idx) {
-      var rid = r.id || ("r" + (idx + 1));
-      var eKey = "rest_" + rid;
-      var name = esc(r.name || "מסעדה כשרה");
-      var type = esc(r.type || "כשר");
-      var hech = esc(r.hechsher || "מהדרין");
-      var addr = esc(r.address || r.city || "");
-      var desc = esc(r.desc || r.description || "");
-      var hours = esc(r.hours || "10:00-23:00");
-      var phone = String(r.phone || "036000000").replace(/[^0-9+\-]/g, "");
-      var wazeUrl = window.buildWazeUrl(r.address || (r.name + " " + (r.city || "")));
-      var comments = window.getCardComments ? window.getCardComments(eKey) : [];
-
-      return '<div class="airy-list-card">' +
-        '<div class="space-y-2">' +
-          '<div class="flex items-center justify-between gap-2">' +
-            '<span class="px-2.5 py-0.5 rounded-md bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] text-xs font-black">' + type + ' • ' + hech + '</span>' +
-            '<div class="flex items-center gap-2">' +
-              '<button type="button" onclick="openKosherCertModal(\'' + escAttr(rid) + '\')" class="text-xs font-black text-[#0F2340] underline">תעודת כשרות</button>' +
-              '<button type="button" onclick="openEntityFullPage(\'' + escAttr(eKey) + '\', \'מסעדה כשרה\', \'' + escAttr(r.name) + '\', \'' + escAttr(r.hechsher) + '\', \'' + escAttr(r.address || r.city) + '\', \'' + escAttr(r.hours) + '\', \'' + escAttr(phone) + '\', \'' + escAttr(r.desc || r.description) + '\', \'כשרות • שירות • טעם\')" class="text-xs font-bold text-[#5C4938] underline">תגובות (' + comments.length + ')</button>' +
-            '</div>' +
-          '</div>' +
-          '<h3 class="text-lg font-black text-[#0F2340] serif-heading">' + name + '</h3>' +
-          '<p class="text-xs text-[#5C4938] leading-relaxed">' + desc + '</p>' +
-          '<p class="text-xs text-[#5C4938]">כתובת: <strong>' + addr + '</strong> • שעות: ' + hours + '</p>' +
-        '</div>' +
-        '<div class="airy-card-primary-actions">' +
-          '<a href="' + escAttr(wazeUrl) + '" target="_blank" class="airy-btn-primary">ניווט ב-Waze</a>' +
-          '<a href="tel:' + escAttr(phone) + '" class="airy-btn-secondary">חיוג למסעדה</a>' +
-        '</div>' +
-      '</div>';
-    }).join("");
-  };
-
-  // 4. גמ״חים וארגוני הצלה
   window.renderGemachim = function (list) {
     var grid = el("gemachim-grid-container");
     if (!grid) return;
@@ -9828,7 +9698,7 @@ document.addEventListener("DOMContentLoaded", function() {
       return '<div class="airy-list-card">' +
         '<div class="space-y-2">' +
           '<div class="flex items-center justify-between gap-2">' +
-            '<span class="px-2.5 py-0.5 rounded-md bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] text-xs font-black">' + cat + '</span>' +
+            '<span class="px-2.5 py-0.5 rounded-md bg-[#CCFBF1] text-[#0F766E] border border-[#0D9488] text-xs font-black">' + cat + '</span>' +
             '<div class="flex items-center gap-2">' +
               '<button type="button" onclick="openDonateModal(\'תרומה להחזקת ' + escAttr(g.name) + '\')" class="text-xs font-black text-[#0F2340] underline">תרומה לגמ״ח</button>' +
               '<button type="button" onclick="openEntityFullPage(\'' + escAttr(eKey) + '\', \'גמ״ח וארגון חסד\', \'' + escAttr(g.name) + '\', \'' + escAttr(g.category) + '\', \'' + escAttr(g.address || g.city) + '\', \'' + escAttr(g.hours) + '\', \'' + escAttr(phone) + '\', \'' + escAttr(g.description || g.desc) + '\', \'זמינות • יחס • חסד\')" class="text-xs font-bold text-[#5C4938] underline">תגובות (' + comments.length + ')</button>' +
@@ -9851,7 +9721,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }).join("");
   };
 
-  // 5. קו הלכה ורבנים (עם אפשרות להעלות רב חדש, תגובות וקישור לתרומה)
   window.renderRabbis = function (list) {
     var grid = el("rabbis-container");
     if (!grid) return;
@@ -9866,40 +9735,25 @@ document.addEventListener("DOMContentLoaded", function() {
     grid.innerHTML = items.map(function (r, idx) {
       var rid = r.id || ("rab" + (idx + 1));
       var eKey = "rabbi_" + rid;
+      var stats = window.getEntityStats ? window.getEntityStats(eKey, 5.0) : { avg: "5.0", count: 14 };
       var name = esc(r.name || "רב פוסק");
       var title = esc(r.title || r.specialty || "פוסק הלכה ומורה הוראה");
       var hours = esc(r.hours || "מענה הלכתי לאורך היום");
       var phone = String(r.phone || "0733570000").replace(/[^0-9+\-]/g, "");
       var waUrl = window.buildWhatsAppUrl(phone, "שלום כבוד הרב, שאלה בהלכה מאפליקציית צדיק-טוק:");
-      var comments = window.getCardComments ? window.getCardComments(eKey) : [];
-      var boxId = "comments-rabbi-" + rid;
 
       return '<div class="airy-list-card">' +
         '<div class="space-y-2">' +
           '<div class="flex items-center justify-between gap-2">' +
-            '<span class="px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-black">זמין למענה הלכתי</span>' +
+            '<span class="px-2.5 py-0.5 rounded-md bg-[#CCFBF1] text-[#0F766E] border border-[#0D9488] text-xs font-black">זמין למענה הלכתי</span>' +
             '<div class="flex items-center gap-2">' +
               '<button type="button" onclick="openDonateModal(\'תרומה לבית ההוראה ולרב ' + escAttr(r.name) + '\')" class="text-xs font-black text-[#0F2340] underline">תרומה לרב</button>' +
-              '<button type="button" onclick="window.toggleCardCommentBox(\'' + escAttr(boxId) + '\')" class="text-xs font-bold text-[#5C4938] underline">תגובות (' + comments.length + ')</button>' +
+              '<button type="button" onclick="openEntityFullPage(\'' + escAttr(eKey) + '\', \'קו הלכה ורב פוסק\', \'' + escAttr(r.name) + '\', \'' + escAttr(r.title || r.specialty) + '\', \'' + escAttr(r.city || "מענה ארצי") + '\', \'' + escAttr(r.hours) + '\', \'' + escAttr(phone) + '\', \'מענה הלכתי לשאלות דחופות ורגילות. הוסיפו דירוג או תגובה!\', \'זמינות • בהירות המענה\')" class="text-xs font-bold text-[#0F766E] underline">תגובות ודירוג (' + esc(stats.count) + ')</button>' +
             '</div>' +
           '</div>' +
           '<h3 class="text-lg font-black text-[#0F2340] serif-heading">' + name + '</h3>' +
           '<p class="text-xs font-bold text-[#0F2340]">' + title + '</p>' +
           '<p class="text-xs text-[#5C4938]">שעות מענה: ' + hours + ' • טלפון: ' + esc(phone) + '</p>' +
-          '<div id="' + escAttr(boxId) + '" class="hidden p-3 bg-[#F8F3E8] border border-[#E5DBC7] rounded-xl space-y-2 text-xs">' +
-            '<div class="space-y-1.5 max-h-32 overflow-y-auto" id="list-' + escAttr(boxId) + '">' +
-              comments.map(function (c) {
-                return '<div class="p-2 bg-white rounded-lg border border-[#E5DBC7]">' +
-                  '<strong class="text-[#0F2340] block text-xs">' + esc(c.user) + '</strong>' +
-                  '<span class="text-xs text-[#0F2340]">' + esc(c.text) + '</span>' +
-                '</div>';
-              }).join("") +
-            '</div>' +
-            '<div class="flex items-center gap-1.5">' +
-              '<input type="text" id="input-' + escAttr(boxId) + '" placeholder="הוסף תגובה או תודה לרב..." class="flex-1 bg-white border border-[#D8CBB5] rounded-lg px-2.5 py-1.5 text-xs text-[#0F2340] outline-none">' +
-              '<button type="button" onclick="window.submitInlineCardComment(\'' + escAttr(eKey) + '\', \'' + escAttr(boxId) + '\')" class="px-3 py-1.5 bg-amber-500 text-white font-bold rounded-lg text-xs">שלח</button>' +
-            '</div>' +
-          '</div>' +
         '</div>' +
         '<div class="airy-card-primary-actions">' +
           '<a href="tel:' + escAttr(phone) + '" class="airy-btn-primary">חיוג לרב</a>' +
@@ -9909,287 +9763,14 @@ document.addEventListener("DOMContentLoaded", function() {
     }).join("");
   };
 
-  // 6. קברי צדיקים (תהילים במקום הדלקת נר + תרומה + בניית מסלול ביקורים + 2 כפתורי פעולה מרכזיים)
-  window.renderTzaddikim = function (list) {
-    var grid = el("tzaddikim-grid-container");
-    if (!grid) return;
-    var items = list || window.TZADDIKIM_DATA || [];
-    window.updateLiveResultCounter("tzaddikim", items.length, (window.TZADDIKIM_DATA || []).length);
-
-    if (!items.length) {
-      grid.innerHTML = '<div class="col-span-full p-6 bg-white border border-[#E5DBC7] rounded-2xl text-center text-sm text-[#5C4938]">לא נמצאו ציוני צדיקים התואמים לחיפוש. נסה לחפש לפי שם, כינוי (רשב״י, האר״י, בבא סאלי) או עיר.</div>';
-      return;
-    }
-
-    grid.innerHTML = items.map(function (t, idx) {
-      var tid = t.id || ("tz" + (idx + 1));
-      var eKey = "tzaddik_" + tid;
-      var name = esc(t.name || "");
-      var title = esc(t.title || "");
-      var city = esc(t.city || "");
-      var segula = esc(t.segula || "תפילה לישועה ורפואה");
-      var addrRaw = t.location || ("ציון " + (t.name || "") + " " + (t.city || ""));
-      var wazeUrl = window.buildWazeUrl(addrRaw);
-      var comments = window.getCardComments ? window.getCardComments(eKey) : [];
-      var boxId = "comments-tz-" + tid;
-
-      return '<div class="airy-list-card">' +
-        '<div class="space-y-2">' +
-          '<div class="flex flex-wrap items-center justify-between gap-2">' +
-            '<span class="px-2.5 py-0.5 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-md text-xs font-black">' + city + '</span>' +
-            '<div class="flex flex-wrap items-center gap-2">' +
-              '<button type="button" onclick="openDonateModal(\'תרומה להחזקת ציון ' + escAttr(t.name) + '\')" class="text-xs font-black text-[#0F2340] underline">תרומה לציון</button>' +
-              '<button type="button" onclick="toggleTzaddikRouteStop(\'' + escAttr(t.name) + '\', \'' + escAttr(t.city) + '\', \'' + escAttr(addrRaw) + '\')" class="text-xs font-black text-[#0F2340] underline">הוסף למסלול ביקורים</button>' +
-              '<button type="button" onclick="window.toggleCardCommentBox(\'' + escAttr(boxId) + '\')" class="text-xs font-bold text-[#5C4938] underline">תגובות (' + comments.length + ')</button>' +
-            '</div>' +
-          '</div>' +
-          '<h3 class="text-lg font-black text-[#0F2340] serif-heading">' + name + '</h3>' +
-          '<p class="text-xs text-[#5C4938] font-bold">' + title + '</p>' +
-          '<p class="text-xs text-[#0F2340] bg-[#FDF8EF] p-2.5 rounded-xl border border-[#E5DBC7]"><strong>סגולה ותפילה:</strong> ' + segula + '</p>' +
-          '<div id="' + escAttr(boxId) + '" class="hidden p-3 bg-[#F8F3E8] border border-[#E5DBC7] rounded-xl space-y-2 text-xs">' +
-            '<div class="space-y-1.5 max-h-32 overflow-y-auto" id="list-' + escAttr(boxId) + '">' +
-              comments.map(function (c) {
-                return '<div class="p-2 bg-white rounded-lg border border-[#E5DBC7]">' +
-                  '<strong class="text-[#0F2340] block text-xs">' + esc(c.user) + '</strong>' +
-                  '<span class="text-xs text-[#0F2340]">' + esc(c.text) + '</span>' +
-                '</div>';
-              }).join("") +
-            '</div>' +
-            '<div class="flex items-center gap-1.5">' +
-              '<input type="text" id="input-' + escAttr(boxId) + '" placeholder="שתף סיפור ישועה או תגובה בציון..." class="flex-1 bg-white border border-[#D8CBB5] rounded-lg px-2.5 py-1.5 text-xs text-[#0F2340] outline-none">' +
-              '<button type="button" onclick="window.submitInlineCardComment(\'' + escAttr(eKey) + '\', \'' + escAttr(boxId) + '\')" class="px-3 py-1.5 bg-amber-500 text-white font-bold rounded-lg text-xs">שלח</button>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="airy-card-primary-actions">' +
-          '<button type="button" onclick="openTzaddikTehillimModal(\'' + escAttr(t.name) + '\', 20)" class="airy-btn-primary">פרקי תהילים בציון</button>' +
-          '<a href="' + escAttr(wazeUrl) + '" target="_blank" class="airy-btn-secondary">ניווט ב-Waze</a>' +
-        '</div>' +
-      '</div>';
-    }).join("");
-
-    if (window.renderYahrzeitSharedCards) {
-      window.renderYahrzeitSharedCards("tzaddikim-yahrzeits-container");
-      window.renderYahrzeitSharedCards("zmanim-yahrzeits-container");
-    }
-  };
-
-  // 7. בתי חב״ד
-  window.renderChabad = function (list) {
-    var grid = el("chabad-grid-container");
-    if (!grid) return;
-    var items = list || window.CHABAD_DATA || [];
-    window.updateLiveResultCounter("chabad", items.length, (window.CHABAD_DATA || []).length);
-
-    if (!items.length) {
-      grid.innerHTML = '<div class="col-span-full p-6 bg-white border border-[#E5DBC7] rounded-2xl text-center text-sm text-[#5C4938]">לא נמצאו בתי חב״ד התואמים לחיפוש.</div>';
-      return;
-    }
-
-    grid.innerHTML = items.map(function (c, idx) {
-      var cid = c.id || ("ch" + (idx + 1));
-      var eKey = "chabad_" + cid;
-      var name = esc(c.name || "בית חב״ד");
-      var shaliach = esc(c.shaliach || c.rabbi || "שליח חב״ד");
-      var city = esc(c.city || c.country || "");
-      var addr = esc(c.address || c.city || "");
-      var services = esc(c.services || c.description || "");
-      var phone = String(c.phone || "0500000000").replace(/[^0-9+\-]/g, "");
-      var wazeUrl = window.buildWazeUrl(c.address || c.city || c.name);
-      var waUrl = window.buildWhatsAppUrl(phone, "שלום לבית חב״ד " + (c.name || ""));
-      var comments = window.getCardComments ? window.getCardComments(eKey) : [];
-
-      return '<div class="airy-list-card">' +
-        '<div class="space-y-2">' +
-          '<div class="flex items-center justify-between gap-2">' +
-            '<span class="px-2.5 py-0.5 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-md text-xs font-black">' + city + '</span>' +
-            '<div class="flex items-center gap-2">' +
-              '<button type="button" onclick="toggleChabadUploadForm(\'update\', {name:\'' + escAttr(c.name) + '\',shaliach:\'' + escAttr(c.shaliach || c.rabbi) + '\',city:\'' + escAttr(c.city || c.country) + '\',phone:\'' + escAttr(phone) + '\',services:\'' + escAttr(c.services || c.description) + '\'})" class="text-xs font-bold text-[#0F2340] underline">עדכן פרטים</button>' +
-              '<button type="button" onclick="openEntityFullPage(\'' + escAttr(eKey) + '\', \'בית חב״ד\', \'' + escAttr(c.name) + '\', \'' + escAttr(c.shaliach || c.rabbi) + '\', \'' + escAttr(c.city || c.country) + '\', \'\', \'' + escAttr(phone) + '\', \'' + escAttr(c.services || c.description) + '\', \'אירוח • אוכל כשר • תפילות\')" class="text-xs font-bold text-[#5C4938] underline">תגובות (' + comments.length + ')</button>' +
-            '</div>' +
-          '</div>' +
-          '<h3 class="text-lg font-black text-[#0F2340] serif-heading">' + name + '</h3>' +
-          '<p class="text-xs font-bold text-[#0F2340]">השליח: ' + shaliach + '</p>' +
-          '<p class="text-xs text-[#5C4938] leading-relaxed">' + services + '</p>' +
-          '<p class="text-xs text-[#5C4938]">כתובת: ' + addr + ' • טלפון: ' + esc(phone) + '</p>' +
-        '</div>' +
-        '<div class="airy-card-primary-actions">' +
-          '<a href="' + escAttr(wazeUrl) + '" target="_blank" class="airy-btn-primary">ניווט ב-Waze</a>' +
-          '<a href="' + escAttr(waUrl) + '" target="_blank" class="airy-btn-secondary">וואטסאפ לשליח</a>' +
-        '</div>' +
-      '</div>';
-    }).join("");
-  };
-
-  // 8. ישיבות ומוסדות תורה
-  window.renderYeshivotAndMosdot = function (query) {
-    var grid = el("yeshivot-grid-container");
-    if (!grid) return;
-    var allList = window.YESHIVOT_DATA || [];
-    var q = (query || "").trim();
-    var list = allList.filter(function (y) {
-      return window.matchesSmartSearch([y.name, y.type, y.city, y.address, y.description], q);
-    });
-    window.updateLiveResultCounter("yeshivot", list.length, allList.length);
-
-    if (!list.length) {
-      grid.innerHTML = '<div class="col-span-full p-6 bg-white border border-[#E5DBC7] rounded-2xl text-center text-sm text-[#5C4938]">לא נמצאו ישיבות או מוסדות התואמים לחיפוש.</div>';
-      return;
-    }
-
-    grid.innerHTML = list.map(function (y, idx) {
-      var yid = y.id || ("ysh_" + (idx + 1));
-      var eKey = "yeshiva_" + yid;
-      var name = esc(y.name || "ישיבה");
-      var type = esc(y.type || "ישיבה ובית מדרש");
-      var desc = esc(y.description || "");
-      var addr = esc(y.address || y.city || "");
-      var phone = String(y.phone || "036180000").replace(/[^0-9+\-]/g, "");
-      var wazeUrl = window.buildWazeUrl(y.address || (y.name + " " + (y.city || "")));
-      var donateClick = y.donateUrl
-        ? "window.open('" + escAttr(y.donateUrl) + "', '_blank')"
-        : "openDonateModal('תרומה והחזקת תורה: " + escAttr(y.name) + "')";
-
-      return '<div class="airy-list-card">' +
-        '<div class="space-y-2">' +
-          '<div class="flex items-center justify-between gap-2">' +
-            '<span class="px-2.5 py-0.5 rounded-md bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] text-xs font-bold">' + type + '</span>' +
-            '<button type="button" onclick="' + donateClick + '" class="text-xs font-black text-[#0F2340] underline">תרומה לישיבה</button>' +
-          '</div>' +
-          '<h3 class="text-lg font-black text-[#0F2340] serif-heading">' + name + '</h3>' +
-          '<p class="text-xs text-[#5C4938] leading-relaxed">' + desc + '</p>' +
-          '<p class="text-xs text-[#5C4938]">כתובת: ' + addr + ' • טלפון: ' + esc(phone) + '</p>' +
-        '</div>' +
-        '<div class="airy-card-primary-actions">' +
-          '<a href="' + escAttr(wazeUrl) + '" target="_blank" class="airy-btn-primary">ניווט ב-Waze</a>' +
-          '<a href="tel:' + escAttr(phone) + '" class="airy-btn-secondary">חיוג למזכירות</a>' +
-        '</div>' +
-      '</div>';
-    }).join("");
-  };
-
-  // 9. חברותא
-  window.renderChavrutaDirectory = function (query) {
-    var box = el("chavruta-grid-container");
-    if (!box) return;
-    var allList = window.getStorageJson(STORAGE_KEYS.CHAVRUTA_LIST, window.CHAVRUTA_DATA || []) || [];
-    var q = (query || "").trim();
-    var list = allList.filter(function (c) {
-      return window.matchesSmartSearch([c.name, c.topic, c.city, c.mode, c.description], q);
-    });
-    window.updateLiveResultCounter("chavruta", list.length, allList.length);
-
-    if (!list.length) {
-      box.innerHTML = '<div class="col-span-full p-6 bg-white border border-[#E5DBC7] rounded-2xl text-center text-sm text-[#5C4938]">לא נמצאו הצעות חברותא התואמות לחיפוש.</div>';
-      return;
-    }
-
-    box.innerHTML = list.map(function (c) {
-      var name = esc(c.name || "");
-      var topic = esc(c.topic || "");
-      var mode = esc(c.mode || "פנים אל פנים / טלפוני");
-      var desc = esc(c.description || "");
-      var city = esc(c.city || "ישראל");
-      var hours = esc(c.hours || "בתיאום אישי");
-      var phone = String(c.phone || "0500000000").replace(/[^0-9+\-]/g, "");
-      var waUrl = window.buildWhatsAppUrl(phone, "שלום וברכה, ראיתי את הצעת החברותא שלך בצדיק-טוק בנושא " + (c.topic || ""));
-
-      return '<div class="airy-list-card">' +
-        '<div class="space-y-2">' +
-          '<div class="flex items-center justify-between">' +
-            '<span class="px-2.5 py-0.5 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-md text-xs font-bold">' + mode + '</span>' +
-            '<span class="text-xs text-[#5C4938] font-bold">' + city + '</span>' +
-          '</div>' +
-          '<h4 class="text-lg font-black text-[#0F2340] serif-heading">' + name + '</h4>' +
-          '<p class="text-xs font-bold text-[#0F2340]">נושא לימוד: ' + topic + '</p>' +
-          '<p class="text-xs text-[#5C4938] leading-relaxed">' + desc + '</p>' +
-          '<p class="text-xs text-[#5C4938]">זמנים: <strong>' + hours + '</strong></p>' +
-        '</div>' +
-        '<div class="airy-card-primary-actions">' +
-          '<a href="tel:' + escAttr(phone) + '" class="airy-btn-primary">חיוג לתיאום</a>' +
-          '<a href="' + escAttr(waUrl) + '" target="_blank" class="airy-btn-secondary">הודעה בוואטסאפ</a>' +
-        '</div>' +
-      '</div>';
-    }).join("");
-  };
-
-  // 10. שירותי דת
-  window.renderReligiousServicesList = function (list) {
-    var grid = el("religious-services-pro-grid");
-    if (!grid) return;
-    var items = list || window.RELIGIOUS_SERVICES_DATA || [];
-    window.updateLiveResultCounter("customs", items.length, (window.RELIGIOUS_SERVICES_DATA || []).length);
-
-    grid.innerHTML = items.map(function (s, idx) {
-      var sid = s.id || ("srv_" + (idx + 1));
-      var eKey = "relsrv_" + sid;
-      var name = esc(s.name || "");
-      var cat = esc(s.category || "שירותי דת");
-      var city = esc(s.city || "פריסה ארצית");
-      var desc = esc(s.description || "");
-      var phone = String(s.phone || "0500000000").replace(/[^0-9+\-]/g, "");
-      var waUrl = window.buildWhatsAppUrl(phone, "שלום וברכה, פונה מאפליקציית צדיק-טוק לגבי " + (s.name || ""));
-
-      return '<div class="airy-list-card">' +
-        '<div class="space-y-2">' +
-          '<div class="flex items-center justify-between gap-2">' +
-            '<span class="px-2.5 py-0.5 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-md text-xs font-black">' + cat + '</span>' +
-            '<button type="button" onclick="openEntityFullPage(\'' + escAttr(eKey) + '\', \'שירותי דת\', \'' + escAttr(s.name) + '\', \'' + escAttr(s.category) + '\', \'' + escAttr(s.city) + '\', \'\', \'' + escAttr(phone) + '\', \'' + escAttr(s.description) + '\', \'מקצועיות • אדיבות • זמינות\')" class="text-xs font-bold text-[#5C4938] underline">דירוג ותגובות</button>' +
-          '</div>' +
-          '<h3 class="text-lg font-black text-[#0F2340] serif-heading">' + name + '</h3>' +
-          '<p class="text-xs text-[#5C4938] leading-relaxed">' + desc + '</p>' +
-          '<p class="text-xs text-[#5C4938]">אזור שירות: <strong>' + city + '</strong> • טלפון: ' + esc(phone) + '</p>' +
-        '</div>' +
-        '<div class="airy-card-primary-actions">' +
-          '<a href="tel:' + escAttr(phone) + '" class="airy-btn-primary">חיוג ישיר</a>' +
-          '<a href="' + escAttr(waUrl) + '" target="_blank" class="airy-btn-secondary">פנייה בוואטסאפ</a>' +
-        '</div>' +
-      '</div>';
-    }).join("");
-  };
-
-  window.renderReligiousServicesDirectory = function (filterType) {
-    var allSrv = window.RELIGIOUS_SERVICES_DATA || [];
-    if (!filterType || filterType === "all") {
-      window.renderReligiousServicesList(allSrv);
-    } else {
-      var filtered = allSrv.filter(function (s) {
-        return window.matchesSmartSearch([s.name, s.category, s.description], filterType);
-      });
-      window.renderReligiousServicesList(filtered);
-    }
-  };
-
-  // הגנת XSS גם בפורום הקהילה ובלוח התפילות
-  window.renderForumPosts = function (catFilter) {
-    var box = el("forum-posts-container");
-    if (!box) return;
-    var posts = window.getStorageJson(STORAGE_KEYS.FORUM_POSTS, window.INITIAL_FORUM_POSTS || []) || [];
-    if (catFilter && catFilter !== "all") {
-      posts = posts.filter(function (p) {
-        return window.matchesSmartSearch([p.category, p.title, p.content], catFilter);
-      });
-    }
-    window.updateLiveResultCounter("forum", posts.length, (window.getStorageJson(STORAGE_KEYS.FORUM_POSTS, window.INITIAL_FORUM_POSTS || []) || []).length);
-
-    box.innerHTML = posts.map(function (p) {
-      return '<div class="bg-white border border-[#E5DBC7] p-5 rounded-2xl space-y-2.5 shadow-sm">' +
-        '<div class="flex items-center justify-between text-xs">' +
-          '<span class="px-2.5 py-0.5 rounded-md bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] font-bold">' + esc(p.category || "דברי תורה") + '</span>' +
-          '<span class="text-[#5C4938]">' + esc(p.author || "חבר קהילה") + ' • ' + esc(p.time || "היום") + '</span>' +
-        '</div>' +
-        '<h4 class="text-base sm:text-lg font-black text-[#0F2340] serif-heading">' + esc(p.title || "") + '</h4>' +
-        '<p class="text-sm text-[#0F2340] leading-relaxed">' + esc(p.content || p.body || "") + '</p>' +
-      '</div>';
-    }).join("");
-  };
-
-  // אתחול מלא של V36
+  // אתחול V37
   onReady(function () {
+    try { localStorage.removeItem("undefined"); } catch (e) {}
+    setupModalsBackdropAndCloseBtn();
     setupUnifiedListPagesUI();
     mountZmanimInsidePrayTab();
     mountCommunityPanels();
-    window.renderHomeV36Widgets();
+    window.renderHomeRecommendedCarousel();
     window.renderFindHub();
 
     if (window.MINYANIM_DATA) window.renderMinyanim(window.MINYANIM_DATA);
@@ -10200,9 +9781,6 @@ document.addEventListener("DOMContentLoaded", function() {
     if (window.TZADDIKIM_DATA) window.renderTzaddikim(window.TZADDIKIM_DATA);
     if (window.CHABAD_DATA) window.renderChabad(window.CHABAD_DATA);
     if (window.YESHIVOT_DATA) window.renderYeshivotAndMosdot("");
-    window.renderChavrutaDirectory("all");
-    window.renderReligiousServicesDirectory("all");
-    window.renderForumPosts("all");
   });
 
 })();

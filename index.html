@@ -81,17 +81,17 @@
           </div>
           <h1 class="header-title-text text-xl sm:text-2xl font-black tracking-tight leading-none">צדיק-טוק</h1>
         </div>
-        <!-- [שמאל] התחברות / אזור אישי -->
+        <!-- [שמאל] אייקון האזור האישי בכותרת העליונה -->
         <div class="flex justify-end items-center gap-2">
-          <button id="header-auth-btn" type="button" onclick="headerAuthClick()" class="tt-hdr-btn tt-hdr-primary" title="התחברות / אזור אישי">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
-            <span id="header-auth-label" class="tt-hdr-label">התחברות</span>
+          <button id="header-auth-btn" type="button" onclick="openPersonalArea()" class="tt-hdr-btn tt-hdr-primary" title="האזור האישי שלי">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+            <span id="header-auth-label" class="tt-hdr-label">האזור האישי</span>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- תפריט ניווט ראשי למחשב (5 טאבים ברורים) -->
+    <!-- תפריט ניווט ראשי למחשב (5 לשוניות בדיוק) -->
     <div class="hidden md:flex max-w-7xl mx-auto px-6 py-2 bg-[#F6EFE2] border-t border-[#E5DBC7] items-center gap-3 text-sm font-bold text-[#0F2340]">
       <button type="button" onclick="switchTab('feed')" id="pill-feed" class="pill-btn active px-4 py-1.5 rounded-xl bg-white border border-[#C9A227] flex items-center gap-2">בית</button>
       <button type="button" onclick="switchTab('series')" id="pill-series" class="pill-btn px-4 py-1.5 rounded-xl bg-white border border-[#D8CBB5] flex items-center gap-2">ללמוד</button>
@@ -112,7 +112,7 @@
           <span>חזור למדור הקודם</span>
         </button>
         <div class="flex items-center gap-2">
-          <button id="tt-geo-bar" type="button" onclick="locateNearestByGPS()" class="tt-more-btn hidden"> מיין לפי מרחק</button>
+          <button id="tt-geo-bar" type="button" onclick="locateNearestByGPS()" class="tt-more-btn hidden">📍 מיין לפי מרחק</button>
           <button id="tt-more-btn" type="button" onclick="ttToggleMore()" class="tt-more-btn hidden">אפשרויות נוספות ▾</button>
         </div>
       </div>
@@ -159,7 +159,7 @@
         </div>
       </div>
 
-      <!-- 2. כרטיס פרשת השבוע עם וורט מתחלף וקישורים לשיעורים ולקריאת הפרשה -->
+      <!-- 2. כרטיס פרשת השבוע + פנינה יומית -->
       <div id="home-parasha-card" class="bg-white border-2 border-[#C9A227] p-4 sm:p-5 rounded-2xl shadow-sm space-y-3">
         <div class="flex items-center justify-between border-b border-[#E5DBC7] pb-2.5">
           <div class="flex items-center gap-2">
@@ -180,56 +180,13 @@
           <button type="button" onclick="switchTab('series'); switchLearnMainTab('shiurim');" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-white font-black rounded-xl text-xs shadow-sm transition-all">
             לכל שיעורי הפרשה
           </button>
-          <button type="button" onclick="switchTab('series'); switchLearnMainTab('ai'); switchLibrarySubTab('torah'); openParashaViewer('bereishit', 'חיי שרה');" class="px-4 py-2 bg-[#F6EFE2] hover:bg-[#EDE1CC] text-[#0F2340] font-bold rounded-xl border border-[#C9A227] text-xs transition-all">
+          <button type="button" onclick="switchTab('series'); switchLibrarySubTab('torah'); openParashaViewer('bereishit', 'חיי שרה');" class="px-4 py-2 bg-[#F6EFE2] hover:bg-[#EDE1CC] text-[#0F2340] font-bold rounded-xl border border-[#C9A227] text-xs transition-all">
             קריאת הפרשה ופירוש רש״י
           </button>
         </div>
       </div>
 
-      <!-- 3. סרטון יומי בגלילה אופקית (Daily Video Strip) -->
-      <div class="bg-white border border-[#E5DBC7] p-4 sm:p-5 rounded-2xl shadow-sm space-y-3">
-        <div class="flex items-center justify-between">
-          <div>
-            <span class="px-2.5 py-0.5 rounded-md bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] text-xs font-black">הסרטון היומי</span>
-            <h3 class="text-lg font-black text-[#0F2340] serif-heading mt-1">סרטון יומי קצר בגלילה אופקית</h3>
-          </div>
-          <button type="button" onclick="switchTab('series'); switchLibrarySubTab('eduvideos');" class="px-3 py-1.5 bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold rounded-xl text-xs">
-            לכל הסרטונים
-          </button>
-        </div>
-        <div id="home-daily-video-strip" class="flex items-stretch gap-3.5 overflow-x-auto hide-scrollbar pb-1"></div>
-      </div>
-
-      <!-- 4. חדשות ועדכוני עולם התורה והקהילה -->
-      <div class="bg-white border border-[#E5DBC7] p-4 sm:p-5 rounded-2xl shadow-sm space-y-3">
-        <div class="flex items-center justify-between border-b border-[#E5DBC7] pb-2.5">
-          <div>
-            <span class="px-2.5 py-0.5 rounded-md bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] text-xs font-black">חדשות ועדכונים</span>
-            <h3 class="text-lg font-black text-[#0F2340] serif-heading mt-1">חדשות עולם התורה, הלכה ואירועי הקהילה</h3>
-          </div>
-          <button type="button" onclick="switchTab('forum')" class="px-3 py-1.5 bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold rounded-xl text-xs">
-            לפורום הקהילה
-          </button>
-        </div>
-        <div id="home-news-feed-grid" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
-      </div>
-
-      <!-- 5. קרוסלת סרטונים ושיעורים מהספרייה -->
-      <div class="bg-white border border-[#E5DBC7] p-4 sm:p-5 rounded-2xl shadow-sm space-y-3">
-        <div class="flex items-center justify-between">
-          <div>
-            <span class="px-2.5 py-0.5 rounded-md bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] text-xs font-black">קרוסלת סרטונים ושיעורים</span>
-            <h3 class="text-lg font-black text-[#0F2340] serif-heading mt-1">שיעורים מובחרים וסרטונים מבית המדרש</h3>
-          </div>
-          <button type="button" onclick="switchTab('series'); switchLearnMainTab('shiurim');" class="px-3 py-1.5 bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold rounded-xl text-xs">
-            למאגר השיעורים
-          </button>
-        </div>
-        <div id="home-carousel-videos" class="flex items-stretch gap-3.5 overflow-x-auto hide-scrollbar pb-1"></div>
-        <div id="home-carousel-shiurim" class="flex items-stretch gap-3.5 overflow-x-auto hide-scrollbar pt-1 pb-1"></div>
-      </div>
-
-      <!-- 6. כרטיס "חיזוקים" יומי (וורט / סיפור קצר מחזק) -->
+      <!-- 3. כרטיס "חיזוקים" יומי (וורט / סיפור קצר מחזק) -->
       <div id="home-chizuk-card" class="p-4 sm:p-5 space-y-3.5">
         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#E5DBC7] pb-2.5">
           <div class="flex items-center gap-2">
@@ -237,7 +194,7 @@
             <span id="home-chizuk-badge" class="px-2.5 py-0.5 rounded-md bg-[#F6EFE2] text-[#0F2340] border border-[#D8CBB5] text-xs font-bold">סיפור קצר וחיזוק באמונה</span>
           </div>
           <div class="flex items-center gap-1.5">
-            <button type="button" onclick="rotateHomeChizuk(-1)" class="px-3 py-1 rounded-lg bg-[#FDF8EF] border border-[#D8CBB5] text-xs font-bold text-[#0F2340] hover:bg-[#F6EFE2]" title="חיזוק קודם">הקודם</button>
+            <button type="button" onclick="rotateHomeChizuk(-1)" class="px-3 py-1 rounded-lg bg-[#FDF8EF] border border-[#D8CBB5] text-xs font-bold text-[#0F2340] hover:bg-[#F6EFE2]">הקודם</button>
             <button type="button" onclick="rotateHomeChizuk(1)" class="px-3 py-1 rounded-lg bg-[#F6EFE2] border border-[#C9A227] text-xs font-black text-[#0F2340] hover:bg-[#EDE1CC]">
               חיזוק נוסף
             </button>
@@ -270,8 +227,24 @@
         </div>
       </div>
 
-      <!-- מיכלים משלימים לתאימות לאחור -->
+      <!-- 4. קרוסלה אחת מאוחדת של "תוכן מומלץ" (משלבת שיעורים וסרטונים נבחרים) -->
+      <div class="bg-white border-2 border-[#C9A227] p-4 sm:p-5 rounded-2xl shadow-sm space-y-3">
+        <div class="flex items-center justify-between border-b border-[#E5DBC7] pb-2.5">
+          <div>
+            <span class="px-2.5 py-0.5 rounded-md bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] text-xs font-black">תוכן מומלץ</span>
+            <h3 class="text-lg font-black text-[#0F2340] serif-heading mt-1">שיעורים וסרטונים מומלצים מבית המדרש</h3>
+          </div>
+          <button type="button" onclick="switchTab('series'); switchLearnMainTab('shiurim');" class="px-3.5 py-1.5 bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold rounded-xl text-xs">
+            לכל השיעורים והסרטונים
+          </button>
+        </div>
+        <div id="home-recommended-carousel" class="flex items-stretch gap-3.5 overflow-x-auto hide-scrollbar pb-1"></div>
+      </div>
+
+      <!-- מיכלים מוסתרים לתאימות לאחור -->
       <div class="hidden" aria-hidden="true">
+        <div id="home-carousel-shiurim"></div>
+        <div id="home-carousel-videos"></div>
         <div id="home-carousel-quizzes"></div>
         <div id="home-acc-media"><span id="home-acc-media-icon"></span><span id="home-music-now-playing"></span><button id="home-music-play-btn"></button></div>
         <div id="feed-cards-container"></div>
@@ -280,50 +253,95 @@
 
     <!-- 2. COMPREHENSIVE TORAH, NACH & HISTORY LIBRARY (הספרייה המרכזית) -->
     <section id="view-series" class="view-section space-y-5">
-      <!-- כותרת מדור "ללמוד" ו-3 לשוניות ראשיות: ספריית AI | שיעורים | חידונים -->
-      <div class="bg-white border-2 border-[#C9A227] p-4 sm:p-5 rounded-2xl space-y-4 shadow-sm">
+      <!-- כותרת מדור "ללמוד" בעיצוב תכלת מזוהה + רשת קומפקטית של 2 עמודות עם אייקונים -->
+      <div class="section-theme-banner p-4 sm:p-5 rounded-2xl space-y-4 shadow-sm">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <span class="text-base sm:text-xl font-black text-[#0F2340] serif-heading block">ללמוד • בית המדרש, ספריית AI, שיעורים וחידונים</span>
-            <span class="text-xs text-[#5C4938]">בחר את מסלול הלימוד המבוקש מתוך 3 הלשוניות הראשיות</span>
+            <span class="section-theme-badge px-2.5 py-0.5 rounded-md text-xs font-black inline-block mb-1">מדור לימוד ובית המדרש</span>
+            <h2 class="text-xl sm:text-2xl font-black text-[#0F2340] serif-heading">ללמוד • פרשה, תנ״ך, שיעורים, קורסים, סיפורי צדיקים וחידונים</h2>
           </div>
-          <div class="flex items-center gap-2">
-            <button type="button" onclick="switchLearnMainTab('shiurim'); openRabbiLessonUploadForm();" class="px-3.5 py-2 bg-amber-500 text-white font-black rounded-xl text-xs shadow-sm">
-               העלאת שיעור לרבנים
-            </button>
-          </div>
+          <button type="button" onclick="switchLearnMainTab('shiurim'); openRabbiLessonUploadForm();" class="px-3.5 py-2 bg-[#0284C7] hover:bg-[#0369A1] text-white font-black rounded-xl text-xs shadow-sm self-start sm:self-auto" style="color:#FFFFFF !important;">
+            העלאת שיעור חדש
+          </button>
         </div>
 
-        <!-- 6 מסלולי הלימוד המרכזיים: פרשה | תנ"ך | שיעורים | קורסים | סיפורי צדיקים | חידונים -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2" role="tablist" aria-label="מסלולי מדור ללמוד">
-          <button type="button" id="lib-btn-torah" onclick="switchLibrarySubTab('torah')" class="hub-grid-btn active">פרשה (חומש)</button>
-          <button type="button" id="lib-btn-nach" onclick="switchLibrarySubTab('nach')" class="hub-grid-btn">תנ״ך (נ״ך)</button>
-          <button type="button" id="learn-main-tab-shiurim" onclick="switchLearnMainTab('shiurim')" class="hub-grid-btn">שיעורים</button>
-          <button type="button" id="learn-main-tab-courses" onclick="switchLibrarySubTab('courses')" class="hub-grid-btn">קורסים שבועיים</button>
-          <button type="button" id="lib-btn-tzaddikim_stories" onclick="switchLibrarySubTab('tzaddikim_stories')" class="hub-grid-btn">סיפורי צדיקים</button>
-          <button type="button" id="learn-main-tab-quizzes" onclick="switchLearnMainTab('quizzes')" class="hub-grid-btn">חידונים</button>
+        <!-- רשת (Grid) קומפקטית של 2 עמודות עם אייקונים קומפקטיים ל-6 מסלולי הלימוד -->
+        <div class="learn-compact-grid" role="tablist" aria-label="מסלולי מדור ללמוד">
+          <button type="button" id="lib-btn-torah" onclick="switchLibrarySubTab('torah')" class="learn-compact-btn active">
+            <span class="learn-compact-icon">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            </span>
+            <span>פרשה (חומש)</span>
+          </button>
+
+          <button type="button" id="lib-btn-nach" onclick="switchLibrarySubTab('nach')" class="learn-compact-btn">
+            <span class="learn-compact-icon">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            </span>
+            <span>תנ״ך (נ״ך)</span>
+          </button>
+
+          <button type="button" id="learn-main-tab-shiurim" onclick="switchLearnMainTab('shiurim')" class="learn-compact-btn">
+            <span class="learn-compact-icon">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </span>
+            <span>שיעורים</span>
+          </button>
+
+          <button type="button" id="learn-main-tab-courses" onclick="switchLibrarySubTab('courses')" class="learn-compact-btn">
+            <span class="learn-compact-icon">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            </span>
+            <span>קורסים</span>
+          </button>
+
+          <button type="button" id="lib-btn-tzaddikim_stories" onclick="switchLibrarySubTab('tzaddikim_stories')" class="learn-compact-btn">
+            <span class="learn-compact-icon">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </span>
+            <span>סיפורי צדיקים</span>
+          </button>
+
+          <button type="button" id="learn-main-tab-quizzes" onclick="switchLearnMainTab('quizzes')" class="learn-compact-btn">
+            <span class="learn-compact-icon">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+            </span>
+            <span>חידונים</span>
+          </button>
         </div>
 
-        <!-- מדורי העמקה נוספים בבית המדרש -->
+        <!-- מדורי העמקה נוספים ברשת 2 עמודות קומפקטית -->
         <div id="learn-ai-subnav-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
-          <button type="button" id="learn-main-tab-ai" onclick="switchLibrarySubTab('eduvideos')" class="hub-grid-btn">סרטונים חינוכיים</button>
-          <button type="button" onclick="switchLibrarySubTab('generations')" id="lib-btn-generations" class="hub-grid-btn">ראשונים ואחרונים</button>
-          <button type="button" onclick="switchLibrarySubTab('mishnah')" id="lib-btn-mishnah" class="hub-grid-btn">משנה, גמרא והלכה</button>
-          <button type="button" onclick="switchLibrarySubTab('chassidut')" id="lib-btn-chassidut" class="hub-grid-btn">תורת החסידות</button>
+          <button type="button" id="lib-btn-eduvideos" onclick="switchLibrarySubTab('eduvideos')" class="learn-compact-btn">
+            <span class="learn-compact-icon"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="4" width="20" height="16" rx="2"/><polygon points="10 9 15 12 10 15 10 9"/></svg></span>
+            <span>סרטונים</span>
+          </button>
+          <button type="button" id="lib-btn-generations" onclick="switchLibrarySubTab('generations')" class="learn-compact-btn">
+            <span class="learn-compact-icon"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+            <span>ראשונים ואחרונים</span>
+          </button>
+          <button type="button" id="lib-btn-mishnah" onclick="switchLibrarySubTab('mishnah')" class="learn-compact-btn">
+            <span class="learn-compact-icon"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>
+            <span>משנה והלכה</span>
+          </button>
+          <button type="button" id="lib-btn-chassidut" onclick="switchLibrarySubTab('chassidut')" class="learn-compact-btn">
+            <span class="learn-compact-icon"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg></span>
+            <span>חסידות</span>
+          </button>
         </div>
 
-        <!-- סרגל סינון וחיפוש כללי במדור ללמוד -->
-        <div class="pt-2 border-t border-[#E5DBC7] grid grid-cols-1 sm:grid-cols-4 gap-2">
-          <input type="text" oninput="handleLearnGlobalSearch(this.value)" placeholder="חיפוש בפרשיות, נ״ך, סיפורי צדיקים, רבנים או שיעורים..." class="sm:col-span-2 bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-3.5 py-2 text-xs text-[#0F2340] outline-none">
-          <select id="learn-filter-edah" onchange="applyUnifiedDirectoryFilter('learn')" class="bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">
-            <option value="all">סינון לפי עדה / מסורת: הכל</option>
+        <!-- סרגל חיפוש וסינון במדור ללמוד -->
+        <div class="pt-2 border-t border-[#BAE6FD] grid grid-cols-1 sm:grid-cols-4 gap-2">
+          <input type="text" oninput="handleLearnGlobalSearch(this.value)" placeholder="חיפוש בפרשיות, תנ״ך, שיעורים, קורסים או סיפורי צדיקים..." class="sm:col-span-2 bg-white border border-[#7DD3FC] rounded-xl px-3.5 py-2 text-xs text-[#0F2340] outline-none">
+          <select id="learn-filter-edah" onchange="applyUnifiedDirectoryFilter('learn')" class="bg-white border border-[#7DD3FC] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">
+            <option value="all">עדה / מסורת: הכל</option>
             <option value="עדות המזרח">עדות המזרח וספרד</option>
             <option value="אשכנז">אשכנז והישיבות</option>
             <option value="חסידות">חסידות</option>
             <option value="תימן">מסורת תימן</option>
           </select>
-          <select id="learn-filter-topic" onchange="applyUnifiedDirectoryFilter('learn')" class="bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">
-            <option value="all">סינון לפי נושא: הכל</option>
+          <select id="learn-filter-topic" onchange="applyUnifiedDirectoryFilter('learn')" class="bg-white border border-[#7DD3FC] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">
+            <option value="all">נושא: הכל</option>
             <option value="פרשת">פרשת השבוע</option>
             <option value="הלכה">הלכה למעשה</option>
             <option value="אמונה">אמונה ומוסר</option>
@@ -346,10 +364,10 @@
             </div>
             <div class="flex flex-wrap items-center gap-2">
               <button type="button" onclick="openRabbiLessonUploadForm()" class="px-4 py-2.5 bg-amber-500 text-white font-black rounded-xl text-xs shadow-sm">
-                 העלאת שיעור (לרבנים)
+                ➕ העלאת שיעור (לרבנים)
               </button>
               <button type="button" onclick="switchTab('live')" class="px-3.5 py-2.5 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] font-bold rounded-xl text-xs">
-                 מסך שידור חי מלא
+                🔴 מסך שידור חי מלא
               </button>
             </div>
           </div>
@@ -359,11 +377,11 @@
             <span class="text-xs font-bold text-[#5C4938] block">סינון שיעורים לפי תת-קטגוריה:</span>
             <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar py-1 text-xs" id="shiurim-subcat-bar">
               <button type="button" onclick="filterShiurimBySubCat('all')" data-subcat="all" class="shiur-subcat-btn active px-4 py-2 rounded-xl bg-amber-500 text-white font-black shrink-0">הכל</button>
-              <button type="button" onclick="filterShiurimBySubCat('הלכה')" data-subcat="הלכה" class="shiur-subcat-btn px-4 py-2 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0"> הלכה</button>
-              <button type="button" onclick="filterShiurimBySubCat('אמונה')" data-subcat="אמונה" class="shiur-subcat-btn px-4 py-2 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0"> אמונה</button>
-              <button type="button" onclick="filterShiurimBySubCat('חסידות')" data-subcat="חסידות" class="shiur-subcat-btn px-4 py-2 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0"> חסידות</button>
-              <button type="button" onclick="filterShiurimBySubCat('ראשונים ואחרונים')" data-subcat="ראשונים ואחרונים" class="shiur-subcat-btn px-4 py-2 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0"> ראשונים ואחרונים</button>
-              <button type="button" onclick="filterShiurimBySubCat('תנ״ך')" data-subcat="תנ״ך" class="shiur-subcat-btn px-4 py-2 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0"> תנ״ך ופרשה</button>
+              <button type="button" onclick="filterShiurimBySubCat('הלכה')" data-subcat="הלכה" class="shiur-subcat-btn px-4 py-2 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0">⚖️ הלכה</button>
+              <button type="button" onclick="filterShiurimBySubCat('אמונה')" data-subcat="אמונה" class="shiur-subcat-btn px-4 py-2 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0">✨ אמונה</button>
+              <button type="button" onclick="filterShiurimBySubCat('חסידות')" data-subcat="חסידות" class="shiur-subcat-btn px-4 py-2 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0">🔥 חסידות</button>
+              <button type="button" onclick="filterShiurimBySubCat('ראשונים ואחרונים')" data-subcat="ראשונים ואחרונים" class="shiur-subcat-btn px-4 py-2 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0">🏛️ ראשונים ואחרונים</button>
+              <button type="button" onclick="filterShiurimBySubCat('תנ״ך')" data-subcat="תנ״ך" class="shiur-subcat-btn px-4 py-2 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0">📖 תנ״ך ופרשה</button>
             </div>
           </div>
 
@@ -396,7 +414,7 @@
             </div>
             <div class="flex items-center justify-end gap-2">
               <button id="lesson-upload-btn" type="button" onclick="uploadNewRabbiShiurV35()" class="px-5 py-2 bg-amber-500 text-white font-black rounded-xl text-xs shadow-sm">
-                 פרסם שיעור במאגר
+                🚀 פרסם שיעור במאגר
               </button>
             </div>
           </div>
@@ -415,9 +433,9 @@
             </div>
             <div class="flex items-center gap-2">
               <button type="button" onclick="filterWeeklyCourses('all')" class="wk-course-filter active px-3 py-1.5 rounded-xl bg-amber-500 text-white text-xs font-black">הכל</button>
-              <button type="button" onclick="filterWeeklyCourses('free')" class="wk-course-filter px-3 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] text-xs font-bold">חינם </button>
-              <button type="button" onclick="filterWeeklyCourses('paid')" class="wk-course-filter px-3 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] text-xs font-bold">בתשלום </button>
-              <button type="button" onclick="toggleNewWeeklyCourseForm()" class="px-3.5 py-1.5 rounded-xl bg-[#0F2340] text-white text-xs font-bold" style="color:#FFFFFF !important;"> הוסף קורס</button>
+              <button type="button" onclick="filterWeeklyCourses('free')" class="wk-course-filter px-3 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] text-xs font-bold">חינם 🎁</button>
+              <button type="button" onclick="filterWeeklyCourses('paid')" class="wk-course-filter px-3 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] text-xs font-bold">בתשלום 💳</button>
+              <button type="button" onclick="toggleNewWeeklyCourseForm()" class="px-3.5 py-1.5 rounded-xl bg-[#0F2340] text-white text-xs font-bold" style="color:#FFFFFF !important;">➕ הוסף קורס</button>
             </div>
           </div>
 
@@ -475,7 +493,7 @@
               <p class="text-xs text-[#5C4938]">מותאם לפרשיות ספר בראשית • 100% נאמן למדרשי חז״ל ופירוש רש״י הקדוש.</p>
             </div>
             <div class="flex items-center gap-2 shrink-0">
-              <button onclick="openSeriesEpisodes('s_joseph')" class="px-5 py-3 bg-amber-500 text-white font-black rounded-2xl text-xs shadow-xl"> צפה בכל 10 הפרקים</button>
+              <button onclick="openSeriesEpisodes('s_joseph')" class="px-5 py-3 bg-amber-500 text-white font-black rounded-2xl text-xs shadow-xl">📺 צפה בכל 10 הפרקים</button>
               <button onclick="openEntityFullPage('series_joseph', 'סדרת השבוע', 'יוסף הצדיק • שליט על מצרים', '10 פרקים מלאים ב-AI 4K', '', 'זמין לצפייה ישירה', '', 'סדרת הדגל של צדיק-טוק על יוסף הצדיק ואחיו במצרים.', 'איכות ההפקה • נאמנות למקורות • חיזוק רוחני')" class="px-4 py-3 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] font-black rounded-2xl text-xs">⭐ דרג והגב על הסדרה</button>
             </div>
           </div>
@@ -492,7 +510,7 @@
               <p class="text-xs text-[#5C4938]">סיפורים מאירי נשמה מהבעל שם טוב, רבי נחמן מברסלב, הבבא סאלי, החפץ חיים, הרב עובדיה יוסף וחכמי הדורות</p>
             </div>
             <button type="button" onclick="toggleAddTzaddikStoryForm()" class="px-4 py-2.5 bg-amber-500 text-white font-black rounded-xl text-xs shrink-0 shadow-sm">
-               שתף סיפור צדיקים חדש
+              ➕ שתף סיפור צדיקים חדש
             </button>
           </div>
 
@@ -591,10 +609,10 @@
           <!-- סינון קטגוריות סרטונים חינוכיים -->
           <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar text-xs">
             <button onclick="filterEduVideos('all')" class="px-3.5 py-1.5 rounded-xl bg-amber-500 text-white font-black shrink-0">הכל</button>
-            <button onclick="filterEduVideos('היסטוריה')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0"> היסטוריה יהודית</button>
-            <button onclick="filterEduVideos('רבנים')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0"> רבנים וגדולי הדורות</button>
-            <button onclick="filterEduVideos('פרשת')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0"> פרשת השבוע והלכה</button>
-            <button onclick="filterEduVideos('ילדים')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0"> חינוכי לילדים</button>
+            <button onclick="filterEduVideos('היסטוריה')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0">🏛️ היסטוריה יהודית</button>
+            <button onclick="filterEduVideos('רבנים')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0">👑 רבנים וגדולי הדורות</button>
+            <button onclick="filterEduVideos('פרשת')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0">📜 פרשת השבוע והלכה</button>
+            <button onclick="filterEduVideos('ילדים')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0">👦 חינוכי לילדים</button>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="edu-videos-grid"></div>
@@ -674,16 +692,16 @@
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-black">
           <button onclick="switchTab('donate')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-rose-300 border border-slate-800 flex items-center justify-center gap-1">
-            <span></span> <span>תרומות וקמפיינים</span>
+            <span>❤️</span> <span>תרומות וקמפיינים</span>
           </button>
           <button onclick="switchTab('judaica')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1">
-            <span></span> <span>חנויות יהדות וקודש</span>
+            <span>🛍️</span> <span>חנויות יהדות וקודש</span>
           </button>
           <button onclick="switchTab('raffles')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-cyan-300 border border-slate-800 flex items-center justify-center gap-1">
-            <span></span> <span>הגרלות ופרסים</span>
+            <span>🎟️</span> <span>הגרלות ופרסים</span>
           </button>
           <button onclick="switchTab('donors')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-400 border border-amber-500/40 flex items-center justify-center gap-1">
-            <span></span> <span>ספר הפרנסים</span>
+            <span>📜</span> <span>ספר הפרנסים</span>
           </button>
         </div>
       </div>
@@ -694,7 +712,7 @@
           <p class="text-xs text-slate-300">משלוח מהיר עד 3 ימי עסקים • בדיקת מחשב כפולה • החזרה והחלפה תוך 14 יום.</p>
         </div>
         <button onclick="openCartModal()" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black rounded-xl text-xs flex items-center gap-1.5 shrink-0">
-          <span> עגלת קניות (<span id="judaica-cart-count">0</span>)</span>
+          <span>🛒 עגלת קניות (<span id="judaica-cart-count">0</span>)</span>
         </button>
       </div>
 
@@ -711,24 +729,25 @@
 
     <!-- 4. YAHADUT & DIVIDED SIDDUR (לשונית יהדות וסידור תפילה מחולק) -->
     <section id="view-siddur" class="view-section space-y-6">
-      <div class="bg-white border-2 border-[#C9A227] p-5 sm:p-6 rounded-2xl space-y-4 shadow-sm">
+      <div class="section-theme-banner p-5 sm:p-6 rounded-2xl space-y-4 shadow-sm">
         <div>
+          <span class="section-theme-badge px-2.5 py-0.5 rounded-md text-xs font-black inline-block mb-1">מרחב התפילה והזמנים</span>
           <h2 class="text-2xl sm:text-3xl font-black text-[#0F2340] serif-heading">תפילה וזמנים • סידור, תהילים, זמני היום, לוח שנה ומנהגים</h2>
-          <p class="text-sm text-[#5C4938]">מרחב תפילה וזמנים בהיר ומסודר: סידור תפילה, ספר תהילים, זמני היום בהלכה ולוח שנה, ומנהגי ישראל</p>
+          <p class="text-sm text-[#5C4938]">כל תפילות היום, פרקי תהילים, זמני היום בהלכה, לוח השנה ומנהגי ישראל במקום אחד</p>
         </div>
 
         <!-- 4 לשוניות בטאב תפילה וזמנים: סידור תפילה | ספר תהילים | זמני היום ולוח השנה | מנהגים -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-          <button type="button" onclick="switchPraySubTab('siddur')" id="pray-btn-siddur" class="py-3 px-4 rounded-2xl bg-amber-500 text-white font-black text-sm flex items-center justify-center gap-2 shadow-sm">
+          <button type="button" onclick="switchPraySubTab('siddur')" id="pray-btn-siddur" class="py-3 px-4 rounded-2xl bg-[#7E22CE] text-white font-black text-sm flex items-center justify-center gap-2 shadow-sm" style="color:#FFFFFF !important;">
             <span>סידור תפילה</span>
           </button>
-          <button type="button" onclick="switchPraySubTab('tehillim')" id="pray-btn-tehillim" class="py-3 px-4 rounded-2xl bg-white text-[#0F2340] border border-[#D8CBB5] font-bold text-sm flex items-center justify-center gap-2">
+          <button type="button" onclick="switchPraySubTab('tehillim')" id="pray-btn-tehillim" class="py-3 px-4 rounded-2xl bg-white text-[#0F2340] border border-[#D8B4FE] font-bold text-sm flex items-center justify-center gap-2">
             <span>ספר תהילים</span>
           </button>
-          <button type="button" onclick="switchPraySubTab('zmanim')" id="pray-btn-zmanim" class="py-3 px-4 rounded-2xl bg-white text-[#0F2340] border border-[#D8CBB5] font-bold text-sm flex items-center justify-center gap-2">
+          <button type="button" onclick="switchPraySubTab('zmanim')" id="pray-btn-zmanim" class="py-3 px-4 rounded-2xl bg-white text-[#0F2340] border border-[#D8B4FE] font-bold text-sm flex items-center justify-center gap-2">
             <span>זמני היום ולוח שנה</span>
           </button>
-          <button type="button" onclick="switchPraySubTab('customs')" id="pray-btn-customs" class="py-3 px-4 rounded-2xl bg-white text-[#0F2340] border border-[#D8CBB5] font-bold text-sm flex items-center justify-center gap-2">
+          <button type="button" onclick="switchPraySubTab('customs')" id="pray-btn-customs" class="py-3 px-4 rounded-2xl bg-white text-[#0F2340] border border-[#D8B4FE] font-bold text-sm flex items-center justify-center gap-2">
             <span>מנהגים</span>
           </button>
         </div>
@@ -771,7 +790,7 @@
             <div class="flex items-center gap-1.5">
               <button type="button" onclick="adjustPrayerFontSize(-2)" class="px-2.5 py-1 bg-[#FDF8EF] border border-[#D8CBB5] rounded-lg text-xs font-bold text-[#0F2340]">A-</button>
               <button type="button" onclick="adjustPrayerFontSize(2)" class="px-2.5 py-1 bg-[#FDF8EF] border border-[#D8CBB5] rounded-lg text-xs font-bold text-[#0F2340]">A+</button>
-              <button type="button" onclick="reloadCurrentPrayerFromSefaria()" class="px-3 py-1.5 bg-amber-500 text-white rounded-xl text-xs font-bold"> משוך טקסט מלא מספריא</button>
+              <button type="button" onclick="reloadCurrentPrayerFromSefaria()" class="px-3 py-1.5 bg-amber-500 text-white rounded-xl text-xs font-bold">🔄 משוך טקסט מלא מספריא</button>
               <a id="prayer-sefaria-link" href="https://www.sefaria.org/Siddur_Edot_HaMizrach" target="_blank" class="px-3 py-1.5 bg-white text-[#0F2340] border border-[#D8CBB5] rounded-xl text-xs font-bold">
                 באתר ספריא ↗
               </a>
@@ -848,7 +867,7 @@
             <button type="button" onclick="openAuthModal()" class="px-4 py-2 bg-white text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs">התחברות / הרשמה</button>
           </div>
           <div id="custom-add-box" class="hidden space-y-3">
-            <button id="custom-add-toggle" type="button" onclick="ttToggleCustomForm()" class="px-4 py-2 bg-amber-500 text-white font-bold rounded-xl text-xs"> העלאת מנהג חדש</button>
+            <button id="custom-add-toggle" type="button" onclick="ttToggleCustomForm()" class="px-4 py-2 bg-amber-500 text-white font-bold rounded-xl text-xs">➕ העלאת מנהג חדש</button>
             <div id="custom-add-form" class="hidden space-y-2.5">
               <input id="custom-new-title" type="text" maxlength="120" placeholder="שם המנהג (למשל: אמירת פיוט מסוים בליל שבת)" class="w-full bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-3.5 py-2.5 text-xs text-[#0F2340] outline-none">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -943,10 +962,10 @@
         </div>
         <div class="flex flex-wrap items-center gap-2 shrink-0">
           <button type="button" onclick="openTzaddikTehillimModal('כלל צדיקי הדורות', 20)" class="px-4 py-2 bg-amber-500 text-white font-black rounded-xl text-xs">
-             פרקי תהילים בציון
+            📖 פרקי תהילים בציון
           </button>
           <button type="button" onclick="openDonateModal('תרומה להחזקת ציוני הצדיקים')" class="px-3.5 py-2 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] font-bold rounded-xl text-xs">
-             תרומה לציונים
+            💝 תרומה לציונים
           </button>
         </div>
       </div>
@@ -995,8 +1014,8 @@
         </div>
         <div id="tzaddikim-route-actions" class="hidden pt-2 border-t border-[#E5DBC7] flex flex-wrap items-center gap-2">
           <a id="tzaddikim-route-gmaps-link" href="#" target="_blank" class="px-4 py-2 bg-amber-500 text-white font-black rounded-xl text-xs">🚗 פתח מסלול משולב ב-Google Maps ↗</a>
-          <button type="button" onclick="openFirstStopInWaze()" class="px-4 py-2 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] font-bold rounded-xl text-xs"> נווט לתחנה הראשונה ב-Waze</button>
-          <button type="button" onclick="shareTzaddikimRouteWhatsApp()" class="px-3.5 py-2 bg-white text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs"> שתף מסלול בוואטסאפ</button>
+          <button type="button" onclick="openFirstStopInWaze()" class="px-4 py-2 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] font-bold rounded-xl text-xs">🚙 נווט לתחנה הראשונה ב-Waze</button>
+          <button type="button" onclick="shareTzaddikimRouteWhatsApp()" class="px-3.5 py-2 bg-white text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs">💬 שתף מסלול בוואטסאפ</button>
         </div>
       </div>
 
@@ -1105,7 +1124,7 @@
           <button onclick="filterMikvaot('all')" class="mikvah-filter-btn active px-4 py-2 rounded-xl font-bold bg-blue-500 text-slate-950 shrink-0">כל המקוואות</button>
           <button onclick="filterMikvaot('גברים')" class="mikvah-filter-btn px-4 py-2 rounded-xl font-bold bg-slate-800 text-slate-300 shrink-0">מקוואות גברים</button>
           <button onclick="filterMikvaot('נשים')" class="mikvah-filter-btn px-4 py-2 rounded-xl font-bold bg-slate-800 text-slate-300 shrink-0">מקוואות נשים</button>
-          <button onclick="filterMikvaot('open')" class="mikvah-filter-btn px-4 py-2 rounded-xl font-bold bg-slate-800 text-slate-300 shrink-0">פתוח עכשיו </button>
+          <button onclick="filterMikvaot('open')" class="mikvah-filter-btn px-4 py-2 rounded-xl font-bold bg-slate-800 text-slate-300 shrink-0">פתוח עכשיו 🟢</button>
         </div>
       </div>
       <div class="flex justify-end mb-2"><button onclick="openCommunityAddModal('mikvah')" class="px-4 py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs shadow">+ הוספת מקווה טהרה (למשתמש רשום)</button></div>
@@ -1207,10 +1226,10 @@
           </div>
           <div class="flex flex-wrap items-center gap-2">
             <button type="button" onclick="openBarcodeScannerModal()" class="px-4 py-2.5 bg-amber-500 text-white font-black rounded-xl text-xs shadow-sm flex items-center gap-1.5">
-              <span></span> <span>סורק מוצרים (ברקוד כשרות)</span>
+              <span>📷</span> <span>סורק מוצרים (ברקוד כשרות)</span>
             </button>
             <button type="button" onclick="toggleInlineRestaurantUpload()" class="px-4 py-2.5 bg-[#0F2340] text-white font-bold rounded-xl text-xs" style="color:#FFFFFF !important;">
-               הוספת מסעדה ותעודת כשרות
+              ➕ הוספת מסעדה ותעודת כשרות
             </button>
           </div>
         </div>
@@ -1297,12 +1316,12 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar text-xs">
             <button onclick="filterGemachimByCategory('all')" class="px-3 py-1.5 rounded-xl bg-amber-500 text-slate-950 font-black shrink-0">הכל</button>
-            <button onclick="filterGemachimByCategory('עזר מציון')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold shrink-0"> עזר מציון</button>
-            <button onclick="filterGemachimByCategory('יד שרה')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold shrink-0"> יד שרה</button>
-            <button onclick="filterGemachimByCategory('ידידים')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold shrink-0"> ידידים</button>
-            <button onclick="filterGemachimByCategory('איחוד הצלה')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold shrink-0"> איחוד הצלה</button>
-            <button onclick="filterGemachimByCategory('שמחות')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold shrink-0"> גמ״חי שמחות</button>
-            <button onclick="filterGemachimByCategory('עריסות')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold shrink-0"> עריסות לתינוקות</button>
+            <button onclick="filterGemachimByCategory('עזר מציון')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold shrink-0">🏥 עזר מציון</button>
+            <button onclick="filterGemachimByCategory('יד שרה')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold shrink-0">♿ יד שרה</button>
+            <button onclick="filterGemachimByCategory('ידידים')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold shrink-0">🚗 ידידים</button>
+            <button onclick="filterGemachimByCategory('איחוד הצלה')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold shrink-0">🚑 איחוד הצלה</button>
+            <button onclick="filterGemachimByCategory('שמחות')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold shrink-0">🎊 גמ״חי שמחות</button>
+            <button onclick="filterGemachimByCategory('עריסות')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold shrink-0">👶 עריסות לתינוקות</button>
           </div>
           <button onclick="openCommunityAddModal('gemach')" class="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs shrink-0 shadow-lg">
             + הוספת גמ״ח חדש (למשתמש רשום)
@@ -1319,19 +1338,19 @@
             <h3 class="text-base font-black text-[#0F2340] mt-1">מצא פריט להשאלה או הוסף גמ״ח משלך ("יש לי גמ״ח ל...")</h3>
           </div>
           <button type="button" onclick="toggleHaveGemachForm()" class="px-4 py-2 bg-amber-500 text-white font-black rounded-xl text-xs shrink-0 shadow-sm">
-             "יש לי גמ״ח ל..." (פתיחת גמ״ח)
+            ➕ "יש לי גמ״ח ל..." (פתיחת גמ״ח)
           </button>
         </div>
 
         <!-- תתי-קטגוריות מסודרות לגמ״חים -->
         <div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar text-xs">
           <button type="button" onclick="filterGemachimByCategory('all')" class="px-3.5 py-1.5 rounded-xl bg-amber-500 text-white font-black shrink-0">הכל</button>
-          <button type="button" onclick="filterGemachimByCategory('רפואה')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0"> רפואה והצלה</button>
-          <button type="button" onclick="filterGemachimByCategory('שמחות')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0"> שמחות ואירועים</button>
-          <button type="button" onclick="filterGemachimByCategory('תינוקות')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0"> תינוקות ויולדות</button>
-          <button type="button" onclick="filterGemachimByCategory('כלי עבודה')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0"> כלי עבודה וציוד</button>
-          <button type="button" onclick="filterGemachimByCategory('דרכים')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0"> סיוע בדרכים</button>
-          <button type="button" onclick="filterGemachimByCategory('מזון')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0"> מזון ושבת</button>
+          <button type="button" onclick="filterGemachimByCategory('רפואה')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0">🏥 רפואה והצלה</button>
+          <button type="button" onclick="filterGemachimByCategory('שמחות')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0">🎊 שמחות ואירועים</button>
+          <button type="button" onclick="filterGemachimByCategory('תינוקות')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0">👶 תינוקות ויולדות</button>
+          <button type="button" onclick="filterGemachimByCategory('כלי עבודה')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0">🧰 כלי עבודה וציוד</button>
+          <button type="button" onclick="filterGemachimByCategory('דרכים')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0">🚗 סיוע בדרכים</button>
+          <button type="button" onclick="filterGemachimByCategory('מזון')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold shrink-0">🍲 מזון ושבת</button>
         </div>
 
         <!-- סינון מהיר לפי פריטים מבוקשים -->
@@ -1439,8 +1458,8 @@
             <p class="text-xs text-[#5C4938]">הצטרף לקבוצות הקהילתיות של בתי חב״ד או הוסף ועדכן פרטי בית חב״ד</p>
           </div>
           <div class="flex items-center gap-2">
-            <button type="button" onclick="toggleChabadUploadForm('new')" class="px-4 py-2 bg-amber-500 text-white font-black rounded-xl text-xs shadow-sm"> הוספת בית חב״ד חדש</button>
-            <button type="button" onclick="toggleChabadUploadForm('update')" class="px-3.5 py-2 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] font-bold rounded-xl text-xs"> עדכון בית חב״ד קיים</button>
+            <button type="button" onclick="toggleChabadUploadForm('new')" class="px-4 py-2 bg-amber-500 text-white font-black rounded-xl text-xs shadow-sm">➕ הוספת בית חב״ד חדש</button>
+            <button type="button" onclick="toggleChabadUploadForm('update')" class="px-3.5 py-2 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] font-bold rounded-xl text-xs">✏️ עדכון בית חב״ד קיים</button>
           </div>
         </div>
         <div id="inline-chabad-upload-box" class="hidden bg-[#F8F3E8] border border-[#E5DBC7] p-4 rounded-xl space-y-2.5">
@@ -1525,7 +1544,7 @@
           <p class="text-xs text-slate-400">שחרית, מנחה וערבית בבתי כנסת ושטיבלאך • מנגנון "קריאת מניין" להשלמת עשירי.</p>
         </div>
         <button onclick="triggerMinyanAlert()" class="px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl text-xs flex items-center gap-1.5 shadow-lg animate-pulse">
-          <span></span> <span>קריאת מניין דחופה (חסר עשירי!)</span>
+          <span>📢</span> <span>קריאת מניין דחופה (חסר עשירי!)</span>
         </button>
       </div>
       
@@ -1534,13 +1553,13 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar">
             <button onclick="filterMinyanimByPrayer('all')" id="minyan-filter-all" class="px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs shrink-0">הכל</button>
-            <button onclick="filterMinyanimByPrayer('shacharit')" id="minyan-filter-shacharit" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs shrink-0"> שחרית</button>
-            <button onclick="filterMinyanimByPrayer('mincha')" id="minyan-filter-mincha" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs shrink-0"> מנחה</button>
-            <button onclick="filterMinyanimByPrayer('arvit')" id="minyan-filter-arvit" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs shrink-0"> ערבית</button>
+            <button onclick="filterMinyanimByPrayer('shacharit')" id="minyan-filter-shacharit" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs shrink-0">☀️ שחרית</button>
+            <button onclick="filterMinyanimByPrayer('mincha')" id="minyan-filter-mincha" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs shrink-0">🌤️ מנחה</button>
+            <button onclick="filterMinyanimByPrayer('arvit')" id="minyan-filter-arvit" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs shrink-0">🌙 ערבית</button>
           </div>
           <div class="flex items-center gap-2 shrink-0">
             <button onclick="openCommunityAddModal('minyan_call')" class="px-3.5 py-2.5 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl text-xs shadow-lg">
-               הודעת קריאת מניין (חסר עשירי!)
+              📢 הודעת קריאת מניין (חסר עשירי!)
             </button>
             <button onclick="openCommunityAddModal('minyan')" class="px-3.5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs shadow-lg">
               + הוספת מניין חדש
@@ -1601,7 +1620,7 @@
             <p class="text-xs text-slate-300">תרומתך תוצג על המסך בזמן אמת לזכות ולהצלחה.</p>
           </div>
           <button onclick="openDonateModal()" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black rounded-xl text-xs">
-             תרומה והקדשה בשידור חי (נדרים פלוס)
+            ❤️ תרומה והקדשה בשידור חי (נדרים פלוס)
           </button>
         </div>
       </div>
@@ -1617,16 +1636,16 @@
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-black">
           <button onclick="switchTab('raffles')" class="py-2.5 px-2.5 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center gap-1 shadow">
-            <span></span> <span>תרומות והגרלות</span>
+            <span>❤️</span> <span>תרומות והגרלות</span>
           </button>
           <button onclick="switchTab('judaica')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1">
-            <span></span> <span>חנות יודאיקה וסת״ם</span>
+            <span>🛍️</span> <span>חנות יודאיקה וסת״ם</span>
           </button>
           <button onclick="switchTab('donors')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-400 border border-amber-500/40 flex items-center justify-center gap-1">
-            <span></span> <span>ספר הפרנסים</span>
+            <span>📜</span> <span>ספר הפרנסים</span>
           </button>
           <button onclick="openDonateModal('תרומה כללית להחזקת תורה וחסד')" class="py-2.5 px-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white flex items-center justify-center gap-1">
-            <span></span> <span>תרום כעת ב-Bit</span>
+            <span>💝</span> <span>תרום כעת ב-Bit</span>
           </button>
         </div>
       </div>
@@ -1768,9 +1787,9 @@
       <div class="bg-slate-900 border border-amber-500/40 p-5 rounded-3xl space-y-4">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar">
-            <button onclick="switchHalachaMode('urgent')" id="halacha-mode-btn-urgent" class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 font-bold text-xs shrink-0"> שאלה דחופה</button>
-            <button onclick="switchHalachaMode('normal')" id="halacha-mode-btn-normal" class="px-4 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs shrink-0 shadow"> שאלה רגילה</button>
-            <button onclick="switchHalachaMode('search')" id="halacha-mode-btn-search" class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 font-bold text-xs shrink-0"> חיפוש תשובות בהלכה</button>
+            <button onclick="switchHalachaMode('urgent')" id="halacha-mode-btn-urgent" class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 font-bold text-xs shrink-0">🚨 שאלה דחופה</button>
+            <button onclick="switchHalachaMode('normal')" id="halacha-mode-btn-normal" class="px-4 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs shrink-0 shadow">💬 שאלה רגילה</button>
+            <button onclick="switchHalachaMode('search')" id="halacha-mode-btn-search" class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 font-bold text-xs shrink-0">🔍 חיפוש תשובות בהלכה</button>
           </div>
           <button onclick="openCommunityAddModal('rabbi')" class="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs shrink-0 shadow-lg">
             + הוספת מספרי טלפון של רבנים וקווי הלכה
@@ -1792,7 +1811,7 @@
         <!-- מצב 2: שאלה רגילה -->
         <div id="halacha-mode-box-normal" class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex flex-col sm:flex-row items-center gap-2.5">
           <input id="halacha-normal-q-input" type="text" placeholder="כתוב כאן שאלה בהלכה לשליחה לרב פוסק (למשל: דיני ברכות, שבת, תפילה)..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none">
-          <button onclick="window.requireRegisteredUser(function(){toast(' שאלתך נשלחה לבית ההוראה! תשובה תישלח אליך בהקדם.');document.getElementById('halacha-normal-q-input').value='';})" class="w-full sm:w-auto px-5 py-2.5 bg-amber-500 text-slate-950 font-black rounded-xl text-xs shrink-0">
+          <button onclick="window.requireRegisteredUser(function(){toast('✅ שאלתך נשלחה לבית ההוראה! תשובה תישלח אליך בהקדם.');document.getElementById('halacha-normal-q-input').value='';})" class="w-full sm:w-auto px-5 py-2.5 bg-amber-500 text-slate-950 font-black rounded-xl text-xs shrink-0">
             שלח שאלה לרב
           </button>
         </div>
@@ -1877,11 +1896,11 @@
 
         <div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar text-xs">
           <button onclick="renderReligiousServicesDirectory('all')" class="px-3.5 py-2 rounded-xl bg-amber-500 text-slate-950 font-black shrink-0">הכל</button>
-          <button onclick="renderReligiousServicesDirectory('מוהל')" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-200 font-bold shrink-0"> מוהלים מוסמכים</button>
-          <button onclick="renderReligiousServicesDirectory('משגיח')" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-200 font-bold shrink-0"> משגיחי כשרות</button>
-          <button onclick="renderReligiousServicesDirectory('חתנים')" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-200 font-bold shrink-0"> מדריכי חתנים וחופה</button>
-          <button onclick="renderReligiousServicesDirectory('כלות')" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-200 font-bold shrink-0"> מדריכות כלות והפרשת חלה</button>
-          <button onclick="renderReligiousServicesDirectory('סת״ם')" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-200 font-bold shrink-0"> סופרי סת״ם ומזוזות</button>
+          <button onclick="renderReligiousServicesDirectory('מוהל')" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-200 font-bold shrink-0">👶 מוהלים מוסמכים</button>
+          <button onclick="renderReligiousServicesDirectory('משגיח')" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-200 font-bold shrink-0">🛡️ משגיחי כשרות</button>
+          <button onclick="renderReligiousServicesDirectory('חתנים')" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-200 font-bold shrink-0">🎩 מדריכי חתנים וחופה</button>
+          <button onclick="renderReligiousServicesDirectory('כלות')" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-200 font-bold shrink-0">👰 מדריכות כלות והפרשת חלה</button>
+          <button onclick="renderReligiousServicesDirectory('סת״ם')" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-200 font-bold shrink-0">📜 סופרי סת״ם ומזוזות</button>
         </div>
 
         
@@ -1917,16 +1936,16 @@
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-black">
           <button onclick="switchTab('donate')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-rose-300 border border-slate-800 flex items-center justify-center gap-1">
-            <span></span> <span>תרומות וקמפיינים</span>
+            <span>❤️</span> <span>תרומות וקמפיינים</span>
           </button>
           <button onclick="switchTab('judaica')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 flex items-center justify-center gap-1">
-            <span></span> <span>חנויות יהדות וקודש</span>
+            <span>🛍️</span> <span>חנויות יהדות וקודש</span>
           </button>
           <button onclick="switchTab('raffles')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-cyan-300 border border-slate-800 flex items-center justify-center gap-1">
-            <span></span> <span>הגרלות ופרסים</span>
+            <span>🎟️</span> <span>הגרלות ופרסים</span>
           </button>
           <button onclick="switchTab('donors')" class="py-2.5 px-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-amber-400 border border-amber-500/40 flex items-center justify-center gap-1">
-            <span></span> <span>ספר הפרנסים</span>
+            <span>📜</span> <span>ספר הפרנסים</span>
           </button>
         </div>
       </div>
@@ -1938,7 +1957,7 @@
             <p class="text-xs text-slate-300">כל תרומה להפצת תורה וחסד נחקקת בלוח התורמים החי לזכות, לרפואה, להצלחה או לעילוי נשמה.</p>
           </div>
           <button onclick="openDonateModal('ספר הפרנסים - הקדשה אישית')" class="px-5 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-2xl text-xs shrink-0 shadow-xl">
-             הוסף את שמך לספר הפרנסים
+            ✍️ הוסף את שמך לספר הפרנסים
           </button>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="full-donors-wall-grid"></div>
@@ -1980,26 +1999,26 @@
         <div class="hidden flex items-center gap-2 overflow-x-auto hide-scrollbar pt-1">
           <button onclick="switchMyZoneSubTab('community')" id="myzone-btn-community" class="px-4 py-2.5 rounded-xl bg-white border border-[#C9A227] text-[#0F2340] font-black text-xs shrink-0">קהילה, פורום וקבוצות</button>
           <button onclick="switchMyZoneSubTab('tracker')" id="myzone-btn-tracker"  class="px-4 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs shrink-0 shadow">
-             מעקב יומי וחשבון נפש (נודניק )
+            📊 מעקב יומי וחשבון נפש (נודניק 🔔)
           </button>
           <button onclick="switchMyZoneSubTab('quizresults')" id="myzone-btn-quizresults" class="px-4 py-2.5 rounded-xl bg-slate-900 border border-cyan-500/40 text-cyan-300 font-black text-xs shrink-0">
-             תוצאות חידונים
+            🏆 תוצאות חידונים
           </button>
           <button onclick="switchMyZoneSubTab('saved')" id="myzone-btn-saved" class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 font-bold text-xs shrink-0">
             ⭐ הדברים השמורים שלי
           </button>
           <button onclick="switchMyZoneSubTab('history')" id="myzone-btn-history" class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 font-bold text-xs shrink-0">
-             ההיסטוריה שלי
+            🕒 ההיסטוריה שלי
           </button>
           <button onclick="switchMyZoneSubTab('yahrzeits')" id="myzone-btn-yahrzeits" class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 font-bold text-xs shrink-0">
-             היארצייטים שלי
+            🕯️ היארצייטים שלי
           </button>
-          <button onclick="switchMyZoneSubTab('submissions')" id="myzone-btn-submissions" class="px-4 py-2.5 rounded-xl bg-slate-900 border border-amber-500/40 text-amber-300 font-black text-xs shrink-0"> התכנים שהוספתי (ומודרציה)</button>
+          <button onclick="switchMyZoneSubTab('submissions')" id="myzone-btn-submissions" class="px-4 py-2.5 rounded-xl bg-slate-900 border border-amber-500/40 text-amber-300 font-black text-xs shrink-0">📝 התכנים שהוספתי (ומודרציה)</button>
           <button onclick="switchMyZoneSubTab('premium')" id="myzone-btn-premium" class="px-4 py-2.5 rounded-xl bg-white border border-[#C9A227] text-[#0F2340] font-bold text-xs shrink-0">מנוי Premium (35 ₪)</button>
           <button onclick="switchMyZoneSubTab('orders')" id="myzone-btn-orders" class="px-4 py-2.5 rounded-xl bg-white border border-[#D8CBB5] text-[#0F2340] font-bold text-xs shrink-0">רכישות ותרומות</button>
           <button onclick="switchTab('admin')" class="px-4 py-2.5 rounded-xl bg-[#0F2340] text-white font-bold text-xs shrink-0" style="color:#FFFFFF !important;">פאנל ניהול מרכזי</button>
           <button onclick="switchMyZoneSubTab('settings')" id="myzone-btn-settings"  class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 font-bold text-xs shrink-0">
-             ההגדרות שלי
+            ⚙️ ההגדרות שלי
           </button>
         </div>
       </div>
@@ -2067,7 +2086,7 @@
             <h3 class="text-base font-black text-white"> תוצאות החידונים והמדליות שלי</h3>
             <p class="text-xs text-slate-400">כל הציונים שלך בחידוני פרשת השבוע, התנ״ך וההלכה.</p>
           </div>
-          <button onclick="switchTab('kids')" class="px-4 py-2 bg-cyan-500 text-slate-950 font-black rounded-xl text-xs"> התחל חידון חדש</button>
+          <button onclick="switchTab('kids')" class="px-4 py-2 bg-cyan-500 text-slate-950 font-black rounded-xl text-xs">🎮 התחל חידון חדש</button>
         </div>
         <div id="myzone-quiz-results-list" class="space-y-3"></div>
       </div>
@@ -2288,32 +2307,32 @@
   
     <!-- 18. COMMUNITY FORUM VIEW (פורום קהילתי ובית מדרש חברתי) -->
     <section id="view-forum" class="view-section space-y-5">
-      <!-- כותרת מרכז הקהילה ו-4 תתי-לשוניות: פורום | הגרלות | צדקה | לוח תפילות -->
-      <div class="bg-white border-2 border-[#C9A227] p-5 rounded-2xl space-y-4 shadow-sm">
+      <!-- כותרת מדור קהילה בעיצוב כתום חם מזוהה: פורום | הגרלות | צדקה -->
+      <div class="section-theme-banner p-5 rounded-2xl space-y-4 shadow-sm">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <span class="px-2.5 py-0.5 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] font-black rounded-md text-xs">קהילת צדיק-טוק</span>
-            <h2 class="text-2xl font-black text-[#0F2340] serif-heading mt-1">מרכז הקהילה • פורום, הגרלות, צדקה ולוח תפילות</h2>
-            <p class="text-xs sm:text-sm text-[#5C4938]">חיבור לבבות בעם ישראל: בית מדרש חברתי, הגרלות הקודש, קמפיינים לצדקה ולוח שמות לתפילה</p>
+            <span class="px-2.5 py-0.5 bg-[#EA580C] text-white font-black rounded-md text-xs inline-block mb-1" style="color:#FFFFFF !important;">קהילת צדיק-טוק</span>
+            <h2 class="text-2xl font-black text-[#0F2340] serif-heading">קהילה • פורום, הגרלות וצדקה</h2>
+            <p class="text-xs sm:text-sm text-[#5C4938]">חיבור לבבות בעם ישראל: בית מדרש חברתי, הגרלות הקודש, קמפיינים לצדקה ולוח תפילות</p>
           </div>
           <div class="flex items-center gap-2">
-            <button type="button" onclick="switchTab('judaica')" class="px-3.5 py-2 bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold rounded-xl text-xs">
+            <button type="button" onclick="switchTab('judaica')" class="px-3.5 py-2 bg-white border border-[#FDBA74] text-[#0F2340] font-bold rounded-xl text-xs">
               חנות יודאיקה
             </button>
           </div>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" role="tablist" aria-label="לשוניות קהילה">
-          <button type="button" id="comm-tab-btn-forum" onclick="switchCommunitySubTab('forum')" class="py-2.5 px-3 rounded-xl bg-amber-500 text-white font-black text-xs">
+          <button type="button" id="comm-tab-btn-forum" onclick="switchCommunitySubTab('forum')" class="py-2.5 px-3 rounded-xl bg-[#EA580C] text-white font-black text-xs shadow-sm" style="color:#FFFFFF !important;">
             פורום הקהילה
           </button>
-          <button type="button" id="comm-tab-btn-raffles" onclick="switchCommunitySubTab('raffles')" class="py-2.5 px-3 rounded-xl bg-[#FDF8EF] text-[#0F2340] border border-[#D8CBB5] font-bold text-xs">
+          <button type="button" id="comm-tab-btn-raffles" onclick="switchCommunitySubTab('raffles')" class="py-2.5 px-3 rounded-xl bg-white text-[#0F2340] border border-[#FDBA74] font-bold text-xs">
             הגרלות
           </button>
-          <button type="button" id="comm-tab-btn-charity" onclick="switchCommunitySubTab('charity')" class="py-2.5 px-3 rounded-xl bg-[#FDF8EF] text-[#0F2340] border border-[#D8CBB5] font-bold text-xs">
+          <button type="button" id="comm-tab-btn-charity" onclick="switchCommunitySubTab('charity')" class="py-2.5 px-3 rounded-xl bg-white text-[#0F2340] border border-[#FDBA74] font-bold text-xs">
             צדקה וספר הפרנסים
           </button>
-          <button type="button" id="comm-tab-btn-prayers" onclick="switchCommunitySubTab('prayers')" class="py-2.5 px-3 rounded-xl bg-[#FDF8EF] text-[#0F2340] border border-[#D8CBB5] font-bold text-xs">
+          <button type="button" id="comm-tab-btn-prayers" onclick="switchCommunitySubTab('prayers')" class="py-2.5 px-3 rounded-xl bg-white text-[#0F2340] border border-[#FDBA74] font-bold text-xs">
             לוח תפילות
           </button>
         </div>
@@ -2321,7 +2340,7 @@
 
       <!-- פאנל 1: פורום הקהילה -->
       <div id="comm-panel-forum" class="space-y-4">
-        <div class="bg-white border border-[#E5DBC7] p-5 rounded-2xl space-y-3 shadow-sm">
+        <div class="bg-white border border-[#FED7AA] p-5 rounded-2xl space-y-3 shadow-sm">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <h4 class="text-base font-black text-[#0F2340] serif-heading">פתיחת נושא או אשכול חדש בפורום הקהילה</h4>
             <span id="result-count-forum" class="live-result-counter">מציג תוצאות</span>
@@ -2346,23 +2365,6 @@
               פרסם אשכול בפורום
             </button>
           </div>
-        </div>
-
-        <!-- שליחת סיפור על צדיק עם מקור -->
-        <div class="bg-white border border-[#E5DBC7] p-5 rounded-2xl space-y-3 shadow-sm">
-          <div class="flex items-center justify-between">
-            <h3 class="text-base font-bold text-[#0F2340] serif-heading">שליחת סיפור על צדיק עם מקור לקהילה</h3>
-            <span class="text-xs font-bold text-[#5C4938]">נבדק ומאושר בפאנל הניהול</span>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-            <input id="story-tzaddik-name" type="text" placeholder="שם הצדיק (למשל: החפץ חיים / הבבא סאלי)" class="bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">
-            <input id="story-source-ref" type="text" placeholder="מקור הסיפור (שם הספר / עדות מתועדת)" class="bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">
-            <input id="story-image-url" type="text" placeholder="קישור לתמונה (אופציונלי)" class="bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">
-          </div>
-          <textarea id="story-body-text" rows="2" placeholder="כתוב כאן את סיפור הצדיק במלואו..." class="w-full bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none"></textarea>
-          <button type="button" onclick="submitTzaddikStoryWithSource()" class="px-5 py-2 bg-amber-500 text-white font-bold rounded-xl text-xs">
-            שלח סיפור צדיק לאישור
-          </button>
         </div>
 
         <div id="forum-posts-container" class="space-y-3.5"></div>
@@ -2576,7 +2578,7 @@
             <p class="text-xs sm:text-sm text-[#5C4938]">מדריך ישיבות ומוסדות תורה • אפשרות העלאת ישיבה חדשה, תרומה להחזקת תורה ותגובות</p>
           </div>
           <button type="button" onclick="toggleYeshivaUploadForm()" class="px-4 py-2.5 bg-amber-500 text-white font-black rounded-xl text-xs self-start shadow-sm">
-             הוספת ישיבה / כולל חדש
+            ➕ הוספת ישיבה / כולל חדש
           </button>
         </div>
 
@@ -2597,7 +2599,7 @@
         <div class="find-search-panel flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
           <input id="yeshivot-search-input" type="text" oninput="renderYeshivotAndMosdot(this.value)" placeholder="חיפוש ישיבה, כולל או מוסד תורה לפי שם, ראש ישיבה או עיר..." class="flex-1 bg-[#FDF8EF] border border-[#D8CBB5] focus:border-[#C9A227] rounded-xl px-4 py-2.5 text-xs sm:text-sm text-[#0F2340] outline-none">
           <button type="button" onclick="locateNearestByGPS('yeshivot')" class="px-4 py-2.5 bg-amber-500 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shrink-0">
-            <span> איתור לפי מיקום GPS</span>
+            <span>📍 איתור לפי מיקום GPS</span>
           </button>
         </div>
 
@@ -2687,7 +2689,7 @@
 
   </main>
 
-  <!-- Mobile Bottom Navigation Bar (5 טאבים ברורים וקבועים: בית | ללמוד | תפילה וזמנים | קרוב אליי | קהילה) -->
+  <!-- Mobile Bottom Navigation Bar (5 לשוניות בדיוק: בית | ללמוד | תפילה וזמנים | קרוב אליי | קהילה) -->
   <nav class="heritage-bottom-nav md:hidden fixed bottom-0 left-0 right-0 z-40 grid grid-cols-5 py-2 px-1">
     <button type="button" onclick="switchTab('feed')" id="bnav-feed" class="bottom-nav-item active flex flex-col items-center justify-center gap-1 py-1 relative">
       <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 10.5L12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1v-10.5z"/></svg>
@@ -2720,50 +2722,50 @@
         <h3 class="text-lg font-black text-white flex items-center gap-2">
      <span></span> מגירת כל הכלים (Super-App Drawer)
     </h3>
-        <button onclick="closeModal('modal-super-drawer')" class="text-slate-400 hover:text-white text-lg"></button>
+        <button onclick="closeModal('modal-super-drawer')" class="text-slate-400 hover:text-white text-lg">✕</button>
       </div>
       <div class="grid grid-cols-3 sm:grid-cols-4 gap-2.5 text-xs">
         <button onclick="selectDrawerTab('judaica')" class="p-3 bg-slate-950 hover:bg-slate-800 border border-amber-500/30 rounded-2xl flex flex-col items-center gap-1.5 text-center">
-          <span class="text-2xl"></span><span class="font-bold text-amber-300">חנות יודאיקה</span>
+          <span class="text-2xl">🛍️</span><span class="font-bold text-amber-300">חנות יודאיקה</span>
         </button>
         <button onclick="selectDrawerTab('tzaddikim')" class="p-3 bg-slate-950 hover:bg-slate-800 border border-amber-500/30 rounded-2xl flex flex-col items-center gap-1.5 text-center">
-          <span class="text-2xl"></span><span class="font-bold text-amber-300">קברי צדיקים</span>
+          <span class="text-2xl">🕯️</span><span class="font-bold text-amber-300">קברי צדיקים</span>
         </button>
         <button onclick="selectDrawerTab('mikvaot')" class="p-3 bg-slate-950 hover:bg-slate-800 border border-blue-500/30 rounded-2xl flex flex-col items-center gap-1.5 text-center">
-          <span class="text-2xl"></span><span class="font-bold text-blue-300">מקוואות טהרה</span>
+          <span class="text-2xl">💧</span><span class="font-bold text-blue-300">מקוואות טהרה</span>
         </button>
         <button onclick="selectDrawerTab('restaurants')" class="p-3 bg-slate-950 hover:bg-slate-800 border border-emerald-500/30 rounded-2xl flex flex-col items-center gap-1.5 text-center">
-          <span class="text-2xl"></span><span class="font-bold text-emerald-300">מסעדות כשרות</span>
+          <span class="text-2xl">🍽️</span><span class="font-bold text-emerald-300">מסעדות כשרות</span>
         </button>
         <button onclick="selectDrawerTab('gemachim')" class="p-3 bg-slate-950 hover:bg-slate-800 border border-cyan-500/30 rounded-2xl flex flex-col items-center gap-1.5 text-center">
-          <span class="text-2xl"></span><span class="font-bold text-cyan-300">גמ״חים וחסד</span>
+          <span class="text-2xl">🤝</span><span class="font-bold text-cyan-300">גמ״חים וחסד</span>
         </button>
         <button onclick="selectDrawerTab('chabad')" class="p-3 bg-slate-950 hover:bg-slate-800 border border-amber-500/30 rounded-2xl flex flex-col items-center gap-1.5 text-center">
-          <span class="text-2xl"></span><span class="font-bold text-amber-300">בתי חב״ד בעולם</span>
+          <span class="text-2xl">🌍</span><span class="font-bold text-amber-300">בתי חב״ד בעולם</span>
         </button>
         <button onclick="selectDrawerTab('minyanim')" class="p-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-2xl flex flex-col items-center gap-1.5 text-center">
-          <span class="text-2xl">⏱</span><span class="font-bold text-white">מניינים חיים</span>
+          <span class="text-2xl">⏱️</span><span class="font-bold text-white">מניינים חיים</span>
         </button>
         <button onclick="selectDrawerTab('live')" class="p-3 bg-slate-950 hover:bg-slate-800 border border-red-500/30 rounded-2xl flex flex-col items-center gap-1.5 text-center">
-          <span class="text-2xl"></span><span class="font-bold text-red-400">שידורים חיים</span>
+          <span class="text-2xl">🔴</span><span class="font-bold text-red-400">שידורים חיים</span>
         </button>
         <button onclick="selectDrawerTab('raffles')" class="p-3 bg-slate-950 hover:bg-slate-800 border border-amber-500/30 rounded-2xl flex flex-col items-center gap-1.5 text-center">
-          <span class="text-2xl"></span><span class="font-bold text-amber-300">הגרלות וקמפיינים</span>
+          <span class="text-2xl">🎟️</span><span class="font-bold text-amber-300">הגרלות וקמפיינים</span>
         </button>
         <button onclick="selectDrawerTab('zmanim')" class="p-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-2xl flex flex-col items-center gap-1.5 text-center">
           <span class="text-2xl">⏰</span><span class="font-bold text-white">זמנים וחשבון נפש</span>
         </button>
         <button onclick="selectDrawerTab('rabbis')" class="p-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-2xl flex flex-col items-center gap-1.5 text-center">
-          <span class="text-2xl"></span><span class="font-bold text-white">קו הלכה ורבנים</span>
+          <span class="text-2xl">📜</span><span class="font-bold text-white">קו הלכה ורבנים</span>
         </button>
         <button onclick="selectDrawerTab('customs')" class="p-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-2xl flex flex-col items-center gap-1.5 text-center">
-          <span class="text-2xl"></span><span class="font-bold text-white">מנהגים ושירותים</span>
+          <span class="text-2xl">🕎</span><span class="font-bold text-white">מנהגים ושירותים</span>
         </button>
         <button onclick="closeModal('modal-super-drawer'); openAiStudioModal();" class="p-3 bg-slate-950 hover:bg-slate-800 border border-cyan-500/30 rounded-2xl flex flex-col items-center gap-1.5 text-center">
-          <span class="text-2xl"></span><span class="font-bold text-cyan-300">יוצר סרטים ב-AI</span>
+          <span class="text-2xl">🎙️</span><span class="font-bold text-cyan-300">יוצר סרטים ב-AI</span>
         </button>
         <button onclick="closeModal('modal-super-drawer'); openAdminModal();" class="p-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-2xl flex flex-col items-center gap-1.5 text-center">
-          <span class="text-2xl"></span><span class="font-bold text-slate-400">פאנל ניהול</span>
+          <span class="text-2xl">⚙️</span><span class="font-bold text-slate-400">פאנל ניהול</span>
         </button>
       </div>
     </div>
@@ -2777,7 +2779,7 @@
           <span class="text-[10px] font-black text-amber-400">מגירת פניני רש״י וחז״ל</span>
           <h3 id="rashi-drawer-title" class="text-lg font-black text-white">יוסף הצדיק • שליט על מצרים</h3>
         </div>
-        <button onclick="closeModal('modal-rashi-drawer')" class="text-slate-400 hover:text-white text-lg"></button>
+        <button onclick="closeModal('modal-rashi-drawer')" class="text-slate-400 hover:text-white text-lg">✕</button>
       </div>
       <!-- 2 Tabs: Rashi & Source Verse -->
       <div class="flex items-center gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
@@ -2805,7 +2807,7 @@
           <span class="text-[10px] font-black text-cyan-400">In-App User AI Studio</span>
           <h3 class="text-lg font-black text-white"> יוצר הסרטים האישי ב-AI וארכיטקטורת הקולות</h3>
         </div>
-        <button onclick="closeModal('modal-ai-studio')" class="text-slate-400 hover:text-white text-lg"></button>
+        <button onclick="closeModal('modal-ai-studio')" class="text-slate-400 hover:text-white text-lg">✕</button>
       </div>
       <div class="space-y-3 text-xs">
         <div>
@@ -2828,7 +2830,7 @@
           <textarea id="ai-studio-prompt" rows="3" placeholder="לדוגמה: סצנה שבה יוסף הצדיק מחזק את אחיו במצרים ואומר להם כי הכל מאת השם לטובה..." class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white"></textarea>
         </div>
         <button onclick="generateUserAiMovie()" class="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-black rounded-xl text-xs shadow-lg">
-           הפק סרטון AI כשר (100% כיסוי ראש מלא)
+          ✨ הפק סרטון AI כשר (100% כיסוי ראש מלא)
         </button>
       </div>
     </div>
@@ -2842,7 +2844,7 @@
           <h3 id="episodes-series-title" class="text-lg font-black text-white">יוסף הצדיק</h3>
           <p id="episodes-series-status" class="text-xs text-amber-400 font-bold">פרקים מלאים (15-30 דק')</p>
         </div>
-        <button onclick="closeModal('modal-episodes')" class="text-slate-400 hover:text-white text-lg"></button>
+        <button onclick="closeModal('modal-episodes')" class="text-slate-400 hover:text-white text-lg">✕</button>
       </div>
       <div id="episodes-list-container" class="space-y-3"></div>
     </div>
@@ -2851,7 +2853,7 @@
   <!-- 5. Virtual Candle Lighting Engine Modal -->
   <div id="modal-candle" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-amber-500/30 rounded-3xl max-w-md w-full p-6 text-center space-y-4 relative">
-      <button onclick="closeModal('modal-candle')" class="absolute top-4 left-4 text-slate-400 hover:text-white"></button>
+      <button onclick="closeModal('modal-candle')" class="absolute top-4 left-4 text-slate-400 hover:text-white">✕</button>
       <div class="text-5xl flame-anim">🕯️</div>
       <h3 class="text-xl font-black text-white">מנוע הדלקת נר וירטואלי</h3>
       <p id="candle-tzaddik-name" class="text-xs text-amber-400 font-bold">רבי שמעון בר יוחאי זיע״א</p>
@@ -2867,7 +2869,7 @@
         </select>
       </div>
       <button onclick="confirmLightCandle()" class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black rounded-xl text-xs">
-         הדלק נר והוסף למוקד התפילות
+        🕯️ הדלק נר והוסף למוקד התפילות
       </button>
     </div>
   </div>
@@ -2877,7 +2879,7 @@
     <div class="bg-slate-900 border border-slate-800 rounded-t-3xl sm:rounded-3xl max-w-lg w-full p-5 space-y-4 max-h-[85vh] overflow-y-auto hide-scrollbar">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <h3 class="text-lg font-black text-white"> עגלת קניות יודאיקה פרימיום</h3>
-        <button onclick="closeModal('modal-cart')" class="text-slate-400 hover:text-white text-lg"></button>
+        <button onclick="closeModal('modal-cart')" class="text-slate-400 hover:text-white text-lg">✕</button>
       </div>
       <div id="cart-items-list" class="space-y-3"></div>
       <div class="border-t border-slate-800 pt-3 flex items-center justify-between font-black">
@@ -2893,7 +2895,7 @@
         <button onclick="completeDemoOrderCheckout()" class="w-full py-3 bg-amber-500 text-white font-bold rounded-xl text-xs">השלמת הזמנה לדוגמה (ללא חיוב אמיתי)</button>
       </div>
       <button onclick="sendWhatsAppOrder()"  class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl text-sm flex items-center justify-center gap-2">
-        <span></span> <span>צ'ק-אאוט והזמנה מיידית בוואטסאפ</span>
+        <span>💬</span> <span>צ'ק-אאוט והזמנה מיידית בוואטסאפ</span>
       </button>
     </div>
   </div>
@@ -2901,7 +2903,7 @@
   <!-- 7. Donate Modal -->
   <div id="modal-donate" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 text-center space-y-4 relative">
-      <button onclick="closeModal('modal-donate')" class="absolute top-4 left-4 text-slate-400 hover:text-white"></button>
+      <button onclick="closeModal('modal-donate')" class="absolute top-4 left-4 text-slate-400 hover:text-white">✕</button>
       <div class="text-3xl">❤️</div>
       <h3 class="text-xl font-black text-white">שותפות בהפצת תורה וחסד (נדרים פלוס)</h3>
       <p class="text-xs text-slate-400">הקדשת שמך תופיע ברצועת התורמים הנעה בראש האפליקציה ובספר הפרנסים.</p>
@@ -2921,7 +2923,7 @@
   <!-- 8. Subscription Freemium Modal (Spec Section 10) -->
   <div id="modal-sub" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-amber-500/40 rounded-3xl max-w-md w-full p-6 text-center space-y-4 relative">
-      <button onclick="closeModal('modal-sub')" class="absolute top-4 left-4 text-slate-400 hover:text-white"></button>
+      <button onclick="closeModal('modal-sub')" class="absolute top-4 left-4 text-slate-400 hover:text-white">✕</button>
       <div class="text-4xl">👑</div>
       <h3 class="text-xl font-black text-white">מנוי צדיק-טוק פרימיום</h3>
       <p class="text-xs text-slate-300 leading-relaxed">
@@ -2931,7 +2933,7 @@
         <span class="text-2xl font-black text-amber-400">₪35 / חודש</span>
         <span class="text-[11px] text-slate-400 block mt-0.5">פרקים ראשונים בחינם • ביטול בכל עת</span>
       </div>
-      <button onclick="closeModal('modal-sub'); toast('מנוי הפרימיום הופעל בהצלחה! ');" class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black rounded-xl text-xs">
+      <button onclick="closeModal('modal-sub'); toast('מנוי הפרימיום הופעל בהצלחה! 👑');" class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black rounded-xl text-xs">
         הצטרף למנוי פרימיום עכשיו
       </button>
     </div>
@@ -2940,7 +2942,7 @@
   <!-- 9. Protected Admin Dashboard Modal -->
   <div id="modal-admin" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 space-y-4 relative">
-      <button onclick="closeModal('modal-admin')" class="absolute top-4 left-4 text-slate-400 hover:text-white"></button>
+      <button onclick="closeModal('modal-admin')" class="absolute top-4 left-4 text-slate-400 hover:text-white">✕</button>
       <h3 class="text-lg font-black text-white"> פאנל ניהול מערכת (Admin Dashboard)</h3>
       <div class="grid grid-cols-3 gap-2.5 text-center text-xs">
         <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
@@ -2967,7 +2969,7 @@
   <!-- 10. Add Custom Mitzvah Modal -->
   <div id="modal-add-mitzvah" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-5 space-y-3 relative">
-      <button onclick="closeModal('modal-add-mitzvah')" class="absolute top-4 left-4 text-slate-400 hover:text-white"></button>
+      <button onclick="closeModal('modal-add-mitzvah')" class="absolute top-4 left-4 text-slate-400 hover:text-white">✕</button>
       <h3 class="text-base font-black text-white">הוספת יעד מצווה אישי</h3>
       <input type="text" id="new-mitzvah-title" placeholder="שם המצווה / היעד..." class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white">
       <button onclick="saveNewMitzvah()" class="w-full py-2.5 bg-amber-500 text-slate-950 font-bold rounded-xl text-xs">שמור יעד יומי</button>
@@ -2978,7 +2980,7 @@
   <!-- 11. User Profile & Settings Modal -->
   <div id="modal-user-profile" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-amber-500/30 rounded-3xl max-w-md w-full p-6 space-y-4 relative shadow-2xl">
-      <button onclick="closeModal('modal-user-profile')" class="absolute top-4 left-4 text-slate-400 hover:text-white text-lg"></button>
+      <button onclick="closeModal('modal-user-profile')" class="absolute top-4 left-4 text-slate-400 hover:text-white text-lg">✕</button>
       <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
         <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 font-black text-xl flex items-center justify-center">👤</div>
         <div>
@@ -3012,8 +3014,8 @@
           </select>
         </div>
       </div>
-      <button onclick="closeModal('modal-user-profile'); toast('הגדרות הפרופיל נשמרו בהצלחה! ');" class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black rounded-xl text-xs shadow-lg">
-         שמור הגדרות אישיות
+      <button onclick="closeModal('modal-user-profile'); toast('הגדרות הפרופיל נשמרו בהצלחה! 👤');" class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black rounded-xl text-xs shadow-lg">
+        💾 שמור הגדרות אישיות
       </button>
     </div>
   </div>
@@ -3022,12 +3024,12 @@
   <!-- 12. Parasha Video & Text Viewer Modal -->
   <div id="modal-parasha-viewer" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
     <div class="bg-slate-900 border-2 border-amber-500/40 rounded-3xl max-w-lg w-full p-6 space-y-4 relative shadow-2xl">
-      <button onclick="closeModal('modal-parasha-viewer')" class="absolute top-4 left-4 text-slate-400 hover:text-white text-lg"></button>
+      <button onclick="closeModal('modal-parasha-viewer')" class="absolute top-4 left-4 text-slate-400 hover:text-white text-lg">✕</button>
       <span class="text-[10px] font-black text-amber-400 bg-amber-500/15 px-2.5 py-0.5 rounded-full">חדר לימוד וצפייה בפרשה</span>
       <h3 id="parasha-modal-title" class="text-xl font-black text-white">פרשת השבוע</h3>
       <div class="relative h-48 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center overflow-hidden">
         <img src="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover opacity-55">
-        <button onclick="toast('מנגן סרטון הפרשה באיכות 4K! ')" class="relative z-10 w-16 h-16 rounded-full bg-amber-500 text-slate-950 text-2xl font-black flex items-center justify-center shadow-2xl">
+        <button onclick="toast('מנגן סרטון הפרשה באיכות 4K! 🎬')" class="relative z-10 w-16 h-16 rounded-full bg-amber-500 text-slate-950 text-2xl font-black flex items-center justify-center shadow-2xl">
           ▶
         </button>
       </div>
@@ -3049,7 +3051,7 @@
       <div class="relative h-52 bg-slate-950 flex items-center justify-center overflow-hidden">
         <img src="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover opacity-65">
         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-black/40 to-transparent"></div>
-        <button onclick="toast('מנגן סרטון היכרות רשמי של צדיק-טוק! ')" class="relative z-10 w-16 h-16 rounded-full bg-amber-500 text-slate-950 text-2xl font-black flex items-center justify-center shadow-2xl animate-pulse">
+        <button onclick="toast('מנגן סרטון היכרות רשמי של צדיק-טוק! 🎬')" class="relative z-10 w-16 h-16 rounded-full bg-amber-500 text-slate-950 text-2xl font-black flex items-center justify-center shadow-2xl animate-pulse">
           ▶
         </button>
         <span class="absolute top-3 right-3 px-3 py-1 bg-amber-500 text-slate-950 font-black rounded-full text-xs">ברוכים הבאים לצדיק-טוק ✨</span>
@@ -3061,7 +3063,7 @@
         </p>
         <div class="flex flex-col gap-2 pt-2">
           <button onclick="closeIntroModal(true)" class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black rounded-xl text-xs shadow-lg">
-             כנס לאפליקציה (אל תציג שוב)
+            🚀 כנס לאפליקציה (אל תציג שוב)
           </button>
           <button onclick="closeIntroModal(false)" class="w-full py-2 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs">
             סגור לעכשיו
@@ -3075,7 +3077,7 @@
   <!-- 14. Music & Niggunim Full Modal -->
   <div id="modal-music-library" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
     <div class="bg-slate-900 border-2 border-amber-500/40 rounded-3xl max-w-lg w-full p-6 space-y-4 relative shadow-2xl max-h-[85vh] overflow-y-auto">
-      <button onclick="closeModal('modal-music-library')" class="absolute top-4 left-4 text-slate-400 hover:text-white text-lg"></button>
+      <button onclick="closeModal('modal-music-library')" class="absolute top-4 left-4 text-slate-400 hover:text-white text-lg">✕</button>
       <div>
         <span class="text-[10px] font-black text-amber-400 bg-amber-500/15 px-2.5 py-0.5 rounded-full">היכל הניגונים ומוזיקת קודש</span>
         <h3 class="text-xl font-black text-white mt-1"> כל סוגי המוזיקה והניגונים</h3>
@@ -3094,53 +3096,65 @@
   </div>
 
   
-  <!-- 15. Entity Full Detail Page & Community Reviews Modal (דף מניין / רב / גמ"ח / קבר צדיק / אישיות ביארצייט + דירוג ותגובות) -->
-  <div id="modal-entity-details" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 border-2 border-amber-500/50 rounded-3xl max-w-xl w-full p-6 space-y-4 relative shadow-2xl max-h-[88vh] overflow-y-auto">
-      <button onclick="closeModal('modal-entity-details')" class="absolute top-4 left-4 text-slate-400 hover:text-white text-lg"></button>
-      <div class="flex items-center justify-between">
-        <span id="entity-modal-badge" class="px-3 py-1 bg-amber-500 text-slate-950 font-black rounded-full text-xs">כרטיס מלא</span>
-        <span id="entity-modal-avg-rating" class="text-sm font-black text-amber-400 ml-8">★ 5.0</span>
+  <!-- 15. Entity Full Detail Page & Community Reviews Modal (כולל דף הלכה/רב/מניין/גמ"ח/צדיק עם כפתור X בולט וסגירה בלחיצה על הרקע) -->
+  <div id="modal-entity-details" onclick="if(event.target === this) closeModal('modal-entity-details');" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+    <div class="bg-white border-2 border-[#C9A227] rounded-3xl max-w-xl w-full p-5 sm:p-6 space-y-4 relative shadow-2xl max-h-[88vh] overflow-y-auto" onclick="event.stopPropagation();">
+      <!-- שורת כותרת עליונה צמודה עם כפתור סגירה X בולט בפינה -->
+      <div class="sticky top-0 z-20 bg-white/95 backdrop-blur pb-3 border-b border-[#E5DBC7] flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span id="entity-modal-badge" class="px-3 py-1 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] font-black rounded-full text-xs">כרטיס מלא</span>
+          <span id="entity-modal-avg-rating" class="text-sm font-black text-amber-600">★ 5.0</span>
+        </div>
+        <button type="button" onclick="closeModal('modal-entity-details')" aria-label="סגור חלון" class="modal-close-x-btn">
+          <span>✕</span>
+          <span>סגור</span>
+        </button>
       </div>
 
-      <div id="entity-modal-image-box" class="hidden relative h-44 w-full rounded-2xl overflow-hidden border border-slate-800">
+      <div id="entity-modal-image-box" class="hidden relative h-44 w-full rounded-2xl overflow-hidden border border-[#E5DBC7]">
         <img id="entity-modal-image" src="" alt="" class="w-full h-full object-cover">
       </div>
 
       <div>
-        <h3 id="entity-modal-title" class="text-xl font-black text-white"></h3>
-        <p id="entity-modal-subtitle" class="text-xs text-amber-300 font-bold mt-0.5"></p>
+        <h3 id="entity-modal-title" class="text-xl font-black text-[#0F2340] serif-heading"></h3>
+        <p id="entity-modal-subtitle" class="text-xs text-[#5C4938] font-bold mt-0.5"></p>
       </div>
 
       <div id="entity-modal-info-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-2"></div>
-      <div id="entity-modal-story" class="text-xs text-slate-200 leading-relaxed bg-slate-950 p-3.5 rounded-2xl border border-slate-800"></div>
+      <div id="entity-modal-story" class="text-sm text-[#0F2340] leading-relaxed bg-[#FDF8EF] p-3.5 rounded-2xl border border-[#E5DBC7]"></div>
 
-      <!-- הוספת דירוג כוכבים ותגובה / סיפור (רק למשתמש רשום • עובר מודרציה) -->
-      <div class="bg-slate-950 border border-amber-500/30 p-4 rounded-2xl space-y-3">
+      <!-- הוספת דירוג כוכבים ותגובה -->
+      <div class="bg-[#F8F3E8] border border-[#C9A227] p-4 rounded-2xl space-y-3">
         <div class="flex items-center justify-between">
-          <h4 class="text-xs font-black text-amber-400">⭐ הוסף דירוג, חוות דעת או סיפור (למשתמש רשום)</h4>
-          <span class="text-[10px] text-slate-400">כל תוכן עובר מודרציה</span>
+          <h4 class="text-sm font-black text-[#0F2340]">הוסף דירוג, שאלה או תגובה</h4>
+          <span class="text-xs text-[#5C4938]">נשמר בקהילה</span>
         </div>
-        <p id="entity-modal-criteria-label" class="text-[11px] text-slate-300"></p>
+        <p id="entity-modal-criteria-label" class="text-xs text-[#5C4938]"></p>
         <div class="flex items-center gap-2">
-          <span class="text-xs text-slate-400">דירוג כוכבים:</span>
-          <button onclick="setReviewStarRating(1)" id="star-select-1" class="text-2xl text-amber-400"></button>
-          <button onclick="setReviewStarRating(2)" id="star-select-2" class="text-2xl text-amber-400"></button>
-          <button onclick="setReviewStarRating(3)" id="star-select-3" class="text-2xl text-amber-400"></button>
-          <button onclick="setReviewStarRating(4)" id="star-select-4" class="text-2xl text-amber-400"></button>
-          <button onclick="setReviewStarRating(5)" id="star-select-5" class="text-2xl text-amber-400"></button>
+          <span class="text-xs font-bold text-[#0F2340]">דירוג כוכבים:</span>
+          <button type="button" onclick="setReviewStarRating(1)" id="star-select-1" class="text-2xl text-amber-500">★</button>
+          <button type="button" onclick="setReviewStarRating(2)" id="star-select-2" class="text-2xl text-amber-500">★</button>
+          <button type="button" onclick="setReviewStarRating(3)" id="star-select-3" class="text-2xl text-amber-500">★</button>
+          <button type="button" onclick="setReviewStarRating(4)" id="star-select-4" class="text-2xl text-amber-500">★</button>
+          <button type="button" onclick="setReviewStarRating(5)" id="star-select-5" class="text-2xl text-amber-500">★</button>
         </div>
-        <input id="entity-review-criteria-input" type="text" placeholder="דגשים בחוות הדעת (למשל: מקום נעים, דיוק בזמנים, מענה מהיר, סיפור ישועה)..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none">
-        <textarea id="entity-review-input" rows="2" placeholder="כתוב כאן את חוות הדעת, הסיפור או הזיכרון שלך..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none"></textarea>
-        <button onclick="submitEntityReview()" class="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs shadow">
-           שלח דירוג ותגובה לאישור מודרציה
+        <input id="entity-review-criteria-input" type="text" placeholder="דגשים בחוות הדעת (למשל: מענה מהיר, בהירות הלכתית, דיוק בזמנים)..." class="w-full bg-white border border-[#D8CBB5] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">
+        <textarea id="entity-review-input" rows="2" placeholder="כתוב כאן את התגובה, השאלה או חוות הדעת שלך..." class="w-full bg-white border border-[#D8CBB5] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none"></textarea>
+        <button type="button" onclick="submitEntityReview()" class="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-white font-black rounded-xl text-xs shadow">
+          שלח דירוג ותגובה
         </button>
       </div>
 
       <!-- רשימת התגובות והסיפורים של הקהילה -->
       <div class="space-y-2">
-        <h4 class="text-xs font-black text-white"> תגובות, דירוגים וסיפורי הקהילה:</h4>
+        <h4 class="text-sm font-black text-[#0F2340]">תגובות ודירוגי הקהילה:</h4>
         <div id="entity-reviews-list" class="space-y-2"></div>
+      </div>
+
+      <div class="pt-2 border-t border-[#E5DBC7]">
+        <button type="button" onclick="closeModal('modal-entity-details')" class="w-full py-2.5 bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold rounded-xl text-xs">
+          סגור חלון
+        </button>
       </div>
     </div>
   </div>
@@ -3148,7 +3162,7 @@
   <!-- 16. Community Content Addition Modal (הוספת מניין / רב / גמ"ח / קבר צדיק / יארצייט - למשתמש רשום עם מודרציה) -->
   <div id="modal-community-add" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
     <div class="bg-slate-900 border-2 border-amber-500/50 rounded-3xl max-w-md w-full p-6 space-y-4 relative shadow-2xl">
-      <button onclick="closeModal('modal-community-add')" class="absolute top-4 left-4 text-slate-400 hover:text-white text-lg"></button>
+      <button onclick="closeModal('modal-community-add')" class="absolute top-4 left-4 text-slate-400 hover:text-white text-lg">✕</button>
       <div class="space-y-1">
         <span class="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-full text-[10px] font-black">🔒 למשתמש רשום בלבד • עובר מודרציה</span>
         <h3 id="comm-add-modal-title" class="text-lg font-black text-white pt-1">הוספת תוכן לקהילה</h3>
@@ -3161,7 +3175,7 @@
         <textarea id="comm-add-f4" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none"></textarea>
       </div>
       <button onclick="submitCommunityAddForm()" class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black rounded-xl text-xs shadow-xl">
-         שלח לאישור מודרציה ושמור בחשבון שלי
+        🚀 שלח לאישור מודרציה ושמור בחשבון שלי
       </button>
     </div>
   </div>
@@ -3169,7 +3183,7 @@
   <!-- 17. Registered User Account Modal (הרשמה / ניהול חשבון משתמש רשום) -->
   <div id="modal-auth-register" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
     <div class="bg-white border-2 border-[#C9A227] rounded-2xl max-w-md w-full p-6 space-y-4 relative shadow-xl" dir="rtl">
-      <button onclick="closeModal('modal-auth-register')" class="absolute top-4 left-4 text-[#5C4938] hover:text-[#0F2340] text-lg font-bold"></button>
+      <button onclick="closeModal('modal-auth-register')" class="absolute top-4 left-4 text-[#5C4938] hover:text-[#0F2340] text-lg font-bold">✕</button>
 
       <!-- מצב אורח: התחברות / הרשמה -->
       <div id="auth-guest-view" class="space-y-4">
@@ -3196,7 +3210,7 @@
           </div>
         </div>
         <p id="auth-msg" class="text-xs font-bold min-h-[1rem]"></p>
-        <button id="auth-submit-btn" onclick="handleAuthSubmit()" class="w-full py-3 bg-amber-500 text-white font-bold rounded-xl text-xs shadow-sm"> התחברות</button>
+        <button id="auth-submit-btn" onclick="handleAuthSubmit()" class="w-full py-3 bg-amber-500 text-white font-bold rounded-xl text-xs shadow-sm">✔ התחברות</button>
       </div>
 
       <!-- מצב מחובר -->
@@ -3215,7 +3229,7 @@
   <!-- 18. Notifications Center Modal (מסך התראות מרכזי) -->
   <div id="modal-notifications-center" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
     <div class="bg-white border-2 border-[#C9A227] rounded-2xl max-w-md w-full p-6 space-y-4 relative shadow-xl">
-      <button onclick="closeModal('modal-notifications-center')" class="absolute top-4 left-4 text-[#5C4938] hover:text-[#0F2340] text-lg font-bold"></button>
+      <button onclick="closeModal('modal-notifications-center')" class="absolute top-4 left-4 text-[#5C4938] hover:text-[#0F2340] text-lg font-bold">✕</button>
       <div>
         <h3 class="text-xl font-bold text-[#0F2340] serif-heading">מרכז ההתראות והתזכורות</h3>
         <p class="text-xs text-[#5C4938]">עדכונים על שיעורים חיים, זמני היום, מעקב מצוות ואישור תכנים</p>
@@ -3230,7 +3244,7 @@
   <!-- 19. App Explainer Video Modal (סרטון הסבר על האפליקציה מתפריט הצד) -->
   <div id="modal-explainer-video" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
     <div class="bg-white border-2 border-[#C9A227] rounded-2xl max-w-lg w-full p-5 space-y-4 relative shadow-2xl" dir="rtl">
-      <button type="button" onclick="closeModal('modal-explainer-video')" class="absolute top-4 left-4 text-[#5C4938] hover:text-[#0F2340] text-lg font-bold"></button>
+      <button type="button" onclick="closeModal('modal-explainer-video')" class="absolute top-4 left-4 text-[#5C4938] hover:text-[#0F2340] text-lg font-bold">✕</button>
       <div>
         <span class="px-2.5 py-0.5 bg-amber-500 text-white rounded-md text-xs font-black">🎬 מדריך וידאו רשמי</span>
         <h3 class="text-xl font-black text-[#0F2340] serif-heading mt-1">הכירו את צדיק-טוק: כל עולם היהדות במקום אחד</h3>
@@ -3256,7 +3270,7 @@
   <!-- 20. Tzaddik Tehillim Reader Modal (קריאת תהילים לעילוי נשמת ובזכות הצדיק - מחובר לספריא) -->
   <div id="modal-tzaddik-tehillim" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
     <div class="bg-white border-2 border-[#C9A227] rounded-2xl max-w-xl w-full p-5 space-y-4 relative shadow-2xl max-h-[88vh] overflow-y-auto" dir="rtl">
-      <button type="button" onclick="closeModal('modal-tzaddik-tehillim')" class="absolute top-4 left-4 text-[#5C4938] hover:text-[#0F2340] text-lg font-bold"></button>
+      <button type="button" onclick="closeModal('modal-tzaddik-tehillim')" class="absolute top-4 left-4 text-[#5C4938] hover:text-[#0F2340] text-lg font-bold">✕</button>
       <div>
         <span class="px-2.5 py-0.5 bg-amber-500 text-white rounded-md text-xs font-black">📖 אמירת תהילים בציון הצדיק (Sefaria API)</span>
         <h3 id="modal-tz-tehillim-name" class="text-xl font-black text-[#0F2340] serif-heading mt-1">תהילים בזכות הצדיק</h3>
@@ -3275,7 +3289,7 @@
         <div id="modal-tz-tehillim-body" class="leading-loose font-serif text-[#0F2340]" style="font-size: 20px;">טוען פרק תהילים מספריא...</div>
       </div>
       <div class="flex items-center justify-between gap-2">
-        <button type="button" onclick="toast(' יהי רצון שתפילתך תתקבל לרצון בזכות הצדיק!'); closeModal('modal-tzaddik-tehillim');" class="flex-1 py-2.5 bg-amber-500 text-white font-black rounded-xl text-xs"> סיימתי את הפרק (תפילה התקבלה)</button>
+        <button type="button" onclick="toast('🙏 יהי רצון שתפילתך תתקבל לרצון בזכות הצדיק!'); closeModal('modal-tzaddik-tehillim');" class="flex-1 py-2.5 bg-amber-500 text-white font-black rounded-xl text-xs">🙏 סיימתי את הפרק (תפילה התקבלה)</button>
         <button type="button" onclick="closeModal('modal-tzaddik-tehillim')" class="px-4 py-2.5 bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold rounded-xl text-xs">סגור</button>
       </div>
     </div>
@@ -3284,7 +3298,7 @@
   <!-- 21. Kosher Product Barcode Scanner Modal (סורק מוצרים / ברקוד לבדיקת כשרות במסעדות ומוצרים) -->
   <div id="modal-barcode-scanner" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
     <div class="bg-white border-2 border-[#C9A227] rounded-2xl max-w-lg w-full p-5 space-y-4 relative shadow-2xl max-h-[90vh] overflow-y-auto" dir="rtl">
-      <button type="button" onclick="stopBarcodeCamera(); closeModal('modal-barcode-scanner');" class="absolute top-4 left-4 text-[#5C4938] hover:text-[#0F2340] text-lg font-bold"></button>
+      <button type="button" onclick="stopBarcodeCamera(); closeModal('modal-barcode-scanner');" class="absolute top-4 left-4 text-[#5C4938] hover:text-[#0F2340] text-lg font-bold">✕</button>
       <div>
         <span class="px-2.5 py-0.5 bg-amber-500 text-white rounded-md text-xs font-black">📷 סורק מוצרים ובדיקת כשרות חכמה</span>
         <h3 class="text-xl font-black text-[#0F2340] serif-heading mt-1">סריקת ברקוד או חיפוש מוצר לבדיקת כשרות</h3>
@@ -3300,7 +3314,7 @@
 
       <div class="flex flex-wrap items-center gap-2">
         <button type="button" onclick="startBarcodeCamera()" class="px-4 py-2.5 bg-[#0F2340] text-white font-bold rounded-xl text-xs flex items-center gap-1.5" style="color:#FFFFFF !important;">
-          <span></span> <span>הפעל מצלמה לסריקת ברקוד</span>
+          <span>📷</span> <span>הפעל מצלמה לסריקת ברקוד</span>
         </button>
         <div class="flex-1 flex items-center gap-1.5">
           <input id="barcode-manual-input" type="text" oninput="lookupProductBarcode(this.value)" placeholder="הקלד ברקוד (למשל 7290000066318) או שם מוצר..." class="w-full bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">
@@ -3337,7 +3351,7 @@
   <!-- 22. Kosher Certificate Viewer & Upload Modal (תעודת כשרות למסעדה) -->
   <div id="modal-kosher-cert" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
     <div class="bg-white border-2 border-[#C9A227] rounded-2xl max-w-md w-full p-5 space-y-4 relative shadow-2xl" dir="rtl">
-      <button type="button" onclick="closeModal('modal-kosher-cert')" class="absolute top-4 left-4 text-[#5C4938] hover:text-[#0F2340] text-lg font-bold"></button>
+      <button type="button" onclick="closeModal('modal-kosher-cert')" class="absolute top-4 left-4 text-[#5C4938] hover:text-[#0F2340] text-lg font-bold">✕</button>
       <div>
         <span class="px-2.5 py-0.5 bg-amber-500 text-white rounded-md text-xs font-black">📜 תעודת כשרות ופרטי השגחה</span>
         <h3 id="modal-kcert-rest-name" class="text-xl font-black text-[#0F2340] serif-heading mt-1">תעודת כשרות</h3>
@@ -3360,7 +3374,7 @@
   <!-- תפריט צד (המבורגר) -->
   <div id="tt-menu-overlay" onclick="closeSideMenu()"></div>
   <aside id="tt-side-menu" role="dialog" aria-modal="true" aria-label="תפריט האתר" aria-hidden="true">
-    <div class="tt-menu-head"><span>צדיק-טוק</span><button type="button" onclick="closeSideMenu()" aria-label="סגירת התפריט"></button></div>
+    <div class="tt-menu-head"><span>צדיק-טוק</span><button type="button" onclick="closeSideMenu()" aria-label="סגירת התפריט">✕</button></div>
     
     <!-- שורת חיפוש כללית ובאנר סרטון הסבר בראש תפריט הצד -->
     <div class="p-3.5 space-y-2.5 border-b border-[#E5DBC7] bg-[#FDF8EF]">
