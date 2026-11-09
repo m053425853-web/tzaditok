@@ -38,11 +38,24 @@ window.toggleSidebar = function() {
     }
 };
 
-// 2. מעבר בין דפים (מהתפריט העליון והתחתון)
 window.switchTab = function(tabName) {
-    // סוגר את התפריט אם הוא פתוח
+    // סוגר את התפריט
     const sidebar = document.getElementById('sideMenu');
     if (sidebar) sidebar.style.transform = 'translateX(100%)';
+
+    // מסתיר את כל הדפים
+    const pages = document.querySelectorAll('.tab-content');
+    pages.forEach(page => page.classList.add('hidden'));
+
+    // מראה את הדף המבוקש
+    const targetPage = document.getElementById('tab-' + tabName);
+    if (targetPage) {
+        targetPage.classList.remove('hidden');
+    } else {
+        // אם אין דף כזה (עדיין לא בנינו אותו), נציג הודעה
+        alert("הדף " + tabName + " עדיין בבנייה!");
+    }
+};
 
     // מציג הודעה שהכפתור עבד (בינתיים, עד שנחבר את הדפים באמת)
     alert("עובר לדף: " + tabName);
