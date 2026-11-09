@@ -4782,33 +4782,3 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   };
 })();
-// --- פונקציות תיקון בסיסיות ---
-window.toggleSidebar = function() {
-    const sidebar = document.getElementById('sideMenu');
-    if (sidebar) {
-        if (sidebar.style.transform === 'translateX(0%)') {
-            sidebar.style.transform = 'translateX(100%)';
-        } else {
-            sidebar.style.transform = 'translateX(0%)';
-        }
-    }
-};
-
-window.switchTab = function(tabName) {
-    const sidebar = document.getElementById('sideMenu');
-    if (sidebar) sidebar.style.transform = 'translateX(100%)';
-
-    const pages = document.querySelectorAll('.tab-content');
-    pages.forEach(page => page.classList.add('hidden'));
-
-    const targetPage = document.getElementById('tab-' + tabName);
-    if (targetPage) {
-        targetPage.classList.remove('hidden');
-    }
-};
-
-window.openAuthModal = function() {
-    // הפונקציה המקורית שלך שפותחת את חלון ההתחברות
-    // אם היא נקראת אחרת, פשוט תשאיר את הכפתור עם הפונקציה הישנה
-    document.getElementById('auth-modal').classList.remove('hidden');
-};
