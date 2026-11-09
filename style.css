@@ -419,3 +419,149 @@ body.focus-mode #floating-shabbat-readonly-btn { display: none !important; }
 }
 .tt-shabbat-msg { min-height: 1.2em; font-size: 12px; font-weight: 700; color: #F3D27A !important; }
 body.tt-shabbat-locked { overflow: hidden !important; }
+
+
+/* ==========================================================================
+   V35 — שדרוג מקיף: תפריט צד מודגש, באנר סרטון הסבר בניגודיות גבוהה,
+   כרטיס חיזוקים בדף הבית, 3 לשוניות ב"ללמוד", חיבור ספריא (Sefaria) ב"להתפלל",
+   וממשק ממוקד + כלים חדשים בכל מדורי "למצוא".
+   ========================================================================== */
+
+/* 1. באנר "סרטון הסבר" בתפריט הצד — ניגודיות גבוהה וברורה 100% */
+#tt-explainer-banner,
+.tt-explainer-banner {
+  background-color: #0F2340 !important;
+  background-image: linear-gradient(135deg, #0F2340 0%, #1B3A6B 100%) !important;
+  border: 2px solid #C9A227 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 12px rgba(15, 35, 64, 0.22) !important;
+}
+#tt-explainer-banner span,
+.tt-explainer-banner span {
+  color: #FFFFFF !important;
+}
+#tt-explainer-banner .tt-explainer-cta,
+.tt-explainer-banner .tt-explainer-cta {
+  color: #FDE68A !important;
+  background-color: rgba(201, 162, 39, 0.25) !important;
+  border: 1px solid #C9A227 !important;
+  padding: 2px 8px !important;
+  border-radius: 8px !important;
+  font-weight: 900 !important;
+}
+#tt-explainer-banner .tt-explainer-play,
+.tt-explainer-banner .tt-explainer-play {
+  background-color: #DC2626 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #FCA5A5 !important;
+}
+
+/* 2. תפריט צד (☰): דגש חזותי חזק וברור לקטגוריות הראשיות (בית, ללמוד, להתפלל, למצוא, לתת ולקנות) */
+.tt-menu-main-cat {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  text-align: right !important;
+  padding: 13px 16px !important;
+  margin-top: 10px !important;
+  font-size: 17px !important;
+  font-weight: 900 !important;
+  font-family: 'Frank Ruhl Libre', 'Heebo', serif !important;
+  color: #0F2340 !important;
+  background-color: #F6EFE2 !important;
+  border-right: 5px solid #C9A227 !important;
+  border-top: 1px solid #E5DBC7 !important;
+  border-bottom: 1px solid #DFD3BE !important;
+  letter-spacing: 0.01em !important;
+  transition: background-color 0.15s ease !important;
+}
+.tt-menu-main-cat:hover {
+  background-color: #EDE1CC !important;
+}
+.tt-menu-main-cat .tt-main-cat-badge {
+  font-size: 11px !important;
+  font-family: 'Heebo', sans-serif !important;
+  font-weight: 800 !important;
+  color: #5C4938 !important;
+  background: #FFFFFF !important;
+  border: 1px solid #D8CBB5 !important;
+  padding: 2px 8px !important;
+  border-radius: 999px !important;
+}
+.tt-menu-sub-item {
+  display: block !important;
+  width: 100% !important;
+  text-align: right !important;
+  padding: 9px 26px 9px 14px !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  color: #2A3B52 !important;
+  background-color: #FFFFFF !important;
+  border-bottom: 1px solid #F5EFE4 !important;
+  transition: background-color 0.12s ease, padding-right 0.12s ease !important;
+}
+.tt-menu-sub-item:hover {
+  background-color: #FDF8EF !important;
+  padding-right: 30px !important;
+  color: #0F2340 !important;
+}
+
+/* 3. כרטיס פרשת השבוע וכרטיס חיזוקים בדף הבית */
+#home-parasha-card {
+  background-color: #FFFFFF !important;
+  border: 2px solid #C9A227 !important;
+  color: #0F2340 !important;
+  box-shadow: 0 4px 14px rgba(15, 35, 64, 0.06) !important;
+}
+#home-chizuk-card {
+  background-color: #FFFFFF !important;
+  border: 2px solid #0F2340 !important;
+  border-top: 5px solid #C9A227 !important;
+  color: #0F2340 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 14px rgba(15, 35, 64, 0.07) !important;
+}
+
+/* 4. 3 לשוניות ראשיות במדור "ללמוד" (ספריית AI | שיעורים | חידונים) */
+.learn-main-tabs-bar {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.learn-main-tab-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 10px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 800;
+  background-color: #FDF8EF;
+  color: #0F2340 !important;
+  border: 2px solid #D8CBB5;
+  transition: all 0.15s ease;
+}
+.learn-main-tab-btn:hover {
+  border-color: #C9A227;
+  background-color: #F6EFE2;
+}
+.learn-main-tab-btn.active {
+  background-color: #0F2340 !important;
+  color: #FFFFFF !important;
+  border-color: #C9A227 !important;
+  box-shadow: 0 3px 10px rgba(15, 35, 64, 0.16);
+}
+.learn-main-tab-btn.active span {
+  color: #FFFFFF !important;
+}
+
+/* 5. מיקוד נקי בתוך תתי-מדורים של "למצוא": הסרת סרגל כל הקטגוריות העליון */
+.find-top-cat-nav {
+  display: none !important;
+}
+body.find-inner-active #tt-focus-strip,
+body.find-inner-active #tt-more-btn {
+  display: none !important;
+}
