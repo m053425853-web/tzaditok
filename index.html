@@ -41,24 +41,38 @@
     </div>
   </div>
 
-  <!-- Shabbat Holy Overlay -->
-  <div id="shabbat-overlay" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-xl hidden flex flex-col items-center justify-center p-6 text-center space-y-4">
-    <div class="text-6xl flame-anim">🕯️🕯️</div>
-    <h2 class="text-2xl font-black text-amber-400">שבת שלום ומבורך • קדושת השבת</h2>
-    <p class="text-sm text-slate-300 max-w-md leading-relaxed">
-      מצב שבת קודש הופעל. הפעילות האינטראקטיבית מושהית לשמירה על קדושת היום והמנוחה.
-    </p>
-    <button onclick="toggleShabbatOverlay(false)" class="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold rounded-xl text-xs border border-slate-700">
-      יציאה ממצב שבת (לצורך חול)
-    </button>
+  <!-- Shabbat Holy Overlay: נעילה מלאה עד הזנת קוד יציאה -->
+  <div id="shabbat-overlay" class="hidden" role="dialog" aria-modal="true" aria-label="שבת שלום">
+    <div class="tt-shabbat-card">
+      <div class="tt-shabbat-candles">🕯️🕯️</div>
+      <h2>שבת שלום ומבורך</h2>
+      <p id="shabbat-overlay-date" class="tt-shabbat-date"></p>
+      <p class="tt-shabbat-text">האפליקציה נעולה לשמירת קדושת היום. אי אפשר לגלוש או להשתמש בה עד שיוזן קוד היציאה.</p>
+      <input id="shabbat-exit-input" type="password" inputmode="numeric" autocomplete="off" maxlength="8" placeholder="קוד יציאה" aria-label="קוד יציאה ממצב שבת">
+      <p id="shabbat-exit-msg" class="tt-shabbat-msg" aria-live="polite"></p>
+      <button id="shabbat-exit-btn" type="button" onclick="exitShabbatMode()">יציאה ממצב שבת</button>
+    </div>
   </div>
 
-
+  <!-- Top Sticky Header -->
+  <!-- סרגל חיווי מצב שבת פעיל (מופיע רק כשמצב שבת מופעל) -->
+  <div id="shabbat-active-top-banner" class="hidden bg-[#0F2340] text-[#FDF8EF] border-b-2 border-[#C9A227] px-4 py-2.5 text-center text-xs sm:text-sm font-bold flex items-center justify-between max-w-full">
+    <span>שבת שלום ומבורך • מצב שבת פעיל (מוזיקה, סרטונים, חנות ותרומות כבויים – פתוח לסידור, תהילים, זמנים ומידע בלבד)</span>
+    <button onclick="toggleShabbatOverlay()" class="px-3 py-1 bg-[#C9A227] text-white font-black rounded-lg text-xs shrink-0 mr-2">יציאה ממצב שבת</button>
+  </div>
 
   <header class="heritage-header sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex items-center justify-between gap-2">
-      <!-- 1. לוגו ברור + שם האתר -->
-      <div class="flex items-center gap-2.5 cursor-pointer shrink-0" onclick="switchTab('feed')">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5">
+      <!-- שורה אחת: [ימין] התחברות / אזור אישי | [מרכז] לוגו | [שמאל] תפריט ☰ -->
+      <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+        <div class="flex justify-start">
+          <button id="header-auth-btn" type="button" onclick="headerAuthClick()" class="tt-hdr-btn tt-hdr-primary" title="התחברות / אזור אישי">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+            <span id="header-auth-label" class="tt-hdr-label">התחברות</span>
+          </button>
+        </div>
+        <!-- 1. לוגו ברור + שם האתר -->
+      <div class="flex items-center gap-2.5 cursor-pointer shrink-0 justify-self-center" onclick="switchTab('feed')">
         <div class="w-10 h-10 rounded-xl bg-[#FDF8EF] border-2 border-[#C9A227] flex items-center justify-center overflow-hidden shadow-sm shrink-0">
           <svg id="header-default-logo-svg" class="w-7 h-7" viewBox="0 0 24 24" fill="none">
             <polygon points="12,2 15,8 21,9 16.5,14 18,20 12,17 6,20 7.5,14 3,9 9,8" fill="#C9A227" fill-opacity="0.25" stroke="#C9A227" stroke-width="1.8"/>
@@ -67,17 +81,11 @@
         </div>
         <h1 class="header-title-text text-xl sm:text-2xl font-black tracking-tight leading-none">צדיק-טוק</h1>
       </div>
-
-    
-        </button>
-        <button id="header-auth-btn" onclick="openAuthModal()" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-[#C9A227]/60 text-xs font-bold text-[#FDF8EF] flex items-center gap-1.5 max-w-[130px]" title="התחברות / הרשמה">
-          <svg class="w-3.5 h-3.5 text-[#C9A227] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
-          <span id="header-auth-label" class="truncate" style="color:#FDF8EF !important;">התחברות / הרשמה</span>
-        </button>
-        <button onclick="switchTab('myzone')" class="px-3.5 py-1.5 rounded-xl bg-[#C9A227] hover:bg-[#B38E1E] text-white font-black text-xs flex items-center gap-1.5 shadow-sm shrink-0">
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
-          <span>אזור אישי</span>
-        </button>
+        <div class="flex justify-end">
+          <button id="tt-burger-btn" type="button" onclick="openSideMenu()" aria-label="פתיחת תפריט האתר" aria-expanded="false" aria-controls="tt-side-menu" class="tt-hdr-btn tt-burger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#C9A227" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -94,64 +102,57 @@
   <!-- Main Content Container -->
   <main class="max-w-6xl mx-auto px-4 py-4">
 
+    <!-- מצב מיקוד: מוצג רק בתוך מדור פנימי (כותרת, חיפוש מקומי, חזרה) -->
+    <div id="tt-focus-bar" class="hidden space-y-2.5">
+      <div class="flex items-center justify-between gap-2">
+        <button id="tt-back-btn" type="button" onclick="ttBack()" class="tt-back-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          <span>חזור למדור הקודם</span>
+        </button>
+        <div class="flex items-center gap-2">
+          <button id="tt-geo-bar" type="button" onclick="locateNearestByGPS()" class="tt-more-btn hidden">📍 מיין לפי מרחק</button>
+          <button id="tt-more-btn" type="button" onclick="ttToggleMore()" class="tt-more-btn hidden">אפשרויות נוספות ▾</button>
+        </div>
+      </div>
+      <div id="tt-focus-strip" class="tt-strip hide-scrollbar hidden" role="tablist" aria-label="מדורים"></div>
+      <div>
+        <span id="tt-focus-crumb"></span>
+        <h2 id="tt-focus-title" class="text-xl sm:text-2xl font-black text-[#0F2340] serif-heading"></h2>
+        <p id="tt-focus-desc" class="text-xs text-[#5C4938]"></p>
+      </div>
+      <div id="tt-focus-search-wrap" class="hidden">
+        <input id="tt-focus-search" type="search" oninput="ttFocusSearch(this.value)" placeholder="חיפוש במדור הזה..." class="w-full bg-[#FDF8EF] border border-[#D8CBB5] focus:border-[#C9A227] rounded-xl px-4 py-2.5 text-sm text-[#0F2340] outline-none">
+      </div>
+    </div>
+
+
     <!-- 1. MAIN HOME VIEW (דף הבית נקי וממוקד: כרטיס היום ביהדות + קרוסלת סרטונים + מדורים מתקפלים באקורדיון) -->
     <section id="view-feed" class="view-section active space-y-5">
 
-      <!-- א. כרטיס "היום ביהדות" (פתוח תמיד בראש הדף: תאריך, זמנים, יארצייט ופרשת השבוע) -->
-      <div class="bg-white border-2 border-[#C9A227] p-5 rounded-2xl space-y-4 shadow-sm">
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#E5DBC7] pb-3">
-          <div>
-            <span class="px-2.5 py-0.5 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-md text-xs font-bold">היום ביהדות</span>
-            <h2 class="text-xl sm:text-2xl font-black text-[#0F2340] serif-heading mt-1">לוח היום: תאריך, זמנים, יארצייט ופרשה</h2>
-          </div>
-          <div class="text-left">
-            <span id="home-hebrew-date" class="text-sm font-black text-[#0F2340] bg-[#F8F3E8] px-3 py-1.5 rounded-xl border border-[#E5DBC7] block">כ״ח במרחשוון תשפ״ז</span>
-          </div>
+      <!-- א. כרטיס "היום ביהדות": שורה אחת, 3 עמודות לחיצות: תאריך עברי ולועזי | זמני היום | יום השנה -->
+      <div class="bg-white border-2 border-[#C9A227] p-3 sm:p-4 rounded-2xl shadow-sm">
+        <div class="flex items-center justify-between mb-2.5">
+          <span class="px-2.5 py-0.5 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-md text-xs font-bold">היום ביהדות</span>
         </div>
-
-        <!-- 4 חלקי כרטיס "היום ביהדות": 1. זמני היום | 2. פרשת השבוע | 3. היארצייט היומי -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
-          <div class="bg-[#F8F3E8] border border-[#E5DBC7] p-2.5 rounded-xl">
-            <span class="text-[11px] text-[#5C4938] block">סוף זמן ק״ש</span>
-            <span class="text-sm sm:text-base font-black text-[#0F2340]">08:37</span>
-          </div>
-          <div class="bg-[#F8F3E8] border border-[#E5DBC7] p-2.5 rounded-xl">
-            <span class="text-[11px] text-[#5C4938] block">חצות היום</span>
-            <span class="text-sm sm:text-base font-black text-[#0F2340]">12:20</span>
-          </div>
-          <div class="bg-[#F6EFE2] border border-[#C9A227] p-2.5 rounded-xl">
-            <span class="text-[11px] text-[#0F2340] font-bold block">שקיעה</span>
-            <span class="text-sm sm:text-base font-black text-[#0F2340]">16:50</span>
-          </div>
-          <div class="bg-[#F8F3E8] border border-[#E5DBC7] p-2.5 rounded-xl">
-            <span class="text-[11px] text-[#5C4938] block">צאת הכוכבים</span>
-            <span class="text-sm sm:text-base font-black text-[#0F2340]">17:15</span>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-          <!-- פרשת השבוע בכרטיס היום ביהדות -->
-          <div class="bg-[#F8F3E8] border border-[#E5DBC7] p-3.5 rounded-xl flex items-center justify-between gap-3">
-            <div>
-              <span class="text-[11px] font-bold text-[#5C4938] block">פרשת השבוע</span>
-              <h3 class="text-base font-bold text-[#0F2340] serif-heading">פרשת חיי שרה • חומש בראשית</h3>
-              <p class="text-xs text-[#5C4938] line-clamp-1">מערת המכפלה, שליחות אליעזר ונישואי יצחק ורבקה</p>
-            </div>
-            <button onclick="openParashaViewer('bereishit', 'חיי שרה')" class="px-3.5 py-2 bg-amber-500 text-white font-bold rounded-xl text-xs shrink-0">לפרשה</button>
-          </div>
-
-          <!-- היארצייט של היום בכרטיס היום ביהדות -->
-          <div class="bg-[#F8F3E8] border border-[#E5DBC7] p-3.5 rounded-xl flex items-center justify-between gap-3">
-            <div>
-              <span class="text-[11px] font-bold text-[#5C4938] block">הילולא ויארצייט היום</span>
-              <h3 class="text-base font-bold text-[#0F2340] serif-heading">רבנו יונה גירונדי זיע״א</h3>
-              <p class="text-xs text-[#5C4938] line-clamp-1">מחבר הספר הקדוש שערי תשובה</p>
-            </div>
-            <div class="flex items-center gap-1.5 shrink-0">
-              <button onclick="openCandleModal('רבנו יונה גירונדי')" class="px-3 py-2 bg-white text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs">הדלקת נר</button>
-              <button onclick="switchTab('zmanim')" class="px-2.5 py-2 bg-white text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs">לוח מלא</button>
-            </div>
-          </div>
+        <div class="tt-today-grid">
+          <button type="button" onclick="ttGo('zmanim', null, 'calendar')" class="tt-today-part" aria-label="תאריך עברי ולועזי – מעבר ללוח השנה">
+            <span class="tt-today-label">תאריך</span>
+            <span id="home-hebrew-date" class="tt-today-main">כ״ח במרחשוון תשפ״ז</span>
+            <span id="home-greg-date" class="tt-today-sub"></span>
+            <span class="tt-today-cta">ללוח השנה ←</span>
+          </button>
+          <button type="button" onclick="ttGo('zmanim', null, 'times')" class="tt-today-part" aria-label="זמני היום – מעבר לדף הזמנים">
+            <span class="tt-today-label">זמני היום</span>
+            <span class="tt-today-sub">סוף זמן ק״ש <strong id="home-z-shema" class="tt-today-main">08:37</strong></span>
+            <span class="tt-today-sub">שקיעה <strong id="home-z-shkia" class="tt-today-main">16:50</strong></span>
+            <span class="tt-today-cta">לכל הזמנים ←</span>
+          </button>
+          <button type="button" onclick="ttGo('tzaddikim', null, 'yahrzeits')" class="tt-today-part" aria-label="יום השנה – מעבר לדף יום השנה">
+            <span class="tt-today-label">יום השנה</span>
+            <span id="home-yahrzeit-name" class="tt-today-main">רבנו יונה גירונדי זיע״א</span>
+            <span id="home-yahrzeit-sub" class="tt-today-sub">מחבר שערי תשובה</span>
+            <span class="tt-today-cta">ליום השנה ←</span>
+          </button>
         </div>
       </div>
 
@@ -605,6 +606,40 @@
           <input type="text" oninput="renderPrayCustoms(this.value)" placeholder="חיפוש מנהג או הלכה (למשל: ברכת האילנות, ספירת העומר, תענית, שבת)..." class="w-full bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-4 py-2.5 text-sm text-[#0F2340] outline-none">
         </div>
 
+        <!-- העלאת מנהג חדש (למשתמש מחובר בלבד) -->
+        <div class="bg-white border border-[#E5DBC7] p-4 rounded-2xl space-y-3">
+          <div id="custom-add-guest" class="flex flex-wrap items-center justify-between gap-2">
+            <p class="text-xs font-bold text-[#0F2340]">מכיר מנהג שלא מופיע כאן? התחבר כדי לשתף אותו עם הקהילה.</p>
+            <button type="button" onclick="openAuthModal()" class="px-4 py-2 bg-white text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs">התחברות / הרשמה</button>
+          </div>
+          <div id="custom-add-box" class="hidden space-y-3">
+            <button id="custom-add-toggle" type="button" onclick="ttToggleCustomForm()" class="px-4 py-2 bg-amber-500 text-white font-bold rounded-xl text-xs">➕ העלאת מנהג חדש</button>
+            <div id="custom-add-form" class="hidden space-y-2.5">
+              <input id="custom-new-title" type="text" maxlength="120" placeholder="שם המנהג (למשל: אמירת פיוט מסוים בליל שבת)" class="w-full bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-3.5 py-2.5 text-xs text-[#0F2340] outline-none">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <select id="custom-new-edah" class="bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-3 py-2.5 text-xs text-[#0F2340] outline-none">
+                  <option value="כלל ישראל">עדה / מסורת: כלל ישראל</option>
+                  <option value="ספרד ועדות המזרח">ספרד ועדות המזרח</option>
+                  <option value="אשכנז">אשכנז</option>
+                  <option value="תימן">תימן</option>
+                  <option value="חב״ד">חב״ד</option>
+                  <option value="מרוקו">מרוקו</option>
+                  <option value="אחר">אחר</option>
+                </select>
+                <select id="custom-new-category" class="bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-3 py-2.5 text-xs text-[#0F2340] outline-none">
+                  <option value="מנהגי תפילה">מנהגי תפילה</option>
+                  <option value="מנהגי שבת">מנהגי שבת</option>
+                  <option value="מנהגי חגים">מנהגי חגים</option>
+                  <option value="מנהגי חיי היום-יום">מנהגי חיי היום-יום</option>
+                  <option value="אחר">אחר</option>
+                </select>
+              </div>
+              <textarea id="custom-new-desc" rows="4" maxlength="1200" placeholder="תיאור המנהג, מקורו והסבר קצר (לפחות 10 תווים)" class="w-full bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-3.5 py-2.5 text-xs text-[#0F2340] outline-none"></textarea>
+              <button id="custom-submit-btn" type="button" onclick="submitNewCustom()" class="px-5 py-2 bg-amber-500 text-white font-bold rounded-xl text-xs">פרסם מנהג</button>
+            </div>
+          </div>
+        </div>
+
         <!-- כרטיסי מנהג היום והמועדים המיוחדים עם נוסח הברכה והסבר מלא -->
         <div id="daily-customs-calendar-grid" class="grid grid-cols-1 gap-4"></div>
 
@@ -708,10 +743,10 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="tzaddikim-grid-container"></div>
 
       <!-- יומן יארצייטים ודפי אישיות משולב במדריך קברי הצדיקים -->
-      <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-4 mt-4">
+      <div id="yahrzeit-diary-anchor" class="tt-anchor bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-4 mt-4">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
           <div>
-            <h3 class="text-lg font-black text-white"> יומן יארצייטים ודפי אישיות (הילולות צדיקים ויקירים)</h3>
+            <h3 class="text-lg font-black text-white"> יומן ימי השנה ודפי אישיות (הילולות צדיקים ויקירים)</h3>
             <p class="text-xs text-slate-400">לחץ על <strong>דף אישיות ותגובות</strong> לצפייה בתקציר ההיסטוריה, סיפור החיים, תמונה והוספת סיפורים ודברי תורה.</p>
           </div>
           <button onclick="openCommunityAddModal('yahrzeit')" class="px-4 py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs shrink-0">
@@ -1049,6 +1084,11 @@
     </section>
 
     <!-- 10. LIVE MINYAN FINDER WITH "CALL FOR MINYAN" ALERT -->
+    <!-- דף הבית של "למצוא": רשימת המדורים (נבנה ב-JS: renderFindHub) -->
+    <section id="view-find" class="view-section space-y-5">
+      <div id="find-hub-root"></div>
+    </section>
+
     <section id="view-minyanim" class="view-section space-y-5">
       <!-- סרגל ניווט מרכזי: למצוא (מניינים | קו הלכה ורבנים | בתי חב״ד | מקוואות | מסעדות | קברי צדיקים | גמ״חים | שירותי דת) -->
       <div class="bg-white border border-[#E5DBC7] p-4 rounded-2xl space-y-3">
@@ -1234,13 +1274,14 @@
       <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-4">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
           <div>
-            <h2 class="text-xl font-black text-white">⏰ זמני היום בהלכה, לוח שנה ויומן יארצייט</h2>
+            <h2 class="text-xl font-black text-white">⏰ זמני היום בהלכה, לוח שנה ויומן יום השנה</h2>
             <p class="text-xs text-slate-400">כל הזמנים המדויקים להיום, לוח הילולות צדיקים ומועדים, ומעקב מצוות אישי.</p>
           </div>
           <span class="px-3 py-1 bg-amber-500/15 text-amber-300 border border-amber-500/30 rounded-xl text-xs font-black">לוח עברי תשפ״ז</span>
         </div>
 
-        <h3 class="text-sm font-black text-amber-400"> זמני היום בהלכה (עלות השחר עד צאת הכוכבים):</h3>
+        <div class="zm-times space-y-4">
+        <h3 id="zmanim-times-anchor" class="tt-anchor text-sm font-black text-amber-400"> זמני היום בהלכה (עלות השחר עד צאת הכוכבים):</h3>
         <div class="grid grid-cols-2 sm:grid-cols-5 gap-3" id="zmanim-grid"></div>
 
         <!-- זמני כניסת ויציאת שבת, ספירת העומר, ראשי חודשים וחגים -->
@@ -1263,17 +1304,20 @@
         </div>
 
 
+        </div>
+
         <!-- Hebrew Calendar & Yahrzeits Section -->
-        <div class="pt-4 border-t border-slate-800 space-y-3">
+        <div id="zmanim-calendar-anchor" class="zm-calendar tt-anchor pt-4 border-t border-slate-800 space-y-3">
+          <p id="zm-today-line" class="text-xs font-bold text-[#0F2340]"></p>
           <div class="flex items-center justify-between">
-            <h3 class="text-base font-black text-white flex items-center gap-2"><span></span> לוח שנה ויומן יארצייטים (הילולות צדיקים)</h3>
+            <h3 class="text-base font-black text-white flex items-center gap-2"><span></span> לוח שנה ויומן ימי השנה (הילולות צדיקים)</h3>
             <span class="text-xs text-amber-400 font-bold">הדלקת נר לעילוי נשמה</span>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5" id="zmanim-yahrzeits-container"></div>
         </div>
 
         <!-- Daily Cheshbon Nefesh -->
-        <div class="pt-4 border-t border-slate-800 space-y-3">
+        <div class="zm-cheshbon pt-4 border-t border-slate-800 space-y-3">
           <div class="flex items-center justify-between">
             <h3 class="text-sm font-black text-amber-400"> מעקב מצוות וחשבון נפש יומי</h3>
             <button onclick="openAddMitzvahModal()" class="px-3 py-1.5 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">+ הוסף יעד אישי</button>
@@ -1530,8 +1574,25 @@
           </div>
         </div>
 
-        <!-- 4 Sub-Tabs inside My Zone -->
-        <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pt-1">
+        <!-- תפריט האזור האישי: כל האפשרויות במקום אחד (נפתחות במצב מיקוד עם כפתור חזרה) -->
+        <div id="myzone-menu" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-1">
+          <button type="button" onclick="switchMyZoneSubTab('community')" class="tt-tile"><strong>קהילה, פורום וקבוצות</strong><span>הפורום, קבוצות לימוד ושיתוף סיפורים</span></button>
+          <button type="button" onclick="switchMyZoneSubTab('tracker')" class="tt-tile"><strong>מעקב יומי וחשבון נפש</strong><span>יעדים אישיים ותזכורות</span></button>
+          <button type="button" onclick="switchMyZoneSubTab('quizresults')" class="tt-tile"><strong>תוצאות חידונים</strong><span>הישגים והתקדמות</span></button>
+          <button type="button" onclick="switchMyZoneSubTab('saved')" class="tt-tile"><strong>הדברים השמורים שלי</strong><span>פרשות, תפילות וניגונים ששמרת</span></button>
+          <button type="button" onclick="switchMyZoneSubTab('history')" class="tt-tile"><strong>ההיסטוריה שלי</strong><span>מה למדת וצפית לאחרונה</span></button>
+          <button type="button" onclick="switchMyZoneSubTab('yahrzeits')" class="tt-tile"><strong>ימי השנה שלי</strong><span>לוח אישי לעילוי נשמת יקרים</span></button>
+          <button type="button" onclick="switchMyZoneSubTab('submissions')" class="tt-tile"><strong>התכנים שהוספתי</strong><span>מצב המודרציה של התכנים שלך</span></button>
+          <button type="button" onclick="switchMyZoneSubTab('premium')" class="tt-tile"><strong>מנוי Premium</strong><span>צפייה נקייה והטבות</span></button>
+          <button type="button" onclick="switchMyZoneSubTab('orders')" class="tt-tile"><strong>רכישות ותרומות</strong><span>היסטוריית הזמנות</span></button>
+          <button type="button" onclick="switchMyZoneSubTab('settings')" class="tt-tile"><strong>ההגדרות שלי</strong><span>שפה, נוסח, מיקום ומצב שבת</span></button>
+          <button type="button" onclick="switchMyZoneSubTab('settings')" class="tt-tile tt-tile-gold"><strong>מצב שבת</strong><span>נעילת האפליקציה עם קוד יציאה</span></button>
+          <button type="button" onclick="switchTab('admin')" class="tt-tile tt-tile-gold"><strong>פאנל ניהול מרכזי</strong><span>למנהלי האתר</span></button>
+          <button type="button" id="myzone-logout-tile" onclick="logoutUser()" class="tt-tile hidden"><strong>התנתקות</strong><span>יציאה מהחשבון במכשיר זה</span></button>
+        </div>
+
+        <!-- (ישן) שורת לשוניות – מוסתרת; נשארה כדי שפונקציות קיימות ימשיכו לעבוד -->
+        <div class="hidden flex items-center gap-2 overflow-x-auto hide-scrollbar pt-1">
           <button onclick="switchMyZoneSubTab('community')" id="myzone-btn-community" class="px-4 py-2.5 rounded-xl bg-white border border-[#C9A227] text-[#0F2340] font-black text-xs shrink-0">קהילה, פורום וקבוצות</button>
           <button onclick="switchMyZoneSubTab('tracker')" id="myzone-btn-tracker"  class="px-4 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs shrink-0 shadow">
             📊 מעקב יומי וחשבון נפש (נודניק 🔔)
@@ -1816,12 +1877,16 @@
 
         <!-- 4. מצב שבת וגודל גופן -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-          <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex items-center justify-between">
+          <div class="sm:col-span-2 bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-2.5">
             <div>
-              <h4 class="text-xs font-black text-white"> מצב שבת אוטומטי</h4>
-              <p class="text-[11px] text-slate-400">חסימת שידורים והשתקת התראות בכניסת שבת</p>
+              <h4 class="text-sm font-black text-white">מצב שבת (נעילת האפליקציה)</h4>
+              <p class="text-[11px] text-slate-400">המסך כולו יינעל ב״שבת שלום״ ולא יאפשר גלישה או שימוש עד שתזין את קוד היציאה. הקוד נשמר במכשיר זה בלבד.</p>
             </div>
-            <button onclick="toggleShabbatOverlay()" class="px-3.5 py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">הפעל כעת</button>
+            <div class="flex flex-wrap items-center gap-2">
+              <input id="shabbat-code-input" type="password" inputmode="numeric" autocomplete="off" maxlength="8" placeholder="קוד יציאה (4–8 ספרות)" class="w-44 bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-3.5 py-2.5 text-xs text-[#0F2340] outline-none">
+              <button type="button" onclick="startShabbatMode()" class="px-4 py-2.5 bg-amber-500 text-white font-bold rounded-xl text-xs">הפעל מצב שבת</button>
+            </div>
+            <p id="shabbat-code-hint" class="text-[11px] text-slate-400"></p>
           </div>
 
           <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex items-center justify-between">
@@ -2704,10 +2769,17 @@
 
   
   <!-- כפתור צף למצב שבת וחג (הופך את האתר למצב צפייה בלבד) -->
-  <button id="floating-shabbat-readonly-btn" onclick="toggleShabbatOverlay()" class="fixed bottom-20 md:bottom-6 left-3 z-40 px-3.5 py-2 rounded-full bg-[#0F2340] text-[#FDF8EF] border-2 border-[#C9A227] shadow-lg flex items-center gap-2 text-xs font-bold">
+  <button id="floating-shabbat-readonly-btn" onclick="toggleShabbatOverlay()" class="hidden fixed bottom-20 md:bottom-6 left-3 z-40 px-3.5 py-2 rounded-full bg-[#0F2340] text-[#FDF8EF] border-2 border-[#C9A227] shadow-lg flex items-center gap-2 text-xs font-bold">
     <svg class="w-4 h-4 text-[#C9A227] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2c1.5 2.5 1.5 5 0 7-1.5-2-1.5-4.5 0-7z"/><rect x="9" y="9" width="6" height="12" rx="1"/></svg>
     <span id="floating-shabbat-btn-label" style="color:#FDF8EF !important;">מצב שבת וחג (צפייה בלבד)</span>
   </button>
+
+  <!-- תפריט צד (המבורגר) -->
+  <div id="tt-menu-overlay" onclick="closeSideMenu()"></div>
+  <aside id="tt-side-menu" role="dialog" aria-modal="true" aria-label="תפריט האתר" aria-hidden="true">
+    <div class="tt-menu-head"><span>צדיק-טוק</span><button type="button" onclick="closeSideMenu()" aria-label="סגירת התפריט">✕</button></div>
+    <nav id="tt-menu-body"></nav>
+  </aside>
 
   <!-- APP SCRIPT -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
