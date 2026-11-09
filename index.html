@@ -60,34 +60,39 @@
     <button onclick="toggleShabbatOverlay()" class="px-3 py-1 bg-[#C9A227] text-white font-black rounded-lg text-xs shrink-0 mr-2">יציאה ממצב שבת</button>
   </div>
 
-<header class="heritage-header sticky top-0 z-40 bg-[#0F2340] text-white">
-  <div class="max-w-7xl mx-auto px-3 sm:px-6 py-3 flex items-center justify-between gap-2">
-    
-    <!-- צד שמאל: כפתור תפריט (☰) -->
-<button onclick="window.toggleSidebar()" class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 border border-[#C9A227]/60 flex items-center justify-center cursor-pointer">
-      <svg class="w-6 h-6 text-[#C9A227]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-    </button>
-
-    <!-- מרכז: הלוגו -->
-    <div class="flex-1 flex justify-center items-center gap-2 cursor-pointer" onclick="switchTab('feed')">
-      <div class="w-8 h-8 rounded-lg bg-[#FDF8EF] border border-[#C9A227] flex items-center justify-center shrink-0">
-        <svg class="w-5 h-5 text-[#C9A227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polygon points="12,2 15,8 21,9 16.5,14 18,20 12,17 6,20 7.5,14 3,9 9,8"></polygon>
-        </svg>
+  <header class="heritage-header sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex items-center justify-between gap-2">
+      <!-- 1. לוגו ברור + שם האתר -->
+      <div class="flex items-center gap-2.5 cursor-pointer shrink-0" onclick="switchTab('feed')">
+        <div class="w-10 h-10 rounded-xl bg-[#FDF8EF] border-2 border-[#C9A227] flex items-center justify-center overflow-hidden shadow-sm shrink-0">
+          <svg id="header-default-logo-svg" class="w-7 h-7" viewBox="0 0 24 24" fill="none">
+            <polygon points="12,2 15,8 21,9 16.5,14 18,20 12,17 6,20 7.5,14 3,9 9,8" fill="#C9A227" fill-opacity="0.25" stroke="#C9A227" stroke-width="1.8"/>
+            <text x="12" y="16" text-anchor="middle" fill="#0F2340" font-family="Frank Ruhl Libre, serif" font-weight="900" font-size="13">צ</text>
+          </svg>
+        </div>
+        <h1 class="header-title-text text-xl sm:text-2xl font-black tracking-tight leading-none">צדיק-טוק</h1>
       </div>
-      <h1 class="text-xl sm:text-2xl font-black tracking-tight leading-none text-[#C9A227]">צדיק-טוק</h1>
+
+      <!-- 2, 3, 4: רק חיפוש, מצב שבת, ואזור אישי -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <button onclick="triggerHeaderSearch()" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-[#C9A227]/60 text-xs font-bold text-[#FDF8EF] flex items-center gap-1.5" title="חיפוש">
+          <svg class="w-3.5 h-3.5 text-[#C9A227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <span>חיפוש</span>
+        </button>
+        <button onclick="toggleShabbatOverlay()" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-[#C9A227]/60 text-xs font-bold text-[#FDF8EF] flex items-center gap-1.5" title="מצב שבת (צפייה בלבד)">
+          <svg class="w-3.5 h-3.5 text-[#C9A227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2c1.5 2.5 1.5 5 0 7-1.5-2-1.5-4.5 0-7z"/><rect x="9" y="9" width="6" height="12" rx="1"/></svg>
+          <span>מצב שבת</span>
+        </button>
+        <button id="header-auth-btn" onclick="openAuthModal()" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-[#C9A227]/60 text-xs font-bold text-[#FDF8EF] flex items-center gap-1.5 max-w-[130px]" title="התחברות / הרשמה">
+          <svg class="w-3.5 h-3.5 text-[#C9A227] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
+          <span id="header-auth-label" class="truncate" style="color:#FDF8EF !important;">התחברות / הרשמה</span>
+        </button>
+        <button onclick="switchTab('myzone')" class="px-3.5 py-1.5 rounded-xl bg-[#C9A227] hover:bg-[#B38E1E] text-white font-black text-xs flex items-center gap-1.5 shadow-sm shrink-0">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+          <span>אזור אישי</span>
+        </button>
+      </div>
     </div>
-
-    <!-- צד ימין: כפתור התחברות (או אזור אישי) -->
-    <button onclick="openAuthModal()" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-[#C9A227]/60 text-xs font-bold text-[#FDF8EF] flex items-center gap-1.5">
-      <svg class="w-4 h-4 text-[#C9A227]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-      <span>התחברות</span>
-    </button>
-
-  </div>
-</header>
-
- 
 
     <!-- תפריט ניווט ראשי למחשב -->
     <div class="hidden md:flex max-w-7xl mx-auto px-6 py-2 bg-[#F6EFE2] border-t border-[#E5DBC7] items-center gap-3 text-sm font-bold text-[#0F2340]">
