@@ -4782,3 +4782,44 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   };
 })();
+
+// --- פונקציות ניווט ותפריט (מתוקן) ---
+
+window.toggleSidebar = function() {
+    const sidebar = document.getElementById('sideMenu');
+    if (sidebar) {
+        // אם התפריט מוסתר, נפתח אותו
+        if (sidebar.classList.contains('hidden')) {
+            sidebar.classList.remove('hidden');
+            sidebar.style.transform = 'translateX(0%)';
+        } else {
+            sidebar.classList.add('hidden');
+            sidebar.style.transform = 'translateX(100%)';
+        }
+    }
+};
+
+window.switchTab = function(tabName) {
+    // סגור תפריט צד אם פתוח
+    const sidebar = document.getElementById('sideMenu');
+    if (sidebar) {
+        sidebar.classList.add('hidden');
+        sidebar.style.transform = 'translateX(100%)';
+    }
+
+    // הסתר את כל התוכן של הדפים
+    const pages = document.querySelectorAll('.tab-content');
+    pages.forEach(page => page.classList.add('hidden'));
+
+    // הראה את הדף המבוקש (אם קיים)
+    const targetPage = document.getElementById('tab-' + tabName);
+    if (targetPage) {
+        targetPage.classList.remove('hidden');
+    }
+};
+
+window.openAuthModal = function() {
+    // פה אנחנו קוראים לחלון ההתחברות המקורי שלך.
+    // מכיוון שאני לא יודע איך קראו לו, נשאיר את זה פשוט:
+    alert("כאן יפתח חלון ההתחברות שלך (כמו בתמונה).");
+};
