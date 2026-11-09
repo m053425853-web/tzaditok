@@ -565,3 +565,191 @@ body.find-inner-active #tt-focus-strip,
 body.find-inner-active #tt-more-btn {
   display: none !important;
 }
+
+
+/* ==========================================================================
+   V36 — תבנית עיצוב אחידה (UI), גודל טקסט קריא (>=14px), ריווח תחתון (padding-bottom),
+         שורת חיפוש צמודה (Sticky), מונה תוצאות חי, כרטיסים אווריריים וכפתור צף "הוסף"
+   ========================================================================== */
+
+/* 1. הגדלת גודל הטקסט הבסיסי ל-14px לפחות בכל האתר */
+html, body {
+  font-size: 15px !important;
+  line-height: 1.65 !important;
+  padding-bottom: 108px !important;
+  background-color: #FDF8EF !important;
+  color: #0F2340 !important;
+}
+
+main {
+  padding-bottom: 112px !important;
+}
+
+.text-xs {
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+}
+
+.text-\[10px\], .text-\[11px\], .text-\[11\.5px\] {
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+
+.text-sm {
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+}
+
+input, select, textarea, button {
+  font-size: 14px !important;
+}
+
+/* 2. השארת הסרגל התחתון (5 טאבים) קבוע וגלוי תמיד במובייל גם בתוך תתי-מדורים */
+@media (max-width: 767px) {
+  nav.heritage-bottom-nav,
+  body.focus-mode nav.heritage-bottom-nav {
+    display: grid !important;
+  }
+}
+
+nav.heritage-bottom-nav .bottom-nav-item {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #5C4938 !important;
+}
+nav.heritage-bottom-nav .bottom-nav-item.active {
+  color: #0F2340 !important;
+  font-weight: 900 !important;
+  background-color: #F6EFE2 !important;
+  border-radius: 12px !important;
+}
+
+/* 3. תבנית דפי רשימה אחידה: שורת חיפוש צמודה (Sticky) + מונה תוצאות חי */
+.sticky-list-header {
+  position: sticky !important;
+  top: 56px !important;
+  z-index: 32 !important;
+  background-color: rgba(253, 248, 239, 0.97) !important;
+  backdrop-filter: blur(6px);
+  padding: 12px 14px !important;
+  border: 1px solid #E5DBC7 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 14px rgba(15, 35, 64, 0.06) !important;
+  margin-bottom: 14px !important;
+}
+
+.live-result-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background-color: #F6EFE2 !important;
+  color: #0F2340 !important;
+  border: 1px solid #C9A227 !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  white-space: nowrap;
+}
+
+/* 4. כרטיסים אווריריים (Airy Cards) עם היררכיה נקייה ו-2 כפתורים מרכזיים בתחתית */
+.airy-list-card {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E5DBC7 !important;
+  border-radius: 18px !important;
+  padding: 20px !important;
+  box-shadow: 0 3px 12px rgba(15, 35, 64, 0.04) !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.airy-list-card:hover {
+  border-color: #C9A227 !important;
+  box-shadow: 0 6px 18px rgba(15, 35, 64, 0.08) !important;
+}
+
+.airy-card-primary-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid #EDE3D2;
+}
+
+.airy-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background-color: #C9A227 !important;
+  color: #FFFFFF !important;
+  font-weight: 800 !important;
+  font-size: 14px !important;
+  text-align: center;
+  border: 1px solid #B38E1E !important;
+  transition: background-color 0.15s ease;
+}
+.airy-btn-primary:hover {
+  background-color: #B38E1E !important;
+}
+
+.airy-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background-color: #FDF8EF !important;
+  color: #0F2340 !important;
+  font-weight: 800 !important;
+  font-size: 14px !important;
+  text-align: center;
+  border: 1px solid #D8CBB5 !important;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.airy-btn-secondary:hover {
+  background-color: #F6EFE2 !important;
+  border-color: #C9A227 !important;
+}
+
+/* 5. כפתור צף "הוסף" (Floating Action Button) בפינה של כל דף רשימה */
+.fab-add-btn {
+  position: fixed !important;
+  bottom: 84px !important;
+  right: 18px !important;
+  z-index: 38 !important;
+  background-color: #0F2340 !important;
+  color: #FFFFFF !important;
+  border: 2px solid #C9A227 !important;
+  border-radius: 999px !important;
+  padding: 11px 22px !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  box-shadow: 0 6px 20px rgba(15, 35, 64, 0.25) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+.fab-add-btn:hover {
+  background-color: #16335c !important;
+  transform: translateY(-2px);
+}
+.fab-add-btn span {
+  color: #FFFFFF !important;
+}
+
+/* 6. קבוצות "קרוב אליי" (5 קבוצות ברורות) */
+.near-me-group-card {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E5DBC7 !important;
+  border-right: 4px solid #C9A227 !important;
+  border-radius: 18px !important;
+  padding: 18px !important;
+  box-shadow: 0 2px 10px rgba(15, 35, 64, 0.04) !important;
+}

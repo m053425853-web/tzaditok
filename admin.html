@@ -126,7 +126,7 @@
 
         <div class="flex items-center gap-2">
           <button onclick="loadReviews()" title="רענן נתונים" class="px-3 py-1.5 bg-[#1A3860] hover:bg-[#254F85] text-white rounded-xl text-xs font-bold border border-slate-700 flex items-center gap-1.5">
-            <span>🔄</span> <span class="hidden sm:inline">רענן</span>
+            <span></span> <span class="hidden sm:inline">רענן</span>
           </button>
           <a href="index.html" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-[#0F2340] font-black rounded-xl text-xs shadow-sm flex items-center gap-1">
             <span>🏠</span> <span class="hidden sm:inline">לאתר הראשי</span>
@@ -166,7 +166,7 @@
           <span class="text-[#5C4938]">סינון:</span>
           <button onclick="setFilter('all')" id="filter-all" class="filter-btn px-3.5 py-1.5 rounded-xl bg-[#0F2340] text-white">הכל</button>
           <button onclick="setFilter('pending')" id="filter-pending" class="filter-btn px-3.5 py-1.5 rounded-xl bg-[#F6EFE2] text-[#5C4938] border border-[#E5DBC7]">ממתינות לאישור ⏳</button>
-          <button onclick="setFilter('approved')" id="filter-approved" class="filter-btn px-3.5 py-1.5 rounded-xl bg-[#F6EFE2] text-[#5C4938] border border-[#E5DBC7]">מאושרות ✔</button>
+          <button onclick="setFilter('approved')" id="filter-approved" class="filter-btn px-3.5 py-1.5 rounded-xl bg-[#F6EFE2] text-[#5C4938] border border-[#E5DBC7]">מאושרות </button>
         </div>
 
         <div class="relative flex-1 max-w-xs">
@@ -205,8 +205,10 @@
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-client.js"></script>
+  <script src="utils.js"></script>
   <script>
     const ADMIN_EMAIL = 'm053425853@gmail.com';
+    const esc = window.escapeHtml || function(s){ return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); };
     let allReviews = [];
     let currentFilter = 'all';
 
@@ -290,7 +292,7 @@
         const { data, error } = await window.supabaseClient.auth.signInWithPassword({ email, password });
         if (error) {
           if (errMsg) {
-            errMsg.textContent = 'שגיאת התחברות: ' + error.message;
+            errMsg.textContent = 'שגיאת התחברות: ' + esc(error.message);
             errMsg.classList.remove('hidden');
           }
           btn.disabled = false;
@@ -300,7 +302,7 @@
         checkAuth();
       } catch (err) {
         if (errMsg) {
-          errMsg.textContent = 'שגיאה כללית: ' + err.message;
+          errMsg.textContent = 'שגיאה כללית: ' + esc(err.message);
           errMsg.classList.remove('hidden');
         }
         btn.disabled = false;
@@ -327,7 +329,7 @@
           .order('created_at', { ascending: false });
 
         if (error) {
-          container.innerHTML = '<div class="p-6 text-center text-xs text-red-600 bg-red-50 rounded-xl">שגיאה בטעינת תגובות: ' + error.message + '</div>';
+          container.innerHTML = '<div class="p-6 text-center text-xs text-red-600 bg-red-50 rounded-xl">שגיאה בטעינת תגובות: ' + esc(error.message) + '</div>';
           return;
         }
 
@@ -335,7 +337,7 @@
         updateMetrics();
         renderFilteredReviews();
       } catch (err) {
-        container.innerHTML = '<div class="p-6 text-center text-xs text-red-600 bg-red-50 rounded-xl">שגיאה: ' + err.message + '</div>';
+        container.innerHTML = '<div class="p-6 text-center text-xs text-red-600 bg-red-50 rounded-xl">שגיאה: ' + esc(err.message) + '</div>';
       }
     }
 
@@ -411,28 +413,28 @@
               <span class="px-2.5 py-0.5 rounded-lg font-bold ${isApp ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800 animate-pulse'}">
                 ${isApp ? '✓ מאושר בקהילה' : '⏳ ממתין לאישור'}
               </span>
-              <span class="font-black text-[#0F2340]">${r.user_name || 'משתמש אנונימי'}</span>
-              <span class="text-amber-500 font-bold">${stars} (${r.rating || 5}/5)</span>
-              <span class="text-[#5C4938] bg-[#EAE0D0] px-2 py-0.5 rounded-md font-mono text-[11px]">${entityLabel}</span>
+              <span class="font-black text-[#0F2340]">${esc(r.user_name || 'משתמש אנונימי')}</span>
+              <span class="text-amber-500 font-bold">${stars} (${esc(r.rating || 5)}/5)</span>
+              <span class="text-[#5C4938] bg-[#EAE0D0] px-2 py-0.5 rounded-md font-mono text-[11px]">${esc(entityLabel)}</span>
             </div>
-            <span class="text-[11px] text-[#5C4938]">${dateStr}</span>
+            <span class="text-[11px] text-[#5C4938]">${esc(dateStr)}</span>
           </div>
 
           <p class="text-sm text-[#0F2340] leading-relaxed font-normal">
-            ${r.review_text || ''}
+            ${esc(r.review_text || '')}
           </p>
-          ${r.criteria ? `<p class="text-[11px] text-[#5C4938] font-bold">מדדים: ${r.criteria}</p>` : ''}
+          ${r.criteria ? `<p class="text-[11px] text-[#5C4938] font-bold">מדדים: ${esc(r.criteria)}</p>` : ''}
 
           <div class="pt-2 border-t border-[#E5DBC7] flex items-center justify-end gap-2">
             ${!isApp ? `
-              <button onclick="approveReview(${r.id})" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1 shadow-sm transition-all">
-                <span>✔</span> אשר תגובה
+              <button onclick="approveReview(${Number(r.id) || 0})" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1 shadow-sm transition-all">
+                <span></span> אשר תגובה
               </button>
             ` : `
               <span class="text-xs text-emerald-700 font-bold ml-2">מאושר לפרסום ✓</span>
             `}
-            <button onclick="deleteReview(${r.id})" class="px-3.5 py-2 bg-red-100 hover:bg-red-200 text-red-700 border border-red-300 font-bold rounded-xl text-xs flex items-center gap-1 transition-all">
-              <span>🗑️</span> מחק תגובה
+            <button onclick="deleteReview(${Number(r.id) || 0})" class="px-3.5 py-2 bg-red-100 hover:bg-red-200 text-red-700 border border-red-300 font-bold rounded-xl text-xs flex items-center gap-1 transition-all">
+              <span></span> מחק תגובה
             </button>
           </div>
         </div>`;
@@ -448,14 +450,14 @@
           .eq('id', id);
 
         if (error) {
-          showToast('שגיאה באישור התגובה: ' + error.message, true);
+          showToast('שגיאה באישור התגובה: ' + esc(error.message), true);
           return;
         }
 
         showToast('התגובה אושרה בהצלחה ופורסמה באתר!');
         loadReviews();
       } catch (err) {
-        showToast('שגיאה: ' + err.message, true);
+        showToast('שגיאה: ' + esc(err.message), true);
       }
     }
 
@@ -468,14 +470,14 @@
           .eq('id', id);
 
         if (error) {
-          showToast('שגיאה במחיקת התגובה: ' + error.message, true);
+          showToast('שגיאה במחיקת התגובה: ' + esc(error.message), true);
           return;
         }
 
         showToast('התגובה נמחקה בהצלחה מהמערכת.');
         loadReviews();
       } catch (err) {
-        showToast('שגיאה: ' + err.message, true);
+        showToast('שגיאה: ' + esc(err.message), true);
       }
     }
 
