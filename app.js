@@ -5649,3 +5649,472 @@ document.addEventListener("DOMContentLoaded", function() {
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
 })();
+
+
+// ============================================================================
+// V33 — פאנל ניהול (Admin) + זמני היום אמיתיים (Hebcal API) + קישורי Waze ו-וואטסאפ
+//  * אבטחת פאנל ניהול: נעילה קשיחה - גישה מותרת אך ורק למשתמש m053425853@gmail.com
+//  * חיבור ישיר ל-Supabase community_reviews: אישור (is_approved=true) ומחיקת תגובות
+//  * משיכת זמני היום מה-API החינמי של Hebcal (city=Jerusalem / Bnei Brak) ועדכון הכרטיס "היום ביהדות"
+//  * קישורי Waze ו-WhatsApp בכל כרטיסי הגמ״חים, המקוואות וקברי הצדיקים בדף "למצוא"
+// ============================================================================
+(function () {
+  "use strict";
+
+  var ADMIN_EMAIL = "m053425853@gmail.com";
+  var sb = function () { return window.supabaseClient; };
+
+  function el(id) { return document.getElementById(id); }
+  function val(id) { var e = el(id); return e ? (e.value || "").trim() : ""; }
+  function onReady(fn) {
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fn);
+    else fn();
+  }
+
+  // --------------------------------------------------------------------------
+  // 1. פונקציות עזר לניווט ויצירת קשר (Waze & WhatsApp)
+  // --------------------------------------------------------------------------
+  window.buildWazeUrl = function (query, query2) {
+    if (typeof query === "number" && typeof query2 === "number") {
+      return "https://waze.com/ul?ll=" + query + "," + query2 + "&navigate=yes";
+    }
+    var q = String(query || query2 || "ישראל").trim();
+    return "https://waze.com/ul?q=" + encodeURIComponent(q);
+  };
+
+  window.buildWhatsAppUrl = function (phone, textMessage) {
+    var cleanPhone = String(phone || "").replace(/[^0-9]/g, "");
+    if (cleanPhone.indexOf("972") === 0) cleanPhone = cleanPhone.slice(3);
+    if (cleanPhone.indexOf("0") === 0) cleanPhone = cleanPhone.slice(1);
+    if (!cleanPhone) cleanPhone = "500000000";
+    var msg = textMessage ? "?text=" + encodeURIComponent(textMessage) : "";
+    return "https://wa.me/972" + cleanPhone + msg;
+  };
+
+  // --------------------------------------------------------------------------
+  // 2. זמני היום האמיתיים מה-API החינמי של Hebcal (Hebcal API)
+  // --------------------------------------------------------------------------
+  window.fetchHebcalZmanim = async function (city) {
+    try {
+      var selectedCity = city || (localStorage.getItem(typeof STORAGE_KEYS !== "undefined" ? STORAGE_KEYS.CITY_LOC : "tzadiktok_city_v18")) || "Jerusalem";
+      var hebcalCity = "Jerusalem";
+      if (selectedCity.indexOf("בני ברק") !== -1 || selectedCity.indexOf("Bnei") !== -1) {
+        hebcalCity = "IL-Bnei+Brak";
+      } else if (selectedCity.indexOf("ירושלים") !== -1 || selectedCity.indexOf("Jerusalem") !== -1) {
+        hebcalCity = "Jerusalem";
+      } else if (selectedCity.indexOf("תל אביב") !== -1 || selectedCity.indexOf("Tel") !== -1) {
+        hebcalCity = "Tel+Aviv";
+      } else if (selectedCity.indexOf("צפת") !== -1 || selectedCity.indexOf("Safed") !== -1) {
+        hebcalCity = "Safed";
+      } else if (selectedCity.indexOf("חיפה") !== -1 || selectedCity.indexOf("Haifa") !== -1) {
+        hebcalCity = "Haifa";
+      } else if (selectedCity.indexOf("טבריה") !== -1 || selectedCity.indexOf("Tiberias") !== -1) {
+        hebcalCity = "Tiberias";
+      }
+
+      var url = "https://www.hebcal.com/zmanim?cfg=json&city=" + encodeURIComponent(hebcalCity);
+      var resp = await fetch(url);
+      if (!resp.ok) {
+        console.warn("[Hebcal] שגיאת שרת:", resp.status);
+        return null;
+      }
+      var data = await resp.json();
+      if (!data || !data.times) return null;
+
+      var formatTime = function (isoStr) {
+        if (!isoStr) return "";
+        try {
+          var d = new Date(isoStr);
+          if (!isNaN(d.getTime())) {
+            var h = String(d.getHours()).padStart(2, "0");
+            var m = String(d.getMinutes()).padStart(2, "0");
+            return h + ":" + m;
+          }
+        } catch (e) {}
+        var match = String(isoStr).match(/T(\d{2}:\d{2})/);
+        return match ? match[1] : "";
+      };
+
+      var shemaTime = formatTime(data.times.sofZmanShma || data.times.sofZmanShmaMGA);
+      var sunsetTime = formatTime(data.times.sunset);
+      var alotTime = formatTime(data.times.alotHaShachar);
+      var sunriseTime = formatTime(data.times.sunrise);
+      var tfillaTime = formatTime(data.times.sofZmanTfilla);
+      var chatzotTime = formatTime(data.times.chatzot);
+      var minchaGedolaTime = formatTime(data.times.minchaGedola);
+      var plagTime = formatTime(data.times.plagHaMincha);
+      var tzeitTime = formatTime(data.times.tzeit7083deg || data.times.tzeit85deg || data.times.dusk);
+      var rtTime = formatTime(data.times.tzeit72min);
+
+      // עדכון כרטיס 'היום ביהדות' בדף הבית
+      var shemaEl = el("home-z-shema");
+      if (shemaEl && shemaTime) shemaEl.textContent = shemaTime;
+
+      var shkiaEl = el("home-z-shkia");
+      if (shkiaEl && sunsetTime) shkiaEl.textContent = sunsetTime;
+
+      // שמירה ועדכון הטבלה המלאה בדף הזמנים
+      window.CURRENT_REAL_ZMANIM = [
+        { n: "עלות השחר", t: alotTime || "04:52" },
+        { n: "הנץ החמה", t: sunriseTime || "06:07" },
+        { n: "סוף זמן שמע", t: shemaTime || "08:37" },
+        { n: "סוף זמן תפילה", t: tfillaTime || "09:42" },
+        { n: "חצות היום", t: chatzotTime || "12:20" },
+        { n: "מנחה גדולה", t: minchaGedolaTime || "12:50" },
+        { n: "פלג המנחה", t: plagTime || "15:42" },
+        { n: "שקיעת החמה", t: sunsetTime || "16:50" },
+        { n: "צאת הכוכבים", t: tzeitTime || "17:15" },
+        { n: "זמן רבינו תם", t: rtTime || "18:02" }
+      ];
+
+      var g = el("zmanim-grid");
+      if (g && window.CURRENT_REAL_ZMANIM) {
+        g.innerHTML = window.CURRENT_REAL_ZMANIM.map(function (t) {
+          return '<div class="bg-slate-950 border border-slate-800 p-3 rounded-xl text-center">' +
+            '<span class="text-[10px] text-slate-400 block">' + t.n + '</span>' +
+            '<span class="text-sm font-black text-amber-400 font-mono mt-1 block">' + t.t + '</span>' +
+          '</div>';
+        }).join("");
+      }
+
+      console.log("[Hebcal] זמני היום האמיתיים עודכנו בהצלחה (" + hebcalCity + "): סוף זמן ק״ש " + shemaTime + ", שקיעה " + sunsetTime);
+      return data;
+    } catch (err) {
+      console.warn("[Hebcal] שגיאה במשיכת זמני היום (נשמרים זמני ברירת מחדל):", err);
+      return null;
+    }
+  };
+
+  // --------------------------------------------------------------------------
+  // 3. קישורי Waze ו-וואטסאפ בכרטיסי גמ״חים, מקוואות וצדיקים (דף 'למצוא')
+  // --------------------------------------------------------------------------
+  window.renderGemachim = function (list) {
+    var grid = el("gemachim-grid-container");
+    if (!grid) return;
+    grid.innerHTML = (list || []).map(function (g, idx) {
+      var gid = g.id || ("gm" + (idx + 1));
+      var eKey = "gemach_" + gid;
+      var stats = window.getEntityStats ? window.getEntityStats(eKey, g.rating || 4.9) : { avg: "4.9", count: 12 };
+      var safeName = String(g.name || "").replace(/'/g, "");
+      var safeCat = String(g.category || "גמ״ח וחסד").replace(/'/g, "");
+      var safeAddr = String(g.address || g.city || "פריסה ארצית").replace(/'/g, "");
+      var safeHours = String(g.hours || "א׳-ה׳ 09:00-21:00").replace(/'/g, "");
+      var safeDesc = String(g.description || g.desc || "").replace(/'/g, "");
+      var phone = String(g.phone || "0500000000");
+
+      var wazeUrl = "https://waze.com/ul?q=" + encodeURIComponent(safeAddr);
+      var waUrl = window.buildWhatsAppUrl(phone, "שלום, רציתי לברר פרטים לגבי הגמ״ח (" + safeName + ")");
+
+      return `
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-3 flex flex-col justify-between hover:border-amber-500/40 transition-all">
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-1 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[11px] font-black">${safeCat}</span>
+            <button onclick="openEntityFullPage('${eKey}', 'דף גמ״ח וארגון חסד', '${safeName}', '${safeCat}', '${safeAddr}', '${safeHours}', '${phone}', '${safeDesc}', 'השירות • הזמינות • היחס')" class="text-xs font-black text-amber-400 hover:underline">
+              ★ ${stats.avg} (${stats.count} חוות דעת)
+            </button>
+          </div>
+          <h3 class="text-lg font-black text-white">${g.name}</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">${safeDesc}</p>
+          <div class="text-[11px] text-slate-400 space-y-0.5 pt-1">
+            <div>📍 <strong>כתובת:</strong> ${safeAddr}</div>
+            <div>⏰ <strong>שעות:</strong> ${safeHours}</div>
+            <div>📞 <strong>טלפון:</strong> ${phone}</div>
+          </div>
+        </div>
+        <div class="pt-3 border-t border-slate-800 space-y-2">
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="openEntityFullPage('${eKey}', 'דף גמ״ח וארגון חסד', '${safeName}', '${safeCat}', '${safeAddr}', '${safeHours}', '${phone}', '${safeDesc}', 'השירות • הזמינות • היחס')" class="py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">
+              📄 דף גמ״ח ודירוג
+            </button>
+            <a href="tel:${phone}" class="py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold rounded-xl text-xs text-center flex items-center justify-center gap-1">
+              📞 חייג
+            </a>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <a href="${wazeUrl}" target="_blank" class="py-2 bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 font-bold rounded-xl text-xs text-center flex items-center justify-center gap-1">
+              🚗 נווט ב-Waze
+            </a>
+            <a href="${waUrl}" target="_blank" class="py-2 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 font-bold rounded-xl text-xs text-center flex items-center justify-center gap-1">
+              💬 צור קשר בוואטסאפ
+            </a>
+          </div>
+        </div>
+      </div>`;
+    }).join("");
+  };
+
+  window.renderMikvaot = function (list) {
+    var grid = el("mikvaot-grid-container");
+    if (!grid) return;
+    grid.innerHTML = (list || []).map(function (m, idx) {
+      var mid = m.id || ("mk" + (idx + 1));
+      var eKey = "mikvah_" + mid;
+      var stats = window.getEntityStats ? window.getEntityStats(eKey, m.rating || 4.9) : { avg: "4.9", count: 8 };
+      var safeName = String(m.name || "").replace(/'/g, "");
+      var safeCity = String(m.city || "").replace(/'/g, "");
+      var safeAddr = String(m.address || (m.name + " " + safeCity)).replace(/'/g, "");
+      var safeHours = String(m.hours || "פתוח מערב שבת וחול").replace(/'/g, "");
+      var phone = String(m.phone || m.whatsapp || "035700000");
+
+      var wazeUrl = "https://waze.com/ul?q=" + encodeURIComponent(safeAddr);
+      var waUrl = window.buildWhatsAppUrl(phone, "שלום, רציתי לברר לגבי שעות הטבילה במקווה (" + safeName + ")");
+
+      return `
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-3 flex flex-col justify-between hover:border-blue-500/40 transition-all">
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-0.5 bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-full text-[11px] font-black">${m.type || "מקווה טהרה"}</span>
+            <button onclick="openEntityFullPage('${eKey}', 'דף מקווה טהרה וביקורות', '${safeName}', '${safeCity}', '${safeAddr}', '${safeHours}', '${phone}', 'מקווה טהרה מהודר ונקי. דרגו את הניקיון, השירות ושעות הפעילות.', 'ניקיון והידור • שעות פעילות • יחס ושירות')" class="text-xs font-black text-amber-400 hover:underline">
+              ★ ${stats.avg} (${stats.count} תגובות)
+            </button>
+          </div>
+          <h3 class="text-lg font-black text-white">${m.name}</h3>
+          <p class="text-xs text-slate-300">📍 ${safeAddr} • ⏰ ${safeHours}</p>
+        </div>
+        <div class="pt-3 border-t border-slate-800 space-y-2">
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="openEntityFullPage('${eKey}', 'דף מקווה טהרה וביקורות', '${safeName}', '${safeCity}', '${safeAddr}', '${safeHours}', '${phone}', 'מקווה טהרה מהודר ונקי.', 'ניקיון והידור • שעות פעילות • יחס ושירות')" class="py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">
+              ⭐ דף ודירוג
+            </button>
+            <a href="tel:${phone}" class="py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs text-center flex items-center justify-center gap-1">
+              📞 חייג
+            </a>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <a href="${wazeUrl}" target="_blank" class="py-2 bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 font-bold rounded-xl text-xs text-center flex items-center justify-center gap-1">
+              🚗 נווט ב-Waze
+            </a>
+            <a href="${waUrl}" target="_blank" class="py-2 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 font-bold rounded-xl text-xs text-center flex items-center justify-center gap-1">
+              💬 צור קשר בוואטסאפ
+            </a>
+          </div>
+        </div>
+      </div>`;
+    }).join("");
+  };
+
+  window.renderTzaddikim = function (list) {
+    var grid = el("tzaddikim-grid-container");
+    if (!grid) return;
+    grid.innerHTML = (list || []).map(function (t, idx) {
+      var tid = t.id || ("tz" + (idx + 1));
+      var eKey = "tzaddik_" + tid;
+      var stats = window.getEntityStats ? window.getEntityStats(eKey, 5.0) : { avg: "5.0", count: 18 };
+      var safeName = String(t.name || "").replace(/'/g, "");
+      var safeTitle = String(t.title || "").replace(/'/g, "");
+      var safeCity = String(t.city || "").replace(/'/g, "");
+      var safeAddr = String(t.location || ("ציון " + safeName + " " + safeCity)).replace(/'/g, "");
+      var safeStory = String((t.story || "") + " • סגולה מיוחדת: " + (t.segula || "")).replace(/'/g, "");
+      var imgUrl = t.image || "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80";
+      var phone = String(t.phone || "0500000000");
+
+      var wazeUrl = "https://waze.com/ul?q=" + encodeURIComponent(safeAddr);
+      var waUrl = t.whatsappGroup ? t.whatsappGroup : window.buildWhatsAppUrl(phone, "שלום, בקשת תפילה וסגולות בציון הצדיק " + safeName);
+
+      return `
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-3 flex flex-col justify-between hover:border-amber-500/50 transition-all">
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-0.5 bg-amber-500/15 text-amber-300 rounded-full text-[11px] font-bold">📍 ${safeCity}</span>
+            <button onclick="openEntityFullPage('${eKey}', 'דף קבר צדיק וסיפורי ישועות', '${safeName}', '${safeTitle}', 'ציון הקודש ב${safeCity}', 'פתוח 24/7 לתפילה והדלקת נרות', '', '${safeStory}', 'סיפורים • חוויות מהציון • בקשות תפילה', '${imgUrl}')" class="text-xs font-black text-amber-400 hover:underline">
+              ★ ${stats.avg} (${stats.count} סיפורים)
+            </button>
+          </div>
+          <h3 class="text-lg font-black text-white">${t.name}</h3>
+          <p class="text-xs text-amber-200/90 font-medium">${safeTitle}</p>
+          <p class="text-xs text-slate-300 bg-slate-950 p-2.5 rounded-xl border border-slate-800/80">✨ <strong>סגולה:</strong> ${t.segula || "תפילה לישועה ורפואה"}</p>
+        </div>
+        <div class="pt-2 space-y-2">
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="openEntityFullPage('${eKey}', 'דף קבר צדיק וסיפורי ישועות', '${safeName}', '${safeTitle}', 'ציון הקודש ב${safeCity}', 'פתוח 24/7', '', '${safeStory}', 'סיפורים • חוויות מהציון • בקשות תפילה', '${imgUrl}')" class="py-2 bg-amber-500 text-slate-950 font-black rounded-xl text-xs">
+              📄 דף קבר וסיפורים
+            </button>
+            <button onclick="openCandleModal('${safeName}')" class="py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 font-black rounded-xl text-xs">
+              🕯️ הדלק נר
+            </button>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <a href="${wazeUrl}" target="_blank" class="py-2 bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 font-bold rounded-xl text-xs text-center flex items-center justify-center gap-1">
+              🚗 נווט ב-Waze
+            </a>
+            <a href="${waUrl}" target="_blank" class="py-2 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 font-bold rounded-xl text-xs text-center flex items-center justify-center gap-1">
+              💬 צור קשר בוואטסאפ
+            </a>
+          </div>
+        </div>
+      </div>`;
+    }).join("");
+
+    if (window.renderYahrzeitSharedCards) {
+      window.renderYahrzeitSharedCards("tzaddikim-yahrzeits-container");
+      window.renderYahrzeitSharedCards("zmanim-yahrzeits-container");
+    }
+  };
+
+  // --------------------------------------------------------------------------
+  // 4. פאנל ניהול (Admin Panel) עם אימות קשיח m053425853@gmail.com וחיבור ל-Supabase
+  // --------------------------------------------------------------------------
+  window.checkAdminPermission = async function () {
+    if (!sb()) return { allowed: false, reason: "אין חיבור ל-Supabase" };
+    try {
+      var sessRes = await sb().auth.getSession();
+      var session = sessRes && sessRes.data ? sessRes.data.session : null;
+      if (!session || !session.user) {
+        return { allowed: false, reason: "לא מחובר משתמש למערכת" };
+      }
+      var email = (session.user.email || "").toLowerCase().trim();
+      if (email !== ADMIN_EMAIL.toLowerCase()) {
+        return { allowed: false, reason: "המשתמש " + email + " אינו מורשה. גישה למנהל m053425853@gmail.com בלבד." };
+      }
+      return { allowed: true, user: session.user };
+    } catch (e) {
+      return { allowed: false, reason: e.message };
+    }
+  };
+
+  // דריסת renderAdminPanel בתוך index.html
+  window.renderAdminPanel = async function () {
+    var pendingBox = el("admin-pending-queue-list");
+    var logsBox = el("admin-audit-log-list");
+    var badge = el("admin-active-role-badge");
+
+    var auth = await window.checkAdminPermission();
+
+    if (!auth.allowed) {
+      if (badge) {
+        badge.className = "px-3 py-1 bg-red-600 text-white rounded-lg text-xs font-bold";
+        badge.textContent = "⛔ גישה חסומה: מנהל בלבד";
+      }
+      if (pendingBox) {
+        pendingBox.innerHTML = `
+        <div class="bg-red-50 border-2 border-red-300 p-6 rounded-2xl text-center space-y-3">
+          <div class="text-3xl">⛔</div>
+          <h4 class="text-base font-black text-red-700">הגישה לפאנל הניהול חסומה!</h4>
+          <p class="text-xs text-[#5C4938] leading-relaxed">
+            פאנל זה מוגן ומיועד אך ורק למנהל המערכת: <strong class="text-[#0F2340] font-mono">m053425853@gmail.com</strong>.<br>
+            (${auth.reason})
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-2 pt-2">
+            <button onclick="openAuthModal()" class="px-4 py-2 bg-[#0F2340] text-white font-bold rounded-xl text-xs">התחבר לחשבון מנהל</button>
+            <a href="admin.html" class="px-4 py-2 bg-amber-500 text-[#0F2340] font-black rounded-xl text-xs">פתח דף ניהול ייעודי (admin.html) ↗</a>
+          </div>
+        </div>`;
+      }
+      return;
+    }
+
+    if (badge) {
+      badge.className = "px-3 py-1 bg-emerald-700 text-white rounded-lg text-xs font-bold";
+      badge.textContent = "מנהל ראשי מאומת: m053425853@gmail.com ✓";
+    }
+
+    if (pendingBox) {
+      pendingBox.innerHTML = '<div class="p-4 text-center text-xs text-[#5C4938]">טוען תגובות מ-Supabase (community_reviews)...</div>';
+
+      try {
+        var r = await sb().from("community_reviews").select("*").order("created_at", { ascending: false });
+        if (r.error) {
+          pendingBox.innerHTML = '<div class="p-4 bg-red-50 border border-red-200 text-red-600 rounded-xl text-xs">שגיאה בטעינת תגובות: ' + r.error.message + '</div>';
+          return;
+        }
+
+        var reviews = r.data || [];
+        if (!reviews.length) {
+          pendingBox.innerHTML = '<div class="p-6 bg-[#F8F3E8] border border-[#E5DBC7] rounded-xl text-center text-xs text-[#5C4938]">אין כרגע תגובות במסד הנתונים.</div>';
+          return;
+        }
+
+        pendingBox.innerHTML = `
+        <div class="flex items-center justify-between pb-2">
+          <span class="text-xs font-bold text-[#0F2340]">נמצאו ${reviews.length} תגובות ודירוגים:</span>
+          <a href="admin.html" class="text-xs font-bold text-amber-600 hover:underline">פתח פאנל ניהול מלא ↗</a>
+        </div>` + reviews.map(function (rev) {
+          var isApp = !!rev.is_approved;
+          var stars = "★".repeat(Math.min(5, Math.max(1, Number(rev.rating) || 5)));
+          return `
+          <div class="bg-[#F8F3E8] border ${isApp ? "border-[#E5DBC7]" : "border-amber-400 bg-amber-50/50"} p-4 rounded-xl space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded font-bold ${isApp ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}">${isApp ? "מאושר ✔" : "ממתין לאישור ⏳"}</span>
+                <strong class="text-[#0F2340]">${rev.user_name || "אנונימי"}</strong>
+                <span class="text-amber-600 font-bold">${stars}</span>
+                <span class="text-[11px] text-[#5C4938] font-mono">${rev.entity_key || ""}</span>
+              </div>
+              <span class="text-[11px] text-[#5C4938]">${String(rev.created_at || "").slice(0, 16).replace("T", " ")}</span>
+            </div>
+            <p class="text-xs text-[#0F2340] leading-relaxed">${rev.review_text || ""}</p>
+            <div class="pt-2 border-t border-[#E5DBC7] flex items-center justify-end gap-2 text-xs">
+              ${!isApp ? `<button onclick="window.adminApproveReview(${rev.id})" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs">✔ אשר תגובה</button>` : `<span class="text-xs text-emerald-700 font-bold ml-1">מאושר ✓</span>`}
+              <button onclick="window.adminDeleteReview(${rev.id})" class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 border border-red-300 font-bold rounded-lg text-xs">🗑️ מחק</button>
+            </div>
+          </div>`;
+        }).join("");
+
+      } catch (err) {
+        pendingBox.innerHTML = '<div class="p-4 bg-red-50 text-red-600 rounded-xl text-xs">שגיאה: ' + err.message + '</div>';
+      }
+    }
+
+    if (logsBox) {
+      logsBox.innerHTML = `
+      <div class="bg-[#F8F3E8] border border-[#E5DBC7] p-3 rounded-xl text-xs text-[#5C4938] flex items-center justify-between">
+        <span>מנהל ראשי: <strong>m053425853@gmail.com</strong></span>
+        <span class="text-emerald-700 font-bold">סשן מנהל פעיל ומאומת ✓</span>
+      </div>`;
+    }
+  };
+
+  window.adminApproveReview = async function (id) {
+    if (!sb()) return;
+    try {
+      var res = await sb().from("community_reviews").update({ is_approved: true, status: "מאושר בקהילה" }).eq("id", id);
+      if (res.error) {
+        window.toast("שגיאה באישור: " + res.error.message);
+        return;
+      }
+      window.toast("✔ התגובה אושרה בהצלחה ופורסמה באתר");
+      window.renderAdminPanel();
+    } catch (e) {
+      window.toast("שגיאה באישור התגובה");
+    }
+  };
+
+  window.adminDeleteReview = async function (id) {
+    if (!confirm("האם למחוק תגובה זו לצמיתות?")) return;
+    if (!sb()) return;
+    try {
+      var res = await sb().from("community_reviews").delete().eq("id", id);
+      if (res.error) {
+        window.toast("שגיאה במחיקה: " + res.error.message);
+        return;
+      }
+      window.toast("התגובה נמחקה בהצלחה מהמערכת");
+      window.renderAdminPanel();
+    } catch (e) {
+      window.toast("שגיאה במחיקת התגובה");
+    }
+  };
+
+  // --------------------------------------------------------------------------
+  // 5. אתחול V33
+  // --------------------------------------------------------------------------
+  onReady(function () {
+    // טעינת זמני היום האמיתיים מה-API של Hebcal
+    window.fetchHebcalZmanim();
+
+    // רענון כרטיסי למצוא עם כפתורי Waze ו-וואטסאפ
+    if (window.GEMACHIM_DATA) window.renderGemachim(window.GEMACHIM_DATA);
+    if (window.MIKVAOT_DATA) window.renderMikvaot(window.MIKVAOT_DATA);
+    if (window.TZADDIKIM_DATA) window.renderTzaddikim(window.TZADDIKIM_DATA);
+
+    // האזנה לשינוי עיר בפרופיל משתמש לרענון זמני היום
+    var citySelect = el("prof-user-city");
+    if (citySelect) {
+      citySelect.addEventListener("change", function () {
+        window.fetchHebcalZmanim(citySelect.value);
+      });
+    }
+  });
+
+})();
