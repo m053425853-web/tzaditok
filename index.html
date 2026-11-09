@@ -33,20 +33,6 @@
 </head>
 <body class="min-h-screen select-none">
 
- <!-- תפריט צד -->
-<div id="sideMenu" class="sidebar hidden" style="position: fixed; top: 0; right: 0; width: 250px; height: 100vh; background: #1a2238; color: white; z-index: 9999; transition: transform 0.3s ease; transform: translateX(100%); box-shadow: -2px 0 10px rgba(0,0,0,0.5);">
-  <div style="display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #2a3654;">
-    <h3 style="margin: 0; color: #e6b95c;">תפריט צדיק-טוק</h3>
-    <button onclick="window.toggleSidebar()" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">✖</button>
-  </div>
-  <ul style="list-style: none; padding: 0; margin: 0;">
-<li><a href="#" onclick="window.switchTab('home')" style="display: block; padding: 15px; color: white; text-decoration: none; border-bottom: 1px solid #2a3654;">🏠 דף הבית</a></li>
-<li><a href="#" onclick="window.switchTab('learn')" style="display: block; padding: 15px; color: white; text-decoration: none; border-bottom: 1px solid #2a3654;">📚 ללמוד</a></li>
-<li><a href="#" onclick="window.switchTab('pray')" style="display: block; padding: 15px; color: white; text-decoration: none; border-bottom: 1px solid #2a3654;">🙏 להתפלל</a></li>
-<li><a href="#" onclick="window.switchTab('find')" style="display: block; padding: 15px; color: white; text-decoration: none; border-bottom: 1px solid #2a3654;">📍 למצוא</a></li>
-  </ul>
-</div>
-  
   <!-- Toast Notification -->
   <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none transition-all duration-300 opacity-0 -translate-y-4 max-w-sm w-11/12">
     <div class="bg-amber-500 text-slate-950 font-black px-4 py-3 rounded-2xl shadow-2xl flex items-center justify-between text-sm border border-amber-300">
@@ -76,32 +62,41 @@
 
   <header class="heritage-header sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex items-center justify-between gap-2">
-  <!-- סרגל עליון חדש ומסודר -->
-      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 10px 0;">
-        
-        <!-- צד שמאל: כפתור תפריט -->
-        <button onclick="window.toggleSidebar()" style="background: none; border: none; color: white; font-size: 28px; cursor: pointer;">
-          ☰
-        </button>
-
-        <!-- מרכז: הלוגו -->
-        <div style="font-size: 24px; font-weight: bold; color: #e6b95c; text-align: center; flex-grow: 1;">
-          צדיק-טוק ⭐
+      <!-- 1. לוגו ברור + שם האתר -->
+      <div class="flex items-center gap-2.5 cursor-pointer shrink-0" onclick="switchTab('feed')">
+        <div class="w-10 h-10 rounded-xl bg-[#FDF8EF] border-2 border-[#C9A227] flex items-center justify-center overflow-hidden shadow-sm shrink-0">
+          <svg id="header-default-logo-svg" class="w-7 h-7" viewBox="0 0 24 24" fill="none">
+            <polygon points="12,2 15,8 21,9 16.5,14 18,20 12,17 6,20 7.5,14 3,9 9,8" fill="#C9A227" fill-opacity="0.25" stroke="#C9A227" stroke-width="1.8"/>
+            <text x="12" y="16" text-anchor="middle" fill="#0F2340" font-family="Frank Ruhl Libre, serif" font-weight="900" font-size="13">צ</text>
+          </svg>
         </div>
+        <h1 class="header-title-text text-xl sm:text-2xl font-black tracking-tight leading-none">צדיק-טוק</h1>
+      </div>
 
-        <!-- צד ימין: אזור אישי / התחברות -->
-        <button onclick="window.openProfileModal()" style="background: #2a3654; color: white; border: 1px solid #e6b95c; border-radius: 20px; padding: 8px 15px; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
-          👤 <span>התחברות</span>
+      <!-- 2, 3, 4: רק חיפוש, מצב שבת, ואזור אישי -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <button onclick="triggerHeaderSearch()" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-[#C9A227]/60 text-xs font-bold text-[#FDF8EF] flex items-center gap-1.5" title="חיפוש">
+          <svg class="w-3.5 h-3.5 text-[#C9A227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <span>חיפוש</span>
         </button>
-
-      </div>   </div>
+        <button onclick="toggleShabbatOverlay()" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-[#C9A227]/60 text-xs font-bold text-[#FDF8EF] flex items-center gap-1.5" title="מצב שבת (צפייה בלבד)">
+          <svg class="w-3.5 h-3.5 text-[#C9A227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2c1.5 2.5 1.5 5 0 7-1.5-2-1.5-4.5 0-7z"/><rect x="9" y="9" width="6" height="12" rx="1"/></svg>
+          <span>מצב שבת</span>
+        </button>
+        <button id="header-auth-btn" onclick="openAuthModal()" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-[#C9A227]/60 text-xs font-bold text-[#FDF8EF] flex items-center gap-1.5 max-w-[130px]" title="התחברות / הרשמה">
+          <svg class="w-3.5 h-3.5 text-[#C9A227] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
+          <span id="header-auth-label" class="truncate" style="color:#FDF8EF !important;">התחברות / הרשמה</span>
+        </button>
+        <button onclick="switchTab('myzone')" class="px-3.5 py-1.5 rounded-xl bg-[#C9A227] hover:bg-[#B38E1E] text-white font-black text-xs flex items-center gap-1.5 shadow-sm shrink-0">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+          <span>אזור אישי</span>
+        </button>
+      </div>
     </div>
 
     <!-- תפריט ניווט ראשי למחשב -->
     <div class="hidden md:flex max-w-7xl mx-auto px-6 py-2 bg-[#F6EFE2] border-t border-[#E5DBC7] items-center gap-3 text-sm font-bold text-[#0F2340]">
       <button onclick="switchTab('feed')" id="pill-feed" class="pill-btn active px-4 py-1.5 rounded-xl bg-white border border-[#C9A227] flex items-center gap-2">בית</button>
-
-          <span>חיפוש</span>
       <button onclick="switchTab('series')" id="pill-series" class="pill-btn px-4 py-1.5 rounded-xl bg-white border border-[#D8CBB5] flex items-center gap-2">ללמוד</button>
       <button onclick="switchTab('siddur')" id="pill-siddur" class="pill-btn px-4 py-1.5 rounded-xl bg-white border border-[#D8CBB5] flex items-center gap-2">להתפלל</button>
       <button onclick="switchTab('find')" id="pill-find" class="pill-btn px-4 py-1.5 rounded-xl bg-white border border-[#D8CBB5] flex items-center gap-2">למצוא</button>
@@ -640,11 +635,11 @@
           <span class="text-xs text-[#5C4938]">חיפוש חכם ואיתור לפי מיקום GPS בכל מדור</span>
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 text-xs font-bold">
-          <button onclick="window.showFindCategory('minyanim', 'minyanim-container')" class="py-2.5 px-2 rounded-xl bg-white hover:border-[#C9A227] text-[#0F2340] border border-[#D8CBB5]">מניינים</button>
+          <button onclick="switchTab('minyanim')" class="py-2.5 px-2 rounded-xl bg-white hover:border-[#C9A227] text-[#0F2340] border border-[#D8CBB5]">מניינים</button>
           <button onclick="switchTab('chavruta')" class="py-2.5 px-2 rounded-xl bg-[#F6EFE2] hover:border-[#C9A227] text-[#0F2340] border border-[#C9A227]">חברותא</button>
           <button onclick="switchTab('rabbis')" class="py-2.5 px-2 rounded-xl bg-white hover:border-[#C9A227] text-[#0F2340] border border-[#D8CBB5]">קו הלכה ורבנים</button>
           <button onclick="switchTab('chabad')" class="py-2.5 px-2 rounded-xl bg-white hover:border-[#C9A227] text-[#0F2340] border border-[#D8CBB5]">בתי חב״ד</button>
-          <button onclick="window.showFindCategory('mikvaot', 'mikvaot-container')" ...>מקוואות</button>
+          <button onclick="switchTab('mikvaot')" class="py-2.5 px-2 rounded-xl bg-white hover:border-[#C9A227] text-[#0F2340] border border-[#D8CBB5]">מקוואות</button>
           <button onclick="switchTab('restaurants')" class="py-2.5 px-2 rounded-xl bg-white hover:border-[#C9A227] text-[#0F2340] border border-[#D8CBB5]">מסעדות כשרות</button>
           <button onclick="switchTab('tzaddikim')" class="py-2.5 px-2 rounded-xl bg-white hover:border-[#C9A227] text-[#0F2340] border border-[#D8CBB5]">קברי צדיקים</button>
           <button onclick="switchTab('gemachim')" class="py-2.5 px-2 rounded-xl bg-white hover:border-[#C9A227] text-[#0F2340] border border-[#D8CBB5]">גמ״חים</button>
