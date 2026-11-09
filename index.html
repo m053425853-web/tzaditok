@@ -65,25 +65,27 @@
     <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5">
       <!-- שורה אחת: [ימין] התחברות / אזור אישי | [מרכז] לוגו | [שמאל] תפריט ☰ -->
       <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-        <div class="flex justify-start">
+        <!-- [ימין] תפריט צדדי ☰ -->
+        <div class="flex justify-start items-center gap-2">
+          <button id="tt-burger-btn" type="button" onclick="openSideMenu()" aria-label="פתיחת תפריט האתר" aria-expanded="false" aria-controls="tt-side-menu" class="tt-hdr-btn tt-burger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#C9A227" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+        </div>
+        <!-- [מרכז] לוגו ברור + שם האתר -->
+        <div class="flex items-center gap-2.5 cursor-pointer shrink-0 justify-self-center" onclick="switchTab('feed')">
+          <div class="w-10 h-10 rounded-xl bg-[#FDF8EF] border-2 border-[#C9A227] flex items-center justify-center overflow-hidden shadow-sm shrink-0">
+            <svg id="header-default-logo-svg" class="w-7 h-7" viewBox="0 0 24 24" fill="none">
+              <polygon points="12,2 15,8 21,9 16.5,14 18,20 12,17 6,20 7.5,14 3,9 9,8" fill="#C9A227" fill-opacity="0.25" stroke="#C9A227" stroke-width="1.8"/>
+              <text x="12" y="16" text-anchor="middle" fill="#0F2340" font-family="Frank Ruhl Libre, serif" font-weight="900" font-size="13">צ</text>
+            </svg>
+          </div>
+          <h1 class="header-title-text text-xl sm:text-2xl font-black tracking-tight leading-none">צדיק-טוק</h1>
+        </div>
+        <!-- [שמאל] התחברות / אזור אישי -->
+        <div class="flex justify-end items-center gap-2">
           <button id="header-auth-btn" type="button" onclick="headerAuthClick()" class="tt-hdr-btn tt-hdr-primary" title="התחברות / אזור אישי">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
             <span id="header-auth-label" class="tt-hdr-label">התחברות</span>
-          </button>
-        </div>
-        <!-- 1. לוגו ברור + שם האתר -->
-      <div class="flex items-center gap-2.5 cursor-pointer shrink-0 justify-self-center" onclick="switchTab('feed')">
-        <div class="w-10 h-10 rounded-xl bg-[#FDF8EF] border-2 border-[#C9A227] flex items-center justify-center overflow-hidden shadow-sm shrink-0">
-          <svg id="header-default-logo-svg" class="w-7 h-7" viewBox="0 0 24 24" fill="none">
-            <polygon points="12,2 15,8 21,9 16.5,14 18,20 12,17 6,20 7.5,14 3,9 9,8" fill="#C9A227" fill-opacity="0.25" stroke="#C9A227" stroke-width="1.8"/>
-            <text x="12" y="16" text-anchor="middle" fill="#0F2340" font-family="Frank Ruhl Libre, serif" font-weight="900" font-size="13">צ</text>
-          </svg>
-        </div>
-        <h1 class="header-title-text text-xl sm:text-2xl font-black tracking-tight leading-none">צדיק-טוק</h1>
-      </div>
-        <div class="flex justify-end">
-          <button id="tt-burger-btn" type="button" onclick="openSideMenu()" aria-label="פתיחת תפריט האתר" aria-expanded="false" aria-controls="tt-side-menu" class="tt-hdr-btn tt-burger">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#C9A227" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
           </button>
         </div>
       </div>
@@ -156,35 +158,82 @@
         </div>
       </div>
 
-      <!-- ב. אקורדיונים מתקפלים למזעור עומס בדף הבית -->
-      <div class="space-y-2.5">
-        <!-- אקורדיון 1: חיפוש וניווט מהיר לכל מדורי האפליקציה -->
-        <div class="bg-white border border-[#E5DBC7] rounded-2xl overflow-hidden">
-          <button onclick="toggleHomeAccordion('home-acc-search')" class="w-full px-4 py-3 flex items-center justify-between text-right font-bold text-sm text-[#0F2340] bg-[#F8F3E8]/60 hover:bg-[#F6EFE2]">
-            <span>חיפוש מהיר וגישה לכל מדורי האפליקציה</span>
-            <span id="home-acc-search-icon" class="text-xs text-[#5C4938]">▼ פתח</span>
+            <!-- ב. כרטיס פרשת השבוע עם וורט קצר מתחלף וקישור לשיעורי הפרשה -->
+      <div id="home-parasha-card" class="bg-gradient-to-br from-[#0F2340] via-[#162E50] to-[#1E3A8A] border-2 border-[#C9A227] p-4 sm:p-5 rounded-2xl shadow-md text-white space-y-3 relative overflow-hidden">
+        <div class="absolute -left-6 -bottom-6 w-28 h-28 bg-[#C9A227]/10 rounded-full blur-xl pointer-events-none"></div>
+        <div class="flex items-center justify-between border-b border-white/15 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-lg bg-amber-500 text-slate-950 text-xs font-black">📖 פרשת השבוע</span>
+            <h3 id="home-parasha-title" class="text-lg sm:text-xl font-black serif-heading text-amber-300">פרשת חיי שרה</h3>
+          </div>
+          <button type="button" onclick="rotateHomeVort()" title="החלף וורט" class="text-xs text-amber-200 hover:text-white flex items-center gap-1 font-bold bg-white/10 hover:bg-white/20 px-2.5 py-1 rounded-lg transition-all">
+            <span>🔄</span> <span>וורט נוסף</span>
           </button>
-          <div id="home-acc-search" class="hidden p-4 space-y-3 border-t border-[#E5DBC7]">
-            <div class="relative flex items-center">
-              <input id="home-search-input" type="text" onkeydown="if(event.key==='Enter'){handleGlobalSearch(event);}" placeholder="חיפוש בכל האפליקציה: פרשה, סידור, תהילים, מניין, מקווה, מסעדה, חברותא..." class="w-full bg-[#FDF8EF] border border-[#D8CBB5] focus:border-[#C9A227] rounded-xl py-2.5 pr-4 pl-20 text-xs sm:text-sm text-[#0F2340] outline-none">
-              <button onclick="handleGlobalSearch({key:'Enter'})" class="absolute left-1.5 px-3.5 py-1.5 bg-amber-500 text-white font-bold rounded-lg text-xs">חיפוש</button>
+        </div>
+        
+        <div class="space-y-1.5">
+          <span class="text-[11px] font-bold text-amber-300/90 block">✨ פנינה ורעיון מתוך הפרשה:</span>
+          <p id="home-parasha-vort" class="text-xs sm:text-sm text-slate-100 leading-relaxed font-serif">
+            "ויהיו חיי שרה מאה שנה ועשרים שנה ושבע שנים – שני חיי שרה" – כולם שווים לטובה. הצדיק רואה בכל תקופה בחיים הזדמנות לעבודת ה׳, עשיית חסד ואמונה תמימה.
+          </p>
+        </div>
+
+        <div class="pt-2 flex flex-wrap items-center gap-2 text-xs">
+          <button type="button" onclick="switchTab('series'); switchLibrarySubTab('liveshiurim');" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl shadow-sm flex items-center gap-1 transition-all">
+            <span>🎙️</span> לכל שיעורי ואירועי הפרשה ←
+          </button>
+          <button type="button" onclick="switchTab('series'); switchLibrarySubTab('torah'); openParashaViewer('bereishit', 'חיי שרה');" class="px-3.5 py-2 bg-white/15 hover:bg-white/25 text-white font-bold rounded-xl border border-white/20 flex items-center gap-1 transition-all">
+            <span>📜</span> קריאת הפרשה וההפטרה
+          </button>
+        </div>
+      </div>
+
+      <!-- ג. קרוסלות אופקיות מתחת לכרטיס הפרשה: שיעורים אחרונים, סרטונים מהספרייה, חידונים מומלצים -->
+      <div class="space-y-5 pt-1">
+        
+        <!-- קרוסלה 1: שיעורים אחרונים -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-4 bg-amber-500 rounded-full"></span>
+              <h3 class="text-base sm:text-lg font-black text-[#0F2340] serif-heading">🎙️ שיעורים אחרונים ורבנים</h3>
             </div>
-            <div class="flex flex-wrap gap-1.5 text-xs font-bold">
-              <button onclick="switchTab('series')" class="px-3 py-1.5 rounded-lg bg-[#F8F3E8] border border-[#D8CBB5] text-[#0F2340]">ללמוד וספרייה</button>
-              <button onclick="switchTab('siddur')" class="px-3 py-1.5 rounded-lg bg-[#F8F3E8] border border-[#D8CBB5] text-[#0F2340]">סידור ותהילים</button>
-              <button onclick="switchTab('minyanim')" class="px-3 py-1.5 rounded-lg bg-[#F8F3E8] border border-[#D8CBB5] text-[#0F2340]">מניינים</button>
-              <button onclick="switchTab('chavruta')" class="px-3 py-1.5 rounded-lg bg-[#F8F3E8] border border-[#C9A227] text-[#0F2340]">חברותא</button>
-              <button onclick="switchTab('rabbis')" class="px-3 py-1.5 rounded-lg bg-[#F8F3E8] border border-[#D8CBB5] text-[#0F2340]">קו הלכה ורבנים</button>
-              <button onclick="switchTab('mikvaot')" class="px-3 py-1.5 rounded-lg bg-[#F8F3E8] border border-[#D8CBB5] text-[#0F2340]">מקוואות</button>
-              <button onclick="switchTab('restaurants')" class="px-3 py-1.5 rounded-lg bg-[#F8F3E8] border border-[#D8CBB5] text-[#0F2340]">מסעדות כשרות</button>
-              <button onclick="switchTab('chabad')" class="px-3 py-1.5 rounded-lg bg-[#F8F3E8] border border-[#D8CBB5] text-[#0F2340]">בתי חב״ד</button>
-              <button onclick="switchTab('tzaddikim')" class="px-3 py-1.5 rounded-lg bg-[#F8F3E8] border border-[#D8CBB5] text-[#0F2340]">קברי צדיקים</button>
-              <button onclick="switchTab('gemachim')" class="px-3 py-1.5 rounded-lg bg-[#F8F3E8] border border-[#D8CBB5] text-[#0F2340]">גמ״חים</button>
-              <button onclick="switchTab('givebuy')" class="px-3 py-1.5 rounded-lg bg-[#F8F3E8] border border-[#D8CBB5] text-[#0F2340]">חנות ותרומות</button>
-              <button onclick="openIntroModal()" class="px-3 py-1.5 rounded-lg bg-[#F6EFE2] border border-[#C9A227] text-[#0F2340]">סרטון הסבר על האפליקציה ▶</button>
-            </div>
+            <button type="button" onclick="switchTab('series'); switchLibrarySubTab('liveshiurim');" class="text-xs font-bold text-amber-600 hover:text-amber-700">לכל השיעורים ←</button>
+          </div>
+          <div id="home-carousel-shiurim" class="flex gap-3 overflow-x-auto pb-2 hide-scrollbar">
+            <!-- כרטיסי שיעורים מוזרקים מקוד ה-JS -->
           </div>
         </div>
+
+        <!-- קרוסלה 2: סרטונים מהספרייה -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-4 bg-blue-600 rounded-full"></span>
+              <h3 class="text-base sm:text-lg font-black text-[#0F2340] serif-heading">🎬 סרטונים וסדרות מהספרייה</h3>
+            </div>
+            <button type="button" onclick="switchTab('series');" class="text-xs font-bold text-blue-700 hover:underline">לכל הסדרות ←</button>
+          </div>
+          <div id="home-carousel-videos" class="flex gap-3 overflow-x-auto pb-2 hide-scrollbar">
+            <!-- כרטיסי סרטונים מוזרקים מקוד ה-JS -->
+          </div>
+        </div>
+
+        <!-- קרוסלה 3: חידונים מומלצים -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-4 bg-emerald-600 rounded-full"></span>
+              <h3 class="text-base sm:text-lg font-black text-[#0F2340] serif-heading">🏆 חידונים ואתגרי ידע</h3>
+            </div>
+            <button type="button" onclick="switchTab('kids');" class="text-xs font-bold text-emerald-700 hover:underline">לכל החידונים ←</button>
+          </div>
+          <div id="home-carousel-quizzes" class="flex gap-3 overflow-x-auto pb-2 hide-scrollbar">
+            <!-- כרטיסי חידונים מוזרקים מקוד ה-JS -->
+          </div>
+        </div>
+
+      </div>
 
         <!-- אקורדיון 2: סדרת השבוע והיכל המוזיקה -->
         <div class="shabbat-hide bg-white border border-[#E5DBC7] rounded-2xl overflow-hidden">
@@ -2787,6 +2836,22 @@
   <div id="tt-menu-overlay" onclick="closeSideMenu()"></div>
   <aside id="tt-side-menu" role="dialog" aria-modal="true" aria-label="תפריט האתר" aria-hidden="true">
     <div class="tt-menu-head"><span>צדיק-טוק</span><button type="button" onclick="closeSideMenu()" aria-label="סגירת התפריט">✕</button></div>
+    
+    <!-- שורת חיפוש כללית ובאנר סרטון הסבר בראש תפריט הצד -->
+    <div class="p-3.5 space-y-2.5 border-b border-[#E5DBC7] bg-[#FDF8EF]">
+      <div class="relative flex items-center">
+        <input id="side-menu-search-input" type="search" onkeydown="if(event.key==='Enter'){handleSideMenuSearch();}" placeholder="חיפוש בכל האפליקציה..." class="w-full bg-white border border-[#D8CBB5] focus:border-[#C9A227] rounded-xl py-2.5 pr-4 pl-16 text-xs text-[#0F2340] outline-none">
+        <button type="button" onclick="handleSideMenuSearch()" class="absolute left-1.5 px-3 py-1 bg-amber-500 hover:bg-amber-400 text-white font-bold rounded-lg text-xs">חפש</button>
+      </div>
+      <button type="button" onclick="openAppExplainerVideoModal()" class="w-full py-2.5 px-3.5 bg-gradient-to-l from-[#0F2340] to-[#1E3A8A] text-white rounded-xl text-xs font-bold flex items-center justify-between shadow-sm hover:opacity-95 transition-all">
+        <span class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-lg bg-red-600 flex items-center justify-center text-white text-[11px] font-black">▶</span>
+          <span>סרטון הסבר על האפליקציה</span>
+        </span>
+        <span class="text-amber-300 text-[11px] font-bold">צפה עכשיו ←</span>
+      </button>
+    </div>
+
     <nav id="tt-menu-body"></nav>
   </aside>
 

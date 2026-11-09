@@ -6118,3 +6118,451 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
 })();
+
+
+// ============================================================================
+// V34 — שדרוגי UI/UX: תפריט צד, פרשת השבוע, קרוסלות דף הבית, ותשתית לייקים ותגובות
+// ============================================================================
+(function () {
+  "use strict";
+
+  function el(id) { return document.getElementById(id); }
+  function onReady(fn) {
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fn);
+    else fn();
+  }
+
+  // --------------------------------------------------------------------------
+  // 1. חיפוש וסרטון הסבר מתפריט הצד
+  // --------------------------------------------------------------------------
+  window.handleSideMenuSearch = function () {
+    var inp = el("side-menu-search-input");
+    var q = inp ? (inp.value || "").trim() : "";
+    if (!q) return;
+    if (window.closeSideMenu) window.closeSideMenu();
+    window.handleGlobalSearch({ key: "Enter", targetValue: q });
+  };
+
+  window.openAppExplainerVideoModal = function () {
+    if (window.closeSideMenu) window.closeSideMenu();
+    var modal = el("modal-explainer-video");
+    if (modal) modal.classList.remove("hidden");
+  };
+
+  // --------------------------------------------------------------------------
+  // 2. כרטיס פרשת השבוע עם רוטציית וורטים
+  // --------------------------------------------------------------------------
+  var PARASHA_VORTS = [
+    {
+      parasha: "פרשת חיי שרה",
+      vort: "\"ויהיו חיי שרה מאה שנה ועשרים שנה ושבע שנים – שני חיי שרה\" – כולם שווים לטובה. הצדיק רואה בכל תקופה בחיים הזדמנות לעבודת ה׳, עשיית חסד ואמונה תמימה."
+    },
+    {
+      parasha: "פרשת חיי שרה",
+      vort: "\"וַיִּקְרַב לִשְׁתּוֹת\" – רבקה אמנו לא הסתפקה בהשקיית אליעזר, אלא השקתה גם את גמליו בשמחה וברוחב לב. חסד אמיתי נעשה בלב שלם ומעבר למבוקש."
+    },
+    {
+      parasha: "פרשת חיי שרה",
+      vort: "\"וַיֵּצֵא יִצְחָק לָשׂוּחַ בַּשָּׂדֶה לִפְנוֹת עָרֶב\" – מכאן למדו חז״ל שיצחק אבינו תיקן תפילת מנחה. רגע לפני השקיעה, שופך האדם שיחו לה' ומוצא שלווה וחיבור עמוק."
+    },
+    {
+      parasha: "פרשת תולדות",
+      vort: "\"וַיֶּעְתַּר יִצְחָק לַה׳ לְנֹכַח אִשְׁתּוֹ\" – תפילתם של הצדיקים מפתח לכל הישועות. כשאדם מתפלל בעד חברו או בעד ביתו מעומק הלב, שערי שמיים נפתחים."
+    }
+  ];
+  var currentVortIdx = 0;
+
+  window.rotateHomeVort = function () {
+    currentVortIdx = (currentVortIdx + 1) % PARASHA_VORTS.length;
+    var item = PARASHA_VORTS[currentVortIdx];
+    var titleEl = el("home-parasha-title");
+    var vortEl = el("home-parasha-vort");
+    if (titleEl) titleEl.textContent = item.parasha;
+    if (vortEl) vortEl.textContent = item.vort;
+    if (window.toast) window.toast("✨ פנינה חדשה נטענה מתוך " + item.parasha);
+  };
+
+  // --------------------------------------------------------------------------
+  // 3. תשתית לייקים ותגובות לכרטיסים (שיעורים ורבנים)
+  // --------------------------------------------------------------------------
+  var LIKES_KEY = "tzadiktok_card_likes_v34";
+  var LIKES_COUNT_KEY = "tzadiktok_card_likes_counts_v34";
+  var COMMENTS_KEY = "tzadiktok_card_comments_v34";
+
+  window.getCardLikes = function (key, defaultCount) {
+    var stored = window.getStorageJson ? window.getStorageJson(LIKES_KEY, {}) : {};
+    var counts = window.getStorageJson ? window.getStorageJson(LIKES_COUNT_KEY, {}) : {};
+    var isLiked = !!stored[key];
+    var count = counts[key] !== undefined ? counts[key] : (defaultCount || 18);
+    return { isLiked: isLiked, count: count };
+  };
+
+  window.toggleCardLike = function (key, btnEl) {
+    var stored = window.getStorageJson ? window.getStorageJson(LIKES_KEY, {}) : {};
+    var counts = window.getStorageJson ? window.getStorageJson(LIKES_COUNT_KEY, {}) : {};
+    var isLiked = !!stored[key];
+    var currentCount = counts[key] !== undefined ? counts[key] : 18;
+
+    if (isLiked) {
+      delete stored[key];
+      currentCount = Math.max(0, currentCount - 1);
+    } else {
+      stored[key] = true;
+      currentCount++;
+      if (window.toast) window.toast("❤️ תודה על החיזוק! סימנת לייק לתוכן");
+    }
+
+    counts[key] = currentCount;
+    if (window.setStorageJson) {
+      window.setStorageJson(LIKES_KEY, stored);
+      window.setStorageJson(LIKES_COUNT_KEY, counts);
+    }
+
+    if (btnEl) {
+      var icon = btnEl.querySelector(".like-icon");
+      var num = btnEl.querySelector(".like-count");
+      if (icon) icon.textContent = !isLiked ? "❤️" : "🤍";
+      if (num) num.textContent = currentCount;
+      btnEl.classList.toggle("bg-amber-100", !isLiked);
+    }
+  };
+
+  window.toggleCardCommentBox = function (boxId) {
+    var box = el(boxId);
+    if (!box) return;
+    box.classList.toggle("hidden");
+    if (!box.classList.contains("hidden")) {
+      var inp = box.querySelector("input");
+      if (inp) inp.focus();
+    }
+  };
+
+  window.getCardComments = function (key) {
+    var all = window.getStorageJson ? window.getStorageJson(COMMENTS_KEY, {}) : {};
+    return all[key] || [
+      { user: "יוסף כ.", text: "שיעור מחזק מאוד ומאיר עיניים! אשריכם תודה רבה", time: "השבוע" },
+      { user: "דוד ל.", text: "ברור ונהיר, מסביר את הדברים בנועם ובדיוק רב.", time: "היום" }
+    ];
+  };
+
+  window.submitInlineCardComment = function (key, boxId) {
+    var box = el(boxId);
+    if (!box) return;
+    var inp = box.querySelector("input");
+    var txt = inp ? (inp.value || "").trim() : "";
+    if (!txt) {
+      if (window.toast) window.toast("נא לכתוב תגובה לפני השליחה");
+      return;
+    }
+
+    var all = window.getStorageJson ? window.getStorageJson(COMMENTS_KEY, {}) : {};
+    var list = all[key] || [
+      { user: "יוסף כ.", text: "שיעור מחזק מאוד ומאיר עיניים! אשריכם תודה רבה", time: "השבוע" },
+      { user: "דוד ל.", text: "ברור ונהיר, מסביר את הדברים בנועם ובדיוק רב.", time: "היום" }
+    ];
+
+    var userName = (window.__ttUser && window.__ttUser.email) || (currentUserAccount && currentUserAccount.name) || "חבר קהילה";
+    list.unshift({
+      user: userName,
+      text: txt,
+      time: "עכשיו"
+    });
+    all[key] = list;
+    if (window.setStorageJson) window.setStorageJson(COMMENTS_KEY, all);
+
+    // שליחה ל-Supabase אם מחובר
+    if (window.supabaseClient) {
+      try {
+        window.supabaseClient.from("community_reviews").insert([{
+          entity_key: key,
+          user_name: userName,
+          rating: 5,
+          review_text: txt,
+          status: "מאושר ✔",
+          is_approved: true
+        }]).then(function () {});
+      } catch (e) {}
+    }
+
+    inp.value = "";
+    var listEl = el("list-" + boxId);
+    if (listEl) {
+      listEl.innerHTML = list.map(function (c) {
+        return '<div class="p-2 bg-white rounded-lg border border-[#E5DBC7] space-y-0.5">' +
+          '<div class="flex items-center justify-between text-[11px]">' +
+            '<strong class="text-[#0F2340]">' + c.user + '</strong>' +
+            '<span class="text-[#5C4938]">' + (c.time || "עכשיו") + '</span>' +
+          '</div>' +
+          '<p class="text-xs text-[#0F2340]">' + c.text + '</p>' +
+        '</div>';
+      }).join("");
+    }
+
+    var countBadge = el("count-" + boxId);
+    if (countBadge) countBadge.textContent = list.length;
+    if (window.toast) window.toast("✔ תגובתך פורסמה בהצלחה!");
+  };
+
+  // --------------------------------------------------------------------------
+  // 4. דריסת renderRabbiShiurimList להוספת לייקים ותגובות
+  // --------------------------------------------------------------------------
+  window.renderRabbiShiurimList = function (query) {
+    var box = el("rabbi-shiurim-grid");
+    if (!box) return;
+    var list = (window.getStorageJson && window.getStorageJson(STORAGE_KEYS.RABBI_SHIURIM, window.RABBI_SHIURIM_DATA)) || window.RABBI_SHIURIM_DATA || [];
+    var q = (query || "").trim().toLowerCase();
+    if (q) {
+      list = list.filter(function (s) {
+        return (s.rabbi || "").toLowerCase().indexOf(q) !== -1 ||
+               (s.title || "").toLowerCase().indexOf(q) !== -1 ||
+               (s.topic || "").toLowerCase().indexOf(q) !== -1 ||
+               (s.institution || "").toLowerCase().indexOf(q) !== -1;
+      });
+    }
+
+    box.innerHTML = list.map(function (s, idx) {
+      var sid = s.id || ("sh_" + (idx + 1));
+      var itemKey = "shiur_" + sid;
+      var safeTitle = String(s.title || "").replace(/'/g, "");
+      var safeRabbi = String(s.rabbi || "").replace(/'/g, "");
+      var safeTopic = String(s.topic || "שיעור תורה").replace(/'/g, "");
+      var duration = s.duration || "45:00";
+      var institution = s.institution || "בית המדרש";
+
+      var likesData = window.getCardLikes(itemKey, 14 + (idx * 5));
+      var comments = window.getCardComments(itemKey);
+      var boxId = "comments-shiur-" + sid;
+
+      return '<div class="bg-white border border-[#E5DBC7] p-5 rounded-2xl space-y-3 flex flex-col justify-between shadow-sm">' +
+        '<div class="space-y-1.5">' +
+          '<div class="flex items-center justify-between">' +
+            '<span class="px-2.5 py-0.5 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-md text-xs font-bold">' + (s.type || "שיעור וידאו") + ' • ' + safeTopic + '</span>' +
+            '<span class="text-xs text-[#5C4938] font-mono">' + duration + '</span>' +
+          '</div>' +
+          '<h4 class="text-lg font-bold text-[#0F2340] serif-heading">' + s.title + '</h4>' +
+          '<p class="text-xs font-bold text-[#0F2340]">מגיד השיעור: ' + s.rabbi + '</p>' +
+          '<p class="text-xs text-[#5C4938]">מוסד / בית מדרש: ' + institution + '</p>' +
+        '</div>' +
+
+        '<!-- תשתית לייקים ותגובות -->' +
+        '<div class="pt-2 border-t border-[#E5DBC7] space-y-2">' +
+          '<div class="flex items-center justify-between gap-2">' +
+            '<div class="flex items-center gap-2">' +
+              '<button type="button" onclick="window.toggleCardLike(\'' + itemKey + '\', this)" class="like-btn px-3 py-1.5 rounded-xl border border-[#D8CBB5] bg-[#FDF8EF] hover:bg-[#F6EFE2] text-xs font-bold flex items-center gap-1.5 text-[#0F2340] transition-all">' +
+                '<span class="like-icon">' + (likesData.isLiked ? "❤️" : "🤍") + '</span>' +
+                '<span class="like-count font-mono">' + likesData.count + '</span>' +
+              '</button>' +
+              '<button type="button" onclick="window.toggleCardCommentBox(\'' + boxId + '\')" class="px-3 py-1.5 rounded-xl border border-[#D8CBB5] bg-[#FDF8EF] hover:bg-[#F6EFE2] text-xs font-bold flex items-center gap-1.5 text-[#0F2340]">' +
+                '<span>💬</span>' +
+                '<span>תגובות (<span id="count-' + boxId + '">' + comments.length + '</span>)</span>' +
+              '</button>' +
+            '</div>' +
+            '<button type="button" onclick="openDonateModal(\'תרומה והקדשה לשיעור של ' + safeRabbi + '\')" class="px-3 py-1.5 bg-white text-[#0F2340] border border-[#D8CBB5] font-bold rounded-xl text-xs">הקדשה</button>' +
+          '</div>' +
+
+          '<div id="' + boxId + '" class="hidden p-3 bg-[#F8F3E8] border border-[#E5DBC7] rounded-xl space-y-2.5 text-xs">' +
+            '<div class="space-y-1.5 max-h-36 overflow-y-auto" id="list-' + boxId + '">' +
+              comments.map(function (c) {
+                return '<div class="p-2 bg-white rounded-lg border border-[#E5DBC7] space-y-0.5">' +
+                  '<div class="flex items-center justify-between text-[11px]">' +
+                    '<strong class="text-[#0F2340]">' + c.user + '</strong>' +
+                    '<span class="text-[#5C4938]">' + (c.time || "השבוע") + '</span>' +
+                  '</div>' +
+                  '<p class="text-xs text-[#0F2340]">' + c.text + '</p>' +
+                '</div>';
+              }).join("") +
+            '</div>' +
+            '<div class="flex items-center gap-1.5 pt-1 border-t border-[#E5DBC7]">' +
+              '<input type="text" id="input-' + boxId + '" placeholder="כתוב תגובה על השיעור..." class="flex-1 bg-white border border-[#D8CBB5] rounded-lg px-2.5 py-1.5 text-xs text-[#0F2340] outline-none">' +
+              '<button type="button" onclick="window.submitInlineCardComment(\'' + itemKey + '\', \'' + boxId + '\')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-white font-bold rounded-lg text-xs">שלח</button>' +
+            '</div>' +
+          '</div>' +
+
+          '<button type="button" onclick="openEntityFullPage(\'' + itemKey + '\', \'שיעור תורה • ' + safeRabbi + '\', \'' + safeTitle + '\', \'' + safeRabbi + ' • ' + institution + '\', \'' + institution + '\', \'אורך: ' + duration + '\', \'\', \'שיעור תורה מפי ' + safeRabbi + ' בנושא ' + safeTopic + '.\', \'בהירות השיעור • חיזוק • מקורות\')" class="w-full py-2 bg-[#0F2340] hover:bg-[#16335c] text-white font-bold rounded-xl text-xs text-center" style="color:#FFFFFF !important;">' +
+            'צפייה בשיעור המלא והרחבה ←' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  };
+
+  // --------------------------------------------------------------------------
+  // 5. דריסת renderRabbis להוספת לייקים ותגובות
+  // --------------------------------------------------------------------------
+  window.renderRabbis = function (list) {
+    var grid = el("rabbis-container");
+    if (!grid) return;
+    grid.innerHTML = (list || []).map(function (r, idx) {
+      var rid = r.id || ("rab" + (idx + 1));
+      var eKey = "rabbi_" + rid;
+      var stats = window.getEntityStats ? window.getEntityStats(eKey, 5.0) : { avg: "5.0", count: 12 };
+      var safeName = String(r.name || "").replace(/'/g, "");
+      var safeTitle = String(r.title || r.specialty || "פוסק הלכה").replace(/'/g, "");
+      var phone = r.phone || "073-3570000";
+      var hours = r.hours || "מענה הלכתי לאורך היום";
+      var boxId = "comments-rabbi-" + rid;
+
+      var likesData = window.getCardLikes(eKey, 24 + (idx * 8));
+      var comments = window.getCardComments(eKey);
+
+      return '<div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-3 flex flex-col justify-between hover:border-amber-500/40 transition-all">' +
+        '<div class="space-y-2">' +
+          '<div class="flex items-center justify-between">' +
+            '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">🟢 זמין למענה הלכתי</span>' +
+            '<button type="button" onclick="openEntityFullPage(\'' + eKey + '\', \'קו הלכה ורב פוסק\', \'' + safeName + '\', \'' + safeTitle + '\', \'' + (r.city || "מענה ארצי") + '\', \'' + hours + '\', \'' + phone + '\', \'מענה הלכתי לשאלות דחופות ורגילות. דרגו את הזמינות, היחס והמענה!\', \'הזמינות • היחס • בהירות המענה\')" class="text-xs font-black text-amber-400 hover:underline">' +
+              '★ ' + stats.avg + ' (' + stats.count + ' דירוגים)' +
+            '</button>' +
+          '</div>' +
+          '<h3 class="text-lg font-black text-white">' + r.name + '</h3>' +
+          '<p class="text-xs text-amber-300 font-bold">' + safeTitle + '</p>' +
+          '<p class="text-xs text-slate-400">⏰ ' + hours + ' • 📞 ' + phone + '</p>' +
+        '</div>' +
+
+        '<div class="pt-2 border-t border-slate-800 space-y-2">' +
+          '<div class="flex items-center justify-between gap-2">' +
+            '<div class="flex items-center gap-2">' +
+              '<button type="button" onclick="window.toggleCardLike(\'' + eKey + '\', this)" class="like-btn px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-xs font-bold flex items-center gap-1.5 text-slate-200 transition-all">' +
+                '<span class="like-icon">' + (likesData.isLiked ? "❤️" : "🤍") + '</span>' +
+                '<span class="like-count font-mono text-amber-400">' + likesData.count + '</span>' +
+              '</button>' +
+              '<button type="button" onclick="window.toggleCardCommentBox(\'' + boxId + '\')" class="px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-xs font-bold flex items-center gap-1.5 text-slate-200">' +
+                '<span>💬</span>' +
+                '<span>תגובות (<span id="count-' + boxId + '">' + comments.length + '</span>)</span>' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+
+          '<div id="' + boxId + '" class="hidden p-3 bg-slate-950 border border-slate-800 rounded-xl space-y-2 text-xs">' +
+            '<div class="space-y-1.5 max-h-36 overflow-y-auto" id="list-' + boxId + '">' +
+              comments.map(function (c) {
+                return '<div class="p-2 bg-slate-900 rounded-lg border border-slate-800 space-y-0.5">' +
+                  '<div class="flex items-center justify-between text-[11px]">' +
+                    '<strong class="text-amber-300">' + c.user + '</strong>' +
+                    '<span class="text-slate-400">' + (c.time || "השבוע") + '</span>' +
+                  '</div>' +
+                  '<p class="text-xs text-slate-200">' + c.text + '</p>' +
+                '</div>';
+              }).join("") +
+            '</div>' +
+            '<div class="flex items-center gap-1.5 pt-1 border-t border-slate-800">' +
+              '<input type="text" id="input-' + boxId + '" placeholder="הוסף שאלה או תודה לכבוד הרב..." class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none">' +
+              '<button type="button" onclick="window.submitInlineCardComment(\'' + eKey + '\', \'' + boxId + '\')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg text-xs">שלח</button>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="grid grid-cols-2 gap-2">' +
+            '<a href="tel:' + phone + '" class="py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs text-center flex items-center justify-center gap-1">📞 חייג</a>' +
+            '<a href="' + window.buildWhatsAppUrl(phone, 'שלום כבוד הרב, שאלה בהלכה מאפליקציית צדיק-טוק:') + '" target="_blank" class="py-2 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold rounded-xl text-xs text-center flex items-center justify-center gap-1">💬 וואטסאפ</a>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  };
+
+  // --------------------------------------------------------------------------
+  // 6. רינדור קרוסלות דף הבית (שיעורים אחרונים, סרטונים, חידונים)
+  // --------------------------------------------------------------------------
+  window.renderHomeCarousels = function () {
+    // קרוסלה 1: שיעורים אחרונים
+    var shiurimBox = el("home-carousel-shiurim");
+    if (shiurimBox) {
+      var shiurim = window.RABBI_SHIURIM_DATA || [];
+      shiurimBox.innerHTML = shiurim.slice(0, 6).map(function (s, idx) {
+        var sid = s.id || ("sh_" + (idx + 1));
+        var itemKey = "shiur_" + sid;
+        var safeRabbi = String(s.rabbi || "רב בית המדרש").replace(/'/g, "");
+        var safeTitle = String(s.title || "שיעור תורה").replace(/'/g, "");
+        var likes = window.getCardLikes(itemKey, 18 + (idx * 6));
+
+        return '<div class="shrink-0 w-64 sm:w-72 bg-white border border-[#E5DBC7] p-4 rounded-2xl space-y-2.5 shadow-sm hover:border-[#C9A227] transition-all flex flex-col justify-between">' +
+          '<div class="space-y-1">' +
+            '<div class="flex items-center justify-between text-[11px]">' +
+              '<span class="px-2 py-0.5 rounded bg-[#F6EFE2] text-[#0F2340] font-bold border border-[#C9A227]">' + (s.topic || "שיעור תורה") + '</span>' +
+              '<span class="text-[#5C4938] font-mono">' + (s.duration || "45:00") + '</span>' +
+            '</div>' +
+            '<h4 class="text-sm font-black text-[#0F2340] line-clamp-2 mt-1 leading-snug">' + safeTitle + '</h4>' +
+            '<p class="text-xs font-bold text-amber-700">' + safeRabbi + '</p>' +
+          '</div>' +
+          '<div class="pt-2 border-t border-[#E5DBC7] flex items-center justify-between gap-2">' +
+            '<button type="button" onclick="window.toggleCardLike(\'' + itemKey + '\', this)" class="like-btn px-2.5 py-1 rounded-lg border border-[#D8CBB5] bg-[#FDF8EF] text-xs font-bold flex items-center gap-1 text-[#0F2340]">' +
+              '<span class="like-icon">' + (likes.isLiked ? "❤️" : "🤍") + '</span>' +
+              '<span class="like-count font-mono text-[11px]">' + likes.count + '</span>' +
+            '</button>' +
+            '<button type="button" onclick="switchTab(\'series\'); switchLibrarySubTab(\'liveshiurim\');" class="px-3 py-1.5 bg-[#0F2340] hover:bg-[#16335c] text-white font-bold rounded-xl text-xs flex items-center gap-1" style="color:#FFFFFF !important;">' +
+              '<span>צפה</span> ←' +
+            '</button>' +
+          '</div>' +
+        '</div>';
+      }).join("");
+    }
+
+    // קרוסלה 2: סרטונים מהספרייה
+    var videosBox = el("home-carousel-videos");
+    if (videosBox) {
+      var videos = window.EDUCATIONAL_VIDEOS_DATA || [];
+      videosBox.innerHTML = videos.slice(0, 6).map(function (v) {
+        var safeTitle = String(v.title || "").replace(/'/g, "");
+        var safeDesc = String(v.description || "").replace(/'/g, "");
+        var safeSpeaker = String(v.speaker || "").replace(/'/g, "");
+        var thumb = v.thumbnail || "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80";
+
+        return '<div class="shrink-0 w-60 sm:w-64 bg-white border border-[#E5DBC7] rounded-2xl overflow-hidden shadow-sm hover:border-blue-400 transition-all flex flex-col justify-between">' +
+          '<div>' +
+            '<div class="relative h-32 bg-[#0F2340] overflow-hidden flex items-center justify-center">' +
+              '<img src="' + thumb + '" alt="' + safeTitle + '" class="w-full h-full object-cover opacity-85">' +
+              '<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>' +
+              '<button type="button" onclick="openEntityFullPage(\'edu_' + v.id + '\', \'סרטון • ' + (v.category || "תורה") + '\', \'' + safeTitle + '\', \'' + safeSpeaker + '\', \'ספריית הווידאו\', \'אורך: ' + (v.duration || "") + '\', \'\', \'' + safeDesc + '\', \'בהירות • חיזוק • מקורות\', \'' + thumb + '\')" class="absolute inset-0 m-auto w-10 h-10 rounded-full bg-amber-500 text-white flex items-center justify-center text-base font-black shadow-lg hover:scale-105 transition-all">' +
+                '▶' +
+              '</button>' +
+              '<span class="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-black/60 text-amber-300 font-bold text-[10px]">' + (v.category || "חינוכי") + '</span>' +
+              '<span class="absolute bottom-2 left-2 px-1.5 py-0.5 rounded bg-black/70 text-white font-mono text-[10px]">' + (v.duration || "15:00") + '</span>' +
+            '</div>' +
+            '<div class="p-3 space-y-1">' +
+              '<h4 class="text-xs font-black text-[#0F2340] line-clamp-2 leading-snug">' + safeTitle + '</h4>' +
+              '<p class="text-[11px] text-[#5C4938] truncate">' + safeSpeaker + '</p>' +
+            '</div>' +
+          '</div>' +
+          '<div class="p-3 pt-0">' +
+            '<button type="button" onclick="switchTab(\'series\'); switchLibrarySubTab(\'eduvideos\');" class="w-full py-1.5 bg-[#F6EFE2] hover:bg-[#EAE0D0] text-[#0F2340] font-bold rounded-xl text-xs text-center border border-[#D8CBB5]">' +
+              'לכל הסרטונים ←' +
+            '</button>' +
+          '</div>' +
+        '</div>';
+      }).join("");
+    }
+
+    // קרוסלה 3: חידונים מומלצים
+    var quizBox = el("home-carousel-quizzes");
+    if (quizBox) {
+      var quizzes = window.QUIZ_QUESTIONS_DATA || [];
+      quizBox.innerHTML = quizzes.slice(0, 5).map(function (q, idx) {
+        var safeQ = String(q.question || "").replace(/'/g, "");
+        var safeCat = String(q.category || "חידון הלכה ותנ״ך").replace(/'/g, "");
+
+        return '<div class="shrink-0 w-64 sm:w-72 bg-gradient-to-br from-[#FDF8EF] to-[#F8F3E8] border border-[#E5DBC7] p-4 rounded-2xl shadow-sm hover:border-emerald-500 transition-all flex flex-col justify-between space-y-3">' +
+          '<div class="space-y-1.5">' +
+            '<div class="flex items-center justify-between">' +
+              '<span class="px-2.5 py-0.5 rounded-lg bg-emerald-100 text-emerald-800 text-[10px] font-black border border-emerald-300">🏆 ' + safeCat + '</span>' +
+              '<span class="text-[11px] font-bold text-amber-600">שאלה ' + (idx + 1) + '</span>' +
+            '</div>' +
+            '<h4 class="text-xs sm:text-sm font-black text-[#0F2340] line-clamp-2 leading-snug mt-1">' + safeQ + '</h4>' +
+            '<p class="text-[11px] text-[#5C4938]">4 אפשרויות תשובה • הסבר הלכתי מפורט</p>' +
+          '</div>' +
+          '<button type="button" onclick="switchTab(\'kids\');" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all">' +
+            '<span>🎮</span> התחל אתגר ידע' +
+          '</button>' +
+        '</div>';
+      }).join("");
+    }
+  };
+
+  // --------------------------------------------------------------------------
+  // 7. אתחול V34
+  // --------------------------------------------------------------------------
+  onReady(function () {
+    window.renderHomeCarousels();
+    if (window.renderRabbiShiurimList) window.renderRabbiShiurimList("");
+    if (window.renderRabbis && window.RABBIS_DATA) window.renderRabbis(window.RABBIS_DATA);
+  });
+
+})();
