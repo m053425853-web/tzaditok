@@ -59,3 +59,16 @@ window.openProfileModal = function() {
 window.toggleShabbatMode = function() {
     alert("שבת שלום! מצב שבת הופעל.");
 };
+window.toggleSidebar = function() {
+    const sidebar = document.getElementById('sideMenu');
+    if (sidebar) {
+        // אם התפריט מוסתר (יש לו class hidden) - נסיר אותו כדי שיופיע
+        sidebar.classList.toggle('hidden');
+        // אם התפריט פתוח, נזיז אותו פנימה
+        if (sidebar.style.transform === 'translateX(0%)') {
+            sidebar.style.transform = 'translateX(100%)';
+        } else {
+            sidebar.style.transform = 'translateX(0%)';
+        }
+    }
+};
