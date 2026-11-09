@@ -4782,3 +4782,64 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   };
 })();
+// --- ניהול תפריט צד ---
+window.toggleSidebar = function() {
+    const sidebar = document.getElementById('sideMenu');
+    if (sidebar) {
+        // אם הוא מוסתר, נפתח
+        if (sidebar.classList.contains('hidden')) {
+            sidebar.classList.remove('hidden');
+            sidebar.style.transform = 'translateX(0%)';
+        } else {
+            sidebar.classList.add('hidden');
+            sidebar.style.transform = 'translateX(100%)';
+        }
+    }
+};
+
+// --- פונקציית מעבר דפים ---
+window.switchTab = function(tabName) {
+    // סגור תפריט צד
+    const sidebar = document.getElementById('sideMenu');
+    if (sidebar) sidebar.style.transform = 'translateX(100%)';
+
+    // הסתר את כל התוכן של הדפים
+    const pages = document.querySelectorAll('.tab-content');
+    pages.forEach(page => page.classList.add('hidden'));
+
+    // הראה את הדף המבוקש
+    const targetPage = document.getElementById('tab-' + tabName);
+    if (targetPage) {
+        targetPage.classList.remove('hidden');
+    } else {
+        // אם אין דף כזה, פשוט לא עושים כלום (או חוזרים הביתה)
+        console.log("Tab not found: " + tabName);
+    }
+};
+
+// --- בדיקת מצב התחברות (משנה את הכפתור למעלה) ---
+window.checkAuthState = async function() {
+    // אנחנו מניחים שאתה משתמש בסופרבייס. הפונקציה הזו בודקת אם יש משתמש מחובר.
+    if (window.supabaseClient) {
+        const { data: { user } } = await window.supabaseClient.auth.getUser();
+        
+        const authBtn = document.querySelector('button[onclick="openAuthModal()"]');
+        if (authBtn) {
+            if (user) {
+                // אם מחובר - החלף לטקסט של אזור אישי
+                authBtn.innerHTML = `<svg class="w-4 h-4 text-[#C9A227]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg> <span>אזור אישי</span>`;
+                // שנה את הלחיצה שלו כדי שיפתח את הפרופיל (במקום חלון התחברות)
+                authBtn.setAttribute('onclick', 'switchTab("myzone")');
+            } else {
+                // אם לא מחובר - השאר התחברות
+                authBtn.innerHTML = `<svg class="w-4 h-4 text-[#C9A227]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg> <span>התחברות</span>`;
+                authBtn.setAttribute('onclick', 'openAuthModal()');
+            }
+        }
+    }
+};
+
+// הפעל את הבדיקה ברגע שהדף נטען
+document.addEventListener('DOMContentLoaded', () => {
+    window.checkAuthState();
+});
