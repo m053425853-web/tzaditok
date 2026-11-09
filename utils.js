@@ -275,3 +275,26 @@ window.sbSafeUrl = function(v, d) {
   return window.escapeHtml(s);
 };
 window.sbSafePhone = function(v) { return v ? window.escapeHtml(String(v).trim()) : ""; };
+
+
+// ניקוי אוטומטי של Service Workers ישנים ומטמון דפדפן כדי להבטיח טעינת גרסה V38 העדכנית ב-GitHub Pages / Vercel
+(function() {
+  try {
+    localStorage.removeItem("undefined");
+    var APP_VERSION = "v38";
+    var prevVer = localStorage.getItem("tzadiktok_app_version");
+    if (prevVer !== APP_VERSION) {
+      localStorage.setItem("tzadiktok_app_version", APP_VERSION);
+      if ("serviceWorker" in navigator && navigator.serviceWorker.getRegistrations) {
+        navigator.serviceWorker.getRegistrations().then(function(regs) {
+          regs.forEach(function(r) { r.unregister(); });
+        });
+      }
+      if ("caches" in window && window.caches.keys) {
+        window.caches.keys().then(function(names) {
+          names.forEach(function(n) { window.caches.delete(n); });
+        });
+      }
+    }
+  } catch (e) {}
+})();

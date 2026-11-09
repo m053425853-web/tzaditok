@@ -9784,3 +9784,20 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
 })();
+
+
+// יציאה מיידית ונוחה ממצב שבת בלחיצת כפתור אחת (למניעת היתקעות של משתמשים)
+window.forceExitShabbatMode = function () {
+  try {
+    localStorage.setItem(STORAGE_KEYS.SHABBAT_ACTIVE, "false");
+  } catch (e) {}
+  var ov = document.getElementById("shabbat-overlay");
+  if (ov) ov.classList.add("hidden");
+  document.body.classList.remove("tt-shabbat-locked", "shabbat-mode-active");
+  Array.prototype.slice.call(document.querySelectorAll("[inert]")).forEach(function (n) {
+    n.removeAttribute("inert");
+  });
+  var banner = document.getElementById("shabbat-active-top-banner");
+  if (banner) banner.classList.add("hidden");
+  if (window.toast) window.toast("שבוע טוב ומבורך! חזרת לאפליקציה.");
+};

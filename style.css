@@ -3,7 +3,15 @@
    פלטת צבעים: קרם בהיר (#FDF8EF), כחול עמוק (#0F2340), זהב (#C9A227), חום חם (#5C4938), לבן (#FFFFFF)
    ========================================================================== */
 
+/* ==========================================================================
+   צדיק-טוק (TzadikTok) - משתני CSS גלובליים ועיצוב יהודי-קהילתי (style.css - V38)
+   ========================================================================== */
+
 :root {
+  --primary-color: #0F2340;
+  --bg-color: #FDF8EF;
+  --text-color: #0F2340;
+  --accent-color: #C9A227;
   --bg-cream: #FDF8EF;
   --bg-cream-alt: #F6EFE2;
   --navy-deep: #0F2340;
@@ -13,6 +21,7 @@
   --border-warm: #E5DBC7;
   --white: #FFFFFF;
 }
+
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -908,4 +917,98 @@ input, select, textarea, button {
 }
 .fab-add-btn span {
   color: #FFFFFF !important;
+}
+
+
+/* ==========================================================================
+   V38 — היררכיה ויזואלית, 4 כפתורי מסך בית גדולים, משוב Hover/Active,
+         תמיכת RTL מלאה, נגישות מקלדת ויציאה נוחה ממצב שבת
+   ========================================================================== */
+
+html, body {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color) !important;
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+input, select, textarea, ul, ol, li, p, h1, h2, h3, h4 {
+  direction: rtl;
+  text-align: right;
+}
+
+/* משוב ויזואלי ברור (hover / active / focus-visible) לכל הכפתורים והכרטיסים הלחיצים */
+button, a, .tt-today-part, .tt-tile, .home-big-action-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, border-color 0.15s ease !important;
+  cursor: pointer;
+}
+button:hover, .tt-today-part:hover, .tt-tile:hover, .home-big-action-card:hover {
+  transform: translateY(-1.5px);
+}
+button:active, .tt-today-part:active, .tt-tile:active, .home-big-action-card:active {
+  transform: translateY(0px) scale(0.985);
+}
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid var(--accent-color) !important;
+  outline-offset: 2px !important;
+}
+
+/* 4 כפתורי מסך הבית הגדולים והברורים */
+.home-hero-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (min-width: 640px) {
+  .home-hero-actions-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.home-big-action-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 18px;
+  background-color: #FFFFFF;
+  border: 2px solid #E5DBC7;
+  box-shadow: 0 4px 12px rgba(15, 35, 64, 0.06);
+  text-align: right;
+}
+.home-big-action-card:hover {
+  border-color: var(--accent-color);
+  background-color: #FDF8EF;
+  box-shadow: 0 6px 18px rgba(201, 162, 39, 0.18);
+}
+.home-big-action-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #F6EFE2;
+  color: var(--primary-color);
+  border: 1px solid var(--accent-color);
+}
+.home-card-corner-arrow {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background-color: #F6EFE2;
+  color: var(--primary-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 900;
+  border: 1px solid #D8CBB5;
+}
+.tt-today-part {
+  position: relative;
 }
