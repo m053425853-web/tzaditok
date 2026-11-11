@@ -30,7 +30,7 @@
     };
   </script>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <link rel="stylesheet" href="style.css?v=38" />
+  <link rel="stylesheet" href="style.css?v=39" />
 </head>
 <body class="min-h-screen select-none">
 
@@ -134,76 +134,29 @@
 
 
     <!-- 1. MAIN HOME VIEW (דף הבית נקי וממוקד: כרטיס היום ביהדות + קרוסלת סרטונים + מדורים מתקפלים באקורדיון) -->
-    <section id="view-feed" class="view-section active space-y-5">
+        <section id="view-feed" class="view-section active space-y-5">
 
-      <!-- 1. כרטיס "היום ביהדות": תאריך עברי ולועזי | זמני היום (Hebcal) | יום השנה -->
-      <div class="bg-white border-2 border-[#C9A227] p-4 rounded-2xl shadow-sm">
-        <!-- 4 כפתורי פעולה גדולים וברורים בראש מסך הבית -->
-        <div class="home-hero-actions-grid mb-4" role="navigation" aria-label="ניווט מהיר במסך הבית">
-          <button type="button" onclick="switchTab('siddur'); switchPraySubTab('customs');" aria-label="הלכה יומית ומנהגים" class="home-big-action-card">
-            <span class="home-card-corner-arrow" aria-hidden="true">←</span>
-            <span class="home-big-action-icon">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-            </span>
-            <div>
-              <strong class="block text-base font-black text-[#0F2340] serif-heading">הלכה יומית</strong>
-              <span class="text-xs text-[#5C4938]">הלכות היום, מנהגים וקו הלכה</span>
-            </div>
-          </button>
-
-          <button type="button" onclick="document.getElementById('home-parasha-card').scrollIntoView({behavior:'smooth'});" aria-label="פרשת השבוע וחיזוק יומי" class="home-big-action-card">
-            <span class="home-card-corner-arrow" aria-hidden="true">←</span>
-            <span class="home-big-action-icon">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-            </span>
-            <div>
-              <strong class="block text-base font-black text-[#0F2340] serif-heading">פרשת השבוע</strong>
-              <span class="text-xs text-[#5C4938]">וורט קצר, חומש ופירוש רש״י</span>
-            </div>
-          </button>
-
-          <button type="button" onclick="switchTab('series'); switchLearnMainTab('shiurim');" aria-label="שיעורים וסרטונים" class="home-big-action-card">
-            <span class="home-card-corner-arrow" aria-hidden="true">←</span>
-            <span class="home-big-action-icon">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            </span>
-            <div>
-              <strong class="block text-base font-black text-[#0F2340] serif-heading">שיעורים וסרטונים</strong>
-              <span class="text-xs text-[#5C4938]">מאגר שיעורי תורה וקורסים</span>
-            </div>
-          </button>
-
-          <button type="button" onclick="switchTab('forum');" aria-label="חדשות וקהילה" class="home-big-action-card">
-            <span class="home-card-corner-arrow" aria-hidden="true">←</span>
-            <span class="home-big-action-icon">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            </span>
-            <div>
-              <strong class="block text-base font-black text-[#0F2340] serif-heading">חדשות וקהילה</strong>
-              <span class="text-xs text-[#5C4938]">פורום, הגרלות, צדקה ותפילות</span>
-            </div>
-          </button>
-        </div>
-
-        <div class="flex items-center justify-between mb-3 pt-2 border-t border-[#E5DBC7]">
-          <span class="px-3 py-1 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-lg text-xs font-black">היום ביהדות</span>
-          <span class="text-xs text-[#5C4938] font-bold">לוח היום וזמני ההלכה</span>
+      <!-- 1. היום ביהדות (הכרטיס הראשי למעלה - תאריך עברי באותיות, לחיץ במלואו ללוח השנה, ללא כפתור חץ עגול) -->
+      <div id="home-today-card" class="bg-white border-2 border-[#C9A227] p-4 rounded-2xl shadow-sm">
+        <div class="flex items-center justify-between mb-3 pb-2 border-b border-[#E5DBC7]">
+          <span class="px-3 py-1 bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] rounded-lg text-xs font-black">1 • היום ביהדות</span>
+          <span class="text-xs text-[#5C4938] font-bold">לוח השנה העברי וזמני ההלכה (Hebcal)</span>
         </div>
         <div class="tt-today-grid">
-          <button type="button" onclick="switchTab('siddur'); switchPraySubTab('zmanim');" class="tt-today-part" aria-label="תאריך עברי ולועזי – מעבר ללוח השנה">
-            <span class="home-card-corner-arrow" aria-hidden="true">←</span><span class="tt-today-label">תאריך היום</span>
-            <span id="home-hebrew-date" class="tt-today-main">כ״ח במרחשוון תשפ״ז</span>
+          <button type="button" onclick="switchTab('siddur'); switchPraySubTab('zmanim');" class="tt-today-part" aria-label="תאריך עברי ולועזי – לחץ למעבר ללוח השנה העברי">
+            <span class="tt-today-label">תאריך היום (לחץ ללוח השנה)</span>
+            <span id="home-hebrew-date" class="tt-today-main">א׳ בכסלו תשפ״ז</span>
             <span id="home-greg-date" class="tt-today-sub"></span>
-            <span class="tt-today-cta">ללוח השנה והמועדים ←</span>
+            <span class="tt-today-cta">ללוח השנה העברי ←</span>
           </button>
           <button type="button" onclick="switchTab('siddur'); switchPraySubTab('zmanim');" class="tt-today-part" aria-label="זמני היום – מעבר לזמני היום">
-            <span class="home-card-corner-arrow" aria-hidden="true">←</span><span class="tt-today-label">זמני היום (Hebcal)</span>
+            <span class="tt-today-label">זמני היום (Hebcal)</span>
             <span class="tt-today-sub">סוף זמן ק״ש <strong id="home-z-shema" class="tt-today-main">08:37</strong></span>
             <span class="tt-today-sub">שקיעה <strong id="home-z-shkia" class="tt-today-main">16:50</strong></span>
             <span class="tt-today-cta">לכל זמני היום ←</span>
           </button>
           <button type="button" onclick="ttGo('tzaddikim', 'yahrzeit-diary-anchor', 'yahrzeits')" class="tt-today-part" aria-label="יום השנה – מעבר לדף יום השנה">
-            <span class="home-card-corner-arrow" aria-hidden="true">←</span><span class="tt-today-label">יום השנה (הילולה)</span>
+            <span class="tt-today-label">יום השנה (הילולה)</span>
             <span id="home-yahrzeit-name" class="tt-today-main">רבנו יונה גירונדי זיע״א</span>
             <span id="home-yahrzeit-sub" class="tt-today-sub">מחבר שערי תשובה</span>
             <span class="tt-today-cta">ליומן ההילולות ←</span>
@@ -211,38 +164,25 @@
         </div>
       </div>
 
-      <!-- 2. כרטיס פרשת השבוע + פנינה יומית -->
-      <div id="home-parasha-card" class="bg-white border-2 border-[#C9A227] p-4 sm:p-5 rounded-2xl shadow-sm space-y-3">
+      <!-- 2. קרוסלת רילס (סרטונים קצרים) -->
+      <div id="home-reels-carousel-section" class="bg-white border-2 border-[#C9A227] p-4 sm:p-5 rounded-2xl shadow-sm space-y-3">
         <div class="flex items-center justify-between border-b border-[#E5DBC7] pb-2.5">
           <div class="flex items-center gap-2">
-            <span class="px-2.5 py-0.5 rounded-lg bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] text-xs font-black">פרשת השבוע</span>
-            <h3 id="home-parasha-title" class="text-lg sm:text-xl font-black serif-heading text-[#0F2340]">פרשת חיי שרה</h3>
+            <span class="px-2.5 py-0.5 rounded-lg bg-[#0F2340] text-amber-300 text-xs font-black" style="color:#FCD34D !important;">2 • קרוסלת רילס</span>
+            <h3 class="text-base sm:text-lg font-black text-[#0F2340] serif-heading">סרטונים קצרים ורגעי השראה</h3>
           </div>
-          <button type="button" onclick="rotateHomeVort()" class="text-xs text-[#0F2340] hover:bg-[#F6EFE2] font-bold bg-[#FDF8EF] border border-[#D8CBB5] px-3 py-1.5 rounded-xl transition-all">
-            וורט נוסף
+          <button type="button" onclick="switchTab('series'); switchLibrarySubTab('eduvideos');" class="px-3 py-1.5 bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold rounded-xl text-xs">
+            לכל הסרטונים הקצרים
           </button>
         </div>
-        <div class="space-y-1.5 bg-[#FDF8EF] border border-[#E5DBC7] p-3.5 rounded-xl">
-          <span class="text-xs font-bold text-[#5C4938] block">פנינה ורעיון מתוך הפרשה:</span>
-          <p id="home-parasha-vort" class="text-sm text-[#0F2340] leading-relaxed font-serif">
-            "ויהיו חיי שרה מאה שנה ועשרים שנה ושבע שנים – שני חיי שרה" – כולם שווים לטובה. הצדיק רואה בכל תקופה בחיים הזדמנות לעבודת ה׳, עשיית חסד ואמונה תמימה.
-          </p>
-        </div>
-        <div class="pt-1 flex flex-wrap items-center gap-2">
-          <button type="button" onclick="switchTab('series'); switchLearnMainTab('shiurim');" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-white font-black rounded-xl text-xs shadow-sm transition-all">
-            לכל שיעורי הפרשה
-          </button>
-          <button type="button" onclick="switchTab('series'); switchLibrarySubTab('torah'); openParashaViewer('bereishit', 'חיי שרה');" class="px-4 py-2 bg-[#F6EFE2] hover:bg-[#EDE1CC] text-[#0F2340] font-bold rounded-xl border border-[#C9A227] text-xs transition-all">
-            קריאת הפרשה ופירוש רש״י
-          </button>
-        </div>
+        <div id="home-reels-strip" class="flex items-stretch gap-3 overflow-x-auto hide-scrollbar pb-1"></div>
       </div>
 
-      <!-- 3. כרטיס "חיזוקים" יומי (וורט / סיפור קצר מחזק) -->
-      <div id="home-chizuk-card" class="p-4 sm:p-5 space-y-3.5">
+      <!-- 3. פינת חיזוק יומי -->
+      <div id="home-chizuk-card" class="bg-white border-2 border-[#C9A227] rounded-2xl shadow-sm p-4 sm:p-5 space-y-3.5">
         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#E5DBC7] pb-2.5">
           <div class="flex items-center gap-2">
-            <span class="px-2.5 py-0.5 rounded-lg bg-amber-500 text-white text-xs font-black">פינת החיזוק היומי</span>
+            <span class="px-2.5 py-0.5 rounded-lg bg-amber-500 text-white text-xs font-black" style="color:#FFFFFF !important;">3 • פינת חיזוק יומי</span>
             <span id="home-chizuk-badge" class="px-2.5 py-0.5 rounded-md bg-[#F6EFE2] text-[#0F2340] border border-[#D8CBB5] text-xs font-bold">סיפור קצר וחיזוק באמונה</span>
           </div>
           <div class="flex items-center gap-1.5">
@@ -279,23 +219,158 @@
         </div>
       </div>
 
-      <!-- 4. קרוסלה אחת מאוחדת של "תוכן מומלץ" (משלבת שיעורים וסרטונים נבחרים) -->
-      <div class="bg-white border-2 border-[#C9A227] p-4 sm:p-5 rounded-2xl shadow-sm space-y-3">
-        <div class="flex items-center justify-between border-b border-[#E5DBC7] pb-2.5">
-          <div>
-            <span class="px-2.5 py-0.5 rounded-md bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] text-xs font-black">תוכן מומלץ</span>
-            <h3 class="text-lg font-black text-[#0F2340] serif-heading mt-1">שיעורים וסרטונים מומלצים מבית המדרש</h3>
+      <!-- 4. הלכה יומית -->
+      <div id="home-daily-halacha-card" class="bg-white border-2 border-[#C9A227] p-4 sm:p-5 rounded-2xl shadow-sm space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#E5DBC7] pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-lg bg-[#0284C7] text-white text-xs font-black" style="color:#FFFFFF !important;">4 • הלכה יומית</span>
+            <h3 id="home-halacha-title" class="text-base sm:text-lg font-black text-[#0F2340] serif-heading">הלכות ברכות השחר ותפילה בציבור</h3>
           </div>
-          <button type="button" onclick="switchTab('series'); switchLearnMainTab('shiurim');" class="px-3.5 py-1.5 bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold rounded-xl text-xs">
-            לכל השיעורים והסרטונים
+          <button type="button" onclick="rotateHomeDailyHalacha()" class="px-3 py-1 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-xs font-bold text-[#0F2340] hover:bg-[#F6EFE2]">
+            הלכה נוספת
           </button>
         </div>
-        <div id="home-recommended-carousel" class="flex items-stretch gap-3.5 overflow-x-auto hide-scrollbar pb-1"></div>
+        <div class="bg-[#FDF8EF] border border-[#E5DBC7] p-3.5 rounded-xl space-y-1.5">
+          <p id="home-halacha-body" class="text-sm text-[#0F2340] leading-relaxed font-serif">
+            מיד כשניעור האדם משנתו יאמר "מודה אני לפניך מלך חי וקיים שהחזרת בי נשמתי בחמלה, רבה אמונתך", ואין צריך ליטול ידיו תחילה כיון שאין בה הזכרת השם. לאחר נטילת ידיים שחרית כדת יברך ברכות השחר בכוונה וישתדל להתפלל שחרית עם הציבור.
+          </p>
+          <span id="home-halacha-source" class="block text-xs font-bold text-[#5C4938]">מקור: שולחן ערוך אורח חיים סימן א׳ וסימן צ׳ • משנה ברורה וילקוט יוסף</span>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 pt-1">
+          <button type="button" onclick="switchTab('siddur'); switchPraySubTab('customs');" class="px-4 py-2 bg-[#0F2340] text-white font-bold rounded-xl text-xs" style="color:#FFFFFF !important;">
+            לכל הלכות היום והמנהגים
+          </button>
+          <button type="button" onclick="switchTab('rabbis')" class="px-4 py-2 bg-[#F6EFE2] border border-[#C9A227] text-[#0F2340] font-bold rounded-xl text-xs">
+            שאל רב בקו ההלכה
+          </button>
+        </div>
+      </div>
+
+      <!-- 5. קרוסלת שיעורים ארוכים (כרטיסי וידאו אופקיים של רבנים) -->
+      <div id="home-long-shiurim-section" class="bg-white border-2 border-[#C9A227] p-4 sm:p-5 rounded-2xl shadow-sm space-y-3">
+        <div class="flex items-center justify-between border-b border-[#E5DBC7] pb-2.5">
+          <div>
+            <span class="px-2.5 py-0.5 rounded-md bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] text-xs font-black">5 • קרוסלת שיעורים ארוכים</span>
+            <h3 class="text-base sm:text-lg font-black text-[#0F2340] serif-heading mt-1">שיעורי וידאו מלאים מפי הרבנים</h3>
+          </div>
+          <button type="button" onclick="switchTab('series'); switchLearnMainTab('shiurim');" class="px-3.5 py-1.5 bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold rounded-xl text-xs">
+            לכל השיעורים
+          </button>
+        </div>
+        <div id="home-carousel-shiurim" class="flex items-stretch gap-3.5 overflow-x-auto hide-scrollbar pb-1"></div>
+      </div>
+
+      <!-- 6. פרשת השבוע -->
+      <div id="home-parasha-card" class="bg-white border-2 border-[#C9A227] p-4 sm:p-5 rounded-2xl shadow-sm space-y-3">
+        <div class="flex items-center justify-between border-b border-[#E5DBC7] pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-lg bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] text-xs font-black">6 • פרשת השבוע</span>
+            <h3 id="home-parasha-title" class="text-lg sm:text-xl font-black serif-heading text-[#0F2340]">פרשת חיי שרה</h3>
+          </div>
+          <button type="button" onclick="rotateHomeVort()" class="text-xs text-[#0F2340] hover:bg-[#F6EFE2] font-bold bg-[#FDF8EF] border border-[#D8CBB5] px-3 py-1.5 rounded-xl transition-all">
+            וורט נוסף
+          </button>
+        </div>
+        <div class="space-y-1.5 bg-[#FDF8EF] border border-[#E5DBC7] p-3.5 rounded-xl">
+          <span class="text-xs font-bold text-[#5C4938] block">פנינה ורעיון מתוך הפרשה:</span>
+          <p id="home-parasha-vort" class="text-sm text-[#0F2340] leading-relaxed font-serif">
+            "ויהיו חיי שרה מאה שנה ועשרים שנה ושבע שנים – שני חיי שרה" – כולם שווים לטובה. הצדיק רואה בכל תקופה בחיים הזדמנות לעבודת ה׳, עשיית חסד ואמונה תמימה.
+          </p>
+        </div>
+        <div class="pt-1 flex flex-wrap items-center gap-2">
+          <button type="button" onclick="switchTab('series'); switchLearnMainTab('shiurim');" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-white font-black rounded-xl text-xs shadow-sm transition-all" style="color:#FFFFFF !important;">
+            לכל שיעורי הפרשה
+          </button>
+          <button type="button" onclick="switchTab('series'); switchLibrarySubTab('torah'); openParashaViewer('bereishit', 'חיי שרה');" class="px-4 py-2 bg-[#F6EFE2] hover:bg-[#EDE1CC] text-[#0F2340] font-bold rounded-xl border border-[#C9A227] text-xs transition-all">
+            קריאת הפרשה ופירוש רש״י
+          </button>
+        </div>
+      </div>
+
+      <!-- 7. בלוקים של קטגוריות (פרשה, הלכה, שיעורים, קהילה) -->
+      <div id="home-categories-blocks" class="bg-white border-2 border-[#C9A227] p-4 sm:p-5 rounded-2xl shadow-sm space-y-3">
+        <div class="flex items-center justify-between border-b border-[#E5DBC7] pb-2">
+          <span class="px-2.5 py-0.5 rounded-md bg-[#F6EFE2] text-[#0F2340] border border-[#C9A227] text-xs font-black">7 • קטגוריות מרכזיות</span>
+          <span class="text-xs text-[#5C4938] font-bold">ניווט מהיר למדורי התוכן</span>
+        </div>
+        <div class="home-hero-actions-grid" role="navigation" aria-label="קטגוריות מרכזיות">
+          <button type="button" onclick="switchTab('series'); switchLibrarySubTab('torah');" class="home-big-action-card">
+            <span class="home-big-action-icon">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            </span>
+            <div>
+              <strong class="block text-base font-black text-[#0F2340] serif-heading">פרשה</strong>
+              <span class="text-xs text-[#5C4938]">חומש, פירוש רש״י ווורטים</span>
+            </div>
+          </button>
+
+          <button type="button" onclick="switchTab('siddur'); switchPraySubTab('customs');" class="home-big-action-card">
+            <span class="home-big-action-icon">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            </span>
+            <div>
+              <strong class="block text-base font-black text-[#0F2340] serif-heading">הלכה</strong>
+              <span class="text-xs text-[#5C4938]">הלכות היום, משנה ומנהגים</span>
+            </div>
+          </button>
+
+          <button type="button" onclick="switchTab('series'); switchLearnMainTab('shiurim');" class="home-big-action-card">
+            <span class="home-big-action-icon">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </span>
+            <div>
+              <strong class="block text-base font-black text-[#0F2340] serif-heading">שיעורים</strong>
+              <span class="text-xs text-[#5C4938]">שיעורי רבנים, קורסים וחידונים</span>
+            </div>
+          </button>
+
+          <button type="button" onclick="switchTab('forum');" class="home-big-action-card">
+            <span class="home-big-action-icon">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </span>
+            <div>
+              <strong class="block text-base font-black text-[#0F2340] serif-heading">קהילה</strong>
+              <span class="text-xs text-[#5C4938]">פורום, הגרלות, צדקה וחנות</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 8. קהילה ומרכז (בלוק אחד ארוך ומסודר בתחתית דף הבית) -->
+      <div id="home-community-bottom-block" class="bg-gradient-to-l from-[#FFF7ED] to-[#FDF8EF] border-2 border-[#EA580C] p-4 sm:p-5 rounded-2xl shadow-sm space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#FED7AA] pb-2.5">
+          <div>
+            <span class="px-2.5 py-0.5 rounded-md bg-[#EA580C] text-white text-xs font-black inline-block mb-1" style="color:#FFFFFF !important;">8 • קהילה ומרכז צדיק-טוק</span>
+            <h3 class="text-lg font-black text-[#0F2340] serif-heading">מרכז הקהילה, החסד, ההגרלות והתפילות</h3>
+            <p class="text-xs text-[#5C4938]">הצטרפו לשיח בפורום הקהילה, השתתפו בהגרלות הקודש, תרמו לקמפיינים או הוסיפו שם לתפילה</p>
+          </div>
+          <button type="button" onclick="switchTab('forum')" class="px-4 py-2 bg-[#EA580C] hover:bg-[#C2410C] text-white font-black rounded-xl text-xs shrink-0 self-start sm:self-auto" style="color:#FFFFFF !important;">
+            כניסה למרכז הקהילה ←
+          </button>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button type="button" onclick="switchTab('forum'); switchCommunitySubTab('forum');" class="p-3 rounded-xl bg-white border border-[#FDBA74] hover:border-[#EA580C] text-right">
+            <strong class="block text-sm font-black text-[#0F2340]">פורום הקהילה</strong>
+            <span class="text-xs text-[#5C4938]">דיונים, שאלות וחיזוקים</span>
+          </button>
+          <button type="button" onclick="switchTab('forum'); switchCommunitySubTab('raffles');" class="p-3 rounded-xl bg-white border border-[#FDBA74] hover:border-[#EA580C] text-right">
+            <strong class="block text-sm font-black text-[#0F2340]">הגרלות הקודש</strong>
+            <span class="text-xs text-[#5C4938]">ספר תורה ופרסים</span>
+          </button>
+          <button type="button" onclick="switchTab('forum'); switchCommunitySubTab('charity');" class="p-3 rounded-xl bg-white border border-[#FDBA74] hover:border-[#EA580C] text-right">
+            <strong class="block text-sm font-black text-[#0F2340]">צדקה ופרנסים</strong>
+            <span class="text-xs text-[#5C4938]">קמפיינים והנצחה</span>
+          </button>
+          <button type="button" onclick="switchTab('judaica')" class="p-3 rounded-xl bg-white border border-[#FDBA74] hover:border-[#EA580C] text-right">
+            <strong class="block text-sm font-black text-[#0F2340]">חנות יודאיקה</strong>
+            <span class="text-xs text-[#5C4938]">ספרי קודש ותשמישי מצווה</span>
+          </button>
+        </div>
       </div>
 
       <!-- מיכלים מוסתרים לתאימות לאחור -->
       <div class="hidden" aria-hidden="true">
-        <div id="home-carousel-shiurim"></div>
+        <div id="home-recommended-carousel"></div>
         <div id="home-carousel-videos"></div>
         <div id="home-carousel-quizzes"></div>
         <div id="home-acc-media"><span id="home-acc-media-icon"></span><span id="home-music-now-playing"></span><button id="home-music-play-btn"></button></div>
@@ -305,19 +380,19 @@
 
     <!-- 2. COMPREHENSIVE TORAH, NACH & HISTORY LIBRARY (הספרייה המרכזית) -->
     <section id="view-series" class="view-section space-y-5">
-      <!-- כותרת מדור "ללמוד" בעיצוב תכלת מזוהה + רשת קומפקטית של 2 עמודות עם אייקונים -->
-      <div class="section-theme-banner p-4 sm:p-5 rounded-2xl space-y-4 shadow-sm">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      <!-- כותרת מדור "ללמוד" בעיצוב תכלת עדין + כפתור בולט "העלאת תוכן" + רשת קומפקטית של 2 עמודות -->
+      <div class="space-y-3">
+        <div class="page-top-tint-bar page-top-tint-learn">
           <div>
-            <span class="section-theme-badge px-2.5 py-0.5 rounded-md text-xs font-black inline-block mb-1">מדור לימוד ובית המדרש</span>
-            <h2 class="text-xl sm:text-2xl font-black text-[#0F2340] serif-heading">ללמוד • פרשה, תנ״ך, שיעורים, קורסים, סיפורי צדיקים וחידונים</h2>
+            <span class="px-2.5 py-0.5 rounded-md bg-[#0284C7] text-white text-xs font-black inline-block mb-0.5" style="color:#FFFFFF !important;">בית המדרש • ללמוד</span>
+            <h2 class="text-lg sm:text-xl font-black text-[#0F2340] serif-heading">ללמוד • פרשה, תנ״ך, שיעורים, קורסים, סיפורי צדיקים וחידונים</h2>
           </div>
-          <button type="button" onclick="switchLearnMainTab('shiurim'); openRabbiLessonUploadForm();" class="px-3.5 py-2 bg-[#0284C7] hover:bg-[#0369A1] text-white font-black rounded-xl text-xs shadow-sm self-start sm:self-auto" style="color:#FFFFFF !important;">
-            העלאת שיעור חדש
+          <button type="button" onclick="openLearnContentUploadModal()" class="px-4 py-2.5 bg-[#0284C7] hover:bg-[#0369A1] text-white font-black rounded-xl text-xs shadow-sm flex items-center gap-1.5 shrink-0" style="color:#FFFFFF !important;">
+            <span>+ העלאת תוכן</span>
           </button>
         </div>
 
-        <!-- רשת (Grid) קומפקטית של 2 עמודות עם אייקונים קומפקטיים ל-6 מסלולי הלימוד -->
+        <!-- רשת (Grid) קומפקטית של 2 עמודות עם אייקונים קומפקטיים למסלולי הלימוד -->
         <div class="learn-compact-grid" role="tablist" aria-label="מסלולי מדור ללמוד">
           <button type="button" id="lib-btn-torah" onclick="switchLibrarySubTab('torah')" class="learn-compact-btn active">
             <span class="learn-compact-icon">
@@ -363,7 +438,7 @@
         </div>
 
         <!-- מדורי העמקה נוספים ברשת 2 עמודות קומפקטית -->
-        <div id="learn-ai-subnav-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+        <div id="learn-ai-subnav-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
           <button type="button" id="lib-btn-eduvideos" onclick="switchLibrarySubTab('eduvideos')" class="learn-compact-btn">
             <span class="learn-compact-icon"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="4" width="20" height="16" rx="2"/><polygon points="10 9 15 12 10 15 10 9"/></svg></span>
             <span>סרטונים</span>
@@ -382,22 +457,18 @@
           </button>
         </div>
 
-        <!-- סרגל חיפוש וסינון במדור ללמוד -->
-        <div class="pt-2 border-t border-[#BAE6FD] grid grid-cols-1 sm:grid-cols-4 gap-2">
-          <input type="text" oninput="handleLearnGlobalSearch(this.value)" placeholder="חיפוש בפרשיות, תנ״ך, שיעורים, קורסים או סיפורי צדיקים..." class="sm:col-span-2 bg-white border border-[#7DD3FC] rounded-xl px-3.5 py-2 text-xs text-[#0F2340] outline-none">
-          <select id="learn-filter-edah" onchange="applyUnifiedDirectoryFilter('learn')" class="bg-white border border-[#7DD3FC] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">
-            <option value="all">עדה / מסורת: הכל</option>
-            <option value="עדות המזרח">עדות המזרח וספרד</option>
-            <option value="אשכנז">אשכנז והישיבות</option>
+        <!-- דרופדאון סינון לפי "נושא" בלבד (ללא "עדה / מסורת") -->
+        <div class="bg-white border border-[#BAE6FD] p-3 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <label for="learn-filter-topic" class="text-xs font-black text-[#0F2340] shrink-0">סינון תכנים ושיעורים לפי נושא:</label>
+          <select id="learn-filter-topic" onchange="applyLearnTopicFilter(this.value)" class="w-full sm:w-72 bg-[#F0F9FF] border border-[#0284C7] rounded-xl px-3.5 py-2 text-xs font-bold text-[#0F2340] outline-none">
+            <option value="all">נושא: הכל (כל הנושאים)</option>
+            <option value="הלכה">הלכה</option>
+            <option value="אמונה">אמונה</option>
             <option value="חסידות">חסידות</option>
-            <option value="תימן">מסורת תימן</option>
-          </select>
-          <select id="learn-filter-topic" onchange="applyUnifiedDirectoryFilter('learn')" class="bg-white border border-[#7DD3FC] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">
-            <option value="all">נושא: הכל</option>
-            <option value="פרשת">פרשת השבוע</option>
-            <option value="הלכה">הלכה למעשה</option>
-            <option value="אמונה">אמונה ומוסר</option>
-            <option value="היסטוריה">היסטוריה וגדולי ישראל</option>
+            <option value="פרשה">פרשת השבוע</option>
+            <option value="תנ״ך">תנ״ך ונביאים</option>
+            <option value="סיפורי צדיקים">סיפורי צדיקים</option>
+            <option value="ראשונים ואחרונים">ראשונים ואחרונים</option>
           </select>
         </div>
         <div id="learn-search-results-box" class="hidden"></div>
@@ -2359,33 +2430,46 @@
   
     <!-- 18. COMMUNITY FORUM VIEW (פורום קהילתי ובית מדרש חברתי) -->
     <section id="view-forum" class="view-section space-y-5">
-      <!-- כותרת מדור קהילה בעיצוב כתום חם מזוהה: פורום | הגרלות | צדקה -->
-      <div class="section-theme-banner p-5 rounded-2xl space-y-4 shadow-sm">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <!-- כותרת מדור קהילה קומפקטית ונקייה (ללא באנר ענק!) + רשת 2 עמודות קומפקטית ואווירית -->
+      <div class="space-y-3">
+        <div class="page-top-tint-bar page-top-tint-comm">
           <div>
-            <span class="px-2.5 py-0.5 bg-[#EA580C] text-white font-black rounded-md text-xs inline-block mb-1" style="color:#FFFFFF !important;">קהילת צדיק-טוק</span>
-            <h2 class="text-2xl font-black text-[#0F2340] serif-heading">קהילה • פורום, הגרלות וצדקה</h2>
-            <p class="text-xs sm:text-sm text-[#5C4938]">חיבור לבבות בעם ישראל: בית מדרש חברתי, הגרלות הקודש, קמפיינים לצדקה ולוח תפילות</p>
+            <span class="px-2.5 py-0.5 bg-[#EA580C] text-white font-black rounded-md text-xs inline-block mb-0.5" style="color:#FFFFFF !important;">קהילת צדיק-טוק</span>
+            <h2 class="text-lg sm:text-xl font-black text-[#0F2340] serif-heading">קהילה • פורום, הגרלות, צדקה וחנות</h2>
           </div>
-          <div class="flex items-center gap-2">
-            <button type="button" onclick="switchTab('judaica')" class="px-3.5 py-2 bg-white border border-[#FDBA74] text-[#0F2340] font-bold rounded-xl text-xs">
-              חנות יודאיקה
-            </button>
-          </div>
+          <button type="button" onclick="switchCommunitySubTab('prayers')" class="px-3 py-1.5 bg-white border border-[#FDBA74] text-[#0F2340] font-bold rounded-xl text-xs">
+            לוח תפילות קהילתי
+          </button>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" role="tablist" aria-label="לשוניות קהילה">
-          <button type="button" id="comm-tab-btn-forum" onclick="switchCommunitySubTab('forum')" class="py-2.5 px-3 rounded-xl bg-[#EA580C] text-white font-black text-xs shadow-sm" style="color:#FFFFFF !important;">
-            פורום הקהילה
+        <!-- רשת (Grid) של 2 עמודות עם כפתורים קומפקטיים (פורום, הגרלות, צדקה, חנות) -->
+        <div class="community-compact-grid" role="tablist" aria-label="ניווט מדור קהילה">
+          <button type="button" id="comm-tab-btn-forum" onclick="switchCommunitySubTab('forum')" class="community-compact-btn active">
+            <span class="community-compact-icon">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </span>
+            <span>פורום</span>
           </button>
-          <button type="button" id="comm-tab-btn-raffles" onclick="switchCommunitySubTab('raffles')" class="py-2.5 px-3 rounded-xl bg-white text-[#0F2340] border border-[#FDBA74] font-bold text-xs">
-            הגרלות
+
+          <button type="button" id="comm-tab-btn-raffles" onclick="switchCommunitySubTab('raffles')" class="community-compact-btn">
+            <span class="community-compact-icon">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3l-4 4-4-4"/></svg>
+            </span>
+            <span>הגרלות</span>
           </button>
-          <button type="button" id="comm-tab-btn-charity" onclick="switchCommunitySubTab('charity')" class="py-2.5 px-3 rounded-xl bg-white text-[#0F2340] border border-[#FDBA74] font-bold text-xs">
-            צדקה וספר הפרנסים
+
+          <button type="button" id="comm-tab-btn-charity" onclick="switchCommunitySubTab('charity')" class="community-compact-btn">
+            <span class="community-compact-icon">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </span>
+            <span>צדקה</span>
           </button>
-          <button type="button" id="comm-tab-btn-prayers" onclick="switchCommunitySubTab('prayers')" class="py-2.5 px-3 rounded-xl bg-white text-[#0F2340] border border-[#FDBA74] font-bold text-xs">
-            לוח תפילות
+
+          <button type="button" id="comm-tab-btn-shop" onclick="switchTab('judaica')" class="community-compact-btn">
+            <span class="community-compact-icon">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            </span>
+            <span>חנות</span>
           </button>
         </div>
       </div>
@@ -3451,9 +3535,73 @@
 
   <!-- APP SCRIPT -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-client.js?v=38"></script>
-  <script src="utils.js?v=38"></script>
-  <script src="data.js?v=38"></script>
-  <script src="app.js?v=38"></script>
+  <script src="supabase-client.js?v=39"></script>
+  <script src="utils.js?v=39"></script>
+  <script src="data.js?v=39"></script>
+  <script src="app.js?v=39"></script>
+
+  <!-- MODAL: העלאת תוכן במדור "ללמוד" (שומר לטבלת lessons ב-Supabase עם is_approved: false) -->
+  <div id="modal-upload-learn-content" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+    <div class="bg-[#F8F3E8] border-2 border-[#0284C7] rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto relative">
+      <div class="flex items-center justify-between border-b border-[#E5DBC7] pb-3">
+        <div>
+          <span class="px-2.5 py-0.5 rounded-md bg-[#0284C7] text-white text-xs font-black inline-block mb-1" style="color:#FFFFFF !important;">העלאת תוכן לבית המדרש</span>
+          <h3 class="text-xl font-black text-[#0F2340] serif-heading">העלאת שיעור או תוכן תורני חדש</h3>
+        </div>
+        <button type="button" onclick="closeModal('modal-upload-learn-content')" class="modal-close-x-btn"><span>✕</span><span>סגור</span></button>
+      </div>
+
+      <p class="text-xs text-[#5C4938] leading-relaxed">
+        הזינו את פרטי השיעור או התוכן וקישור לצפייה (YouTube / וידאו). התוכן יישמר בטבלת <strong>lessons</strong> ב-Supabase בסטטוס ממתין לאישור מנהל (<code>is_approved: false</code>) ויפורסם באתר מיד לאחר אישור בפאנל הניהול.
+      </p>
+
+      <form id="form-upload-learn-content" onsubmit="submitLearnContentUpload(event)" class="space-y-3 text-xs">
+        <div>
+          <label for="upload-learn-title" class="block font-black text-[#0F2340] mb-1">כותרת התוכן / השיעור *</label>
+          <input id="upload-learn-title" type="text" required placeholder="למשל: הלכות שבת למעשה • בורר ומוקצה" class="w-full bg-white border border-[#D8CBB5] focus:border-[#0284C7] rounded-xl px-3.5 py-2.5 text-sm text-[#0F2340] outline-none">
+        </div>
+
+        <div>
+          <label for="upload-learn-category" class="block font-black text-[#0F2340] mb-1">בחירת קטגוריה / נושא *</label>
+          <select id="upload-learn-category" required class="w-full bg-white border border-[#D8CBB5] focus:border-[#0284C7] rounded-xl px-3.5 py-2.5 text-sm text-[#0F2340] outline-none">
+            <option value="הלכה">הלכה</option>
+            <option value="אמונה">אמונה</option>
+            <option value="חסידות">חסידות</option>
+            <option value="פרשה">פרשת השבוע</option>
+            <option value="תנ״ך">תנ״ך ונביאים</option>
+            <option value="סיפורי צדיקים">סיפורי צדיקים</option>
+            <option value="ראשונים ואחרונים">ראשונים ואחרונים</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="upload-learn-url" class="block font-black text-[#0F2340] mb-1">קישור URL של יוטיוב / וידאו *</label>
+          <input id="upload-learn-url" type="url" required placeholder="https://www.youtube.com/watch?v=..." class="w-full bg-white border border-[#D8CBB5] focus:border-[#0284C7] rounded-xl px-3.5 py-2.5 text-sm text-[#0F2340] outline-none" dir="ltr" style="text-align:left;">
+        </div>
+
+        <div>
+          <label for="upload-learn-rabbi" class="block font-black text-[#0F2340] mb-1">שם הרב / המרצה (אופציונלי)</label>
+          <input id="upload-learn-rabbi" type="text" placeholder="למשל: הרב יצחק לוי שליט״א" class="w-full bg-white border border-[#D8CBB5] focus:border-[#0284C7] rounded-xl px-3.5 py-2.5 text-sm text-[#0F2340] outline-none">
+        </div>
+
+        <div>
+          <label for="upload-learn-desc" class="block font-black text-[#0F2340] mb-1">תיאור קצר של התוכן *</label>
+          <textarea id="upload-learn-desc" rows="3" required placeholder="תקציר השיעור, מקורות מרכזיים או נקודות עיקריות ללומדים..." class="w-full bg-white border border-[#D8CBB5] focus:border-[#0284C7] rounded-xl px-3.5 py-2.5 text-sm text-[#0F2340] outline-none"></textarea>
+        </div>
+
+        <div id="upload-learn-status-msg" class="hidden p-3 rounded-xl text-xs font-bold"></div>
+
+        <div class="pt-2 flex items-center gap-2">
+          <button type="submit" id="btn-submit-learn-upload" class="flex-1 py-3 bg-[#0284C7] hover:bg-[#0369A1] text-white font-black rounded-xl text-sm shadow-md transition-all" style="color:#FFFFFF !important;">
+            שלח לאישור מנהל
+          </button>
+          <button type="button" onclick="closeModal('modal-upload-learn-content')" class="px-4 py-3 bg-white border border-[#D8CBB5] text-[#0F2340] font-bold rounded-xl text-xs">
+            ביטול
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
 </body>
 </html>

@@ -298,3 +298,62 @@ window.sbSafePhone = function(v) { return v ? window.escapeHtml(String(v).trim()
     }
   } catch (e) {}
 })();
+
+
+// המרת תאריך עברי לאותיות עבריות תקניות תמיד (למשל: א׳ בכסלו תשפ״ז במקום "1 בכסלו 5787")
+var HEB_DAY_LETTERS = [
+  "", "א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳", "ז׳", "ח׳", "ט׳", "י׳",
+  "י״א", "י״ב", "י״ג", "י״ד", "ט״ו", "ט״ז", "י״ז", "י״ח", "י״ט", "כ׳",
+  "כ״א", "כ״ב", "כ״ג", "כ״ד", "כ״ה", "כ״ו", "כ״ז", "כ״ח", "כ״ט", "ל׳"
+];
+
+function hebYearToLetters(yr) {
+  var n = parseInt(yr, 10);
+  if (!n || n < 5700 || n > 5900) return "תשפ״ז";
+  var rem = n % 1000; // e.g., 787
+  var hundredsMap = { 700: "תש", 800: "תת" };
+  var tensMap = { 0: "", 10: "י", 20: "כ", 30: "ל", 40: "מ", 50: "נ", 60: "ס", 70: "ע", 80: "פ", 90: "צ" };
+  var onesMap = { 0: "", 1: "א", 2: "ב", 3: "ג", 4: "ד", 5: "ה", 6: "ו", 7: "ז", 8: "ח", 9: "ט" };
+  var h = Math.floor(rem / 100) * 100;
+  var t = Math.floor((rem % 100) / 10) * 10;
+  var o = rem % 10;
+  var letters = (hundredsMap[h] || "תש") + (tensMap[t] || "פ") + (onesMap[o] || "ז");
+  if (letters.length >= 2) {
+    return letters.slice(0, -1) + "״" + letters.slice(-1);
+  }
+  return letters + "׳";
+}
+
+window.formatHebrewDateInLetters = function(dateObj) {
+  try {
+    var d = dateObj || new Date();
+    var parts = new Intl.DateTimeFormat("he-IL-u-ca-hebrew", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    }).formatToParts(d);
+    var dayVal = "", monthVal = "", yearVal = "";
+    parts.forEach(function(p) {
+      if (p.type === "day") dayVal = p.value;
+      else if (p.type === "month") monthVal = p.value;
+      else if (p.type === "year") yearVal = p.value;
+    });
+    var dayNum = parseInt(String(dayVal).replace(/[^0-9]/g, ""), 10);
+    var dayHeb = (dayNum >= 1 && dayNum <= 30) ? HEB_DAY_LETTERS[dayNum] : (dayVal || "א׳");
+    var yearNum = parseInt(String(yearVal).replace(/[^0-9]/g, ""), 10);
+    var yearHeb = yearNum ? hebYearToLetters(yearNum) : (yearVal || "תשפ״ז");
+    var cleanMonth = String(monthVal || "כסלו").replace(/^ב/, "");
+    return dayHeb + " ב" + cleanMonth + " " + yearHeb;
+  } catch (e) {
+    return "א׳ בכסלו תשפ״ז";
+  }
+};
+
+window.getHebrewDateString = function() {
+  return window.formatHebrewDateInLetters(new Date());
+};
+
+// עדכון גרסת מטמון ל-v39
+try {
+  localStorage.setItem("tzadiktok_app_version", "v39");
+} catch (e) {}

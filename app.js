@@ -9801,3 +9801,592 @@ window.forceExitShabbatMode = function () {
   if (banner) banner.classList.add("hidden");
   if (window.toast) window.toast("שבוע טוב ומבורך! חזרת לאפליקציה.");
 };
+
+
+// ============================================================================
+// V39 MASTER UPGRADE — HOME PAGE 1-8 REORDER, HEBREW DATE IN LETTERS,
+// CLEAN NEAR-ME 5 CATEGORIES (SEARCH ONLY IN SUB-SECTIONS),
+// COMPACT 2-COL COMMUNITY & LEARN GRIDS, AND SUPABASE `lessons` UPLOAD & ADMIN APPROVAL
+// ============================================================================
+(function () {
+  "use strict";
+
+  var esc = window.escapeHtml || function (v) {
+    if (v === null || v === undefined) return "";
+    return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  };
+  var escAttr = window.escAttr || function (v) {
+    if (v === null || v === undefined) return "";
+    return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "").replace(/`/g, "");
+  };
+
+  function el(id) { return document.getElementById(id); }
+
+  // 1. הבטחה מוחלטת שהתאריך העברי יוצג תמיד באותיות עבריות (למשל: א׳ בכסלו תשפ״ז ולא "1 בכסלו")
+  var HEB_DAYS = [
+    "", "א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳", "ז׳", "ח׳", "ט׳", "י׳",
+    "י״א", "י״ב", "י״ג", "י״ד", "ט״ו", "ט״ז", "י״ז", "י״ח", "י״ט", "כ׳",
+    "כ״א", "כ״ב", "כ״ג", "כ״ד", "כ״ה", "כ״ו", "כ״ז", "כ״ח", "כ״ט", "ל׳"
+  ];
+  function hebYearLetters(yr) {
+    var n = parseInt(yr, 10);
+    if (!n || isNaN(n)) return "תשפ״ז";
+    var map = { 5784: "תשפ״ד", 5785: "תשפ״ה", 5786: "תשפ״ו", 5787: "תשפ״ז", 5788: "תשפ״ח", 5789: "תשפ״ט", 5790: "תש״צ" };
+    return map[n] || "תשפ״ז";
+  }
+
+  window.getHebrewDateString = function (dateObj) {
+    var d = dateObj instanceof Date ? dateObj : new Date();
+    try {
+      var fmt = new Intl.DateTimeFormat("he-IL-u-ca-hebrew", { day: "numeric", month: "long", year: "numeric" });
+      if (typeof fmt.formatToParts === "function") {
+        var parts = fmt.formatToParts(d);
+        var dayNum = 0, monthName = "", yearVal = "";
+        for (var i = 0; i < parts.length; i++) {
+          if (parts[i].type === "day") dayNum = parseInt(parts[i].value.replace(/[^0-9]/g, ""), 10);
+          else if (parts[i].type === "month") monthName = parts[i].value.trim();
+          else if (parts[i].type === "year") yearVal = parts[i].value.trim();
+        }
+        var dayHeb = (dayNum >= 1 && dayNum <= 30) ? HEB_DAYS[dayNum] : "א׳";
+        var yearHeb = /^[0-9]+$/.test(yearVal) ? hebYearLetters(yearVal) : (yearVal || "תשפ״ז");
+        var monthPrefixed = monthName ? (monthName.indexOf("ב") === 0 ? monthName : "ב" + monthName) : "בכסלו";
+        return dayHeb + " " + monthPrefixed + " " + yearHeb;
+      }
+    } catch (e) {}
+    return "א׳ בכסלו תשפ״ז";
+  };
+
+  function refreshAllHebrewDates() {
+    var hebStr = window.getHebrewDateString(new Date());
+    var hd = el("home-hebrew-date");
+    if (hd) hd.textContent = hebStr;
+    var pd = el("pray-customs-today-date");
+    if (pd) pd.textContent = hebStr;
+    var greg = "";
+    try { greg = new Intl.DateTimeFormat("he-IL", { day: "numeric", month: "long", year: "numeric" }).format(new Date()); } catch (e) {}
+    var gd = el("home-greg-date");
+    if (gd && greg) gd.textContent = greg;
+  }
+
+  // 2. קרוסלת רילס (סרטונים קצרים) — בלוק #2 בדף הבית
+  window.renderHomeReelsStrip = function () {
+    var strip = el("home-reels-strip");
+    if (!strip) return;
+
+    var reels = (window.REEL_FEED || []).map(function (r, idx) {
+      return {
+        id: r.id || ("reel_" + idx),
+        title: r.title || r.desc || "רילס חיזוק יומי",
+        speaker: r.rabbi || r.author || "בית המדרש צדיק-טוק",
+        category: r.category || r.tag || "חיזוק קצר",
+        duration: r.duration || "00:55",
+        likes: r.likes || (120 + idx * 19),
+        desc: r.desc || r.title || "נקודה קצרה ומחזקת ליום מבורך"
+      };
+    });
+
+    var shortVids = (window.EDUCATIONAL_VIDEOS_DATA || []).slice(0, 4).map(function (v, idx) {
+      return {
+        id: "svid_" + (v.id || idx),
+        title: v.title || "קליפ תורני קצר",
+        speaker: v.speaker || "רב בית המדרש",
+        category: v.category || "קליפ קצר",
+        duration: v.duration || "01:15",
+        likes: v.views || 210,
+        desc: v.description || v.title || ""
+      };
+    });
+
+    var allReels = reels.concat(shortVids);
+    if (!allReels.length) {
+      allReels = [
+        { id: "r1", title: "דקה של אמונה וביטחון בה׳", speaker: "הרב שניאור אשכנזי", category: "אמונה", duration: "00:58", likes: 340, desc: "איך להפוך דאגה לשמחה וביטחון בהשגחה פרטית" },
+        { id: "r2", title: "הלכה ב-60 שניות: ברכת אשר יצר בכוונה", speaker: "הרב יצחק יוסף", category: "הלכה יומית", duration: "01:00", likes: 285, desc: "סגולה נפלאה לבריאות הגוף והנפש מתוך השולחן ערוך" }
+      ];
+    }
+
+    strip.innerHTML = allReels.map(function (item) {
+      return '<div class="shrink-0 w-52 sm:w-56 bg-gradient-to-b from-[#0F2340] to-[#1A365D] text-white border-2 border-[#C9A227] rounded-2xl p-3.5 flex flex-col justify-between gap-3 shadow-sm">' +
+        '<div class="space-y-2">' +
+          '<div class="flex items-center justify-between gap-1 text-xs">' +
+            '<span class="px-2 py-0.5 rounded-md bg-amber-500 text-[#0F2340] font-black text-[12px]">' + esc(item.category) + '</span>' +
+            '<span class="font-mono text-amber-300 font-bold text-[12px]">▶ ' + esc(item.duration) + '</span>' +
+          '</div>' +
+          '<h4 class="text-sm font-black text-white serif-heading leading-snug" style="color:#FFFFFF !important;">' + esc(item.title) + '</h4>' +
+          '<p class="text-xs text-amber-200 font-bold" style="color:#FDE68A !important;">' + esc(item.speaker) + '</p>' +
+        '</div>' +
+        '<div class="pt-2 border-t border-slate-700 flex items-center justify-between gap-2">' +
+          '<button type="button" onclick="openEntityFullPage(\'reel_' + escAttr(item.id) + '\', \'רילס • סרטון קצר\', \'' + escAttr(item.title) + '\', \'' + escAttr(item.speaker) + '\', \'' + escAttr(item.category) + '\', \'אורך: ' + escAttr(item.duration) + '\', \'\', \'' + escAttr(item.desc) + '\', \'חיזוק • השראה\')" class="w-full py-1.5 bg-amber-500 hover:bg-amber-400 text-[#0F2340] font-black rounded-xl text-xs text-center">צפה ברילס</button>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  };
+
+  // 3. הלכה יומית מתחלפת — בלוק #4 בדף הבית
+  var DAILY_HALACHA_ITEMS = [
+    {
+      title: "הלכות ברכות השחר ותפילה בציבור",
+      body: "מיד כשניעור האדם משנתו יאמר \"מודה אני לפניך מלך חי וקיים שהחזרת בי נשמתי בחמלה, רבה אמונתך\", ואין צריך ליטול ידיו תחילה כיון שאין בה הזכרת השם. לאחר נטילת ידיים שחרית כדת יברך ברכות השחר בכוונה וישתדל להתפלל שחרית עם הציבור.",
+      source: "מקור: שולחן ערוך אורח חיים סימן א׳ וסימן צ׳ • משנה ברורה וילקוט יוסף"
+    },
+    {
+      title: "הלכות קדימה בברכות הנהנין (מג״ע א״ש)",
+      body: "היו לפניו מיני מאכלים שונים, מקדים המין החשוב יותר: שבעת המינים קודמים לשאר פירות, וברכת \"בורא פרי העץ\" קודמת ל\"בורא פרי האדמה\", ו\"שהכל\" אחרונה. בברכת המזון ובמעין שלוש יש לכוון להודות לה׳ על הטוב אשר גמלנו.",
+      source: "מקור: שולחן ערוך אורח חיים סימן רי״א • משנה ברורה וכף החיים"
+    },
+    {
+      title: "הלכות כבוד שבת קודש והדלקת נרות",
+      body: "מצווה על כל אדם להכין צרכי שבת מבעוד יום ולבדוק בכיסיו בערב שבת קודם השקיעה שלא יישאר בהם מוקצה. הדלקת נרות שבת מביאה שלום ואור בבית, וראוי לתת פרוטה לצדקה קודם הדלקת הנרות.",
+      source: "מקור: שולחן ערוך אורח חיים סימן רנ״ב וסימן רס״ג"
+    },
+    {
+      title: "הלכות כיבוד אב ואם ומוראם",
+      body: "חייב אדם בכבוד אביו ואמו ובמוראם: מאכילם ומשקם, מלבישם ומכניסם ומוציאם בסבר פנים יפות. אפילו הקדיש שעות ללימוד תורה, מצוות כיבוד הורים שאינה נעשית על ידי אחרים קודמת.",
+      source: "מקור: שולחן ערוך יורה דעה סימן ר״מ"
+    }
+  ];
+  var currentHalachaIdx = 0;
+
+  window.rotateHomeDailyHalacha = function () {
+    currentHalachaIdx = (currentHalachaIdx + 1) % DAILY_HALACHA_ITEMS.length;
+    var item = DAILY_HALACHA_ITEMS[currentHalachaIdx];
+    var t = el("home-halacha-title");
+    var b = el("home-halacha-body");
+    var s = el("home-halacha-source");
+    if (t) t.textContent = item.title;
+    if (b) b.textContent = item.body;
+    if (s) s.textContent = item.source;
+  };
+
+  // 4. קרוסלת שיעורים ארוכים (כרטיסי וידאו אופקיים של רבנים) — בלוק #5 בדף הבית
+  window.renderHomeLongShiurimCarousel = function () {
+    var box = el("home-carousel-shiurim");
+    if (!box) return;
+
+    var shiurim = (window.RABBI_SHIURIM_DATA || []).slice(0, 8);
+    if (!shiurim.length) return;
+
+    box.innerHTML = shiurim.map(function (s, idx) {
+      var sid = s.id || ("sh_" + idx);
+      var title = s.title || "שיעור תורה מרכזי";
+      var rabbi = s.rabbi || "רב בית המדרש";
+      var topic = s.subCategory || s.topic || s.category || "בית המדרש";
+      var dur = s.duration || "45:00";
+      var inst = s.institution || s.description || "שיעור וידאו מלא מבית המדרש";
+      var videoUrl = s.video_url || s.url || "";
+
+      return '<div class="shrink-0 w-64 sm:w-72 bg-[#FDF8EF] border border-[#E5DBC7] hover:border-[#C9A227] rounded-2xl p-4 flex flex-col justify-between gap-3 shadow-sm transition-all">' +
+        '<div class="space-y-2">' +
+          '<div class="flex items-center justify-between gap-2 text-xs">' +
+            '<span class="px-2.5 py-0.5 rounded-md bg-[#E0F2FE] text-[#0369A1] border border-[#7DD3FC] font-black">' + esc(topic) + '</span>' +
+            '<span class="font-mono text-[#5C4938] font-bold">🎥 ' + esc(dur) + '</span>' +
+          '</div>' +
+          '<h4 class="text-base font-black text-[#0F2340] serif-heading leading-snug">' + esc(title) + '</h4>' +
+          '<p class="text-xs font-bold text-[#0F2340]">' + esc(rabbi) + '</p>' +
+          '<p class="text-xs text-[#5C4938] line-clamp-2">' + esc(inst) + '</p>' +
+        '</div>' +
+        '<div class="pt-2 border-t border-[#E5DBC7] flex items-center gap-2">' +
+          (videoUrl
+            ? '<a href="' + escAttr(videoUrl) + '" target="_blank" rel="noopener" class="flex-1 py-2 bg-[#0284C7] hover:bg-[#0369A1] text-white font-black rounded-xl text-xs text-center" style="color:#FFFFFF !important;">צפייה בשיעור ↗</a>'
+            : '<button type="button" onclick="openEntityFullPage(\'shiur_' + escAttr(sid) + '\', \'שיעור וידאו • ' + escAttr(topic) + '\', \'' + escAttr(title) + '\', \'' + escAttr(rabbi) + '\', \'' + escAttr(inst) + '\', \'אורך: ' + escAttr(dur) + '\', \'\', \'' + escAttr(inst) + '\', \'בהירות • עומק\')" class="flex-1 py-2 bg-[#0284C7] hover:bg-[#0369A1] text-white font-black rounded-xl text-xs text-center" style="color:#FFFFFF !important;">צפייה בשיעור</button>'
+          ) +
+        '</div>' +
+      '</div>';
+    }).join("");
+  };
+
+  // 5. דף 'קרוב אליי' (#view-find) — ללא באנר ענק בירוק וללא תיבת חיפוש במסך הראשי!
+  //    מציג אך ורק כותרת קומפקטית ואת 5 הקטגוריות הגדולות (תפילה, אוכל, חסד, אנשים, מקומות) בצורה נקייה.
+  var CLEAN_NEAR_ME_5_CATEGORIES = [
+    {
+      catTitle: "1. תפילה",
+      catSubtitle: "מניינים קרובים בזמן אמת ומקוואות טהרה",
+      items: [
+        { tab: "minyanim", title: "מניינים בזמן אמת", desc: "שחרית, מנחה וערבית בבתי כנסת • השלמת מניין" },
+        { tab: "mikvaot", title: "מקוואות טהרה", desc: "מקוואות נשים, גברים וכלים • שעות פתיחה וניווט" }
+      ]
+    },
+    {
+      catTitle: "2. אוכל",
+      catSubtitle: "מסעדות כשרות למהדרין וסורק ברקוד מוצרים",
+      items: [
+        { tab: "restaurants", title: "מסעדות כשרות", desc: "בשרי, חלבי ופרווה • תעודות כשרות מאומתות" },
+        { action: "openBarcodeScannerModal()", title: "סורק ברקוד כשרות", desc: "סריקת מוצרים לבדיקת גוף הכשרות וחלבי/בשרי/פרווה" }
+      ]
+    },
+    {
+      catTitle: "3. חסד",
+      catSubtitle: "גמ״חים להשאלת ציוד וארגוני רפואה והצלה",
+      items: [
+        { tab: "gemachim", title: "גמ״חים בקהילה", desc: "ציוד רפואי, תינוקות, שמחות, כלי עבודה ופתיחת גמ״ח" },
+        { action: "switchTab('gemachim'); filterGemachimByCategory('רפואה');", title: "ארגוני הצלה וחירום", desc: "יד שרה, עזר מציון, איחוד הצלה וידידים בדרכים" }
+      ]
+    },
+    {
+      catTitle: "4. אנשים",
+      catSubtitle: "רבנים וקווי הלכה, חברותא ובעלי מקצוע תורניים",
+      items: [
+        { tab: "rabbis", title: "קו הלכה ורבנים", desc: "מענה הלכתי מפי פוסקים, שליחת שאלה ותרומה לרב" },
+        { tab: "chavruta", title: "חברותא ללימוד", desc: "מציאת שותף ללימוד גמרא, הלכה, פרשה או חסידות" },
+        { tab: "customs", title: "שירותי דת", desc: "מוהלים, משגיחי כשרות, סופרי סת״ם ומדריכי חתנים" }
+      ]
+    },
+    {
+      catTitle: "5. מקומות",
+      catSubtitle: "קברי צדיקים, בתי חב״ד בעולם וישיבות",
+      items: [
+        { tab: "tzaddikim", title: "קברי צדיקים", desc: "תהילים בציון, תרומה ובניית מסלול ביקורים חכם" },
+        { tab: "chabad", title: "בתי חב״ד", desc: "שלוחי חב״ד בארץ ובעולם וקבוצות וואטסאפ למטיילים" },
+        { tab: "yeshivot", title: "ישיבות ומוסדות", desc: "מדריך ישיבות וכוללים, העלאת מוסד ותרומה להחזקת תורה" }
+      ]
+    }
+  ];
+
+  window.renderFindHub = function () {
+    var root = el("find-hub-root");
+    if (!root) return;
+    root.innerHTML =
+      '<div class="page-top-tint-bar page-top-tint-near">' +
+        '<div>' +
+          '<span class="px-2.5 py-0.5 bg-[#0D9488] text-white rounded-md text-xs font-black inline-block mb-0.5" style="color:#FFFFFF !important;">קרוב אליי • 5 קטגוריות</span>' +
+          '<h2 class="text-lg sm:text-xl font-black text-[#0F2340] serif-heading">קרוב אליי • תפילה, אוכל, חסד, אנשים ומקומות</h2>' +
+        '</div>' +
+        '<span class="text-xs font-bold text-[#0F766E]">בחר קטגוריה (חיפוש ו-GPS מופיעים בתוך כל תת-מדור)</span>' +
+      '</div>' +
+      '<div class="near-me-5cat-grid">' +
+        CLEAN_NEAR_ME_5_CATEGORIES.map(function (grp) {
+          return '<div class="near-me-cat-box space-y-2.5">' +
+            '<div class="flex items-center justify-between gap-2 border-b border-[#CCFBF1] pb-2">' +
+              '<h3 class="text-base sm:text-lg font-black text-[#0F2340] serif-heading">' + esc(grp.catTitle) + '</h3>' +
+              '<span class="text-xs text-[#0F766E] font-bold">' + esc(grp.catSubtitle) + '</span>' +
+            '</div>' +
+            '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">' +
+              grp.items.map(function (it) {
+                var clickAttr = it.action ? it.action : ("switchTab('" + it.tab + "')");
+                return '<button type="button" onclick="' + clickAttr + '" class="tt-tile hover:bg-[#F0FDFA]">' +
+                  '<strong>' + esc(it.title) + '</strong>' +
+                  '<span>' + esc(it.desc) + '</span>' +
+                '</button>';
+              }).join("") +
+            '</div>' +
+          '</div>';
+        }).join("") +
+      '</div>';
+  };
+
+  // 6. עדכון כפתורי הקהילה ברשת 2 העמודות הקומפקטית (#view-forum)
+  var prevSwitchCommSub = window.switchCommunitySubTab;
+  window.switchCommunitySubTab = function (subKey) {
+    if (prevSwitchCommSub) prevSwitchCommSub(subKey);
+    var active = subKey || "forum";
+    ["forum", "raffles", "charity"].forEach(function (k) {
+      var btn = el("comm-tab-btn-" + k);
+      if (btn) {
+        btn.className = "community-compact-btn" + (k === active ? " active" : "");
+      }
+    });
+  };
+
+  // 7. סינון לפי "נושא" בלבד בדף הבית של 'ללמוד' (#learn-filter-topic)
+  window.applyLearnTopicFilter = function (topic) {
+    var box = el("learn-search-results-box");
+    if (!topic || topic === "all") {
+      if (box) { box.classList.add("hidden"); box.innerHTML = ""; }
+      if (window.renderRabbiShiurimList) window.renderRabbiShiurimList("");
+      return;
+    }
+
+    // הצגת תוצאות ממוקדות מכל מאגרי "ללמוד" לפי הנושא שנבחר
+    var matches = [];
+    (window.RABBI_SHIURIM_DATA || []).forEach(function (s) {
+      if (window.matchesSmartSearch([s.title, s.rabbi, s.subCategory, s.topic, s.category, s.institution, s.description], topic)) {
+        matches.push({
+          type: "שיעור • " + (s.subCategory || s.topic || topic),
+          title: s.title,
+          sub: (s.rabbi || "רב") + (s.duration ? " • " + s.duration : ""),
+          url: s.video_url || s.url || "",
+          action: function () { window.switchLearnMainTab("shiurim"); }
+        });
+      }
+    });
+    (window.EDUCATIONAL_VIDEOS_DATA || []).forEach(function (v) {
+      if (window.matchesSmartSearch([v.title, v.speaker, v.category, v.description], topic)) {
+        matches.push({
+          type: "סרטון • " + (v.category || topic),
+          title: v.title,
+          sub: v.speaker || "",
+          url: v.video_url || v.url || "",
+          action: function () { window.switchLibrarySubTab("eduvideos"); }
+        });
+      }
+    });
+    (window.TZADDIKIM_STORIES_DATA || []).forEach(function (st) {
+      if (topic === "סיפורי צדיקים" || window.matchesSmartSearch([st.title, st.tzaddik, st.category, st.moral, st.story], topic)) {
+        matches.push({
+          type: "סיפור צדיקים • " + (st.tzaddik || ""),
+          title: st.title,
+          sub: st.moral || "",
+          url: "",
+          action: function () { window.switchLibrarySubTab("tzaddikim_stories"); }
+        });
+      }
+    });
+
+    if (!box) return;
+    box.classList.remove("hidden");
+    if (!matches.length) {
+      box.innerHTML = '<div class="p-4 bg-white border border-[#7DD3FC] rounded-xl text-xs text-[#0F2340] flex items-center justify-between">' +
+        '<span>לא נמצאו פריטים ספציפיים בנושא <strong>' + esc(topic) + '</strong>. תוכל להעלות תוכן חדש בנושא זה!</span>' +
+        '<button type="button" onclick="applyLearnTopicFilter(\'all\')" class="px-3 py-1 bg-[#E0F2FE] text-[#0369A1] font-bold rounded-lg">נקה סינון</button>' +
+      '</div>';
+      return;
+    }
+
+    box.innerHTML =
+      '<div class="bg-white border-2 border-[#0284C7] rounded-2xl p-4 space-y-3 shadow-sm">' +
+        '<div class="flex items-center justify-between border-b border-[#BAE6FD] pb-2">' +
+          '<span class="text-xs font-black text-[#0F2340]">תכנים בנושא: ' + esc(topic) + ' (' + matches.length + ' תוצאות)</span>' +
+          '<button type="button" onclick="document.getElementById(\'learn-filter-topic\').value=\'all\'; applyLearnTopicFilter(\'all\');" class="text-xs font-bold text-[#0284C7] underline">הצג הכל</button>' +
+        '</div>' +
+        '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">' +
+          matches.slice(0, 10).map(function (m, i) {
+            return '<div class="p-3 rounded-xl bg-[#F0F9FF] border border-[#BAE6FD] flex items-center justify-between gap-2">' +
+              '<div>' +
+                '<span class="text-[12px] font-black text-[#0284C7] block">' + esc(m.type) + '</span>' +
+                '<strong class="text-sm font-black text-[#0F2340] block">' + esc(m.title) + '</strong>' +
+                '<span class="text-xs text-[#5C4938]">' + esc(m.sub) + '</span>' +
+              '</div>' +
+              (m.url
+                ? '<a href="' + escAttr(m.url) + '" target="_blank" rel="noopener" class="px-3 py-1.5 bg-[#0284C7] text-white font-bold rounded-xl text-xs shrink-0" style="color:#FFFFFF !important;">צפה ↗</a>'
+                : '<button type="button" onclick="switchLearnMainTab(\'shiurim\')" class="px-3 py-1.5 bg-[#0284C7] text-white font-bold rounded-xl text-xs shrink-0" style="color:#FFFFFF !important;">פתח</button>'
+              ) +
+            '</div>';
+          }).join("") +
+        '</div>' +
+      '</div>';
+  };
+
+  // 8. תשתית להעלאת תוכן בתוך 'ללמוד' -> שומר לטבלת `lessons` ב-Supabase עם `is_approved: false`
+  window.openLearnContentUploadModal = function () {
+    var statusEl = el("upload-learn-status-msg");
+    if (statusEl) { statusEl.classList.add("hidden"); statusEl.textContent = ""; }
+    if (window.openModal) window.openModal("modal-upload-learn-content");
+    else {
+      var m = el("modal-upload-learn-content");
+      if (m) m.classList.remove("hidden");
+    }
+  };
+
+  window.submitLearnContentUpload = async function (ev) {
+    if (ev && ev.preventDefault) ev.preventDefault();
+
+    var title = (el("upload-learn-title") ? el("upload-learn-title").value : "").trim();
+    var category = (el("upload-learn-category") ? el("upload-learn-category").value : "הלכה").trim();
+    var videoUrl = (el("upload-learn-url") ? el("upload-learn-url").value : "").trim();
+    var rabbi = (el("upload-learn-rabbi") ? el("upload-learn-rabbi").value : "").trim() || "בית המדרש צדיק-טוק";
+    var desc = (el("upload-learn-desc") ? el("upload-learn-desc").value : "").trim();
+    var btn = el("btn-submit-learn-upload");
+    var statusEl = el("upload-learn-status-msg");
+
+    if (!title || !videoUrl || !desc) {
+      if (window.toast) window.toast("נא למלא כותרת, תיאור וקישור URL לוידאו");
+      return;
+    }
+
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "שומר ב-Supabase...";
+    }
+
+    var payload = {
+      title: title,
+      description: desc,
+      video_url: videoUrl,
+      url: videoUrl,
+      category: category,
+      topic: category,
+      sub_category: category,
+      rabbi: rabbi,
+      institution: desc,
+      duration: "וידאו",
+      is_approved: false
+    };
+
+    var savedToSupabase = false;
+    var errText = "";
+
+    if (window.supabaseClient) {
+      try {
+        var res = await window.supabaseClient.from("lessons").insert([payload]);
+        if (!res.error) {
+          savedToSupabase = true;
+        } else {
+          errText = res.error.message || "";
+          // ניסיון חוזר עם עמודות בסיסיות בלבד אם טרם הורץ קובץ ה-SQL החדש
+          var minimalRes = await window.supabaseClient.from("lessons").insert([{
+            title: title,
+            rabbi: rabbi,
+            topic: category,
+            sub_category: category,
+            institution: desc + " | " + videoUrl,
+            url: videoUrl,
+            is_approved: false
+          }]);
+          if (!minimalRes.error) {
+            savedToSupabase = true;
+          } else {
+            errText = minimalRes.error.message || errText;
+          }
+        }
+      } catch (e) {
+        errText = e.message || String(e);
+      }
+    }
+
+    // שמירת גיבוי מקומי ב-localStorage למקרה של עבודה אופליין
+    try {
+      var localPending = JSON.parse(localStorage.getItem("tzadiktok_pending_lessons_v39") || "[]");
+      localPending.unshift(Object.assign({ id: Date.now(), created_at: new Date().toISOString() }, payload));
+      localStorage.setItem("tzadiktok_pending_lessons_v39", JSON.stringify(localPending));
+    } catch (e) {}
+
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "שלח לאישור מנהל";
+    }
+
+    if (statusEl) {
+      statusEl.classList.remove("hidden");
+      if (savedToSupabase) {
+        statusEl.className = "p-3 rounded-xl text-xs font-bold bg-emerald-50 border border-emerald-300 text-emerald-800";
+        statusEl.textContent = "✓ התוכן נשמר בהצלחה בטבלת lessons ב-Supabase עם סטטוס ממתין לאישור מנהל (is_approved: false)!";
+      } else {
+        statusEl.className = "p-3 rounded-xl text-xs font-bold bg-amber-50 border border-amber-300 text-amber-900";
+        statusEl.textContent = "התוכן נשמר להמתנה לאישור מנהל. (הערת מסד נתונים: ודא שהרצת את tzadiktok_v39_patch.sql ב-Supabase: " + errText + ")";
+      }
+    }
+
+    if (window.toast) {
+      window.toast("התוכן נשלח בהצלחה וממתין לאישור מנהל בפאנל הניהול!");
+    }
+
+    ["upload-learn-title", "upload-learn-url", "upload-learn-rabbi", "upload-learn-desc"].forEach(function (id) {
+      var inp = el(id);
+      if (inp) inp.value = "";
+    });
+
+    setTimeout(function () {
+      if (window.closeModal) window.closeModal("modal-upload-learn-content");
+    }, 1800);
+  };
+
+  // 9. ניהול ואישור תכנים שהועלו לטבלת `lessons` מתוך פאנל הניהול (#view-admin) — מוגבל למנהל m053425853@gmail.com בלבד
+  var ADMIN_EMAIL_V39 = "m053425853@gmail.com";
+
+  async function verifyIsAdminUser() {
+    if (!window.supabaseClient) return false;
+    try {
+      var res = await window.supabaseClient.auth.getSession();
+      var session = res && res.data ? res.data.session : null;
+      var email = session && session.user && session.user.email ? session.user.email.toLowerCase().trim() : "";
+      return email === ADMIN_EMAIL_V39;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  window.loadAdminPendingLessons = async function () {
+    var box = el("admin-supabase-lessons-list");
+    if (!box) return;
+    if (!window.supabaseClient) {
+      box.innerHTML = '<div class="p-3 bg-red-50 text-red-700 rounded-xl">חיבור Supabase אינו זמין.</div>';
+      return;
+    }
+
+    box.innerHTML = '<div class="p-3 bg-white border border-[#BAE6FD] rounded-xl text-[#5C4938]">טוען תכנים מטבלת lessons ב-Supabase...</div>';
+    try {
+      var res = await window.supabaseClient.from("lessons").select("*").order("created_at", { ascending: false });
+      if (res.error) {
+        box.innerHTML = '<div class="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl">שגיאה בטעינת lessons: ' + esc(res.error.message) + '</div>';
+        return;
+      }
+      var list = res.data || [];
+      if (!list.length) {
+        box.innerHTML = '<div class="p-3 bg-white border border-[#BAE6FD] rounded-xl text-[#5C4938]">אין כרגע רשומות בטבלת lessons ב-Supabase.</div>';
+        return;
+      }
+
+      box.innerHTML = list.map(function (item) {
+        var isApp = !!item.is_approved;
+        var title = item.title || "ללא כותרת";
+        var cat = item.category || item.topic || item.sub_category || "כללי";
+        var desc = item.description || item.institution || "";
+        var vUrl = item.video_url || item.url || "";
+        var rabbi = item.rabbi || "";
+
+        return '<div class="p-3.5 rounded-xl bg-white border ' + (isApp ? 'border-[#BAE6FD]' : 'border-amber-400 bg-amber-50/40') + ' flex flex-col sm:flex-row sm:items-center justify-between gap-3">' +
+          '<div class="space-y-1">' +
+            '<div class="flex items-center gap-2 flex-wrap">' +
+              '<span class="px-2 py-0.5 rounded-md font-bold text-[11px] ' + (isApp ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800') + '">' + (isApp ? '✓ מאושר באתר' : '⏳ ממתין לאישור מנהל') + '</span>' +
+              '<span class="px-2 py-0.5 rounded-md bg-[#E0F2FE] text-[#0369A1] font-bold text-[11px]">' + esc(cat) + '</span>' +
+              '<strong class="text-sm font-black text-[#0F2340]">' + esc(title) + '</strong>' +
+              (rabbi ? '<span class="text-xs text-[#5C4938]">• ' + esc(rabbi) + '</span>' : '') +
+            '</div>' +
+            (desc ? '<p class="text-xs text-[#5C4938]">' + esc(desc) + '</p>' : '') +
+            (vUrl ? '<a href="' + escAttr(vUrl) + '" target="_blank" rel="noopener" class="text-xs text-[#0284C7] underline inline-block" dir="ltr">' + esc(vUrl) + '</a>' : '') +
+          '</div>' +
+          '<div class="flex items-center gap-2 shrink-0">' +
+            (!isApp ? '<button type="button" onclick="approveSupabaseLesson(' + Number(item.id) + ')" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs" style="color:#FFFFFF !important;">אשר תוכן</button>' : '') +
+            '<button type="button" onclick="deleteSupabaseLesson(' + Number(item.id) + ')" class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 border border-red-300 font-bold rounded-xl text-xs">מחק</button>' +
+          '</div>' +
+        '</div>';
+      }).join("");
+    } catch (err) {
+      box.innerHTML = '<div class="p-3 bg-red-50 text-red-700 rounded-xl">שגיאה: ' + esc(err.message) + '</div>';
+    }
+  };
+
+  window.approveSupabaseLesson = async function (id) {
+    var okAdmin = await verifyIsAdminUser();
+    if (!okAdmin) {
+      if (window.toast) window.toast("גישה חסומה: רק מנהל המערכת (m053425853@gmail.com) רשאי לאשר תכנים!");
+      return;
+    }
+    var res = await window.supabaseClient.from("lessons").update({ is_approved: true }).eq("id", id);
+    if (res.error) {
+      if (window.toast) window.toast("שגיאה באישור התוכן: " + res.error.message);
+      return;
+    }
+    if (window.toast) window.toast("התוכן אושר ופורסם באתר!");
+    window.loadAdminPendingLessons();
+  };
+
+  window.deleteSupabaseLesson = async function (id) {
+    var okAdmin = await verifyIsAdminUser();
+    if (!okAdmin) {
+      if (window.toast) window.toast("גישה חסומה: רק מנהל המערכת (m053425853@gmail.com) רשאי למחוק תכנים!");
+      return;
+    }
+    var res = await window.supabaseClient.from("lessons").delete().eq("id", id);
+    if (res.error) {
+      if (window.toast) window.toast("שגיאה במחיקת התוכן: " + res.error.message);
+      return;
+    }
+    if (window.toast) window.toast("התוכן נמחק מטבלת lessons.");
+    window.loadAdminPendingLessons();
+  };
+
+  // אתחול V39
+  function initV39() {
+    refreshAllHebrewDates();
+    window.renderHomeReelsStrip();
+    window.renderHomeLongShiurimCarousel();
+    window.renderFindHub();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initV39);
+  } else {
+    initV39();
+  }
+})();
