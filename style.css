@@ -1343,3 +1343,229 @@ main, .view-section {
   padding: 14px 16px !important;
   box-shadow: 0 2px 6px rgba(15, 35, 64, 0.04) !important;
 }
+
+
+/* ==========================================================================
+   V41 — קרוסלת רילס אנכית (9:16) קומפקטית ונקייה מסופרבייס בלבד,
+         ומסך ראשי נקי למדור 'ללמוד' + סרגל סינונים פנימי קומפקטי
+   ========================================================================== */
+
+/* 1. קרוסלת רילס בדף הבית — סרטונים אנכיים (9:16), קומפקטיים, ללא מסגרות מיותרות, גלילה אופקית חלקה ורק כותרת קצרה מתחת */
+#home-reels-carousel-section {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 2px 0 !important;
+}
+.reels-9x16-strip {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+  overflow-x: auto !important;
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch !important;
+  scroll-snap-type: x proximity !important;
+  padding: 2px 2px 4px 2px !important;
+  background: transparent !important;
+  border: none !important;
+}
+.reel-9x16-item {
+  flex: 0 0 auto !important;
+  width: 104px !important;
+  scroll-snap-align: start !important;
+  cursor: pointer !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  text-align: right !important;
+  outline: none !important;
+}
+@media (min-width: 640px) {
+  .reel-9x16-item {
+    width: 116px !important;
+  }
+}
+.reel-9x16-video-box {
+  width: 100% !important;
+  aspect-ratio: 9 / 16 !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  position: relative !important;
+  background: #0F2340 !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(15, 35, 64, 0.12) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: transform 0.16s ease !important;
+}
+.reel-9x16-item:hover .reel-9x16-video-box {
+  transform: translateY(-2px) !important;
+}
+.reel-9x16-thumb-img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+.reel-9x16-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  background: linear-gradient(180deg, rgba(15,35,64,0.05) 0%, rgba(15,35,64,0.55) 100%) !important;
+}
+.reel-9x16-play {
+  position: relative !important;
+  z-index: 2 !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #0F2340 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+}
+.reel-9x16-title {
+  margin-top: 5px !important;
+  font-size: 11.5px !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+  color: #0F2340 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  padding: 0 1px !important;
+}
+
+/* 2. מדור 'ללמוד' (#view-series) — מסך ראשי נקי ואווירי עם כפתורי קטגוריות גדולים ושורת חיפוש אחת בלבד */
+#view-series {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.learn-main-cats-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+@media (min-width: 640px) {
+  .learn-main-cats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+}
+@media (min-width: 1024px) {
+  .learn-main-cats-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+.learn-big-cat-btn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 14px 14px !important;
+  border-radius: 16px !important;
+  background-color: #FFFFFF !important;
+  border: 1.5px solid #BAE6FD !important;
+  color: #0F2340 !important;
+  text-align: right !important;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.05) !important;
+  transition: all 0.15s ease !important;
+  cursor: pointer !important;
+}
+.learn-big-cat-btn:hover {
+  border-color: #0284C7 !important;
+  background-color: #F0F9FF !important;
+  transform: translateY(-1px) !important;
+}
+.learn-big-cat-icon {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 12px !important;
+  background-color: #E0F2FE !important;
+  color: #0284C7 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+.learn-big-cat-text {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  min-width: 0 !important;
+}
+.learn-big-cat-text strong {
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  color: #0F2340 !important;
+  line-height: 1.2 !important;
+}
+.learn-big-cat-text span {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: #5C4938 !important;
+  line-height: 1.25 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 1 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+}
+
+/* 3. סרגל סינונים פנימי קומפקטי ועדין בתוך תתי-המדורים של 'ללמוד' (שיעורים, סרטונים וכו') */
+.learn-internal-filter-bar {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 8px 10px !important;
+  background-color: #F8FAFC !important;
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 14px !important;
+}
+.learn-internal-search-wrap {
+  flex: 1 1 180px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #CBD5E1 !important;
+  border-radius: 10px !important;
+  padding: 6px 10px !important;
+}
+.learn-compact-select {
+  background-color: #FFFFFF !important;
+  border: 1px solid #CBD5E1 !important;
+  border-radius: 10px !important;
+  padding: 6px 10px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #0F2340 !important;
+  outline: none !important;
+  cursor: pointer !important;
+  max-width: 165px !important;
+}
+.learn-compact-select:focus {
+  border-color: #0284C7 !important;
+}
+.learn-compact-action-btn {
+  background-color: #0284C7 !important;
+  color: #FFFFFF !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  padding: 6px 12px !important;
+  border-radius: 10px !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+}
+.learn-compact-action-btn:hover {
+  background-color: #0369A1 !important;
+}

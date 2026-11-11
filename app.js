@@ -10654,3 +10654,564 @@ window.forceExitShabbatMode = function () {
     initV40();
   }
 })();
+
+
+// ============================================================================
+// V41 MASTER UPGRADE —
+// 1. תיקון הבאג הקריטי: משיכת רילס מאושרים לדף הבית (#home-reels-strip) אך ורק מטבלת `lessons`
+//    ב-Supabase עם תנאי `.eq("is_approved", true)`, ומחיקה מוחלטת של כל כרטיסי הדמו.
+// 2. סידור דף 'ללמוד' (#view-series):
+//    - במסך הראשי (#learn-hub-home) מופיעים אך ורק שורת חיפוש כללית אחת והכפתורים הגדולים של הקטגוריות (ללא סינונים וללא תת-מדור פתוח מראש).
+//    - רק בלחיצה על קטגוריה (למשל 'שיעורים' או 'סרטונים') נפתח התת-מדור עם סרגל סינון פנימי קומפקטי וכפתור '← חזרה ללמוד'.
+// 3. עיצוב קרוסלת הרילס: סרטונים אנכיים 9:16 קומפקטיים, גלילה אופקית חלקה, ללא מסגרות ורק כותרת קצרה מתחת לכל סרטון + נגן וידאו בלחיצה.
+// ============================================================================
+(function () {
+  "use strict";
+
+  var esc = window.escapeHtml || function (v) {
+    if (v === null || v === undefined) return "";
+    return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  };
+  var escAttr = window.escAttr || function (v) {
+    if (v === null || v === undefined) return "";
+    return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "").replace(/`/g, "");
+  };
+
+  function el(id) { return document.getElementById(id); }
+
+  // --------------------------------------------------------------------------
+  // 1. עזרי חילוץ מזהה ותמונת יוטיוב מתוך שורות טבלת `lessons` ב-Supabase
+  // --------------------------------------------------------------------------
+  function extractUrlFromLessonRow(row) {
+    if (!row) return "";
+    var candidates = [row.video_url, row.url, row.videoUrl, row.institution, row.description];
+    for (var i = 0; i < candidates.length; i++) {
+      var val = String(candidates[i] || "").trim();
+      if (!val) continue;
+      var m = val.match(/https?:\/\/[^\s"|<>]+/i);
+      if (m && m[0]) return m[0];
+      if (/(?:youtube\.com|youtu\.be)\//i.test(val)) {
+        return /^https?:\/\//i.test(val) ? val : ("https://" + val);
+      }
+    }
+    return "";
+  }
+
+  function extractYoutubeVideoId(url) {
+    if (!url) return "";
+    var s = String(url).trim();
+    var m = s.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{6,15})/i);
+    if (m && m[1]) return m[1];
+    return "";
+  }
+
+  function getLessonThumbUrl(row) {
+    var vUrl = extractUrlFromLessonRow(row);
+    var ytId = extractYoutubeVideoId(vUrl);
+    if (ytId) {
+      return "https://img.youtube.com/vi/" + ytId + "/hqdefault.jpg";
+    }
+    if (row && row.thumbnail && /^https?:\/\//i.test(row.thumbnail)) {
+      return row.thumbnail;
+    }
+    // תמונת רקע עדינה במקרה שהועלה קישור וידאו שאינו מיוטיוב
+    return "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=500&q=80";
+  }
+
+  // איפוס מערך הדמו של הרילס כדי שלעולם לא יופיעו כרטיסי דמו קשיחים
+  window.REEL_FEED = [];
+
+  // --------------------------------------------------------------------------
+  // 2. נגן וידאו לרילס מאושרים בדף הבית (#modal-reel-player)
+  // --------------------------------------------------------------------------
+  window.playApprovedReelVideo = function (videoUrl, title, rabbi) {
+    var url = String(videoUrl || "").trim();
+    var ytId = extractYoutubeVideoId(url);
+    var modal = el("modal-reel-player");
+    var frameWrap = el("reel-player-frame-wrap");
+    var titleEl = el("reel-player-title");
+    var rabbiEl = el("reel-player-rabbi");
+    var extLink = el("reel-player-ext-link");
+
+    if (!modal || !frameWrap) {
+      if (url) window.open(url, "_blank", "noopener");
+      return;
+    }
+
+    if (titleEl) titleEl.textContent = title || "סרטון חיזוק";
+    if (rabbiEl) rabbiEl.textContent = rabbi || "צדיק-טוק • רילס";
+    if (extLink) {
+      extLink.href = url || "#";
+      extLink.style.display = url ? "block" : "none";
+    }
+
+    if (ytId) {
+      var embedUrl = "https://www.youtube.com/embed/" + encodeURIComponent(ytId) + "?autoplay=1&rel=0&playsinline=1";
+      frameWrap.innerHTML = '<iframe src="' + escAttr(embedUrl) + '" class="w-full h-full border-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+    } else if (url) {
+      frameWrap.innerHTML =
+        '<div class="p-6 text-center space-y-3">' +
+          '<p class="text-xs text-amber-200 font-bold">לחץ לפתיחת הסרטון בחלון חדש:</p>' +
+          '<a href="' + escAttr(url) + '" target="_blank" rel="noopener" class="inline-block px-5 py-2.5 rounded-xl bg-amber-500 text-[#0F2340] font-black text-xs">פתח סרטון ↗</a>' +
+        '</div>';
+    }
+
+    modal.classList.remove("hidden");
+  };
+
+  window.closeReelPlayerModal = function () {
+    var modal = el("modal-reel-player");
+    var frameWrap = el("reel-player-frame-wrap");
+    if (frameWrap) frameWrap.innerHTML = "";
+    if (modal) modal.classList.add("hidden");
+  };
+
+  // --------------------------------------------------------------------------
+  // 3. שליפת רילס מאושרים לדף הבית אך ורק מטבלת `lessons` ב-Supabase עם `is_approved = true`
+  //    (ללא שום כרטיסי דמו!)
+  // --------------------------------------------------------------------------
+  var cachedApprovedLessons = [];
+
+  window.fetchApprovedLessonsFromSupabase = async function () {
+    if (!window.supabaseClient) return [];
+    try {
+      // שליפה ישירה מטבלת lessons עם תנאי is_approved = true
+      var res = await window.supabaseClient
+        .from("lessons")
+        .select("*")
+        .eq("is_approved", true)
+        .order("id", { ascending: false });
+
+      if (!res.error && Array.isArray(res.data)) {
+        cachedApprovedLessons = res.data;
+        return res.data;
+      }
+
+      // גיבוי למקרה של שוני בטיפוס העמודה: שולפים הכל ומסננים ב-JS רק is_approved === true
+      var fallbackRes = await window.supabaseClient
+        .from("lessons")
+        .select("*")
+        .order("id", { ascending: false });
+
+      if (!fallbackRes.error && Array.isArray(fallbackRes.data)) {
+        var filtered = fallbackRes.data.filter(function (row) {
+          return row && (row.is_approved === true || row.is_approved === "true" || row.is_approved === 1);
+        });
+        cachedApprovedLessons = filtered;
+        return filtered;
+      }
+    } catch (e) {
+      console.warn("[fetchApprovedLessonsFromSupabase error]:", e);
+    }
+    return cachedApprovedLessons || [];
+  };
+
+  window.renderHomeReelsStrip = async function () {
+    var strip = el("home-reels-strip");
+    if (!strip) return;
+
+    strip.className = "reels-9x16-strip hide-scrollbar";
+
+    var approvedRows = await window.fetchApprovedLessonsFromSupabase();
+
+    if (!approvedRows || approvedRows.length === 0) {
+      strip.innerHTML =
+        '<div class="w-full py-3 px-4 rounded-xl bg-[#FDF8EF] border border-[#E5DBC7] text-xs text-[#5C4938] flex items-center justify-between gap-2">' +
+          '<span>אין כרגע סרטוני רילס מאושרים בטבלת <strong>lessons</strong> ב-Supabase.</span>' +
+          '<button type="button" onclick="openLearnContentUploadModal()" class="px-3 py-1 rounded-lg bg-[#0284C7] text-white font-bold text-xs shrink-0" style="color:#FFFFFF !important;">+ העלה סרטון</button>' +
+        '</div>';
+      return;
+    }
+
+    // רינדור קרוסלת הרילס מהנתונים המאושרים ב-Supabase בלבד:
+    // סרטון אנכי (9:16), ללא מסגרות מיותרות מסביב, גלילה אופקית חלקה, ורק כותרת קצרה מתחת לכל סרטון
+    strip.innerHTML = approvedRows.map(function (row) {
+      var title = String(row.title || "סרטון חיזוק").trim();
+      var rabbi = String(row.rabbi_name || row.rabbi || "בית המדרש צדיק-טוק").trim();
+      var videoUrl = extractUrlFromLessonRow(row);
+      var thumbUrl = getLessonThumbUrl(row);
+
+      return '<button type="button" onclick="playApprovedReelVideo(\'' + escAttr(videoUrl) + '\', \'' + escAttr(title) + '\', \'' + escAttr(rabbi) + '\')" class="reel-9x16-item" title="' + escAttr(title) + '">' +
+        '<div class="reel-9x16-video-box">' +
+          '<img src="' + escAttr(thumbUrl) + '" alt="' + escAttr(title) + '" class="reel-9x16-thumb-img" loading="lazy">' +
+          '<div class="reel-9x16-overlay"></div>' +
+          '<span class="reel-9x16-play">▶</span>' +
+        '</div>' +
+        '<p class="reel-9x16-title">' + esc(title) + '</p>' +
+      '</button>';
+    }).join("");
+
+    // סנכרון הסרטונים/השיעורים המאושרים גם לתוך מאגר השיעורים והסרטונים של 'ללמוד'
+    syncApprovedLessonsIntoLearn(approvedRows);
+  };
+
+  function syncApprovedLessonsIntoLearn(approvedRows) {
+    if (!Array.isArray(approvedRows) || !approvedRows.length) return;
+
+    var shiurimList = Array.isArray(window.RABBI_SHIURIM_DATA) ? window.RABBI_SHIURIM_DATA.slice() : [];
+    var eduList = Array.isArray(window.EDUCATIONAL_VIDEOS_DATA) ? window.EDUCATIONAL_VIDEOS_DATA.slice() : [];
+
+    approvedRows.forEach(function (row) {
+      var sid = "sb_les_" + row.id;
+      var vUrl = extractUrlFromLessonRow(row);
+      var cat = row.category || row.topic || "הלכה";
+      var rabbi = row.rabbi_name || row.rabbi || "בית המדרש צדיק-טוק";
+      var desc = row.description || row.institution || "שיעור/סרטון מאושר מ-Supabase";
+
+      if (!shiurimList.some(function (x) { return String(x.id) === sid || String(x.id) === ("sb_" + row.id); })) {
+        shiurimList.unshift({
+          id: sid,
+          rabbi: rabbi,
+          title: row.title || "שיעור תורה",
+          subCategory: cat,
+          topic: cat,
+          institution: desc,
+          duration: row.duration || "וידאו",
+          videoUrl: vUrl,
+          video_url: vUrl
+        });
+      }
+
+      if (!eduList.some(function (x) { return String(x.id) === sid; })) {
+        eduList.unshift({
+          id: sid,
+          title: row.title || "סרטון חינוכי",
+          speaker: rabbi,
+          category: cat,
+          duration: row.duration || "וידאו",
+          description: desc,
+          url: vUrl,
+          video_url: vUrl,
+          thumbnail: getLessonThumbUrl(row)
+        });
+      }
+    });
+
+    window.RABBI_SHIURIM_DATA = shiurimList;
+    window.EDUCATIONAL_VIDEOS_DATA = eduList;
+    if (window.setStorageJson && window.STORAGE_KEYS) {
+      window.setStorageJson(window.STORAGE_KEYS.RABBI_SHIURIM, shiurimList);
+      window.setStorageJson(window.STORAGE_KEYS.EDU_VIDEOS, eduList);
+    }
+  }
+
+  // עדכון fetchLessonsFromSupabase ו-approveSupabaseLesson כך שירעננו מיד גם את קרוסלת הרילס בדף הבית
+  var prevFetchLessons = window.fetchLessonsFromSupabase;
+  window.fetchLessonsFromSupabase = async function () {
+    await window.renderHomeReelsStrip();
+    if (prevFetchLessons) {
+      try { await prevFetchLessons(); } catch (e) {}
+    }
+    if (window.renderHomeLongShiurimCarousel) window.renderHomeLongShiurimCarousel();
+  };
+
+  var prevApproveLesson = window.approveSupabaseLesson;
+  window.approveSupabaseLesson = async function (id) {
+    if (prevApproveLesson) {
+      await prevApproveLesson(id);
+    }
+    await window.renderHomeReelsStrip();
+    if (window.renderHomeLongShiurimCarousel) window.renderHomeLongShiurimCarousel();
+  };
+
+  var prevDeleteLesson = window.deleteSupabaseLesson;
+  window.deleteSupabaseLesson = async function (id) {
+    if (prevDeleteLesson) {
+      await prevDeleteLesson(id);
+    }
+    await window.renderHomeReelsStrip();
+  };
+
+  // --------------------------------------------------------------------------
+  // 4. סידור דף 'ללמוד' (#view-series):
+  //    - מסך ראשי (#learn-hub-home) עם כפתורי קטגוריות גדולים ושורת חיפוש כללית אחת בלבד!
+  //    - כניסה לתת-מדור (openLearnSection) מציגה את התוצאות והסינונים הפנימיים הקומפקטיים.
+  // --------------------------------------------------------------------------
+  var LEARN_ALL_SUB_PANELS = [
+    "lib-sub-torah",
+    "lib-sub-nach",
+    "lib-sub-generations",
+    "lib-sub-mishnah",
+    "lib-sub-chassidut",
+    "lib-sub-courses",
+    "lib-sub-liveshiurim",
+    "lib-sub-eduvideos",
+    "lib-sub-weekseries",
+    "lib-sub-aiseries",
+    "lib-sub-tzaddikim-stories",
+    "lib-sub-quizzes-inline"
+  ];
+
+  var LEARN_SECTION_TITLES = {
+    torah: "פרשה (חמישה חומשי תורה)",
+    nach: "תנ״ך (נביאים וכתובים)",
+    liveshiurim: "שיעורים ובית המדרש",
+    shiurim: "שיעורים ובית המדרש",
+    eduvideos: "סרטונים חינוכיים ויוטיוב כשר",
+    courses: "קורסים ומסלולי לימוד",
+    tzaddikim_stories: "סיפורי צדיקים",
+    generations: "ראשונים ואחרונים • ציר הדורות",
+    mishnah: "משנה, גמרא והלכה",
+    chassidut: "תורת החסידות",
+    quizzes: "חידונים ואתגרי ידע"
+  };
+
+  // חזרה למסך הראשי הנקי של 'ללמוד' (רק שורת החיפוש הכללית וכפתורי הקטגוריות הגדולים)
+  window.backToLearnHub = function () {
+    var hubHome = el("learn-hub-home");
+    var backBar = el("learn-sub-back-bar");
+    if (hubHome) hubHome.classList.remove("hidden");
+    if (backBar) backBar.classList.add("hidden");
+
+    LEARN_ALL_SUB_PANELS.forEach(function (pid) {
+      var p = el(pid);
+      if (p) p.classList.add("hidden");
+    });
+
+    // יציאה ממצב focus-mode הישן אם הופעל כדי שהתפריט הראשי יוצג במלואו
+    document.body.classList.remove("focus-mode", "focus-more");
+    var strip = el("tt-focus-strip");
+    if (strip) strip.classList.add("hidden");
+  };
+
+  // פתיחת תת-מדור ספציפי בתוך 'ללמוד' (רק אז מופיעים התוצאות והסינונים הפנימיים שלו!)
+  window.openLearnSection = function (subKey) {
+    if (!subKey) {
+      window.backToLearnHub();
+      return;
+    }
+
+    // וידוא שאנחנו בלשונית 'ללמוד'
+    var vSeries = el("view-series");
+    if (vSeries && !vSeries.classList.contains("active")) {
+      if (window.switchTab) window.switchTab("series");
+    }
+
+    var normalized = subKey;
+    if (normalized === "shiurim") normalized = "liveshiurim";
+    if (normalized === "music") normalized = "tzaddikim_stories";
+
+    var hubHome = el("learn-hub-home");
+    var backBar = el("learn-sub-back-bar");
+    var subTitle = el("learn-active-sub-title");
+
+    if (hubHome) hubHome.classList.add("hidden");
+    if (backBar) backBar.classList.remove("hidden");
+    if (subTitle) subTitle.textContent = LEARN_SECTION_TITLES[normalized] || "בית המדרש • ללמוד";
+
+    LEARN_ALL_SUB_PANELS.forEach(function (pid) {
+      var p = el(pid);
+      if (p) p.classList.add("hidden");
+    });
+
+    // מיפוי שם הקטגוריה ל-ID של הפאנל שלה
+    var targetPanelId = "lib-sub-" + normalized;
+    if (normalized === "tzaddikim_stories") targetPanelId = "lib-sub-tzaddikim-stories";
+    else if (normalized === "quizzes") targetPanelId = "lib-sub-quizzes-inline";
+
+    var targetPanel = el(targetPanelId);
+    if (targetPanel) targetPanel.classList.remove("hidden");
+    if (normalized === "generations") {
+      var aiSer = el("lib-sub-aiseries");
+      if (aiSer) aiSer.classList.remove("hidden");
+    }
+
+    // הפעלת פונקציית הרינדור של אותו תת-מדור
+    if (normalized === "liveshiurim") {
+      if (window.renderRabbiShiurimList) window.renderRabbiShiurimList("");
+      if (window.renderWeeklyCourses) window.renderWeeklyCourses();
+    } else if (normalized === "eduvideos") {
+      if (window.filterEduVideosByRabbi) window.filterEduVideosByRabbi("all");
+    } else if (normalized === "courses") {
+      if (window.renderCoursesAndChassidut) window.renderCoursesAndChassidut();
+      if (window.renderWeeklyCourses) window.renderWeeklyCourses();
+    } else if (normalized === "tzaddikim_stories") {
+      if (window.renderTzaddikimStoriesLearn) window.renderTzaddikimStoriesLearn("");
+    } else if (normalized === "torah") {
+      if (window.selectChumash) window.selectChumash("bereishit");
+    } else if (normalized === "nach") {
+      if (window.renderNachLibrary) window.renderNachLibrary();
+    } else if (normalized === "generations") {
+      if (window.renderGenerationsTimeline) window.renderGenerationsTimeline();
+      if (window.renderSeriesGrid) window.renderSeriesGrid();
+    } else if (normalized === "mishnah") {
+      if (window.renderMishnahAndChassidut) window.renderMishnahAndChassidut();
+      if (window.renderMishnahGemaraHalacha) window.renderMishnahGemaraHalacha();
+    } else if (normalized === "chassidut") {
+      if (window.renderMishnahAndChassidut) window.renderMishnahAndChassidut();
+      if (window.renderCoursesAndChassidut) window.renderCoursesAndChassidut();
+    } else if (normalized === "quizzes") {
+      if (window.renderInlineLearnQuizzes) window.renderInlineLearnQuizzes("all");
+    }
+
+    document.body.classList.remove("focus-mode", "focus-more");
+    var strip = el("tt-focus-strip");
+    if (strip) strip.classList.add("hidden");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // דריסת switchLibrarySubTab ו-switchLearnMainTab כך שכל הקריאות הקיימות באתר ישתמשו ב-openLearnSection הנקי
+  window.switchLibrarySubTab = function (sub) {
+    if (!sub || sub === "overview" || sub === "library") {
+      window.backToLearnHub();
+      return;
+    }
+    window.openLearnSection(sub);
+  };
+
+  window.switchLearnMainTab = function (tabKey) {
+    if (!tabKey || tabKey === "ai" || tabKey === "hub") {
+      window.backToLearnHub();
+      return;
+    }
+    if (tabKey === "shiurim") window.openLearnSection("liveshiurim");
+    else if (tabKey === "quizzes") window.openLearnSection("quizzes");
+    else window.openLearnSection(tabKey);
+  };
+
+  // כשנכנסים ללשונית 'ללמוד' מהניווט התחתון או העליון -> תמיד מציגים את המסך הראשי הנקי (#learn-hub-home) ללא סינונים!
+  var prevSwitchTabV40 = window.switchTab;
+  window.switchTab = function (tabId) {
+    if (prevSwitchTabV40) prevSwitchTabV40(tabId);
+    if (tabId === "series") {
+      window.backToLearnHub();
+    }
+  };
+
+  // פתיחה/סגירה קומפקטית של טופס העלאה בתוך 'שיעורים' ו-'סרטונים'
+  window.toggleCompactUploadBox = function (boxId) {
+    var box = el(boxId);
+    if (!box) return;
+    box.classList.toggle("hidden");
+  };
+
+  // סינון קומפקטי לפי רב בתוך תת-מדור 'שיעורים'
+  window.filterShiurimByRabbiSelect = function (rabbiName) {
+    var inp = el("shiurim-search-input");
+    if (inp) inp.value = rabbiName || "";
+    if (window.renderRabbiShiurimList) window.renderRabbiShiurimList(rabbiName || "");
+  };
+
+  // סנכרון דרופדאון הקטגוריות הקומפקטי ב'שיעורים' עם כפתורי התת-קטגוריה
+  var prevFilterShiurimBySubCat = window.filterShiurimBySubCat;
+  window.filterShiurimBySubCat = function (subCat) {
+    var sel = el("shiurim-cat-select");
+    if (sel && sel.value !== (subCat || "all")) sel.value = subCat || "all";
+    if (prevFilterShiurimBySubCat) prevFilterShiurimBySubCat(subCat);
+  };
+
+  // --------------------------------------------------------------------------
+  // 5. חיפוש כללי במסך הראשי של 'ללמוד' (#learn-global-search-input)
+  // --------------------------------------------------------------------------
+  window.handleLearnGlobalSearch = function (query) {
+    var box = el("learn-search-results-box");
+    var q = String(query || "").trim();
+    if (!box) return;
+
+    if (!q) {
+      box.classList.add("hidden");
+      box.innerHTML = "";
+      return;
+    }
+
+    var matches = [];
+
+    // 1. חיפוש בחומשי תורה ופרשיות השבוע
+    var chData = window.CHUMASH_PARASHOT_DATA || {};
+    Object.keys(chData).forEach(function (chKey) {
+      var ch = chData[chKey];
+      ((ch && ch.parashot) || []).forEach(function (p) {
+        if (window.matchesSmartSearch([p.name, p.summary, p.topic, ch.title], q)) {
+          matches.push({
+            badge: "פרשה • " + (ch.title || "חומש"),
+            title: "פרשת " + p.name,
+            sub: p.summary || "",
+            action: "openLearnSection('torah')"
+          });
+        }
+      });
+    });
+
+    // 2. חיפוש בשיעורים (כולל שיעורים מאושרים מטבלת lessons)
+    (window.RABBI_SHIURIM_DATA || []).forEach(function (s) {
+      if (window.matchesSmartSearch([s.title, s.rabbi, s.subCategory, s.topic, s.institution], q)) {
+        matches.push({
+          badge: "שיעור • " + (s.subCategory || s.topic || "בית המדרש"),
+          title: s.title || "שיעור תורה",
+          sub: (s.rabbi || "") + (s.institution ? " • " + s.institution : ""),
+          action: "openLearnSection('liveshiurim')",
+          url: s.video_url || s.videoUrl || ""
+        });
+      }
+    });
+
+    // 3. חיפוש בסרטונים חינוכיים
+    (window.EDUCATIONAL_VIDEOS_DATA || []).forEach(function (v) {
+      if (window.matchesSmartSearch([v.title, v.speaker, v.category, v.description], q)) {
+        matches.push({
+          badge: "סרטון • " + (v.category || "וידאו"),
+          title: v.title || "סרטון חינוכי",
+          sub: v.speaker || "",
+          action: "openLearnSection('eduvideos')",
+          url: v.video_url || v.url || ""
+        });
+      }
+    });
+
+    // 4. חיפוש בסיפורי צדיקים
+    (window.TZADDIKIM_STORIES_DATA || []).forEach(function (st) {
+      if (window.matchesSmartSearch([st.title, st.rabbi, st.tzaddik, st.category, st.story, st.moral], q)) {
+        matches.push({
+          badge: "סיפור צדיקים • " + (st.rabbi || st.tzaddik || ""),
+          title: st.title || "סיפור צדיקים",
+          sub: st.moral || "",
+          action: "openLearnSection('tzaddikim_stories')"
+        });
+      }
+    });
+
+    box.classList.remove("hidden");
+    if (!matches.length) {
+      box.innerHTML =
+        '<div class="p-3.5 bg-white border border-[#BAE6FD] rounded-2xl text-xs text-[#0F2340] flex items-center justify-between">' +
+          '<span>לא נמצאו תוצאות עבור <strong>"' + esc(q) + '"</strong>.</span>' +
+          '<button type="button" onclick="var inp=document.getElementById(\'learn-global-search-input\'); if(inp){inp.value=\'\';} handleLearnGlobalSearch(\'\');" class="px-3 py-1 bg-[#E0F2FE] text-[#0369A1] font-bold rounded-lg">סגור</button>' +
+        '</div>';
+      return;
+    }
+
+    box.innerHTML =
+      '<div class="bg-white border-2 border-[#0284C7] rounded-2xl p-4 space-y-2.5 shadow-sm">' +
+        '<div class="flex items-center justify-between border-b border-[#BAE6FD] pb-2">' +
+          '<span class="text-xs font-black text-[#0F2340]">תוצאות חיפוש בללמוד (' + matches.length + '):</span>' +
+          '<button type="button" onclick="var inp=document.getElementById(\'learn-global-search-input\'); if(inp){inp.value=\'\';} handleLearnGlobalSearch(\'\');" class="text-xs font-bold text-[#0284C7] hover:underline">סגור ✕</button>' +
+        '</div>' +
+        '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">' +
+          matches.slice(0, 12).map(function (m) {
+            return '<div class="p-3 rounded-xl bg-[#F0F9FF] border border-[#BAE6FD] flex items-center justify-between gap-2">' +
+              '<div class="min-w-0">' +
+                '<span class="text-[11px] font-black text-[#0284C7] block">' + esc(m.badge) + '</span>' +
+                '<strong class="text-xs sm:text-sm font-black text-[#0F2340] block truncate">' + esc(m.title) + '</strong>' +
+                (m.sub ? '<span class="text-[11px] text-[#5C4938] block truncate">' + esc(m.sub) + '</span>' : '') +
+              '</div>' +
+              '<button type="button" onclick="' + m.action + '" class="px-3 py-1.5 bg-[#0284C7] text-white font-bold rounded-xl text-xs shrink-0" style="color:#FFFFFF !important;">פתח</button>' +
+            '</div>';
+          }).join("") +
+        '</div>' +
+      '</div>';
+  };
+
+  // --------------------------------------------------------------------------
+  // אתחול V41
+  // --------------------------------------------------------------------------
+  function initV41() {
+    window.backToLearnHub();
+    window.renderHomeReelsStrip();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initV41);
+  } else {
+    initV41();
+  }
+})();
