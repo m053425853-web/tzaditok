@@ -30,7 +30,7 @@
     };
   </script>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <link rel="stylesheet" href="style.css?v=43" />
+  <link rel="stylesheet" href="style.css?v=44" />
 </head>
 <body class="min-h-screen select-none">
 
@@ -3712,37 +3712,136 @@
   </div>
 
 
-  <!-- מודאל נגן רילס / סרטון יוטיוב מאושר מטבלת lessons (כולל לחיצה על שם המעלה לפרופיל ציבורי + לייק ותגובות) -->
-  <div id="modal-reel-player" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-[#0F2340] border-2 border-[#C9A227] rounded-3xl max-w-sm w-full p-4 space-y-3 shadow-2xl relative text-white">
-      <div class="flex items-center justify-between gap-2 border-b border-white/15 pb-2.5">
-        <div class="min-w-0">
-          <button type="button" id="reel-player-rabbi-btn" onclick="openCreatorPublicProfileFromReel()" class="text-xs font-black text-amber-300 hover:underline flex items-center gap-1 truncate text-right" style="color:#FCD34D !important;" title="לחץ לצפייה בפרופיל הציבורי ובכל התכנים שהעלה">
-            <span>👤</span>
-            <span id="reel-player-rabbi">בית המדרש צדיק-טוק</span>
-            <span class="text-[10px] opacity-80">(לפרופיל ←)</span>
+  <!-- מודאל נגן מסך מלא בסגנון TikTok / Reels (100vw, 100vh, רקע שחור, סרגל ימני אנכי, סרגל תחתון קבוע) -->
+  <div id="modal-reel-player" class="hidden fixed inset-0 z-50 bg-black flex flex-col justify-between overflow-hidden select-none" role="dialog" aria-modal="true" aria-label="נגן וידאו מסך מלא">
+    <!-- שכבת נגן הווידאו (מתפרסת על כל המסך) -->
+    <div id="reel-fullscreen-stage" class="relative w-full h-full flex items-center justify-center bg-black overflow-hidden">
+      <!-- מיכל ה-iframe של יוטיוב (יחס 9:16 אנכי ברילס או מותאם במסך מלא) -->
+      <div id="reel-player-frame-wrap" class="w-full h-full max-w-md mx-auto aspect-[9/16] relative flex items-center justify-center bg-black overflow-hidden"></div>
+
+      <!-- שכבת מחוות וגלילה שקופה מעל הווידאו (לוכדת טאפ להשתקה/הפעלה וגרירה למעלה/למטה למעבר בין סרטונים) -->
+      <div id="reel-gesture-overlay" class="absolute inset-0 z-10 cursor-pointer" onclick="handleReelStageClick(event)"></div>
+
+      <!-- סרגל עליון: כפתור סגירה (✕), כפתור השתקה/קול (🔊/🔇), ותגית נושא -->
+      <div class="absolute top-0 left-0 right-0 z-30 p-3 sm:p-4 flex items-center justify-between pointer-events-none">
+        <div class="flex items-center gap-2 pointer-events-auto">
+          <button type="button" onclick="closeReelPlayerModal()" class="w-9 h-9 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center text-sm font-black border border-white/20 shadow-lg transition-all" aria-label="סגור נגן">
+            ✕
           </button>
-          <h3 id="reel-player-title" class="text-sm sm:text-base font-black text-white truncate mt-0.5" style="color:#FFFFFF !important;">סרטון חיזוק</h3>
+          <button type="button" id="reel-sound-toggle-btn" onclick="toggleReelSound(event)" class="px-2.5 py-1.5 rounded-full bg-black/60 hover:bg-black/80 text-white text-xs font-bold border border-white/20 flex items-center gap-1 shadow-lg transition-all" title="הפעל/השתק שמע">
+            <span id="reel-sound-icon">🔇</span>
+            <span id="reel-sound-text" class="text-[11px]">בטל השתקה</span>
+          </button>
         </div>
-        <button type="button" onclick="closeReelPlayerModal()" class="px-3 py-1 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-black shrink-0" style="color:#FFFFFF !important;">✕ סגור</button>
+        <div class="flex items-center gap-2 pointer-events-auto">
+          <span id="reel-player-badge" class="px-3 py-1 rounded-full bg-[#0F2340]/80 text-amber-300 border border-[#C9A227]/40 text-xs font-black shadow-lg">
+            רילס
+          </span>
+        </div>
       </div>
 
-      <div id="reel-player-frame-wrap" class="w-full aspect-[9/16] max-h-[64vh] rounded-2xl overflow-hidden bg-black flex items-center justify-center"></div>
-
-      <!-- סרגל לייק, תגובות וקישור ישיר בתחתית מודאל הרילס -->
-      <div class="flex items-center justify-between gap-2 pt-1">
-        <button type="button" id="reel-modal-like-btn" onclick="toggleActiveModalReelLike()" class="flex-1 py-2 px-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-black text-xs flex items-center justify-center gap-1.5" style="color:#FFFFFF !important;">
-          <span>❤️ לייק</span>
-          <span id="reel-modal-like-count" class="px-1.5 py-0.5 rounded-md bg-amber-500 text-[#0F2340] text-[11px] font-black">0</span>
+      <!-- חיצי ניווט מהירים (סרטון קודם / הבא) בצד שמאל -->
+      <div class="absolute left-3 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-2.5 pointer-events-none">
+        <button type="button" onclick="navigateReel(-1)" class="w-8 h-8 rounded-full bg-black/50 hover:bg-black/80 text-white text-sm font-black flex items-center justify-center border border-white/20 shadow-md pointer-events-auto transition-all" title="סרטון קודם (חץ למעלה)">
+          ▲
         </button>
-        <button type="button" id="reel-modal-comments-btn" onclick="openActiveModalReelComments()" class="flex-1 py-2 px-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-black text-xs flex items-center justify-center gap-1.5" style="color:#FFFFFF !important;">
-          <span>💬 תגובות</span>
-          <span id="reel-modal-comments-count" class="px-1.5 py-0.5 rounded-md bg-[#0284C7] text-white text-[11px] font-black" style="color:#FFFFFF !important;">0</span>
+        <button type="button" onclick="navigateReel(1)" class="w-8 h-8 rounded-full bg-black/50 hover:bg-black/80 text-white text-sm font-black flex items-center justify-center border border-white/20 shadow-md pointer-events-auto transition-all" title="סרטון הבא (חץ למטה)">
+          ▼
         </button>
-        <a id="reel-player-ext-link" href="#" target="_blank" rel="noopener" class="py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-[#0F2340] font-black text-xs text-center shrink-0">
-          יוטיוב ↗
-        </a>
       </div>
+
+      <!-- עמודת כפתורים אנכית בצד ימין (TikTok / Reels Style) -->
+      <div class="reel-vertical-action-bar pointer-events-none">
+        <!-- 1. אווטאר של מעלה הסרטון / הרב (לחיצה מובילה לפרופיל) -->
+        <button type="button" onclick="openCreatorPublicProfileFromReel()" class="reel-action-btn pointer-events-auto group" title="פרופיל המעלה / הרב">
+          <div class="reel-avatar-ring">
+            <span id="reel-avatar-letter">👤</span>
+          </div>
+          <span class="reel-action-sublabel">פרופיל</span>
+        </button>
+
+        <!-- 2. אייקון לייק (❤️) עם מונה חי מסופרבייס -->
+        <button type="button" id="reel-modal-like-btn" onclick="toggleActiveModalReelLike()" class="reel-action-btn pointer-events-auto" title="לייק לסרטון">
+          <div class="reel-action-circle reel-like-circle">
+            <span id="reel-modal-like-heart" class="text-xl">🤍</span>
+          </div>
+          <span id="reel-modal-like-count" class="reel-action-counter">0</span>
+        </button>
+
+        <!-- 3. אייקון תגובות (💬) עם מונה חי מסופרבייס -->
+        <button type="button" onclick="openActiveModalReelComments()" class="reel-action-btn pointer-events-auto" title="תגובות לסרטון">
+          <div class="reel-action-circle">
+            <span class="text-xl">💬</span>
+          </div>
+          <span id="reel-modal-comments-count" class="reel-action-counter">0</span>
+        </button>
+
+        <!-- 4. אייקון שיתוף (↗️) -->
+        <button type="button" onclick="shareActiveReel()" class="reel-action-btn pointer-events-auto" title="שתף סרטון">
+          <div class="reel-action-circle">
+            <span class="text-xl">↗️</span>
+          </div>
+          <span class="reel-action-sublabel">שיתוף</span>
+        </button>
+
+        <!-- 5. אייקון תרומה (🤝/💰) - פותח מודאל תרומה לרב -->
+        <button type="button" onclick="openReelDonateModal()" class="reel-action-btn pointer-events-auto reel-donate-action-btn" title="תרומה לרב ולהחזקת התורה">
+          <div class="reel-action-circle reel-donate-circle">
+            <span class="text-xl">🤝</span>
+          </div>
+          <span class="reel-action-sublabel font-black text-amber-300">תרומה</span>
+        </button>
+      </div>
+
+      <!-- פרטי הסרטון בתחתית (בצד ימין/שמאל מעל הסרגל התחתון) -->
+      <div class="reel-bottom-info-bar pointer-events-none">
+        <button type="button" onclick="openCreatorPublicProfileFromReel()" class="pointer-events-auto text-sm sm:text-base font-black text-amber-300 hover:underline flex items-center gap-1.5 drop-shadow text-right">
+          <span>@</span>
+          <span id="reel-player-rabbi">בית המדרש צדיק-טוק</span>
+          <span class="text-[10px] px-1.5 py-0.5 rounded bg-white/20 text-white font-bold mr-1">יוצר תוכן</span>
+        </button>
+        <h3 id="reel-player-title" class="text-xs sm:text-sm font-bold text-white line-clamp-2 drop-shadow leading-relaxed text-right">
+          כותרת הסרטון
+        </h3>
+        <p id="reel-player-desc" class="text-[11px] text-slate-300 line-clamp-1 text-right"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- מודאל תרומה לרב / למעלה הסרטון (#modal-reel-donate) -->
+  <div id="modal-reel-donate" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+    <div class="bg-[#F8F3E8] border-2 border-[#C9A227] rounded-3xl max-w-sm w-full p-5 space-y-3.5 shadow-2xl relative text-[#0F2340]">
+      <div class="flex items-center justify-between border-b border-[#E5DBC7] pb-2.5">
+        <div class="flex items-center gap-2">
+          <span class="w-9 h-9 rounded-2xl bg-amber-500/20 text-amber-800 font-black flex items-center justify-center text-lg shadow-sm">🤝</span>
+          <div>
+            <h3 class="text-base font-black text-[#0F2340] serif-heading">תרומה להחזקת התורה</h3>
+            <p id="reel-donate-rabbi-name" class="text-xs text-[#5C4938] font-bold">לרב בית המדרש</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModal('modal-reel-donate')" class="modal-close-x-btn"><span>✕</span></button>
+      </div>
+
+      <p class="text-xs text-[#5C4938] leading-relaxed">
+        זכות עצומה לתמוך בהפצת שיעורי התורה והסרטונים המחזקים של הרב. התרומה קודש להחזקת לומדי התורה.
+      </p>
+
+      <!-- כפתורי סכום מהיר -->
+      <div class="grid grid-cols-4 gap-2 text-xs font-bold" id="reel-donate-amount-chips">
+        <button type="button" onclick="selectReelDonateAmount(18, this)" class="reel-donate-chip active py-2 rounded-xl bg-white border border-[#D8CBB5] hover:border-amber-500">18 ₪</button>
+        <button type="button" onclick="selectReelDonateAmount(36, this)" class="reel-donate-chip py-2 rounded-xl bg-white border border-[#D8CBB5] hover:border-amber-500">36 ₪</button>
+        <button type="button" onclick="selectReelDonateAmount(72, this)" class="reel-donate-chip py-2 rounded-xl bg-white border border-[#D8CBB5] hover:border-amber-500">72 ₪</button>
+        <button type="button" onclick="selectReelDonateAmount(180, this)" class="reel-donate-chip py-2 rounded-xl bg-white border border-[#D8CBB5] hover:border-amber-500">180 ₪</button>
+      </div>
+
+      <div class="space-y-1.5">
+        <label for="reel-donate-dedication" class="text-[11px] font-bold text-[#5C4938] block">הקדשה אישית (לרפואה / לעילוי נשמת / להצלחה):</label>
+        <input id="reel-donate-dedication" type="text" placeholder="למשל: לרפואת כלל ישראל ולהצלחה" class="w-full bg-white border border-[#D8CBB5] focus:border-[#C9A227] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">
+      </div>
+
+      <button type="button" onclick="confirmReelDonation()" class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-[#0F2340] font-black text-xs shadow-md transition-all">
+        ❤️ אישור תרומה והקדשה
+      </button>
     </div>
   </div>
 
@@ -3774,9 +3873,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-client.js?v=43"></script>
-  <script src="utils.js?v=43"></script>
-  <script src="data.js?v=43"></script>
-  <script src="app.js?v=43"></script>
+  <script src="supabase-client.js?v=44"></script>
+  <script src="utils.js?v=44"></script>
+  <script src="data.js?v=44"></script>
+  <script src="app.js?v=44"></script>
 </body>
 </html>

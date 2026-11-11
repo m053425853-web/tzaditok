@@ -11218,15 +11218,20 @@ window.forceExitShabbatMode = function () {
 
 
 // ============================================================================
-// V43 MASTER UPGRADE —
-// 1. תיקון באג הלייקים (חיבור מלא ל-Supabase + התחלה מ-0 + מניעת לייק כפול לכל משתמש):
-//    - שליפת מספר הלייקים האמיתי מטבלת `lessons` (עמודת `likes_count`) ומטבלת `community_reviews` בעת טעינת העמוד (מתחיל מ-0!).
-//    - בלחיצה על הלב: ביצוע UPDATE ל-Supabase (+1 או -1) ומניעת לייק כפול לפי User ID (למחוברים) או LocalStorage (לאנונימיים).
-// 2. תמונות אמיתיות מיוטיוב (Thumbnails) כרקע מלא לכרטיסי הרילס בדף הבית:
-//    - חילוץ ה-Video ID מקישור היוטיוב (`video_url`), כולל מיפוי חכם לשורות עם קישורי חיפוש ישנים כך שכל כרטיס מציג תמונת יוטיוב אמיתית
-//      (`https://img.youtube.com/vi/[VIDEO_ID]/maxresdefault.jpg` עם גיבוי אוטומטי ל-`hqdefault.jpg`) כרקע של הכרטיס.
-// 3. ניגון ישיר של הסרטון בתוך המודאל (בלי לצאת מהאפליקציה):
-//    - הטמעת `<iframe src="https://www.youtube.com/embed/[VIDEO_ID]?autoplay=1&rel=0">` שמתנגן אוטומטית מיד בלחיצה על הסרטון.
+// V44 MASTER UPGRADE — נגן וידאו מסך מלא בסגנון TikTok / Reels
+// 1. ממשק מסך מלא (100vw, 100vh, רקע שחור טהור) עם עמודת כפתורים אנכית בצד ימין:
+//    - אווטאר מעלה (לחיצה מובילה לפרופיל הציבורי).
+//    - לייק (❤️) מחובר לסופרבייס עם מונה חי ומניעת כפילויות.
+//    - תגובות (💬) מחוברות ל-community_reviews בסופרבייס.
+//    - שיתוף (↗️) עם Web Share API או העתקת קישור.
+//    - תרומה (🤝/💰) פותח מודאל תרומה מהיר לרב (#modal-reel-donate).
+// 2. התנהגות הווידאו:
+//    - אין כפתור שיוצא ליוטיוב! נגן מוטמע ישירות ב-iframe שמתחיל שקט (Muted) לניגון אוטומטי חלק.
+//    - גלילה אנכית / סוואיפ (Scroll Snap / Swipe Up & Down) עובר לסרטון הבא/הקודם כמו בטיקטוק.
+//    - הגבלת זמן: בקטגוריית הרילס מוצגים סרטונים קצרים (עד 90 שניות).
+// 3. יישום אוניברסלי בכל מדורי 'ללמוד':
+//    - שיעורים ארוכים, סיפורי צדיקים וסרטונים חינוכיים נפתחים באותו נגן בדיוק (ללא מגבלת 90 שניות ועם controls מותאמים).
+// 4. סרגל הניווט התחתון של האפליקציה נשאר קבוע ומופיע מעל הווידאו במסך מלא.
 // ============================================================================
 (function () {
   "use strict";
@@ -11246,7 +11251,7 @@ window.forceExitShabbatMode = function () {
   var ANON_DEVICE_ID_KEY = "tzadiktok_anon_voter_id_v43";
   var REEL_COMMENTS_CACHE_KEY = "tzadiktok_reel_comments_v43";
 
-  // מילון מזהי וידאו אמיתיים מיוטיוב לפי שם הרב/הארגון (עבור שורות שבמסד הנתונים שלהן יש עדיין קישור חיפוש results?search_query=...)
+  // מילון מזהי יוטיוב מאומתים
   var VERIFIED_RABBI_YT_IDS = {
     "הרב יגאל כהן": ["on1AY41x0tU", "7w3YD4rlevA", "M45M3Ct98ws", "6rtm7SCyE5I", "IqPAAmn4UNc", "bvZGFAlop_s", "s6Y-Jnxm1Xk", "D14eEbnIMdI", "BCXCu481hSY", "72ujLvQvh-o", "PyifzGgSJ1c"],
     "הרב זמיר כהן": ["VX0xt6qSwE0", "3pSAfw3dlWg", "b8kV-DZ2m1s", "Et5Eb7maQpU", "6PNMCvDOINA", "zM79CIseETU", "bvJtY64ZZgk", "gcBUr6rHS8E", "euDOVUQXtqo", "V45-yPR6K44", "ZEoZPWhgalc"],
@@ -11270,25 +11275,16 @@ window.forceExitShabbatMode = function () {
   var DEFAULT_YT_IDS_POOL = [
     "on1AY41x0tU", "VX0xt6qSwE0", "QDIaO3sxNBo", "XH5KnWF5HQ0",
     "tmscLQBd3xI", "6fYtG26htEw", "XZfqOsYy20A", "TM3Y75elozA",
-    "5GgZZ35f6i0", "yf6_cXNdxP0", "fV0sUPx714A", "NCqqMMFXF48",
-    "uY7IpWY1CUY", "mZ5M4gpg7Ck"
+    "5GgZZ35f6i0", "yf6_cXNdxP0", "fV0sUPx714A", "NCqqMMFXF48"
   ];
 
-  var activeModalReelContext = {
-    id: "",
-    title: "",
-    rabbi: "",
-    videoUrl: "",
-    ytId: ""
-  };
-
-  // טבלאות זיכרון עבור המספר האמיתי של הלייקים מ-Supabase (מתחיל מ-0!)
-  var reelDbLikesCountMap = {}; // reelId -> integer (>= 0)
+  var activeReelsPlaylist = [];
+  var currentReelIndex = 0;
+  var isPlayerMuted = true;
+  var selectedDonateAmount = 18;
+  var reelDbLikesCountMap = {};
   var currentVoterId = "";
 
-  // --------------------------------------------------------------------------
-  // 1. חילוץ מזהה ה-Video ID מיוטיוב + תמונת Thumbnail אמיתית מיוטיוב
-  // --------------------------------------------------------------------------
   function extractUrlFromLessonRow(row) {
     if (!row) return "";
     var candidates = [row.video_url, row.url, row.videoUrl, row.institution, row.description];
@@ -11307,32 +11303,20 @@ window.forceExitShabbatMode = function () {
   function extractYoutubeVideoId(url) {
     if (!url) return "";
     var s = String(url).trim();
-    // תומך ב-watch?v=, youtu.be/, youtube.com/shorts/, youtube.com/embed/, youtube.com/live/
     var m = s.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/|v\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/i);
     if (m && m[1]) return m[1];
-    // בדיקה אם המחרוזת עצמה היא מזהה של 11 תווים
     if (/^[A-Za-z0-9_-]{11}$/.test(s)) return s;
     return "";
   }
 
   function hashString(str) {
-    var h = 0;
-    var s = String(str || "");
-    for (var i = 0; i < s.length; i++) {
-      h = ((h << 5) - h) + s.charCodeAt(i);
-      h |= 0;
-    }
+    var h = 0, s = String(str || "");
+    for (var i = 0; i < s.length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h |= 0; }
     return Math.abs(h);
   }
 
-  // מחזיר תמיד מזהה וידאו אמיתי של יוטיוב (11 תווים):
-  // א. אם יש ב-video_url מזהה סרטון ישיר — משתמש בו.
-  // ב. אם בשורה ב-Supabase יש קישור חיפוש (results?search_query=...) — ממפה אותו לסרטון יוטיוב אמיתי של אותו רב!
   window.resolveYoutubeVideoId = function (rowOrUrl, rabbiName, titleStr, idx) {
-    var rawUrl = "";
-    var rName = String(rabbiName || "").trim();
-    var tStr = String(titleStr || "").trim();
-
+    var rawUrl = "", rName = String(rabbiName || "").trim(), tStr = String(titleStr || "").trim();
     if (rowOrUrl && typeof rowOrUrl === "object") {
       rawUrl = extractUrlFromLessonRow(rowOrUrl);
       if (!rName) rName = String(rowOrUrl.rabbi_name || rowOrUrl.rabbi || "").trim();
@@ -11344,7 +11328,6 @@ window.forceExitShabbatMode = function () {
     var directId = extractYoutubeVideoId(rawUrl);
     if (directId) return directId;
 
-    // חיפוש במילון הרבנים המאומתים לפי שם הרב או כותרת הסרטון
     var pool = null;
     var keys = Object.keys(VERIFIED_RABBI_YT_IDS);
     for (var i = 0; i < keys.length; i++) {
@@ -11361,25 +11344,23 @@ window.forceExitShabbatMode = function () {
     return pool[Math.abs(pickIdx) % pool.length];
   };
 
-  // פונקציית גיבוי אוטומטית לתמונות יוטיוב:
-  // ביוטיוב, אם לסרטון אין maxresdefault.jpg, השרת מחזיר תמונה אפורה קטנה ברוחב 120px או שגיאת 404.
-  // הפונקציה מחליפה מיד ל-hqdefault.jpg שהוא תמיד התמונה האמיתית של הסרטון!
-  window.handleYtThumbLoad = function (imgEl, ytId) {
-    if (!imgEl || !ytId) return;
-    if (imgEl.naturalWidth && imgEl.naturalWidth <= 120 && imgEl.src.indexOf("hqdefault.jpg") === -1) {
-      imgEl.src = "https://img.youtube.com/vi/" + ytId + "/hqdefault.jpg";
+  // בדיקת הגבלת זמן לרילס (סרטונים באורך של עד 90 שניות)
+  window.isReelUnder90Seconds = function (item) {
+    if (!item) return true;
+    var dur = String(item.duration || "").trim();
+    if (!dur || dur === "וידאו" || dur === "שורטס" || dur === "רילס") return true;
+    var m = dur.match(/^(\d{1,2}):(\d{2})$/);
+    if (m) {
+      var totalSec = parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
+      return totalSec <= 90;
     }
-  };
-
-  window.handleYtThumbError = function (imgEl, ytId) {
-    if (!imgEl || !ytId) return;
-    if (imgEl.src.indexOf("hqdefault.jpg") === -1) {
-      imgEl.src = "https://img.youtube.com/vi/" + ytId + "/hqdefault.jpg";
-    }
+    var h = dur.match(/^(\d{1,2}):(\d{2}):(\d{2})$/);
+    if (h) return false;
+    return true;
   };
 
   // --------------------------------------------------------------------------
-  // 2. מערכת לייקים אמיתית מול Supabase (מתחיל מ-0 + מניעת לייק כפול)
+  // 2. ניהול לייקים ותגובות אמיתיים מול Supabase
   // --------------------------------------------------------------------------
   async function resolveVoterId() {
     if (currentVoterId) return currentVoterId;
@@ -11387,10 +11368,7 @@ window.forceExitShabbatMode = function () {
       try {
         var sRes = await window.supabaseClient.auth.getSession();
         var user = sRes && sRes.data && sRes.data.session ? sRes.data.session.user : null;
-        if (user && user.id) {
-          currentVoterId = "uid_" + user.id;
-          return currentVoterId;
-        }
+        if (user && user.id) { currentVoterId = "uid_" + user.id; return currentVoterId; }
       } catch (e) {}
     }
     try {
@@ -11408,66 +11386,34 @@ window.forceExitShabbatMode = function () {
   }
 
   function getUserLikedMap() {
-    try {
-      return JSON.parse(localStorage.getItem(USER_LIKED_MAP_KEY) || "{}") || {};
-    } catch (e) {
-      return {};
-    }
+    try { return JSON.parse(localStorage.getItem(USER_LIKED_MAP_KEY) || "{}") || {}; } catch (e) { return {}; }
   }
-
   function saveUserLikedMap(map) {
-    try {
-      localStorage.setItem(USER_LIKED_MAP_KEY, JSON.stringify(map || {}));
-    } catch (e) {}
+    try { localStorage.setItem(USER_LIKED_MAP_KEY, JSON.stringify(map || {})); } catch (e) {}
   }
-
-  function hasUserLikedReel(reelId) {
-    var map = getUserLikedMap();
-    var key = String(reelId);
-    return !!map[key];
-  }
-
+  function hasUserLikedReel(reelId) { return !!getUserLikedMap()[String(reelId)]; }
   function setUserLikedReel(reelId, isLiked) {
     var map = getUserLikedMap();
-    var key = String(reelId);
-    if (isLiked) map[key] = true;
-    else delete map[key];
+    if (isLiked) map[String(reelId)] = true; else delete map[String(reelId)];
     saveUserLikedMap(map);
   }
-
-  // מחזיר תמיד את מספר הלייקים האמיתי (מתחיל מ-0 אם אין לייקים במסד הנתונים!)
   function getTrueReelLikesCount(reelId) {
-    var key = String(reelId);
-    var count = Number(reelDbLikesCountMap[key]);
-    if (isNaN(count) || count < 0) return 0;
-    return count;
+    var count = Number(reelDbLikesCountMap[String(reelId)]);
+    return (isNaN(count) || count < 0) ? 0 : count;
   }
 
-  // שליפת מספר הלייקים האמיתי מ-Supabase בעת טעינת העמוד
   window.syncReelLikesFromSupabase = async function (approvedRows) {
     await resolveVoterId();
-
-    // 1. קריאת עמודת likes_count ישירות משורות טבלת lessons (ברירת מחדל: 0)
     (approvedRows || []).forEach(function (row) {
       if (!row || row.id === undefined) return;
-      var k = String(row.id);
       var rowLikes = Number(row.likes_count !== undefined ? row.likes_count : (row.likes || 0));
-      if (isNaN(rowLikes) || rowLikes < 0) rowLikes = 0;
-      reelDbLikesCountMap[k] = rowLikes;
+      reelDbLikesCountMap[String(row.id)] = (isNaN(rowLikes) || rowLikes < 0) ? 0 : rowLikes;
     });
 
-    // 2. סנכרון משלים מטבלת community_reviews עבור רשומות like_reel_<id>
-    //    (מבטיח שהלייקים יישמרו וייטענו מ-Supabase גם אם טרם הורץ ה-SQL של עמודת likes_count!)
     if (window.supabaseClient) {
       try {
-        var res = await window.supabaseClient
-          .from("community_reviews")
-          .select("id, entity_key, user_name, rating, review_text")
-          .like("entity_key", "like_reel_%")
-          .order("id", { ascending: true });
-
+        var res = await window.supabaseClient.from("community_reviews").select("id, entity_key, user_name, rating, review_text").like("entity_key", "like_reel_%");
         if (!res.error && Array.isArray(res.data)) {
-          // מחשבים לכל סרטון אילו משתמשים סימנו לייק פעיל (מונע כפילויות ומאפשר הורדת לייק)
           var perReelVoters = {};
           res.data.forEach(function (r) {
             var eKey = String(r.entity_key || "");
@@ -11475,31 +11421,19 @@ window.forceExitShabbatMode = function () {
             var voter = String(r.user_name || "anon");
             if (!rId) return;
             if (!perReelVoters[rId]) perReelVoters[rId] = {};
-            if (r.review_text === "UNLIKE" || Number(r.rating) === 0) {
-              delete perReelVoters[rId][voter];
-            } else {
-              perReelVoters[rId][voter] = true;
-            }
+            if (r.review_text === "UNLIKE" || Number(r.rating) === 0) delete perReelVoters[rId][voter];
+            else perReelVoters[rId][voter] = true;
           });
-
           var localLiked = getUserLikedMap();
           Object.keys(perReelVoters).forEach(function (rId) {
-            var votersObj = perReelVoters[rId] || {};
-            var netCount = Object.keys(votersObj).length;
-            var currentFromLessons = Number(reelDbLikesCountMap[rId] || 0);
-            reelDbLikesCountMap[rId] = Math.max(currentFromLessons, netCount);
-
-            if (currentVoterId && votersObj[currentVoterId]) {
-              localLiked[rId] = true;
-            }
+            var netCount = Object.keys(perReelVoters[rId] || {}).length;
+            reelDbLikesCountMap[rId] = Math.max(Number(reelDbLikesCountMap[rId] || 0), netCount);
+            if (currentVoterId && perReelVoters[rId][currentVoterId]) localLiked[rId] = true;
           });
           saveUserLikedMap(localLiked);
         }
-      } catch (e) {
-        console.warn("[syncReelLikesFromSupabase error]:", e);
-      }
+      } catch (e) {}
     }
-
     refreshAllReelLikeButtonsInDom();
   };
 
@@ -11513,20 +11447,24 @@ window.forceExitShabbatMode = function () {
       if (btnEl) btnEl.classList.toggle("liked", liked);
     });
 
-    if (activeModalReelContext.id) {
+    var currentItem = activeReelsPlaylist[currentReelIndex];
+    if (currentItem) {
+      var curId = String(currentItem.id);
+      var curLikes = getTrueReelLikesCount(curId);
+      var curLiked = hasUserLikedReel(curId);
       var modalLikeCount = el("reel-modal-like-count");
-      if (modalLikeCount) modalLikeCount.textContent = String(getTrueReelLikesCount(activeModalReelContext.id));
+      if (modalLikeCount) modalLikeCount.textContent = String(curLikes);
+      var modalLikeHeart = el("reel-modal-like-heart");
+      if (modalLikeHeart) modalLikeHeart.textContent = curLiked ? "❤️" : "🤍";
       var modalLikeBtn = el("reel-modal-like-btn");
-      if (modalLikeBtn) modalLikeBtn.classList.toggle("ring-2", hasUserLikedReel(activeModalReelContext.id));
+      if (modalLikeBtn) modalLikeBtn.classList.toggle("liked", curLiked);
     }
   }
 
-  // לחיצה על כפתור הלב: מונע לייק כפול, מעדכן מיד את ה-UI (+1 או -1) ומבצע UPDATE ב-Supabase
   window.toggleReelLike = async function (ev, reelId) {
     if (ev && ev.stopPropagation) ev.stopPropagation();
     var key = String(reelId);
     if (!key) return;
-
     await resolveVoterId();
 
     var alreadyLiked = hasUserLikedReel(key);
@@ -11535,35 +11473,23 @@ window.forceExitShabbatMode = function () {
     var nextLiked = !alreadyLiked;
     var nextCount = Math.max(0, currentCount + delta);
 
-    // עדכון מיידי של המצב ומניעת לייק כפול
     setUserLikedReel(key, nextLiked);
     reelDbLikesCountMap[key] = nextCount;
     refreshAllReelLikeButtonsInDom();
 
-    // עדכון מסד הנתונים ב-Supabase
     if (window.supabaseClient) {
       var numId = parseInt(key, 10);
       if (!isNaN(numId) && numId > 0) {
-        // א. ניסיון קריאה לפונקציית ה-RPC האטומית ב-Supabase (אם הורץ tzadiktok_v43_patch.sql)
         try {
-          var rpcRes = await window.supabaseClient.rpc("increment_lesson_likes", {
-            row_id: numId,
-            delta_val: delta
-          });
+          var rpcRes = await window.supabaseClient.rpc("increment_lesson_likes", { row_id: numId, delta_val: delta });
           if (!rpcRes.error && typeof rpcRes.data === "number") {
             reelDbLikesCountMap[key] = Math.max(0, rpcRes.data);
             refreshAllReelLikeButtonsInDom();
           } else {
-            // ב. ניסיון UPDATE ישיר על טבלת lessons
-            await window.supabaseClient
-              .from("lessons")
-              .update({ likes_count: nextCount })
-              .eq("id", numId);
+            await window.supabaseClient.from("lessons").update({ likes_count: nextCount }).eq("id", numId);
           }
         } catch (e) {}
       }
-
-      // ג. שמירת אירוע הלייק של המשתמש בטבלת community_reviews כדי להבטיח שמירה מלאה ב-Supabase גם למשתמשים אנונימיים
       try {
         await window.supabaseClient.from("community_reviews").insert([{
           entity_key: "like_reel_" + key,
@@ -11578,27 +11504,19 @@ window.forceExitShabbatMode = function () {
   };
 
   window.toggleActiveModalReelLike = function () {
-    if (!activeModalReelContext.id) return;
-    window.toggleReelLike(null, activeModalReelContext.id);
+    var cur = activeReelsPlaylist[currentReelIndex];
+    if (cur && cur.id) window.toggleReelLike(null, cur.id);
   };
 
   // --------------------------------------------------------------------------
-  // 3. תגובות לרילס (מחובר לטבלת `community_reviews` ב-Supabase)
+  // 3. תגובות לרילס מ-Supabase
   // --------------------------------------------------------------------------
   function getReelCommentsCache() {
-    try {
-      return JSON.parse(localStorage.getItem(REEL_COMMENTS_CACHE_KEY) || "{}") || {};
-    } catch (e) {
-      return {};
-    }
+    try { return JSON.parse(localStorage.getItem(REEL_COMMENTS_CACHE_KEY) || "{}") || {}; } catch (e) { return {}; }
   }
-
   function saveReelCommentsCache(cache) {
-    try {
-      localStorage.setItem(REEL_COMMENTS_CACHE_KEY, JSON.stringify(cache || {}));
-    } catch (e) {}
+    try { localStorage.setItem(REEL_COMMENTS_CACHE_KEY, JSON.stringify(cache || {})); } catch (e) {}
   }
-
   function getReelCommentCount(reelId) {
     var cache = getReelCommentsCache();
     var list = cache["reel_" + String(reelId)];
@@ -11608,12 +11526,7 @@ window.forceExitShabbatMode = function () {
   window.preloadAllReelCommentsFromSupabase = async function () {
     if (!window.supabaseClient) return;
     try {
-      var res = await window.supabaseClient
-        .from("community_reviews")
-        .select("*")
-        .like("entity_key", "reel_%")
-        .order("id", { ascending: false });
-
+      var res = await window.supabaseClient.from("community_reviews").select("*").like("entity_key", "reel_%").order("id", { ascending: false });
       if (!res.error && Array.isArray(res.data)) {
         var grouped = {};
         res.data.forEach(function (row) {
@@ -11631,58 +11544,45 @@ window.forceExitShabbatMode = function () {
   function updateAllReelCommentBadges() {
     var cache = getReelCommentsCache();
     Object.keys(cache).forEach(function (entityKey) {
-      var reelId = entityKey.replace(/^reel_/, "");
-      var badge = el("reel-comment-count-" + reelId);
-      if (badge) badge.textContent = String((cache[entityKey] || []).length);
+      var rId = entityKey.replace(/^reel_/, "");
+      var b = el("reel-comment-count-" + rId);
+      if (b) b.textContent = String((cache[entityKey] || []).length);
     });
-    if (activeModalReelContext.id) {
+    var cur = activeReelsPlaylist[currentReelIndex];
+    if (cur) {
       var modalBadge = el("reel-modal-comments-count");
-      if (modalBadge) modalBadge.textContent = String(getReelCommentCount(activeModalReelContext.id));
+      if (modalBadge) modalBadge.textContent = String(getReelCommentCount(cur.id));
     }
   }
+
+  window.openActiveModalReelComments = function () {
+    var cur = activeReelsPlaylist[currentReelIndex];
+    if (!cur) return;
+    window.openReelCommentsModal(null, cur.id, cur.title, cur.rabbi);
+  };
 
   window.openReelCommentsModal = async function (ev, reelId, title, rabbi) {
     if (ev && ev.stopPropagation) ev.stopPropagation();
     var key = String(reelId || "1");
-    activeModalReelContext.id = key;
-    if (title) activeModalReelContext.title = title;
-    if (rabbi) activeModalReelContext.rabbi = rabbi;
-
     var titleEl = el("reel-comments-modal-title");
-    if (titleEl) titleEl.textContent = "תגובות: " + (title || "סרטון רילס");
-
+    if (titleEl) titleEl.textContent = "תגובות: " + (title || "סרטון");
     var modal = el("modal-reel-comments");
     if (modal) modal.classList.remove("hidden");
-
     await renderReelCommentsList(key);
-  };
-
-  window.openActiveModalReelComments = function () {
-    if (!activeModalReelContext.id) return;
-    window.openReelCommentsModal(null, activeModalReelContext.id, activeModalReelContext.title, activeModalReelContext.rabbi);
   };
 
   async function renderReelCommentsList(reelId) {
     var listBox = el("reel-comments-list");
     if (!listBox) return;
-
     var entityKey = "reel_" + String(reelId);
     listBox.innerHTML = '<div class="p-3 text-center text-xs text-[#5C4938]">טוען תגובות...</div>';
-
     var comments = [];
     var cache = getReelCommentsCache();
-    if (Array.isArray(cache[entityKey])) {
-      comments = cache[entityKey].slice();
-    }
+    if (Array.isArray(cache[entityKey])) comments = cache[entityKey].slice();
 
     if (window.supabaseClient) {
       try {
-        var res = await window.supabaseClient
-          .from("community_reviews")
-          .select("*")
-          .eq("entity_key", entityKey)
-          .order("id", { ascending: false });
-
+        var res = await window.supabaseClient.from("community_reviews").select("*").eq("entity_key", entityKey).order("id", { ascending: false });
         if (!res.error && Array.isArray(res.data)) {
           comments = res.data;
           cache[entityKey] = comments;
@@ -11690,237 +11590,346 @@ window.forceExitShabbatMode = function () {
         }
       } catch (e) {}
     }
-
     updateAllReelCommentBadges();
 
     if (!comments.length) {
-      listBox.innerHTML =
-        '<div class="p-4 rounded-2xl bg-white border border-[#E5DBC7] text-center text-xs text-[#5C4938]">' +
-          'עדיין אין תגובות לסרטון זה. היו הראשונים להגיב ולחזק!' +
-        '</div>';
+      listBox.innerHTML = '<div class="p-4 rounded-2xl bg-white border border-[#E5DBC7] text-center text-xs text-[#5C4938]">עדיין אין תגובות לסרטון זה. היו הראשונים להגיב ולחזק!</div>';
       return;
     }
-
     listBox.innerHTML = comments.map(function (c) {
-      var author = c.user_name || "חבר קהילה";
-      var text = c.review_text || "";
       return '<div class="p-3 rounded-2xl bg-white border border-[#E5DBC7] space-y-1 shadow-sm">' +
         '<div class="flex items-center justify-between gap-2">' +
-          '<strong class="text-xs font-black text-[#0F2340]">👤 ' + esc(author) + '</strong>' +
+          '<strong class="text-xs font-black text-[#0F2340]">👤 ' + esc(c.user_name || "חבר קהילה") + '</strong>' +
           '<span class="text-[10px] text-emerald-700 font-bold">✓ תגובת קהילה</span>' +
         '</div>' +
-        '<p class="text-xs text-[#0F2340] leading-relaxed">' + esc(text) + '</p>' +
+        '<p class="text-xs text-[#0F2340] leading-relaxed">' + esc(c.review_text || "") + '</p>' +
       '</div>';
     }).join("");
   }
 
   window.submitReelComment = async function (ev) {
     if (ev && ev.preventDefault) ev.preventDefault();
-    var reelId = activeModalReelContext.id || "1";
+    var cur = activeReelsPlaylist[currentReelIndex];
+    var reelId = cur ? cur.id : "1";
     var entityKey = "reel_" + String(reelId);
 
     var authorEl = el("reel-comment-author");
     var textEl = el("reel-comment-text");
     var btn = el("btn-submit-reel-comment");
-
-    var author = (authorEl && authorEl.value ? authorEl.value : "").trim() ||
-                 (window.currentUserAccount && window.currentUserAccount.name ? window.currentUserAccount.name : "חבר קהילה");
+    var author = (authorEl && authorEl.value ? authorEl.value : "").trim() || (window.currentUserAccount && window.currentUserAccount.name ? window.currentUserAccount.name : "חבר קהילה");
     var text = (textEl && textEl.value ? textEl.value : "").trim();
+    if (!text) { if (window.toast) window.toast("נא להזין תוכן לתגובה"); return; }
 
-    if (!text) {
-      if (window.toast) window.toast("נא להזין תוכן לתגובה");
-      return;
-    }
-
-    if (btn) {
-      btn.disabled = true;
-      btn.textContent = "מפרסם תגובה...";
-    }
-
+    if (btn) { btn.disabled = true; btn.textContent = "מפרסם..."; }
     if (window.supabaseClient) {
       try {
         await window.supabaseClient.from("community_reviews").insert([{
-          entity_key: entityKey,
-          user_name: author,
-          rating: 5,
-          review_text: text,
-          status: "מאושר ✔",
-          is_approved: true
+          entity_key: entityKey, user_name: author, rating: 5, review_text: text, status: "מאושר ✔", is_approved: true
         }]);
-      } catch (e) {
-        console.warn("[submitReelComment supabase error]:", e);
-      }
+      } catch (e) {}
     }
-
     if (textEl) textEl.value = "";
-    if (btn) {
-      btn.disabled = false;
-      btn.textContent = "פרסם תגובה";
-    }
-
+    if (btn) { btn.disabled = false; btn.textContent = "פרסם תגובה"; }
     await renderReelCommentsList(reelId);
     if (window.toast) window.toast("💬 תגובתך נוספה לסרטון!");
   };
 
   // --------------------------------------------------------------------------
-  // 4. קישור לפרופיל הציבורי של המעלה / הרב בלחיצה על שמו במודאל הרילס
+  // 4. שיתוף ותרומה לרב מתוך הנגן (TikTok Style)
   // --------------------------------------------------------------------------
-  window.openCreatorPublicProfile = async function (creatorName) {
-    var name = String(creatorName || "").trim() || "בית המדרש צדיק-טוק";
-
-    if (window.closeReelPlayerModal) window.closeReelPlayerModal();
-    if (window.closeModal) window.closeModal("modal-reel-comments");
-    if (window.switchTab) window.switchTab("myzone");
-
-    var card = el("public-creator-profile-card");
-    var nameEl = el("creator-profile-name");
-    var subEl = el("creator-profile-subtitle");
-    var gridEl = el("creator-profile-items-grid");
-
-    if (!card || !gridEl) return;
-    card.classList.remove("hidden");
-    if (nameEl) nameEl.textContent = name;
-    if (subEl) subEl.textContent = "טוען את כל התכנים והסרטונים של " + name + "...";
-
-    var approvedRows = window.fetchApprovedLessonsFromSupabase ? await window.fetchApprovedLessonsFromSupabase() : [];
-    var matched = [];
-
-    (approvedRows || []).forEach(function (row, idx) {
-      var rName = String(row.rabbi_name || row.rabbi || "בית המדרש צדיק-טוק").trim();
-      if (rName === name || rName.indexOf(name) !== -1 || name.indexOf(rName) !== -1) {
-        var ytId = window.resolveYoutubeVideoId(row, rName, row.title, idx);
-        matched.push({
-          id: row.id || (idx + 1),
-          title: row.title || "סרטון / שיעור",
-          category: row.category || row.topic || "רילס",
-          rabbi: rName,
-          videoUrl: "https://www.youtube.com/watch?v=" + ytId,
-          ytId: ytId
-        });
-      }
-    });
-
-    if (subEl) {
-      subEl.textContent = "נמצאו " + matched.length + " תכנים וסרטונים שהועלו על ידי " + name;
-    }
-
-    if (!matched.length) {
-      gridEl.innerHTML =
-        '<div class="col-span-full p-4 rounded-2xl bg-[#FDF8EF] border border-[#E5DBC7] text-xs text-[#5C4938]">' +
-          'לא נמצאו סרטונים נוספים המשויכים ל-' + esc(name) + '.' +
-        '</div>';
-    } else {
-      gridEl.innerHTML = matched.map(function (item) {
-        var thumb = "https://img.youtube.com/vi/" + item.ytId + "/hqdefault.jpg";
-        return '<div class="p-3 rounded-2xl bg-[#FDF8EF] border border-[#E5DBC7] hover:border-[#0284C7] flex flex-col justify-between gap-2.5 shadow-sm transition-all">' +
-          '<div class="space-y-2">' +
-            '<div class="w-full aspect-video rounded-xl overflow-hidden bg-[#0F2340] relative cursor-pointer" onclick="playApprovedReelVideo(\'' + escAttr(item.videoUrl) + '\', \'' + escAttr(item.title) + '\', \'' + escAttr(item.rabbi) + '\', \'' + escAttr(item.id) + '\')">' +
-              '<img src="' + escAttr(thumb) + '" alt="' + escAttr(item.title) + '" class="w-full h-full object-cover" loading="lazy">' +
-              '<span class="absolute inset-0 flex items-center justify-center"><span class="w-9 h-9 rounded-full bg-white/90 text-[#0F2340] flex items-center justify-center font-black text-xs shadow">▶</span></span>' +
-            '</div>' +
-            '<span class="px-2 py-0.5 rounded-md bg-[#E0F2FE] text-[#0369A1] text-[11px] font-black inline-block">' + esc(item.category) + '</span>' +
-            '<h4 class="text-sm font-black text-[#0F2340] leading-snug">' + esc(item.title) + '</h4>' +
-          '</div>' +
-          '<button type="button" onclick="playApprovedReelVideo(\'' + escAttr(item.videoUrl) + '\', \'' + escAttr(item.title) + '\', \'' + escAttr(item.rabbi) + '\', \'' + escAttr(item.id) + '\')" class="w-full py-1.5 rounded-xl bg-[#0284C7] hover:bg-[#0369A1] text-white font-black text-xs text-center" style="color:#FFFFFF !important;">' +
-            '▶ נגן סרטון באפליקציה' +
-          '</button>' +
-        '</div>';
-      }).join("");
-    }
-
-    setTimeout(function () {
-      if (card.scrollIntoView) card.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 80);
-  };
-
-  window.openCreatorPublicProfileFromReel = function () {
-    var rabbi = activeModalReelContext.rabbi || (el("reel-player-rabbi") ? el("reel-player-rabbi").textContent : "בית המדרש צדיק-טוק");
-    window.openCreatorPublicProfile(rabbi);
-  };
-
-  window.closeCreatorPublicProfile = function () {
-    var card = el("public-creator-profile-card");
-    if (card) card.classList.add("hidden");
-  };
-
-  // --------------------------------------------------------------------------
-  // 5. ניגון ישיר של הסרטון בתוך המודאל באמצעות <iframe> של יוטיוב (ללא יציאה מהאפליקציה!)
-  //    וקרוסלת רילס בדף הבית עם תמונות אמיתיות מיוטיוב כרקע הכרטיס
-  // --------------------------------------------------------------------------
-  window.playApprovedReelVideo = function (videoUrl, title, rabbi, reelId) {
-    var rId = String(reelId || "1");
-    var resolvedYtId = window.resolveYoutubeVideoId(videoUrl, rabbi, title, parseInt(rId, 10) || 0);
-    var watchUrl = "https://www.youtube.com/watch?v=" + resolvedYtId;
-    var embedUrl = "https://www.youtube.com/embed/" + encodeURIComponent(resolvedYtId) + "?autoplay=1&rel=0&playsinline=1";
-
-    activeModalReelContext = {
-      id: rId,
-      title: title || "סרטון חיזוק",
-      rabbi: rabbi || "בית המדרש צדיק-טוק",
-      videoUrl: watchUrl,
-      ytId: resolvedYtId
+  window.shareActiveReel = async function () {
+    var cur = activeReelsPlaylist[currentReelIndex];
+    if (!cur) return;
+    var shareData = {
+      title: cur.title || "צדיק-טוק",
+      text: (cur.title || "סרטון חיזוק") + " • מפי " + (cur.rabbi || "הרב"),
+      url: cur.videoUrl || window.location.href
     };
+    if (navigator.share) {
+      try { await navigator.share(shareData); return; } catch (e) {}
+    }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareData.url);
+        if (window.toast) window.toast("🔗 קישור הסרטון הועתק לשיתוף!");
+        return;
+      }
+    } catch (e) {}
+    if (window.toast) window.toast("קישור: " + shareData.url);
+  };
+
+  window.openReelDonateModal = function () {
+    var cur = activeReelsPlaylist[currentReelIndex];
+    var rabbiName = cur ? cur.rabbi : "רב בית המדרש";
+    var nameEl = el("reel-donate-rabbi-name");
+    if (nameEl) nameEl.textContent = "לרב " + rabbiName + " ולהחזקת בית המדרש";
+    var modal = el("modal-reel-donate");
+    if (modal) modal.classList.remove("hidden");
+  };
+
+  window.selectReelDonateAmount = function (amt, btnEl) {
+    selectedDonateAmount = amt;
+    qsa("#reel-donate-amount-chips .reel-donate-chip").forEach(function (b) { b.classList.remove("active"); });
+    if (btnEl) btnEl.classList.add("active");
+  };
+
+  window.confirmReelDonation = function () {
+    var cur = activeReelsPlaylist[currentReelIndex];
+    var rabbi = cur ? cur.rabbi : "בית המדרש";
+    var ded = (el("reel-donate-dedication") ? el("reel-donate-dedication").value : "").trim() || "להצלחה ולברכה";
+    if (window.closeModal) window.closeModal("modal-reel-donate");
+    if (window.toast) window.toast("❤️ תודה רבה! תרומתך בסך " + selectedDonateAmount + " ₪ לרב " + rabbi + " נרשמה בהצלחה (" + ded + ")!");
+  };
+
+  // --------------------------------------------------------------------------
+  // 5. נגן וידאו מסך מלא בסגנון TikTok / Reels (100vw, 100vh, iframe שקט ואוטומטי, מעבר בגלילה)
+  // --------------------------------------------------------------------------
+  window.playApprovedReelVideo = function (videoUrl, title, rabbi, reelId, options) {
+    var isLong = options && options.isLong;
+    var rId = String(reelId || "1");
+
+    // הרכבת רשימת השמעה פעילה (Playlist) אם לא קיימת
+    if (!activeReelsPlaylist.length || options && options.newPlaylist) {
+      activeReelsPlaylist = (window.cachedApprovedReelsList || []).slice();
+    }
+    // אם הסרטון הנלחץ אינו ברשימה (למשל מתוך שיעורים ארוכים / סרטונים חינוכיים), מוסיפים אותו
+    var foundIdx = -1;
+    for (var i = 0; i < activeReelsPlaylist.length; i++) {
+      if (String(activeReelsPlaylist[i].id) === rId || (videoUrl && activeReelsPlaylist[i].videoUrl === videoUrl)) {
+        foundIdx = i;
+        break;
+      }
+    }
+    if (foundIdx === -1) {
+      activeReelsPlaylist.unshift({
+        id: rId,
+        title: title || "שיעור תורה",
+        rabbi: rabbi || "בית המדרש",
+        videoUrl: videoUrl,
+        isLong: !!isLong
+      });
+      foundIdx = 0;
+    }
+    currentReelIndex = foundIdx;
+
+    renderCurrentActiveReelInModal();
+  };
+
+  function renderCurrentActiveReelInModal() {
+    var cur = activeReelsPlaylist[currentReelIndex];
+    if (!cur) return;
 
     var modal = el("modal-reel-player");
     var frameWrap = el("reel-player-frame-wrap");
     var titleEl = el("reel-player-title");
     var rabbiEl = el("reel-player-rabbi");
-    var extLink = el("reel-player-ext-link");
+    var badgeEl = el("reel-player-badge");
+    var avatarLetter = el("reel-avatar-letter");
     var likeCountEl = el("reel-modal-like-count");
+    var likeHeartEl = el("reel-modal-like-heart");
+    var likeBtnEl = el("reel-modal-like-btn");
     var commCountEl = el("reel-modal-comments-count");
 
     if (!modal || !frameWrap) return;
 
-    if (titleEl) titleEl.textContent = activeModalReelContext.title;
-    if (rabbiEl) rabbiEl.textContent = activeModalReelContext.rabbi;
-    if (extLink) {
-      extLink.href = watchUrl;
-      extLink.style.display = "block";
+    // פתיחת המודאל במסך מלא והוספת מחלקה ל-body כדי שסרגל הניווט התחתון יישאר קבוע מעל הווידאו
+    modal.classList.remove("hidden");
+    document.body.classList.add("reel-fullscreen-open");
+
+    var ytId = window.resolveYoutubeVideoId(cur.videoUrl, cur.rabbi, cur.title, currentReelIndex);
+    cur.resolvedYtId = ytId;
+
+    if (titleEl) titleEl.textContent = cur.title || "סרטון חיזוק";
+    if (rabbiEl) rabbiEl.textContent = cur.rabbi || "בית המדרש צדיק-טוק";
+    if (badgeEl) badgeEl.textContent = cur.isLong ? "שיעור מלא" : (cur.category || "רילס");
+    if (avatarLetter) {
+      var initial = (cur.rabbi || "ר").replace(/^(?:הרה"ג|הרב|מורינו|רבי)\s*/, "").charAt(0) || "👤";
+      avatarLetter.textContent = initial;
     }
-    if (likeCountEl) likeCountEl.textContent = String(getTrueReelLikesCount(rId));
+
+    var rId = String(cur.id);
+    var likesCount = getTrueReelLikesCount(rId);
+    var isLiked = hasUserLikedReel(rId);
+    if (likeCountEl) likeCountEl.textContent = String(likesCount);
+    if (likeHeartEl) likeHeartEl.textContent = isLiked ? "❤️" : "🤍";
+    if (likeBtnEl) likeBtnEl.classList.toggle("liked", isLiked);
     if (commCountEl) commCountEl.textContent = String(getReelCommentCount(rId));
 
-    // הטמעת <iframe> ישירה לניגון אוטומטי בתוך המודאל בלי לצאת מהאפליקציה!
+    // הרכבת כתובת ה-embed:
+    // נגן מוטמע ישיר, מתחיל שקט (mute=1) כדי שהדפדפן יאשר ניגון אוטומטי (Autoplay) מלא בלי לצאת מהאפליקציה!
+    // בסרטונים ארוכים controls=1 כדי שיוכלו להריץ קדימה/אחורה, ברילס קצרים controls=0 כמו בטיקטוק
+    var controlsVal = cur.isLong ? "1" : "0";
+    var muteVal = isPlayerMuted ? "1" : "0";
+    var embedSrc = "https://www.youtube.com/embed/" + encodeURIComponent(ytId) +
+      "?autoplay=1&controls=" + controlsVal + "&modestbranding=1&rel=0&mute=" + muteVal +
+      "&playsinline=1&enablejsapi=1&loop=1&playlist=" + encodeURIComponent(ytId);
+
+    // הטמעת ה-iframe
     frameWrap.innerHTML =
-      '<iframe ' +
-        'src="' + escAttr(embedUrl) + '" ' +
-        'title="' + escAttr(activeModalReelContext.title) + '" ' +
-        'class="w-full h-full border-0" ' +
+      '<iframe id="reel-active-iframe" ' +
+        'src="' + escAttr(embedSrc) + '" ' +
+        'title="' + escAttr(cur.title || "סרטון") + '" ' +
+        'class="w-full h-full border-0 select-none" ' +
         'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
         'allowfullscreen>' +
       '</iframe>';
 
-    modal.classList.remove("hidden");
+    updateSoundButtonUi();
+  }
+
+  // מעבר בין סרטונים (גלילה למעלה = סרטון הבא, גלילה למטה = סרטון קודם, כמו בטיקטוק)
+  window.navigateReel = function (step) {
+    if (!activeReelsPlaylist.length) return;
+    var nextIdx = currentReelIndex + step;
+    if (nextIdx < 0) nextIdx = activeReelsPlaylist.length - 1;
+    if (nextIdx >= activeReelsPlaylist.length) nextIdx = 0;
+    currentReelIndex = nextIdx;
+    renderCurrentActiveReelInModal();
   };
 
+  // השתקה / ביטול השתקה של הנגן בלחיצה על כפתור השמע
+  window.toggleReelSound = function (ev) {
+    if (ev && ev.stopPropagation) ev.stopPropagation();
+    isPlayerMuted = !isPlayerMuted;
+    updateSoundButtonUi();
+
+    var iframe = el("reel-active-iframe");
+    if (iframe && iframe.contentWindow) {
+      var cmd = isPlayerMuted ? '{"event":"command","func":"mute","args":""}' : '{"event":"command","func":"unMute","args":""}';
+      try {
+        iframe.contentWindow.postMessage(cmd, "*");
+      } catch (e) {}
+    }
+  };
+
+  function updateSoundButtonUi() {
+    var iconEl = el("reel-sound-icon");
+    var textEl = el("reel-sound-text");
+    if (iconEl) iconEl.textContent = isPlayerMuted ? "🔇" : "🔊";
+    if (textEl) textEl.textContent = isPlayerMuted ? "בטל השתקה" : "השתק";
+  }
+
+  window.handleReelStageClick = function (ev) {
+    // טאפ על הבמה מבטל השתקה או מפעיל סאונד
+    if (isPlayerMuted) {
+      window.toggleReelSound(ev);
+    }
+  };
+
+  window.closeReelPlayerModal = function () {
+    var modal = el("modal-reel-player");
+    var frameWrap = el("reel-player-frame-wrap");
+    if (frameWrap) frameWrap.innerHTML = "";
+    if (modal) modal.classList.add("hidden");
+    document.body.classList.remove("reel-fullscreen-open");
+  };
+
+  window.openCreatorPublicProfileFromReel = function () {
+    var cur = activeReelsPlaylist[currentReelIndex];
+    var rabbi = cur ? cur.rabbi : "בית המדרש צדיק-טוק";
+    window.closeReelPlayerModal();
+    if (window.openCreatorPublicProfile) window.openCreatorPublicProfile(rabbi);
+  };
+
+  // האזנה למחוות מגע וגלילת עכבר עבור סוואיפ אנכי בנגן מסך מלא (TikTok Swipe)
+  var touchStartY = 0;
+  var touchEndY = 0;
+  var stageEl = el("modal-reel-player");
+
+  function handleTouchStart(e) {
+    if (e.touches && e.touches[0]) touchStartY = e.touches[0].clientY;
+  }
+  function handleTouchEnd(e) {
+    if (e.changedTouches && e.changedTouches[0]) {
+      touchEndY = e.changedTouches[0].clientY;
+      var diff = touchStartY - touchEndY;
+      // סוואיפ של מעל 45 פיקסלים למעלה -> סרטון הבא; למטה -> סרטון קודם
+      if (diff > 45) {
+        window.navigateReel(1);
+      } else if (diff < -45) {
+        window.navigateReel(-1);
+      }
+    }
+  }
+  function handleWheel(e) {
+    var modal = el("modal-reel-player");
+    if (!modal || modal.classList.contains("hidden")) return;
+    if (Math.abs(e.deltaY) > 35) {
+      if (e.deltaY > 0) window.navigateReel(1);
+      else window.navigateReel(-1);
+    }
+  }
+
+  window.addEventListener("touchstart", handleTouchStart, { passive: true });
+  window.addEventListener("touchend", handleTouchEnd, { passive: true });
+  window.addEventListener("wheel", handleWheel, { passive: true });
+
+  // תמיכה במקשי חיצים למעלה/למטה ו-Escape
+  window.addEventListener("keydown", function (e) {
+    var modal = el("modal-reel-player");
+    if (!modal || modal.classList.contains("hidden")) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      window.navigateReel(1);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      window.navigateReel(-1);
+    } else if (e.key === "Escape") {
+      window.closeReelPlayerModal();
+    }
+  });
+
+  // סגירה אוטומטית של נגן הרילס בעת לחיצה על לשונית בסרגל הניווט התחתון (הסרגל נשאר פעיל מעל הווידאו!)
+  var prevSwitchTabV44 = window.switchTab;
+  window.switchTab = function (tabId) {
+    window.closeReelPlayerModal();
+    if (prevSwitchTabV44) prevSwitchTabV44(tabId);
+  };
+
+  // --------------------------------------------------------------------------
+  // 6. קרוסלת הרילס בדף הבית — מציגה אך ורק סרטונים עד 90 שניות!
+  // --------------------------------------------------------------------------
   window.renderHomeReelsStrip = async function () {
     var strip = el("home-reels-strip");
     if (!strip) return;
 
     strip.className = "reels-9x16-strip hide-scrollbar";
 
-    var approvedRows = window.fetchApprovedLessonsFromSupabase ? await window.fetchApprovedLessonsFromSupabase() : [];
+    var allApprovedRows = window.fetchApprovedLessonsFromSupabase ? await window.fetchApprovedLessonsFromSupabase() : [];
 
-    if (!approvedRows || approvedRows.length === 0) {
+    // סינון להגבלת זמן: בקטגוריית הרילס מוצגים סרטונים קצרים בלבד (עד 90 שניות!)
+    var shortReels = allApprovedRows.filter(function (row) {
+      return window.isReelUnder90Seconds(row);
+    });
+
+    if (!shortReels || shortReels.length === 0) {
       strip.innerHTML =
         '<div class="w-full py-3 px-4 rounded-xl bg-[#FDF8EF] border border-[#E5DBC7] text-xs text-[#5C4938] flex items-center justify-between gap-2">' +
-          '<span>אין כרגע סרטוני רילס מאושרים בטבלת <strong>lessons</strong> ב-Supabase.</span>' +
+          '<span>אין כרגע סרטוני רילס קצרים (עד 90 שניות) מאושרים בטבלת <strong>lessons</strong>.</span>' +
           '<button type="button" onclick="openLearnContentUploadModal()" class="px-3 py-1 rounded-lg bg-[#0284C7] text-white font-bold text-xs shrink-0" style="color:#FFFFFF !important;">+ העלה סרטון</button>' +
         '</div>';
       return;
     }
 
-    // אתחול ראשוני של מוני הלייקים מ-row.likes_count (מתחיל מ-0!)
-    approvedRows.forEach(function (row) {
-      if (!row || row.id === undefined) return;
-      var k = String(row.id);
-      if (reelDbLikesCountMap[k] === undefined) {
-        var initLikes = Number(row.likes_count !== undefined ? row.likes_count : (row.likes || 0));
-        reelDbLikesCountMap[k] = (isNaN(initLikes) || initLikes < 0) ? 0 : initLikes;
-      }
+    // שמירה ברשימת ההשמעה הפעילה של הרילס
+    window.cachedApprovedReelsList = shortReels.map(function (row, idx) {
+      var rId = String(row.id || (idx + 1));
+      var rName = String(row.rabbi_name || row.rabbi || "בית המדרש צדיק-טוק").trim();
+      var tStr = String(row.title || "סרטון חיזוק").trim();
+      var ytId = window.resolveYoutubeVideoId(row, rName, tStr, idx);
+      return {
+        id: rId,
+        title: tStr,
+        rabbi: rName,
+        category: row.category || "רילס",
+        videoUrl: "https://www.youtube.com/watch?v=" + ytId,
+        ytId: ytId,
+        isLong: false
+      };
     });
+    activeReelsPlaylist = window.cachedApprovedReelsList.slice();
 
-    strip.innerHTML = approvedRows.map(function (row, idx) {
+    strip.innerHTML = shortReels.map(function (row, idx) {
       var rId = String(row.id || (idx + 1));
       var title = String(row.title || "סרטון חיזוק").trim();
       var rabbi = String(row.rabbi_name || row.rabbi || "בית המדרש צדיק-טוק").trim();
@@ -11934,7 +11943,7 @@ window.forceExitShabbatMode = function () {
       var commCount = getReelCommentCount(rId);
 
       return '<div class="reel-9x16-card-wrap">' +
-        '<button type="button" onclick="playApprovedReelVideo(\'' + escAttr(watchUrl) + '\', \'' + escAttr(title) + '\', \'' + escAttr(rabbi) + '\', \'' + escAttr(rId) + '\')" class="reel-9x16-item" title="' + escAttr(title + " • " + rabbi) + '">' +
+        '<button type="button" onclick="playApprovedReelVideo(\'' + escAttr(watchUrl) + '\', \'' + escAttr(title) + '\', \'' + escAttr(rabbi) + '\', \'' + escAttr(rId) + '\', { isLong: false })" class="reel-9x16-item" title="' + escAttr(title + " • " + rabbi) + '">' +
           '<div class="reel-9x16-video-box" style="background-image:url(\'' + escAttr(hqThumb) + '\');">' +
             '<img src="' + escAttr(maxResThumb) + '" alt="' + escAttr(title) + '" class="reel-9x16-thumb-img" loading="lazy" onload="handleYtThumbLoad(this, \'' + escAttr(ytId) + '\')" onerror="handleYtThumbError(this, \'' + escAttr(ytId) + '\')">' +
             '<div class="reel-9x16-overlay"></div>' +
@@ -11955,18 +11964,125 @@ window.forceExitShabbatMode = function () {
       '</div>';
     }).join("");
 
-    // סנכרון מלא של מספר הלייקים והתגובות האמיתיים מ-Supabase
-    window.syncReelLikesFromSupabase(approvedRows);
+    window.syncReelLikesFromSupabase(shortReels);
     window.preloadAllReelCommentsFromSupabase();
   };
 
-  function initV43() {
+  // --------------------------------------------------------------------------
+  // 7. שדרוג כל מדורי 'ללמוד' לניגון באותו נגן מסך מלא (שיעורים ארוכים, סרטונים וסיפורי צדיקים)
+  // --------------------------------------------------------------------------
+  // א. קרוסלת שיעורים ארוכים בדף הבית
+  window.renderHomeLongShiurimCarousel = function () {
+    var box = el("home-carousel-shiurim");
+    if (!box) return;
+    var shiurim = (window.RABBI_SHIURIM_DATA || []).slice(0, 10);
+    if (!shiurim.length) return;
+
+    box.innerHTML = shiurim.map(function (s, idx) {
+      var sid = s.id || ("sh_" + idx);
+      var title = s.title || "שיעור תורה מרכזי";
+      var rabbi = s.rabbi || s.rabbi_name || "רב בית המדרש";
+      var topic = s.subCategory || s.topic || s.category || "שיעור תורה";
+      var dur = s.duration || "45:00";
+      var inst = s.institution || s.description || "שיעור וידאו מלא מבית המדרש";
+      var videoUrl = s.video_url || s.url || s.videoUrl || "";
+      var ytId = window.resolveYoutubeVideoId(videoUrl || s, rabbi, title, idx);
+      var thumb = "https://img.youtube.com/vi/" + ytId + "/hqdefault.jpg";
+
+      return '<div class="shrink-0 w-64 sm:w-72 bg-[#FDF8EF] border border-[#E5DBC7] hover:border-[#C9A227] rounded-2xl p-3.5 flex flex-col justify-between gap-2.5 shadow-sm transition-all">' +
+        '<div class="space-y-2">' +
+          '<div class="w-full aspect-video rounded-xl overflow-hidden bg-black relative cursor-pointer" onclick="playApprovedReelVideo(\'' + escAttr(videoUrl || ('https://www.youtube.com/watch?v=' + ytId)) + '\', \'' + escAttr(title) + '\', \'' + escAttr(rabbi) + '\', \'' + escAttr(sid) + '\', { isLong: true })">' +
+            '<img src="' + escAttr(thumb) + '" alt="' + escAttr(title) + '" class="w-full h-full object-cover">' +
+            '<span class="absolute inset-0 flex items-center justify-center"><span class="w-8 h-8 rounded-full bg-white/90 text-[#0F2340] flex items-center justify-center font-black text-xs shadow">▶</span></span>' +
+            '<span class="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded bg-black/75 text-white font-mono text-[10px] font-bold">' + esc(dur) + '</span>' +
+          '</div>' +
+          '<span class="px-2 py-0.5 rounded-md bg-[#E0F2FE] text-[#0369A1] border border-[#7DD3FC] font-black text-[11px] inline-block">' + esc(topic) + '</span>' +
+          '<h4 class="text-sm font-black text-[#0F2340] serif-heading leading-snug line-clamp-2">' + esc(title) + '</h4>' +
+          '<p class="text-xs font-bold text-[#0F2340] truncate">🎙️ ' + esc(rabbi) + '</p>' +
+        '</div>' +
+        '<div class="pt-2 border-t border-[#E5DBC7] flex items-center gap-2">' +
+          '<button type="button" onclick="playApprovedReelVideo(\'' + escAttr(videoUrl || ('https://www.youtube.com/watch?v=' + ytId)) + '\', \'' + escAttr(title) + '\', \'' + escAttr(rabbi) + '\', \'' + escAttr(sid) + '\', { isLong: true })" class="flex-1 py-2 bg-[#0284C7] hover:bg-[#0369A1] text-white font-black rounded-xl text-xs text-center" style="color:#FFFFFF !important;">▶ צפייה בשיעור מלא</button>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  };
+
+  // ב. רשת שיעורי הרבנים בלשונית 'ללמוד' -> 'שיעורים' (#rabbi-shiurim-grid)
+  var prevRenderRabbiShiurimList = window.renderRabbiShiurimList;
+  window.renderRabbiShiurimList = function (query) {
+    if (prevRenderRabbiShiurimList) prevRenderRabbiShiurimList(query);
+    // הפיכת כל כפתורי "צפייה בשיעור המלא" לרכיב שפותח ישירות את נגן המסך המלא!
+    var btns = document.querySelectorAll("#rabbi-shiurim-grid button[onclick*='openEntityFullPage']");
+    btns.forEach(function (btn) {
+      var card = btn.closest(".bg-white");
+      if (!card) return;
+      var titleEl = card.querySelector("h4");
+      var rabbiEl = card.querySelector("p");
+      var title = titleEl ? titleEl.textContent : "שיעור תורה";
+      var rabbi = rabbiEl ? rabbiEl.textContent.replace("🎙️ מגיד השיעור:", "").trim() : "הרב";
+      var ytId = window.resolveYoutubeVideoId("", rabbi, title);
+      var watchUrl = "https://www.youtube.com/watch?v=" + ytId;
+      btn.setAttribute("onclick", "playApprovedReelVideo('" + escAttr(watchUrl) + "', '" + escAttr(title) + "', '" + escAttr(rabbi) + "', 'sh_" + hashString(title) + "', { isLong: true })");
+      btn.textContent = "▶ צפייה בשיעור מסך מלא";
+    });
+  };
+
+  // ג. רשת סרטונים חינוכיים בלשונית 'ללמוד' -> 'סרטונים' (#edu-videos-grid)
+  var prevFilterEduVideosByRabbi = window.filterEduVideosByRabbi;
+  window.filterEduVideosByRabbi = function (rabbiName) {
+    if (prevFilterEduVideosByRabbi) prevFilterEduVideosByRabbi(rabbiName);
+    var btns = document.querySelectorAll("#edu-videos-grid button[onclick*='openEntityFullPage']");
+    btns.forEach(function (btn) {
+      var card = btn.closest(".bg-white");
+      if (!card) return;
+      var titleEl = card.querySelector("h4");
+      var speakerEl = card.querySelector(".text-amber-700");
+      var title = titleEl ? titleEl.textContent : "סרטון חינוכי";
+      var speaker = speakerEl ? speakerEl.textContent.replace("🎙️", "").trim() : "בית המדרש";
+      var ytId = window.resolveYoutubeVideoId("", speaker, title);
+      var watchUrl = "https://www.youtube.com/watch?v=" + ytId;
+      btn.setAttribute("onclick", "playApprovedReelVideo('" + escAttr(watchUrl) + "', '" + escAttr(title) + "', '" + escAttr(speaker) + "', 'edu_" + hashString(title) + "', { isLong: false })");
+      btn.textContent = "▶ צפייה בסרטון מסך מלא";
+    });
+  };
+
+  // ד. סיפורי צדיקים בלשונית 'ללמוד' -> 'סיפורי צדיקים'
+  var prevRenderTzStories = window.renderTzaddikimStoriesLearn;
+  window.renderTzaddikimStoriesLearn = function (query) {
+    if (prevRenderTzStories) prevRenderTzStories(query);
+    var grid = el("tzaddikim-stories-learn-grid");
+    if (!grid) return;
+    var cards = grid.querySelectorAll(".bg-[#FDF8EF]");
+    cards.forEach(function (card) {
+      var titleEl = card.querySelector("h4");
+      var rabbiEl = card.querySelector("p");
+      var title = titleEl ? titleEl.textContent : "סיפור צדיקים";
+      var rabbi = rabbiEl ? rabbiEl.textContent.replace("👑 הצדיק:", "").trim() : "גדולי ישראל";
+      var ytId = window.resolveYoutubeVideoId("", rabbi, title);
+      var watchUrl = "https://www.youtube.com/watch?v=" + ytId;
+      var btn = card.querySelector("button");
+      if (btn && !card.querySelector(".btn-tz-video-play")) {
+        var playBtn = document.createElement("button");
+        playBtn.type = "button";
+        playBtn.className = "btn-tz-video-play w-full py-2 mt-2 bg-[#0284C7] hover:bg-[#0369A1] text-white font-bold rounded-xl text-xs text-center";
+        playBtn.style.color = "#FFFFFF";
+        playBtn.textContent = "▶ צפייה בסיפור בווידאו מסך מלא";
+        playBtn.onclick = function () {
+          window.playApprovedReelVideo(watchUrl, title, rabbi, "tz_" + hashString(title), { isLong: false });
+        };
+        card.appendChild(playBtn);
+      }
+    });
+  };
+
+  function initV44() {
     window.renderHomeReelsStrip();
+    window.renderHomeLongShiurimCarousel();
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initV43);
+    document.addEventListener("DOMContentLoaded", initV44);
   } else {
-    initV43();
+    initV44();
   }
 })();

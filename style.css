@@ -1651,3 +1651,159 @@ main, .view-section {
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.0) 55%, rgba(15, 35, 64, 0.45) 100%) !important;
   pointer-events: none !important;
 }
+
+
+/* ==========================================================================
+   V44 — ממשק מסך מלא בסגנון TikTok / Instagram Reels (100vw, 100vh, רקע שחור)
+   ========================================================================== */
+
+/* 1. מודאל מסך מלא של נגן הרילס */
+#modal-reel-player {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  background-color: #000000 !important;
+  z-index: 55 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* 2. סרגל הניווט התחתון נשאר קבוע ומופיע גם מעל הווידאו במסך מלא (בצבע כהה עם blur) */
+body.reel-fullscreen-open nav.heritage-bottom-nav {
+  z-index: 60 !important;
+  display: grid !important;
+  background: rgba(15, 23, 42, 0.88) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.6) !important;
+}
+body.reel-fullscreen-open nav.heritage-bottom-nav .bottom-nav-item {
+  color: #CBD5E1 !important;
+}
+body.reel-fullscreen-open nav.heritage-bottom-nav .bottom-nav-item.active {
+  color: #FCD34D !important;
+}
+body.reel-fullscreen-open nav.heritage-bottom-nav .bottom-nav-item svg {
+  stroke: currentColor !important;
+}
+
+/* 3. במחשב (דסקטופ): הווידאו מרוכז ביחס 9:16 עם מסגרת נקייה על רקע שחור מלא */
+@media (min-width: 768px) {
+  #reel-player-frame-wrap {
+    max-width: 420px !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+}
+
+/* 4. עמודת הכפתורים האנכית בצד ימין (TikTok / Reels Style) */
+.reel-vertical-action-bar {
+  position: absolute !important;
+  right: 12px !important;
+  bottom: 84px !important;
+  z-index: 35 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 14px !important;
+}
+@media (min-width: 640px) {
+  .reel-vertical-action-bar {
+    right: 20px !important;
+    bottom: 96px !important;
+    gap: 16px !important;
+  }
+}
+.reel-action-btn {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 4px !important;
+  background: transparent !important;
+  border: none !important;
+  color: #FFFFFF !important;
+  cursor: pointer !important;
+  outline: none !important;
+  padding: 0 !important;
+  transition: transform 0.14s ease !important;
+}
+.reel-action-btn:hover {
+  transform: scale(1.08) !important;
+}
+.reel-action-circle {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 999px !important;
+  background-color: rgba(15, 23, 42, 0.72) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.22) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+.reel-action-btn.liked .reel-like-circle {
+  background-color: rgba(220, 38, 38, 0.85) !important;
+  border-color: #F87171 !important;
+}
+.reel-donate-circle {
+  background: linear-gradient(135deg, #D97706 0%, #B45309 100%) !important;
+  border-color: #FCD34D !important;
+}
+.reel-avatar-ring {
+  width: 46px !important;
+  height: 46px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important;
+  border: 2px solid #FCD34D !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #FFFFFF !important;
+  font-size: 20px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45) !important;
+}
+.reel-action-counter,
+.reel-action-sublabel {
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  color: #FFFFFF !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8) !important;
+  line-height: 1 !important;
+}
+
+/* 5. פרטי הווידאו בתחתית (טקסט קצר וקריא מעל גרדיאנט כהה) */
+.reel-bottom-info-bar {
+  position: absolute !important;
+  left: 12px !important;
+  right: 74px !important;
+  bottom: 84px !important;
+  z-index: 30 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
+}
+@media (min-width: 640px) {
+  .reel-bottom-info-bar {
+    left: 20px !important;
+    right: 88px !important;
+    bottom: 96px !important;
+  }
+}
+
+/* 6. צ'יפים של סכומי תרומה */
+.reel-donate-chip.active {
+  background-color: #F59E0B !important;
+  color: #0F2340 !important;
+  border-color: #B45309 !important;
+  font-weight: 900 !important;
+}
