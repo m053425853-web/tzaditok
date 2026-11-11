@@ -1807,3 +1807,129 @@ body.reel-fullscreen-open nav.heritage-bottom-nav .bottom-nav-item svg {
   border-color: #B45309 !important;
   font-weight: 900 !important;
 }
+
+
+/* ==========================================================================
+   V45 — ניגודיות גבוהה, סרגל משך זמן (5 דקות), חצי קרוסלה פנימיים, ומודאלים מעל הווידאו
+   ========================================================================== */
+
+/* 1. כפתורי שליטה עליונים בנגן הווידאו בניגודיות גבוהה מול הווידאו */
+.reel-top-control-btn {
+  background: rgba(15, 23, 42, 0.88) !important;
+  color: #FFFFFF !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  font-weight: 900 !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9) !important;
+  transition: all 0.15s ease !important;
+  outline: none !important;
+}
+.reel-top-control-btn:hover {
+  background: rgba(15, 23, 42, 0.98) !important;
+  border-color: #FCD34D !important;
+  transform: scale(1.05) !important;
+}
+
+/* 2. מודאל תגובות ותרומות מעל הווידאו (z-index: 75) בתצורת Bottom Sheet מודרנית */
+#modal-reel-comments,
+#modal-reel-donate {
+  z-index: 75 !important;
+}
+#modal-reel-comments > div,
+#modal-reel-donate > div {
+  width: 100% !important;
+  max-width: 440px !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.7) !important;
+  animation: slideUpSheet 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+@media (min-width: 640px) {
+  #modal-reel-comments > div,
+  #modal-reel-donate > div {
+    border-radius: 24px !important;
+  }
+}
+@keyframes slideUpSheet {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* 3. סרגל סינון משך זמן בקרוסלת הרילס (עד 90 שנ׳ / עד 5 דק׳ / הכל) */
+.reels-duration-pill {
+  background-color: #FFFFFF !important;
+  border: 1px solid #D8CBB5 !important;
+  color: #0F2340 !important;
+  cursor: pointer !important;
+  transition: all 0.14s ease !important;
+}
+.reels-duration-pill:hover {
+  border-color: #C9A227 !important;
+  background-color: #FDF8EF !important;
+}
+.reels-duration-pill.active {
+  background-color: #0F2340 !important;
+  color: #FCD34D !important;
+  border-color: #0F2340 !important;
+}
+
+/* 4. חיצי גלילה פנימיים בתוך מסגרת הקרוסלה */
+.reels-strip-wrapper {
+  position: relative !important;
+}
+.reels-inner-scroll-arrow {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 10 !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid #D8CBB5 !important;
+  color: #0F2340 !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18) !important;
+  cursor: pointer !important;
+  transition: all 0.14s ease !important;
+  opacity: 0.88 !important;
+}
+.reels-inner-scroll-arrow:hover {
+  opacity: 1 !important;
+  background: #FFFFFF !important;
+  border-color: #C9A227 !important;
+  transform: translateY(-50%) scale(1.08) !important;
+}
+.reels-scroll-prev {
+  right: 4px !important;
+}
+.reels-scroll-next {
+  left: 4px !important;
+}
+@media (max-width: 640px) {
+  .reels-inner-scroll-arrow {
+    display: none !important;
+  }
+}
+
+/* 5. חץ כרטיס היום ביהדות - פנימי לחלוטין ללא גלישה החוצה */
+.today-inner-arrow-btn {
+  border-radius: 8px !important;
+  padding: 2px 6px !important;
+  transition: all 0.14s ease !important;
+}
+.today-inner-arrow-btn:hover {
+  background-color: #FDF8EF !important;
+}
+
+/* 6. נעילת גלילת הרקע כשהסרטון פתוח במסך מלא */
+body.reel-fullscreen-open {
+  overflow: hidden !important;
+  touch-action: pan-y !important;
+}

@@ -11218,20 +11218,13 @@ window.forceExitShabbatMode = function () {
 
 
 // ============================================================================
-// V44 MASTER UPGRADE — נגן וידאו מסך מלא בסגנון TikTok / Reels
-// 1. ממשק מסך מלא (100vw, 100vh, רקע שחור טהור) עם עמודת כפתורים אנכית בצד ימין:
-//    - אווטאר מעלה (לחיצה מובילה לפרופיל הציבורי).
-//    - לייק (❤️) מחובר לסופרבייס עם מונה חי ומניעת כפילויות.
-//    - תגובות (💬) מחוברות ל-community_reviews בסופרבייס.
-//    - שיתוף (↗️) עם Web Share API או העתקת קישור.
-//    - תרומה (🤝/💰) פותח מודאל תרומה מהיר לרב (#modal-reel-donate).
-// 2. התנהגות הווידאו:
-//    - אין כפתור שיוצא ליוטיוב! נגן מוטמע ישירות ב-iframe שמתחיל שקט (Muted) לניגון אוטומטי חלק.
-//    - גלילה אנכית / סוואיפ (Scroll Snap / Swipe Up & Down) עובר לסרטון הבא/הקודם כמו בטיקטוק.
-//    - הגבלת זמן: בקטגוריית הרילס מוצגים סרטונים קצרים (עד 90 שניות).
-// 3. יישום אוניברסלי בכל מדורי 'ללמוד':
-//    - שיעורים ארוכים, סיפורי צדיקים וסרטונים חינוכיים נפתחים באותו נגן בדיוק (ללא מגבלת 90 שניות ועם controls מותאמים).
-// 4. סרגל הניווט התחתון של האפליקציה נשאר קבוע ומופיע מעל הווידאו במסך מלא.
+// V45 MASTER UPGRADE — תיקוני גלילה במובייל, Play/Pause, עד 5 דקות, ניגודיות ומודאלים מעל הווידאו
+// 1. סעיף 'היום ביהדות': החץ פנימי בתוך המסגרת, וברילס נוספה אפשרות סינון של עד 5 דקות ('5m') לצד 90 שניות.
+// 2. תיקון תקלת הגלילה במובייל: ביטול Listeners גלובליים שרצו על כל הדף, ונעילת גלילת רקע כשהנגן פתוח.
+// 3. תגובות ותרומות: מודאלים נפתחים מעל הווידאו (z-index: 75 בתצורת Bottom Sheet) ללא דחיפת התוכן ועם כפתור ✕ בולט.
+// 4. ניגודיות כפתורי סגירה והשתקה: כפתורים ברורים על רקע כהה חצי-שקוף ניגודי עם מסגרת וצל עמוק.
+// 5. שליטה בסרטון (Play/Pause): טאפ על הווידאו עוצר או ממשיך את הנגינה באמצעות postMessage ל-YouTube iframe,
+//    עם אנימציית אייקון מרכזי מהבהב (❚❚ / ▶).
 // ============================================================================
 (function () {
   "use strict";
@@ -11281,6 +11274,8 @@ window.forceExitShabbatMode = function () {
   var activeReelsPlaylist = [];
   var currentReelIndex = 0;
   var isPlayerMuted = true;
+  var isReelPlaying = true;
+  var activeDurationFilter = "90s"; // '90s' | '5m' | 'all'
   var selectedDonateAmount = 18;
   var reelDbLikesCountMap = {};
   var currentVoterId = "";
@@ -11344,23 +11339,46 @@ window.forceExitShabbatMode = function () {
     return pool[Math.abs(pickIdx) % pool.length];
   };
 
-  // בדיקת הגבלת זמן לרילס (סרטונים באורך של עד 90 שניות)
-  window.isReelUnder90Seconds = function (item) {
+  // --------------------------------------------------------------------------
+  // 1. הגבלות משך זמן: עד 90 שניות / עד 5 דקות / הכל
+  // --------------------------------------------------------------------------
+  function parseDurationSeconds(durStr) {
+    var s = String(durStr || "").trim();
+    if (!s || s === "וידאו" || s === "שורטס" || s === "רילס") return 60;
+    var m = s.match(/^(\d{1,2}):(\d{2})$/);
+    if (m) return parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
+    var h = s.match(/^(\d{1,2}):(\d{2}):(\d{2})$/);
+    if (h) return parseInt(h[1], 10) * 3600 + parseInt(h[2], 10) * 60 + parseInt(h[3], 10);
+    return 60;
+  }
+
+  window.matchesDurationFilter = function (item, filterMode) {
     if (!item) return true;
-    var dur = String(item.duration || "").trim();
-    if (!dur || dur === "וידאו" || dur === "שורטס" || dur === "רילס") return true;
-    var m = dur.match(/^(\d{1,2}):(\d{2})$/);
-    if (m) {
-      var totalSec = parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
-      return totalSec <= 90;
-    }
-    var h = dur.match(/^(\d{1,2}):(\d{2}):(\d{2})$/);
-    if (h) return false;
+    var mode = filterMode || activeDurationFilter || "90s";
+    if (mode === "all") return true;
+
+    var sec = parseDurationSeconds(item.duration);
+    if (mode === "90s") return sec <= 90;
+    if (mode === "5m") return sec <= 300; // עד 5 דקות = 300 שניות!
     return true;
   };
 
+  window.setReelsDurationFilter = function (mode, btnEl) {
+    activeDurationFilter = mode || "90s";
+    qsa("#reels-duration-filter-bar .reels-duration-pill").forEach(function (b) { b.classList.remove("active"); });
+    if (btnEl) btnEl.classList.add("active");
+    window.renderHomeReelsStrip();
+  };
+
+  window.scrollReelsStrip = function (dir) {
+    var strip = el("home-reels-strip");
+    if (!strip) return;
+    var scrollAmt = (strip.clientWidth * 0.75) * (dir > 0 ? 1 : -1);
+    strip.scrollBy({ left: scrollAmt, behavior: "smooth" });
+  };
+
   // --------------------------------------------------------------------------
-  // 2. ניהול לייקים ותגובות אמיתיים מול Supabase
+  // 2. ניהול לייקים ותגובות מול Supabase
   // --------------------------------------------------------------------------
   async function resolveVoterId() {
     if (currentVoterId) return currentVoterId;
@@ -11509,7 +11527,7 @@ window.forceExitShabbatMode = function () {
   };
 
   // --------------------------------------------------------------------------
-  // 3. תגובות לרילס מ-Supabase
+  // 3. תגובות לרילס מ-Supabase (פתיחה מעל הווידאו)
   // --------------------------------------------------------------------------
   function getReelCommentsCache() {
     try { return JSON.parse(localStorage.getItem(REEL_COMMENTS_CACHE_KEY) || "{}") || {}; } catch (e) { return {}; }
@@ -11635,7 +11653,7 @@ window.forceExitShabbatMode = function () {
   };
 
   // --------------------------------------------------------------------------
-  // 4. שיתוף ותרומה לרב מתוך הנגן (TikTok Style)
+  // 4. שיתוף ותרומה לרב (פתיחה מעל הווידאו)
   // --------------------------------------------------------------------------
   window.shareActiveReel = async function () {
     var cur = activeReelsPlaylist[currentReelIndex];
@@ -11682,17 +11700,62 @@ window.forceExitShabbatMode = function () {
   };
 
   // --------------------------------------------------------------------------
-  // 5. נגן וידאו מסך מלא בסגנון TikTok / Reels (100vw, 100vh, iframe שקט ואוטומטי, מעבר בגלילה)
+  // 5. נגן וידאו מסך מלא בסגנון TikTok / Reels ושליטה ב-Play / Pause
   // --------------------------------------------------------------------------
+  function sendIframeCommand(funcName) {
+    var iframe = el("reel-active-iframe");
+    if (iframe && iframe.contentWindow) {
+      try {
+        iframe.contentWindow.postMessage(JSON.stringify({
+          event: "command",
+          func: funcName,
+          args: ""
+        }), "*");
+      } catch (e) {}
+    }
+  }
+
+  window.toggleReelPlayPause = function (ev) {
+    if (ev && ev.stopPropagation) ev.stopPropagation();
+    isReelPlaying = !isReelPlaying;
+
+    if (isReelPlaying) {
+      sendIframeCommand("playVideo");
+    } else {
+      sendIframeCommand("pauseVideo");
+    }
+
+    updatePlayPauseButtonUi();
+    showCenterPlayIndicator(isReelPlaying ? "▶" : "❚❚");
+  };
+
+  function updatePlayPauseButtonUi() {
+    var iconEl = el("reel-playpause-icon");
+    var textEl = el("reel-playpause-text");
+    if (iconEl) iconEl.textContent = isReelPlaying ? "❚❚" : "▶";
+    if (textEl) textEl.textContent = isReelPlaying ? "עצור" : "הפעל";
+  }
+
+  function showCenterPlayIndicator(iconText) {
+    var ind = el("reel-center-play-indicator");
+    var icon = el("reel-center-play-icon");
+    if (!ind || !icon) return;
+    icon.textContent = iconText;
+    ind.classList.remove("hidden");
+    ind.style.opacity = "1";
+    setTimeout(function () {
+      ind.style.opacity = "0";
+      setTimeout(function () { ind.classList.add("hidden"); }, 280);
+    }, 450);
+  }
+
   window.playApprovedReelVideo = function (videoUrl, title, rabbi, reelId, options) {
     var isLong = options && options.isLong;
     var rId = String(reelId || "1");
 
-    // הרכבת רשימת השמעה פעילה (Playlist) אם לא קיימת
-    if (!activeReelsPlaylist.length || options && options.newPlaylist) {
+    if (!activeReelsPlaylist.length || (options && options.newPlaylist)) {
       activeReelsPlaylist = (window.cachedApprovedReelsList || []).slice();
     }
-    // אם הסרטון הנלחץ אינו ברשימה (למשל מתוך שיעורים ארוכים / סרטונים חינוכיים), מוסיפים אותו
     var foundIdx = -1;
     for (var i = 0; i < activeReelsPlaylist.length; i++) {
       if (String(activeReelsPlaylist[i].id) === rId || (videoUrl && activeReelsPlaylist[i].videoUrl === videoUrl)) {
@@ -11711,6 +11774,7 @@ window.forceExitShabbatMode = function () {
       foundIdx = 0;
     }
     currentReelIndex = foundIdx;
+    isReelPlaying = true;
 
     renderCurrentActiveReelInModal();
   };
@@ -11732,7 +11796,6 @@ window.forceExitShabbatMode = function () {
 
     if (!modal || !frameWrap) return;
 
-    // פתיחת המודאל במסך מלא והוספת מחלקה ל-body כדי שסרגל הניווט התחתון יישאר קבוע מעל הווידאו
     modal.classList.remove("hidden");
     document.body.classList.add("reel-fullscreen-open");
 
@@ -11755,29 +11818,26 @@ window.forceExitShabbatMode = function () {
     if (likeBtnEl) likeBtnEl.classList.toggle("liked", isLiked);
     if (commCountEl) commCountEl.textContent = String(getReelCommentCount(rId));
 
-    // הרכבת כתובת ה-embed:
-    // נגן מוטמע ישיר, מתחיל שקט (mute=1) כדי שהדפדפן יאשר ניגון אוטומטי (Autoplay) מלא בלי לצאת מהאפליקציה!
-    // בסרטונים ארוכים controls=1 כדי שיוכלו להריץ קדימה/אחורה, ברילס קצרים controls=0 כמו בטיקטוק
     var controlsVal = cur.isLong ? "1" : "0";
     var muteVal = isPlayerMuted ? "1" : "0";
     var embedSrc = "https://www.youtube.com/embed/" + encodeURIComponent(ytId) +
       "?autoplay=1&controls=" + controlsVal + "&modestbranding=1&rel=0&mute=" + muteVal +
       "&playsinline=1&enablejsapi=1&loop=1&playlist=" + encodeURIComponent(ytId);
 
-    // הטמעת ה-iframe
     frameWrap.innerHTML =
       '<iframe id="reel-active-iframe" ' +
         'src="' + escAttr(embedSrc) + '" ' +
         'title="' + escAttr(cur.title || "סרטון") + '" ' +
-        'class="w-full h-full border-0 select-none" ' +
+        'class="w-full h-full border-0 select-none pointer-events-none" ' +
         'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
         'allowfullscreen>' +
       '</iframe>';
 
+    isReelPlaying = true;
     updateSoundButtonUi();
+    updatePlayPauseButtonUi();
   }
 
-  // מעבר בין סרטונים (גלילה למעלה = סרטון הבא, גלילה למטה = סרטון קודם, כמו בטיקטוק)
   window.navigateReel = function (step) {
     if (!activeReelsPlaylist.length) return;
     var nextIdx = currentReelIndex + step;
@@ -11787,18 +11847,15 @@ window.forceExitShabbatMode = function () {
     renderCurrentActiveReelInModal();
   };
 
-  // השתקה / ביטול השתקה של הנגן בלחיצה על כפתור השמע
   window.toggleReelSound = function (ev) {
     if (ev && ev.stopPropagation) ev.stopPropagation();
     isPlayerMuted = !isPlayerMuted;
     updateSoundButtonUi();
 
-    var iframe = el("reel-active-iframe");
-    if (iframe && iframe.contentWindow) {
-      var cmd = isPlayerMuted ? '{"event":"command","func":"mute","args":""}' : '{"event":"command","func":"unMute","args":""}';
-      try {
-        iframe.contentWindow.postMessage(cmd, "*");
-      } catch (e) {}
+    if (isPlayerMuted) {
+      sendIframeCommand("mute");
+    } else {
+      sendIframeCommand("unMute");
     }
   };
 
@@ -11809,11 +11866,12 @@ window.forceExitShabbatMode = function () {
     if (textEl) textEl.textContent = isPlayerMuted ? "בטל השתקה" : "השתק";
   }
 
-  window.handleReelStageClick = function (ev) {
-    // טאפ על הבמה מבטל השתקה או מפעיל סאונד
+  // לחיצה על שכבת המחוות של הסרטון משהה/ממשיכה (Play/Pause) ומבטלת השתקה אם צריך
+  window.handleReelGestureClick = function (ev) {
     if (isPlayerMuted) {
       window.toggleReelSound(ev);
     }
+    window.toggleReelPlayPause(ev);
   };
 
   window.closeReelPlayerModal = function () {
@@ -11831,40 +11889,48 @@ window.forceExitShabbatMode = function () {
     if (window.openCreatorPublicProfile) window.openCreatorPublicProfile(rabbi);
   };
 
-  // האזנה למחוות מגע וגלילת עכבר עבור סוואיפ אנכי בנגן מסך מלא (TikTok Swipe)
+  // --------------------------------------------------------------------------
+  // 6. תיקון תקלת הגלילה במובייל:
+  //    האזנה למחוות סוואיפ בלעדית בתוך שכבת הנגן ורק כשהנגן פתוח!
+  // --------------------------------------------------------------------------
+  var gestureOverlay = el("reel-gesture-overlay");
   var touchStartY = 0;
-  var touchEndY = 0;
-  var stageEl = el("modal-reel-player");
+  var touchStartX = 0;
 
-  function handleTouchStart(e) {
-    if (e.touches && e.touches[0]) touchStartY = e.touches[0].clientY;
-  }
-  function handleTouchEnd(e) {
-    if (e.changedTouches && e.changedTouches[0]) {
-      touchEndY = e.changedTouches[0].clientY;
-      var diff = touchStartY - touchEndY;
-      // סוואיפ של מעל 45 פיקסלים למעלה -> סרטון הבא; למטה -> סרטון קודם
-      if (diff > 45) {
-        window.navigateReel(1);
-      } else if (diff < -45) {
-        window.navigateReel(-1);
+  function initReelGestureListeners() {
+    var overlay = el("reel-gesture-overlay");
+    if (!overlay) return;
+
+    overlay.addEventListener("touchstart", function (e) {
+      if (e.touches && e.touches[0]) {
+        touchStartY = e.touches[0].clientY;
+        touchStartX = e.touches[0].clientX;
       }
-    }
-  }
-  function handleWheel(e) {
-    var modal = el("modal-reel-player");
-    if (!modal || modal.classList.contains("hidden")) return;
-    if (Math.abs(e.deltaY) > 35) {
-      if (e.deltaY > 0) window.navigateReel(1);
-      else window.navigateReel(-1);
-    }
+    }, { passive: true });
+
+    overlay.addEventListener("touchend", function (e) {
+      if (e.changedTouches && e.changedTouches[0]) {
+        var diffY = touchStartY - e.changedTouches[0].clientY;
+        var diffX = touchStartX - e.changedTouches[0].clientX;
+        // רק אם הסוואיפ הוא אנכי מובהק ומעל 50 פיקסלים
+        if (Math.abs(diffY) > 50 && Math.abs(diffY) > Math.abs(diffX) * 1.5) {
+          if (diffY > 0) window.navigateReel(1);
+          else window.navigateReel(-1);
+        }
+      }
+    }, { passive: true });
+
+    overlay.addEventListener("wheel", function (e) {
+      var modal = el("modal-reel-player");
+      if (!modal || modal.classList.contains("hidden")) return;
+      if (Math.abs(e.deltaY) > 40) {
+        if (e.deltaY > 0) window.navigateReel(1);
+        else window.navigateReel(-1);
+      }
+    }, { passive: true });
   }
 
-  window.addEventListener("touchstart", handleTouchStart, { passive: true });
-  window.addEventListener("touchend", handleTouchEnd, { passive: true });
-  window.addEventListener("wheel", handleWheel, { passive: true });
-
-  // תמיכה במקשי חיצים למעלה/למטה ו-Escape
+  // תמיכה במקשי חיצים למעלה/למטה ו-Space ו-Escape רק כשהנגן פתוח
   window.addEventListener("keydown", function (e) {
     var modal = el("modal-reel-player");
     if (!modal || modal.classList.contains("hidden")) return;
@@ -11874,20 +11940,23 @@ window.forceExitShabbatMode = function () {
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       window.navigateReel(-1);
+    } else if (e.key === " " || e.key === "Spacebar") {
+      e.preventDefault();
+      window.toggleReelPlayPause();
     } else if (e.key === "Escape") {
       window.closeReelPlayerModal();
     }
   });
 
-  // סגירה אוטומטית של נגן הרילס בעת לחיצה על לשונית בסרגל הניווט התחתון (הסרגל נשאר פעיל מעל הווידאו!)
-  var prevSwitchTabV44 = window.switchTab;
+  // סגירה חלקה של הנגן בלחיצה על כל לשונית בסרגל הניווט התחתון
+  var prevSwitchTabV45 = window.switchTab;
   window.switchTab = function (tabId) {
     window.closeReelPlayerModal();
-    if (prevSwitchTabV44) prevSwitchTabV44(tabId);
+    if (prevSwitchTabV45) prevSwitchTabV45(tabId);
   };
 
   // --------------------------------------------------------------------------
-  // 6. קרוסלת הרילס בדף הבית — מציגה אך ורק סרטונים עד 90 שניות!
+  // 7. קרוסלת הרילס בדף הבית — תמיכה בסינון משך זמן (עד 90 שנ׳ / עד 5 דק׳ / הכל)
   // --------------------------------------------------------------------------
   window.renderHomeReelsStrip = async function () {
     var strip = el("home-reels-strip");
@@ -11897,22 +11966,22 @@ window.forceExitShabbatMode = function () {
 
     var allApprovedRows = window.fetchApprovedLessonsFromSupabase ? await window.fetchApprovedLessonsFromSupabase() : [];
 
-    // סינון להגבלת זמן: בקטגוריית הרילס מוצגים סרטונים קצרים בלבד (עד 90 שניות!)
-    var shortReels = allApprovedRows.filter(function (row) {
-      return window.isReelUnder90Seconds(row);
+    // סינון לפי משך זמן (עד 90 שנ׳, עד 5 דק׳, או הכל)
+    var filteredReels = allApprovedRows.filter(function (row) {
+      return window.matchesDurationFilter(row, activeDurationFilter);
     });
 
-    if (!shortReels || shortReels.length === 0) {
+    if (!filteredReels || filteredReels.length === 0) {
+      var filterLabel = activeDurationFilter === "90s" ? "באורך עד 90 שניות" : (activeDurationFilter === "5m" ? "באורך עד 5 דקות" : "");
       strip.innerHTML =
         '<div class="w-full py-3 px-4 rounded-xl bg-[#FDF8EF] border border-[#E5DBC7] text-xs text-[#5C4938] flex items-center justify-between gap-2">' +
-          '<span>אין כרגע סרטוני רילס קצרים (עד 90 שניות) מאושרים בטבלת <strong>lessons</strong>.</span>' +
-          '<button type="button" onclick="openLearnContentUploadModal()" class="px-3 py-1 rounded-lg bg-[#0284C7] text-white font-bold text-xs shrink-0" style="color:#FFFFFF !important;">+ העלה סרטון</button>' +
+          '<span>לא נמצאו סרטוני רילס ' + filterLabel + ' מאושרים.</span>' +
+          '<button type="button" onclick="setReelsDurationFilter(\'all\', document.getElementById(\'rf-btn-all\'))" class="px-3 py-1 rounded-lg bg-[#0284C7] text-white font-bold text-xs shrink-0" style="color:#FFFFFF !important;">הצג את כל הסרטונים</button>' +
         '</div>';
       return;
     }
 
-    // שמירה ברשימת ההשמעה הפעילה של הרילס
-    window.cachedApprovedReelsList = shortReels.map(function (row, idx) {
+    window.cachedApprovedReelsList = filteredReels.map(function (row, idx) {
       var rId = String(row.id || (idx + 1));
       var rName = String(row.rabbi_name || row.rabbi || "בית המדרש צדיק-טוק").trim();
       var tStr = String(row.title || "סרטון חיזוק").trim();
@@ -11929,7 +11998,7 @@ window.forceExitShabbatMode = function () {
     });
     activeReelsPlaylist = window.cachedApprovedReelsList.slice();
 
-    strip.innerHTML = shortReels.map(function (row, idx) {
+    strip.innerHTML = filteredReels.map(function (row, idx) {
       var rId = String(row.id || (idx + 1));
       var title = String(row.title || "סרטון חיזוק").trim();
       var rabbi = String(row.rabbi_name || row.rabbi || "בית המדרש צדיק-טוק").trim();
@@ -11964,14 +12033,13 @@ window.forceExitShabbatMode = function () {
       '</div>';
     }).join("");
 
-    window.syncReelLikesFromSupabase(shortReels);
+    window.syncReelLikesFromSupabase(filteredReels);
     window.preloadAllReelCommentsFromSupabase();
   };
 
   // --------------------------------------------------------------------------
-  // 7. שדרוג כל מדורי 'ללמוד' לניגון באותו נגן מסך מלא (שיעורים ארוכים, סרטונים וסיפורי צדיקים)
+  // 8. שדרוג כל מדורי 'ללמוד' (שיעורים ארוכים, סרטונים וסיפורי צדיקים)
   // --------------------------------------------------------------------------
-  // א. קרוסלת שיעורים ארוכים בדף הבית
   window.renderHomeLongShiurimCarousel = function () {
     var box = el("home-carousel-shiurim");
     if (!box) return;
@@ -11984,7 +12052,6 @@ window.forceExitShabbatMode = function () {
       var rabbi = s.rabbi || s.rabbi_name || "רב בית המדרש";
       var topic = s.subCategory || s.topic || s.category || "שיעור תורה";
       var dur = s.duration || "45:00";
-      var inst = s.institution || s.description || "שיעור וידאו מלא מבית המדרש";
       var videoUrl = s.video_url || s.url || s.videoUrl || "";
       var ytId = window.resolveYoutubeVideoId(videoUrl || s, rabbi, title, idx);
       var thumb = "https://img.youtube.com/vi/" + ytId + "/hqdefault.jpg";
@@ -12007,11 +12074,9 @@ window.forceExitShabbatMode = function () {
     }).join("");
   };
 
-  // ב. רשת שיעורי הרבנים בלשונית 'ללמוד' -> 'שיעורים' (#rabbi-shiurim-grid)
   var prevRenderRabbiShiurimList = window.renderRabbiShiurimList;
   window.renderRabbiShiurimList = function (query) {
     if (prevRenderRabbiShiurimList) prevRenderRabbiShiurimList(query);
-    // הפיכת כל כפתורי "צפייה בשיעור המלא" לרכיב שפותח ישירות את נגן המסך המלא!
     var btns = document.querySelectorAll("#rabbi-shiurim-grid button[onclick*='openEntityFullPage']");
     btns.forEach(function (btn) {
       var card = btn.closest(".bg-white");
@@ -12027,7 +12092,6 @@ window.forceExitShabbatMode = function () {
     });
   };
 
-  // ג. רשת סרטונים חינוכיים בלשונית 'ללמוד' -> 'סרטונים' (#edu-videos-grid)
   var prevFilterEduVideosByRabbi = window.filterEduVideosByRabbi;
   window.filterEduVideosByRabbi = function (rabbiName) {
     if (prevFilterEduVideosByRabbi) prevFilterEduVideosByRabbi(rabbiName);
@@ -12046,7 +12110,6 @@ window.forceExitShabbatMode = function () {
     });
   };
 
-  // ד. סיפורי צדיקים בלשונית 'ללמוד' -> 'סיפורי צדיקים'
   var prevRenderTzStories = window.renderTzaddikimStoriesLearn;
   window.renderTzaddikimStoriesLearn = function (query) {
     if (prevRenderTzStories) prevRenderTzStories(query);
@@ -12060,8 +12123,7 @@ window.forceExitShabbatMode = function () {
       var rabbi = rabbiEl ? rabbiEl.textContent.replace("👑 הצדיק:", "").trim() : "גדולי ישראל";
       var ytId = window.resolveYoutubeVideoId("", rabbi, title);
       var watchUrl = "https://www.youtube.com/watch?v=" + ytId;
-      var btn = card.querySelector("button");
-      if (btn && !card.querySelector(".btn-tz-video-play")) {
+      if (!card.querySelector(".btn-tz-video-play")) {
         var playBtn = document.createElement("button");
         playBtn.type = "button";
         playBtn.className = "btn-tz-video-play w-full py-2 mt-2 bg-[#0284C7] hover:bg-[#0369A1] text-white font-bold rounded-xl text-xs text-center";
@@ -12075,14 +12137,15 @@ window.forceExitShabbatMode = function () {
     });
   };
 
-  function initV44() {
+  function initV45() {
+    initReelGestureListeners();
     window.renderHomeReelsStrip();
     window.renderHomeLongShiurimCarousel();
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initV44);
+    document.addEventListener("DOMContentLoaded", initV45);
   } else {
-    initV44();
+    initV45();
   }
 })();
