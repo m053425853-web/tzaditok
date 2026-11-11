@@ -1625,3 +1625,29 @@ main, .view-section {
   border-color: #FCA5A5 !important;
   color: #DC2626 !important;
 }
+
+
+/* ==========================================================================
+   V43 — תמונות אמיתיות מיוטיוב כרקע מלא וחד לכרטיסי הרילס בדף הבית
+   ========================================================================== */
+.reel-9x16-video-box {
+  background-color: #0F2340 !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+}
+.reel-9x16-thumb-img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+.reel-9x16-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.0) 55%, rgba(15, 35, 64, 0.45) 100%) !important;
+  pointer-events: none !important;
+}
