@@ -30,7 +30,7 @@
     };
   </script>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <link rel="stylesheet" href="style.css?v=41" />
+  <link rel="stylesheet" href="style.css?v=42" />
 </head>
 <body class="min-h-screen select-none">
 
@@ -2192,6 +2192,23 @@
 
     <!-- 17. MY ZONE VIEW (האזור שלי: הדברים השמורים שלי | ההיסטוריה שלי | היארצייטים שלי | ההגדרות שלי) -->
     <section id="view-myzone" class="view-section space-y-5">
+      <!-- כרטיס פרופיל ציבורי של מעלה תוכן / רב (נפתח בלחיצה על שם המעלה מתוך הרילס) -->
+      <div id="public-creator-profile-card" class="hidden bg-white border-2 border-[#0284C7] rounded-3xl p-5 space-y-4 shadow-md">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#E5DBC7] pb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-[#E0F2FE] text-[#0284C7] border border-[#7DD3FC] font-black flex items-center justify-center text-xl shadow-sm">👤</div>
+            <div>
+              <span class="px-2 py-0.5 rounded-md bg-[#0284C7] text-white text-[11px] font-black" style="color:#FFFFFF !important;">פרופיל מעלה תוכן ציבורי</span>
+              <h3 id="creator-profile-name" class="text-lg sm:text-xl font-black text-[#0F2340] serif-heading mt-0.5">שם המעלה / הרב</h3>
+              <p id="creator-profile-subtitle" class="text-xs text-[#5C4938]">כל הסרטונים, השיעורים והתכנים שהועלו על ידי יוצר זה</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeCreatorPublicProfile()" class="px-3.5 py-2 rounded-xl bg-[#FDF8EF] hover:bg-[#F6EFE2] border border-[#D8CBB5] text-[#0F2340] text-xs font-black">
+            ✕ סגור פרופיל וחזור לאזור האישי
+          </button>
+        </div>
+        <div id="creator-profile-items-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+      </div>
       <div class="bg-gradient-to-r from-amber-950/50 via-slate-900 to-slate-900 border border-amber-500/40 p-5 rounded-3xl space-y-4">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div class="flex items-center gap-3">
@@ -3640,60 +3657,53 @@
   <!-- APP SCRIPT -->
     <!-- MODAL: העלאת תוכן במדור "ללמוד" (שומר לטבלת lessons ב-Supabase עם is_approved: false) -->
   <div id="modal-upload-learn-content" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
-    <div class="bg-[#F8F3E8] border-2 border-[#0284C7] rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto relative">
-      <div class="flex items-center justify-between border-b border-[#E5DBC7] pb-3">
-        <div>
-          <span class="px-2.5 py-0.5 rounded-md bg-[#0284C7] text-white text-xs font-black inline-block mb-1" style="color:#FFFFFF !important;">העלאת תוכן לבית המדרש</span>
-          <h3 class="text-xl font-black text-[#0F2340] serif-heading">העלאת שיעור או סרטון יוטיוב חדש</h3>
-        </div>
+    <div class="bg-[#F8F3E8] border-2 border-[#0284C7] rounded-3xl max-w-md w-full p-5 space-y-3.5 shadow-2xl max-h-[90vh] overflow-y-auto relative">
+      <div class="flex items-center justify-between border-b border-[#E5DBC7] pb-2.5">
+        <h3 class="text-lg sm:text-xl font-black text-[#0F2340] serif-heading">העלאת תוכן חדש</h3>
         <button type="button" onclick="closeModal('modal-upload-learn-content')" class="modal-close-x-btn"><span>✕</span><span>סגור</span></button>
       </div>
-
-      <p class="text-xs text-[#5C4938] leading-relaxed">
-        הזינו את כותרת השיעור/הסרטון וקישור לצפייה (YouTube / וידאו). התוכן יישמר בטבלת <strong>lessons</strong> ב-Supabase בסטטוס ממתין לאישור מנהל (<code>is_approved: false</code>) ויופיע מיד בפאנל הניהול תחת "ממתין לאישור".
-      </p>
 
       <form id="form-upload-learn-content" onsubmit="submitLearnContentUpload(event)" class="space-y-3 text-xs" novalidate>
         <div>
           <label for="upload-learn-title" class="block font-black text-[#0F2340] mb-1">כותרת התוכן / הסרטון *</label>
-          <input id="upload-learn-title" type="text" required placeholder="למשל: הלכות שבת למעשה • בורר ומוקצה" class="w-full bg-white border border-[#D8CBB5] focus:border-[#0284C7] rounded-xl px-3.5 py-2.5 text-sm text-[#0F2340] outline-none">
+          <input id="upload-learn-title" type="text" required placeholder="למשל: הלכות שבת למעשה • בורר ומוקצה" class="w-full bg-white border border-[#D8CBB5] focus:border-[#0284C7] rounded-xl px-3.5 py-2 text-sm text-[#0F2340] outline-none">
         </div>
 
         <div>
-          <label for="upload-learn-category" class="block font-black text-[#0F2340] mb-1">בחירת קטגוריה / נושא *</label>
-          <select id="upload-learn-category" class="w-full bg-white border border-[#D8CBB5] focus:border-[#0284C7] rounded-xl px-3.5 py-2.5 text-sm text-[#0F2340] outline-none">
+          <label for="upload-learn-category" class="block font-black text-[#0F2340] mb-1">קטגוריה / נושא *</label>
+          <select id="upload-learn-category" class="w-full bg-white border border-[#D8CBB5] focus:border-[#0284C7] rounded-xl px-3.5 py-2 text-sm text-[#0F2340] outline-none">
             <option value="הלכה">הלכה</option>
             <option value="אמונה">אמונה</option>
             <option value="חסידות">חסידות</option>
             <option value="פרשה">פרשת השבוע</option>
             <option value="תנ״ך">תנ״ך ונביאים</option>
-            <option value="סיפורי צדיקים">סיפורי צדיקים</option>
+            <option value="סיפור צדיק">סיפורי צדיקים</option>
             <option value="ראשונים ואחרונים">ראשונים ואחרונים</option>
           </select>
         </div>
 
         <div>
           <label for="upload-learn-url" class="block font-black text-[#0F2340] mb-1">קישור ליוטיוב / וידאו (YouTube URL) *</label>
-          <input id="upload-learn-url" type="text" required placeholder="https://www.youtube.com/watch?v=..." class="w-full bg-white border border-[#D8CBB5] focus:border-[#0284C7] rounded-xl px-3.5 py-2.5 text-sm text-[#0F2340] outline-none" dir="ltr" style="text-align:left;">
+          <input id="upload-learn-url" type="text" required placeholder="https://www.youtube.com/watch?v=..." class="w-full bg-white border border-[#D8CBB5] focus:border-[#0284C7] rounded-xl px-3.5 py-2 text-sm text-[#0F2340] outline-none" dir="ltr" style="text-align:left;">
         </div>
 
         <div>
-          <label for="upload-learn-rabbi" class="block font-black text-[#0F2340] mb-1">שם הרב / המרצה (אופציונלי)</label>
-          <input id="upload-learn-rabbi" type="text" placeholder="למשל: הרב יצחק לוי שליט״א" class="w-full bg-white border border-[#D8CBB5] focus:border-[#0284C7] rounded-xl px-3.5 py-2.5 text-sm text-[#0F2340] outline-none">
+          <label for="upload-learn-rabbi" class="block font-black text-[#0F2340] mb-1">שם הרב / המעלה</label>
+          <input id="upload-learn-rabbi" type="text" placeholder="למשל: הרב יגאל כהן" class="w-full bg-white border border-[#D8CBB5] focus:border-[#0284C7] rounded-xl px-3.5 py-2 text-sm text-[#0F2340] outline-none">
         </div>
 
         <div>
-          <label for="upload-learn-desc" class="block font-black text-[#0F2340] mb-1">תיאור קצר של התוכן (אופציונלי)</label>
-          <textarea id="upload-learn-desc" rows="2" placeholder="תקציר השיעור או נקודות עיקריות ללומדים..." class="w-full bg-white border border-[#D8CBB5] focus:border-[#0284C7] rounded-xl px-3.5 py-2.5 text-sm text-[#0F2340] outline-none"></textarea>
+          <label for="upload-learn-desc" class="block font-black text-[#0F2340] mb-1">תיאור קצר (אופציונלי)</label>
+          <textarea id="upload-learn-desc" rows="2" placeholder="תקציר קצר..." class="w-full bg-white border border-[#D8CBB5] focus:border-[#0284C7] rounded-xl px-3.5 py-2 text-sm text-[#0F2340] outline-none"></textarea>
         </div>
 
-        <div id="upload-learn-status-msg" class="hidden p-3 rounded-xl text-xs font-bold"></div>
+        <div id="upload-learn-status-msg" class="hidden p-2.5 rounded-xl text-xs font-bold"></div>
 
-        <div class="pt-2 flex items-center gap-2">
-          <button type="submit" id="btn-submit-learn-upload" class="flex-1 py-3 bg-[#0284C7] hover:bg-[#0369A1] text-white font-black rounded-xl text-sm shadow-md transition-all" style="color:#FFFFFF !important;">
+        <div class="pt-1 flex items-center gap-2">
+          <button type="submit" id="btn-submit-learn-upload" class="flex-1 py-2.5 bg-[#0284C7] hover:bg-[#0369A1] text-white font-black rounded-xl text-sm shadow-md transition-all" style="color:#FFFFFF !important;">
             שלח לאישור מנהל
           </button>
-          <button type="button" onclick="closeModal('modal-upload-learn-content')" class="px-4 py-3 bg-white border border-[#D8CBB5] text-[#0F2340] font-bold rounded-xl text-xs">
+          <button type="button" onclick="closeModal('modal-upload-learn-content')" class="px-4 py-2.5 bg-white border border-[#D8CBB5] text-[#0F2340] font-bold rounded-xl text-xs">
             ביטול
           </button>
         </div>
@@ -3702,29 +3712,71 @@
   </div>
 
 
-  <!-- מודאל נגן רילס / סרטון יוטיוב מאושר מטבלת lessons -->
+  <!-- מודאל נגן רילס / סרטון יוטיוב מאושר מטבלת lessons (כולל לחיצה על שם המעלה לפרופיל ציבורי + לייק ותגובות) -->
   <div id="modal-reel-player" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-3 sm:p-4">
     <div class="bg-[#0F2340] border-2 border-[#C9A227] rounded-3xl max-w-sm w-full p-4 space-y-3 shadow-2xl relative text-white">
       <div class="flex items-center justify-between gap-2 border-b border-white/15 pb-2.5">
         <div class="min-w-0">
-          <span id="reel-player-rabbi" class="text-[11px] font-bold text-amber-300 block truncate" style="color:#FCD34D !important;">צדיק-טוק • רילס</span>
-          <h3 id="reel-player-title" class="text-sm sm:text-base font-black text-white truncate" style="color:#FFFFFF !important;">סרטון חיזוק</h3>
+          <button type="button" id="reel-player-rabbi-btn" onclick="openCreatorPublicProfileFromReel()" class="text-xs font-black text-amber-300 hover:underline flex items-center gap-1 truncate text-right" style="color:#FCD34D !important;" title="לחץ לצפייה בפרופיל הציבורי ובכל התכנים שהעלה">
+            <span>👤</span>
+            <span id="reel-player-rabbi">בית המדרש צדיק-טוק</span>
+            <span class="text-[10px] opacity-80">(לפרופיל ←)</span>
+          </button>
+          <h3 id="reel-player-title" class="text-sm sm:text-base font-black text-white truncate mt-0.5" style="color:#FFFFFF !important;">סרטון חיזוק</h3>
         </div>
         <button type="button" onclick="closeReelPlayerModal()" class="px-3 py-1 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-black shrink-0" style="color:#FFFFFF !important;">✕ סגור</button>
       </div>
-      <div id="reel-player-frame-wrap" class="w-full aspect-[9/16] max-h-[70vh] rounded-2xl overflow-hidden bg-black flex items-center justify-center"></div>
+
+      <div id="reel-player-frame-wrap" class="w-full aspect-[9/16] max-h-[64vh] rounded-2xl overflow-hidden bg-black flex items-center justify-center"></div>
+
+      <!-- סרגל לייק, תגובות וקישור ישיר בתחתית מודאל הרילס -->
       <div class="flex items-center justify-between gap-2 pt-1">
-        <a id="reel-player-ext-link" href="#" target="_blank" rel="noopener" class="w-full py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-[#0F2340] font-black text-xs text-center block">
-          פתיחה ישירה ביוטיוב ↗
+        <button type="button" id="reel-modal-like-btn" onclick="toggleActiveModalReelLike()" class="flex-1 py-2 px-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-black text-xs flex items-center justify-center gap-1.5" style="color:#FFFFFF !important;">
+          <span>❤️ לייק</span>
+          <span id="reel-modal-like-count" class="px-1.5 py-0.5 rounded-md bg-amber-500 text-[#0F2340] text-[11px] font-black">0</span>
+        </button>
+        <button type="button" id="reel-modal-comments-btn" onclick="openActiveModalReelComments()" class="flex-1 py-2 px-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-black text-xs flex items-center justify-center gap-1.5" style="color:#FFFFFF !important;">
+          <span>💬 תגובות</span>
+          <span id="reel-modal-comments-count" class="px-1.5 py-0.5 rounded-md bg-[#0284C7] text-white text-[11px] font-black" style="color:#FFFFFF !important;">0</span>
+        </button>
+        <a id="reel-player-ext-link" href="#" target="_blank" rel="noopener" class="py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-[#0F2340] font-black text-xs text-center shrink-0">
+          יוטיוב ↗
         </a>
       </div>
     </div>
   </div>
 
+  <!-- מודאל תגובות לרילס (מחובר לטבלת community_reviews ב-Supabase) -->
+  <div id="modal-reel-comments" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+    <div class="bg-[#F8F3E8] border-2 border-[#C9A227] rounded-3xl max-w-md w-full p-5 space-y-3.5 shadow-2xl max-h-[88vh] flex flex-col relative">
+      <div class="flex items-center justify-between border-b border-[#E5DBC7] pb-2.5 shrink-0">
+        <div class="min-w-0">
+          <span class="px-2 py-0.5 rounded-md bg-[#0F2340] text-amber-300 text-[11px] font-black inline-block mb-0.5" style="color:#FCD34D !important;">תגובות הקהילה</span>
+          <h3 id="reel-comments-modal-title" class="text-base sm:text-lg font-black text-[#0F2340] serif-heading truncate">תגובות לסרטון</h3>
+        </div>
+        <button type="button" onclick="closeModal('modal-reel-comments')" class="modal-close-x-btn shrink-0"><span>✕</span><span>סגור</span></button>
+      </div>
+
+      <!-- רשימת התגובות הקיימות -->
+      <div id="reel-comments-list" class="flex-1 overflow-y-auto space-y-2 pr-1 max-h-64 min-h-[110px]"></div>
+
+      <!-- טופס הוספת תגובה חדשה (נשמר ב-community_reviews ב-Supabase) -->
+      <form id="form-reel-new-comment" onsubmit="submitReelComment(event)" class="pt-2 border-t border-[#E5DBC7] space-y-2 text-xs shrink-0">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <input id="reel-comment-author" type="text" placeholder="שמך (אופציונלי)" class="bg-white border border-[#D8CBB5] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">
+          <input id="reel-comment-text" type="text" required placeholder="כתוב תגובה מחזקת או הערה על הסרטון..." class="sm:col-span-2 bg-white border border-[#D8CBB5] focus:border-[#0284C7] rounded-xl px-3 py-2 text-xs text-[#0F2340] outline-none">
+        </div>
+        <button type="submit" id="btn-submit-reel-comment" class="w-full py-2.5 bg-[#0284C7] hover:bg-[#0369A1] text-white font-black rounded-xl text-xs shadow-sm" style="color:#FFFFFF !important;">
+          פרסם תגובה
+        </button>
+      </form>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-client.js?v=41"></script>
-  <script src="utils.js?v=41"></script>
-  <script src="data.js?v=41"></script>
-  <script src="app.js?v=41"></script>
+  <script src="supabase-client.js?v=42"></script>
+  <script src="utils.js?v=42"></script>
+  <script src="data.js?v=42"></script>
+  <script src="app.js?v=42"></script>
 </body>
 </html>

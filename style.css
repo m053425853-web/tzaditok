@@ -1569,3 +1569,59 @@ main, .view-section {
 .learn-compact-action-btn:hover {
   background-color: #0369A1 !important;
 }
+
+
+/* ==========================================================================
+   V42 — כפתורי לייק ותגובות קומפקטיים מתחת לכל רילס בקרוסלה + קישור פרופיל
+   ========================================================================== */
+.reel-9x16-card-wrap {
+  flex: 0 0 auto !important;
+  width: 112px !important;
+  scroll-snap-align: start !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  background: transparent !important;
+  border: none !important;
+}
+@media (min-width: 640px) {
+  .reel-9x16-card-wrap {
+    width: 124px !important;
+  }
+}
+.reel-9x16-card-wrap .reel-9x16-item {
+  width: 100% !important;
+}
+.reel-9x16-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 4px !important;
+  padding-top: 2px !important;
+}
+.reel-action-chip {
+  flex: 1 1 0% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 3px !important;
+  padding: 3px 5px !important;
+  border-radius: 8px !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #E5DBC7 !important;
+  color: #0F2340 !important;
+  font-size: 10.5px !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  transition: all 0.14s ease !important;
+}
+.reel-action-chip:hover {
+  border-color: #C9A227 !important;
+  background-color: #FDF8EF !important;
+}
+.reel-action-chip.liked {
+  background-color: #FEF2F2 !important;
+  border-color: #FCA5A5 !important;
+  color: #DC2626 !important;
+}
