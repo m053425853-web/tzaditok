@@ -30,10 +30,11 @@
     };
   </script>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <link rel="stylesheet" href="style.css?v=48" />
+  <link rel="stylesheet" href="style.css?v=49" />
   <!-- Leaflet Map CSS & JS for Interactive Near-Me Map -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body class="min-h-screen select-none">
 
@@ -401,37 +402,28 @@
         <div class="flex items-center gap-2.5">
           <button type="button" onclick="backToLearnHub()" class="px-3 py-1.5 rounded-xl bg-[#202538] hover:bg-[#2A314A] border border-[#3B4263] text-white text-xs font-black flex items-center gap-1 transition-all cursor-pointer">
             <span>←</span>
-            <span>חזרה לסטרימינג</span>
+            <span>חזרה לספרייה</span>
           </button>
-          <span id="learn-active-sub-title" class="text-sm sm:text-base font-black text-amber-400 serif-heading">בית המדרש • ללמוד</span>
+          <span id="learn-active-sub-title" class="text-sm sm:text-base font-black text-amber-400 serif-heading">בית המדרש • ספרייה</span>
         </div>
-        <button type="button" onclick="openLearnContentUploadModal()" class="px-3.5 py-1.5 bg-gradient-to-r from-[#EA580C] to-[#C9A227] hover:brightness-110 text-white font-black rounded-xl text-xs shadow-md shrink-0 cursor-pointer" style="color:#FFFFFF !important;">
-          + העלאת תוכן
-        </button>
-      </div>
-        <button type="button" onclick="openLearnContentUploadModal()" class="px-3 py-1.5 bg-[#0284C7] hover:bg-[#0369A1] text-white font-black rounded-xl text-xs shadow-sm shrink-0" style="color:#FFFFFF !important;">
-          + העלאת תוכן
-        </button>
       </div>
 
-            <!-- המסך הראשי של 'ללמוד' (#learn-hub-home): ממשק סטרימינג קולנועי (Dark / Netflix & ReelShort Style) -->
+      <!-- המסך הראשי של 'ללמוד' (#learn-hub-home): ממשק סטרימינג קולנועי (Dark / Netflix & ReelShort Style) -->
       <div id="learn-hub-home" class="space-y-4">
         <!-- כותרת עליונה נקייה, כהה ומינימליסטית (ללא באנרים ענקיים) -->
         <div class="flex items-center justify-between gap-3 px-1 pt-1 border-b border-[#1E2337] pb-2">
           <div class="flex items-center gap-2">
-            <span class="px-2 py-0.5 rounded-full bg-gradient-to-r from-[#EA580C] to-[#C9A227] text-white text-[10px] font-black inline-flex items-center gap-1 shadow-sm">
-              <span>🎬</span> CINEMA
-            </span>
-            <h2 class="text-lg sm:text-xl font-black text-white serif-heading tracking-wide">סינמה ספרייה • בית המדרש</h2>
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+            <h2 class="text-base sm:text-lg font-black text-white serif-heading tracking-wide">בית המדרש • ספרייה</h2>
           </div>
-          <span class="text-[11px] text-gray-400 font-bold hidden sm:inline">סטרימינג תורני עשיר</span>
+          <span class="text-[11px] text-amber-400/80 font-bold">שיעורים וסרטונים יומיים</span>
         </div>
 
-        <!-- שורת חיפוש כללית קולנועית בראש הדף -->
-        <div class="bg-[#141724] border border-[#272B3F] focus-within:border-[#F59E0B] rounded-2xl px-3.5 py-2.5 flex items-center gap-2.5 shadow-lg transition-all">
-          <svg class="w-4 h-4 text-[#F59E0B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input id="learn-global-search-input" type="search" oninput="handleLearnStreamingSearch(this.value)" placeholder="חיפוש מהיר בסטרימינג (פרשת השבוע, רבנים, שיעורים, סדרות AI, סיפורי צדיקים)..." class="w-full bg-transparent text-xs sm:text-sm text-white placeholder-gray-400 font-semibold outline-none">
-          <button type="button" onclick="clearLearnStreamingSearch();" class="text-xs text-amber-400 hover:text-amber-300 font-bold shrink-0">נקה</button>
+        <!-- שורת חיפוש קומפקטית ומעודנת בראש הדף -->
+        <div class="bg-[#12141F] border border-[#23273A] focus-within:border-amber-500/60 rounded-xl px-3 py-1.5 flex items-center gap-2 shadow-sm transition-all">
+          <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="learn-global-search-input" type="search" oninput="handleLearnStreamingSearch(this.value)" placeholder="חיפוש מהיר בספרייה (פרשה, שיעורים, צדיקים)..." class="w-full bg-transparent text-xs text-white placeholder-gray-400 font-medium outline-none">
+          <button type="button" onclick="clearLearnStreamingSearch();" class="text-[11px] text-gray-400 hover:text-amber-400 font-bold shrink-0">נקה</button>
         </div>
 
         <!-- תיבת תוצאות חיפוש מהיר ב'ללמוד' -->
@@ -469,20 +461,16 @@
         <div id="learn-stream-feed-all" class="space-y-6">
 
           <!-- 1. קרוסלה ראשית (Hero Carousel): כרטיסים אנכיים פורמט 9:16 (פרשת השבוע / מומלצים) -->
-          <div class="space-y-3">
+          <div class="space-y-2">
             <div class="flex items-center justify-between gap-2 px-1">
-              <div>
-                <h3 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
-                  <span class="text-amber-400">🔥</span> פרשת השבוע • נבחרת מומלצים
-                </h3>
-                <p class="text-xs text-gray-400 font-normal">סרטוני שורטס ורילס אנכיים (9:16) לצפייה במסך מלא</p>
-              </div>
-              <div class="flex items-center gap-2 shrink-0">
-                <button type="button" onclick="openLearnContentUploadModalWithCategory('פרשה')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#EA580C]/20 hover:bg-[#EA580C]/35 text-amber-300 border border-amber-500/40 text-xs font-bold transition-all cursor-pointer shadow-sm">
-                  <span>📷</span><span>+ העלאת פרשה</span>
-                </button>
-                <span class="text-xs text-amber-400 font-bold hidden sm:inline">החלק לצפייה ←</span>
-              </div>
+              <button type="button" onclick="switchLearnStreamTab('torah')" class="text-sm sm:text-base font-black text-white hover:text-amber-400 flex items-center gap-1.5 transition-colors cursor-pointer text-right group">
+                <span class="text-amber-400">🔥</span>
+                <span>פרשת השבוע • מומלצים</span>
+                <span class="text-xs text-amber-400/80 group-hover:translate-x-[-2px] transition-transform">←</span>
+              </button>
+              <button type="button" onclick="openLearnContentUploadModalWithCategory('פרשה')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[11px] font-bold transition-all cursor-pointer shadow-sm shrink-0">
+                <span>📷</span><span>+ העלאת פרשה</span>
+              </button>
             </div>
             <!-- מיכל הקרוסלה האנכית 9:16 -->
             <div id="learn-hero-carousel" class="stream-scroll-row">
@@ -491,20 +479,16 @@
           </div>
 
           <!-- 2. קרוסלה משנית 1: שיעורים אחרונים (אופקית) -->
-          <div class="space-y-3">
+          <div class="space-y-2">
             <div class="flex items-center justify-between gap-2 px-1">
-              <div>
-                <h3 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
-                  <span class="text-[#38BDF8]">🎙️</span> שיעורים אחרונים מגדולי הרבנים
-                </h3>
-                <p class="text-xs text-gray-400 font-normal">שיעורי הלכה, אמונה ומוסר מהימים האחרונים</p>
-              </div>
-              <div class="flex items-center gap-2 shrink-0">
-                <button type="button" onclick="openLearnContentUploadModalWithCategory('שיעורים')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#38BDF8]/20 hover:bg-[#38BDF8]/35 text-[#38BDF8] border border-[#38BDF8]/40 text-xs font-bold transition-all cursor-pointer shadow-sm">
-                  <span>➕</span><span>+ העלאת שיעור</span>
-                </button>
-                <button type="button" onclick="switchLearnStreamTab('shiurim')" class="text-xs text-amber-400 hover:text-amber-300 font-bold cursor-pointer">לכל השיעורים ←</button>
-              </div>
+              <button type="button" onclick="switchLearnStreamTab('shiurim')" class="text-sm sm:text-base font-black text-white hover:text-[#38BDF8] flex items-center gap-1.5 transition-colors cursor-pointer text-right group">
+                <span class="text-[#38BDF8]">🎙️</span>
+                <span>שיעורי הלכה ומוסר</span>
+                <span class="text-xs text-[#38BDF8]/80 group-hover:translate-x-[-2px] transition-transform">←</span>
+              </button>
+              <button type="button" onclick="openLearnContentUploadModalWithCategory('שיעורים')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#38BDF8]/10 hover:bg-[#38BDF8]/20 text-[#38BDF8] border border-[#38BDF8]/30 text-[11px] font-bold transition-all cursor-pointer shadow-sm shrink-0">
+                <span>➕</span><span>+ העלאת שיעור</span>
+              </button>
             </div>
             <!-- מיכל קרוסלת שיעורים אחרונים -->
             <div id="learn-subcarousel-shiurim" class="stream-scroll-row">
@@ -513,20 +497,16 @@
           </div>
 
           <!-- 3. קרוסלה משנית 2: סיפורי צדיקים (אופקית) -->
-          <div class="space-y-3">
+          <div class="space-y-2">
             <div class="flex items-center justify-between gap-2 px-1">
-              <div>
-                <h3 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
-                  <span class="text-[#FBBF24]">👑</span> סיפורי צדיקים ומופתים
-                </h3>
-                <p class="text-xs text-gray-400 font-normal">סיפורים מרתקים על גדולי ישראל בכל הדורות</p>
-              </div>
-              <div class="flex items-center gap-2 shrink-0">
-                <button type="button" onclick="openLearnContentUploadModalWithCategory('סיפור צדיק')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#FBBF24]/20 hover:bg-[#FBBF24]/35 text-amber-300 border border-amber-400/40 text-xs font-bold transition-all cursor-pointer shadow-sm">
-                  <span>📜</span><span>+ העלאת סיפור</span>
-                </button>
-                <button type="button" onclick="switchLearnStreamTab('tzaddikim_stories')" class="text-xs text-amber-400 hover:text-amber-300 font-bold cursor-pointer">לכל הסיפורים ←</button>
-              </div>
+              <button type="button" onclick="switchLearnStreamTab('tzaddikim_stories')" class="text-sm sm:text-base font-black text-white hover:text-[#FBBF24] flex items-center gap-1.5 transition-colors cursor-pointer text-right group">
+                <span class="text-[#FBBF24]">👑</span>
+                <span>סיפורי צדיקים ומופתים</span>
+                <span class="text-xs text-[#FBBF24]/80 group-hover:translate-x-[-2px] transition-transform">←</span>
+              </button>
+              <button type="button" onclick="openLearnContentUploadModalWithCategory('סיפור צדיק')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#FBBF24]/10 hover:bg-[#FBBF24]/20 text-amber-300 border border-amber-400/30 text-[11px] font-bold transition-all cursor-pointer shadow-sm shrink-0">
+                <span>📜</span><span>+ העלאת סיפור</span>
+              </button>
             </div>
             <!-- מיכל קרוסלת סיפורי צדיקים -->
             <div id="learn-subcarousel-stories" class="stream-scroll-row">
@@ -535,20 +515,16 @@
           </div>
 
           <!-- 4. רשימת שיעורים ארוכים (פורמט רחב 16:9) בתחתית הדף -->
-          <div class="space-y-3 pt-2">
+          <div class="space-y-2 pt-1">
             <div class="flex items-center justify-between gap-2 px-1">
-              <div>
-                <h3 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
-                  <span class="text-emerald-400">📺</span> שיעורים ארוכים ומעמיקים (16:9)
-                </h3>
-                <p class="text-xs text-gray-400 font-normal">סדרות ושיעורים מלאים להעמקה בתורה ובהלכה</p>
-              </div>
-              <div class="flex items-center gap-2 shrink-0">
-                <button type="button" onclick="openLearnContentUploadModalWithCategory('הלכה')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/35 text-emerald-400 border border-emerald-500/40 text-xs font-bold transition-all cursor-pointer shadow-sm">
-                  <span>🎥</span><span>+ העלאת תוכן</span>
-                </button>
-                <span class="text-xs text-gray-400 font-bold hidden sm:inline">איכות HD</span>
-              </div>
+              <button type="button" onclick="switchLearnStreamTab('shiurim')" class="text-sm sm:text-base font-black text-white hover:text-emerald-400 flex items-center gap-1.5 transition-colors cursor-pointer text-right group">
+                <span class="text-emerald-400">📺</span>
+                <span>שיעורים ארוכים ומעמיקים (16:9)</span>
+                <span class="text-xs text-emerald-400/80 group-hover:translate-x-[-2px] transition-transform">←</span>
+              </button>
+              <button type="button" onclick="openLearnContentUploadModalWithCategory('הלכה')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-bold transition-all cursor-pointer shadow-sm shrink-0">
+                <span>🎥</span><span>+ העלאת שיעור</span>
+              </button>
             </div>
             <!-- מיכל שיעורים ארוכים -->
             <div id="learn-long-lessons-list" class="space-y-3">
@@ -2105,39 +2081,68 @@
 
     <!-- 13. ZMANIM, HEBREW CALENDAR & YAHRZEITS (זמני היום, לוח שנה ויארצייט) -->
     <section id="view-zmanim" class="view-section space-y-5">
-      <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+      <div class="bg-slate-900 border border-slate-800 p-4 sm:p-6 rounded-3xl space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
           <div>
             <h2 class="text-xl font-black text-white">⏰ זמני היום בהלכה, לוח שנה ויומן יום השנה</h2>
             <p class="text-xs text-slate-400">כל הזמנים המדויקים להיום, לוח הילולות צדיקים ומועדים, ומעקב מצוות אישי.</p>
           </div>
-          <span class="px-3 py-1 bg-amber-500/15 text-amber-300 border border-amber-500/30 rounded-xl text-xs font-black">לוח עברי תשפ״ז</span>
+          <div class="flex items-center gap-2 shrink-0">
+            <!-- כפתור שיתוף זמני היום בוואטסאפ (תמונה + טקסט) -->
+            <button type="button" onclick="shareZmanimWhatsAppImage()" class="px-3.5 py-2 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-black text-xs flex items-center gap-1.5 shadow-lg transition-transform active:scale-95 cursor-pointer" style="color:#FFFFFF !important;">
+              <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+              <span>שתף בוואטסאפ</span>
+            </button>
+            <span class="px-3 py-1 bg-amber-500/15 text-amber-300 border border-amber-500/30 rounded-xl text-xs font-black">לוח עברי תשפ״ז</span>
+          </div>
         </div>
 
         <div class="zm-times space-y-4">
-        <h3 id="zmanim-times-anchor" class="tt-anchor text-sm font-black text-amber-400"> זמני היום בהלכה (עלות השחר עד צאת הכוכבים):</h3>
-        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3" id="zmanim-grid"></div>
+          <!-- כרטיס זמני היום מעוצב לצילום ושיתוף -->
+          <div id="zmanim-share-card" class="bg-gradient-to-b from-[#0F172A] to-[#020617] border border-[#C9A227]/70 p-4 sm:p-5 rounded-2xl space-y-3.5 shadow-xl">
+            <div class="flex items-center justify-between border-b border-amber-500/20 pb-2.5">
+              <div class="flex items-center gap-2">
+                <span class="text-xl">👑</span>
+                <div>
+                  <h3 id="zmanim-times-anchor" class="text-sm sm:text-base font-black text-amber-400">זמני היום בהלכה • צדיק-טוק</h3>
+                  <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-slate-300">
+                    <span id="zm-share-city-label" class="font-bold text-amber-300">📍 עיר: בני ברק</span>
+                    <span>•</span>
+                    <span id="zm-share-parasha-label" class="font-bold text-slate-200">פרשת השבוע</span>
+                  </div>
+                </div>
+              </div>
+              <div class="text-left">
+                <div id="zm-share-hebdate-label" class="text-xs font-bold text-amber-300"></div>
+                <div id="zm-share-gregdate-label" class="text-[10px] text-slate-400"></div>
+              </div>
+            </div>
 
-        <!-- זמני כניסת ויציאת שבת, ספירת העומר, ראשי חודשים וחגים -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-          <div class="bg-[#F8F3E8] border border-[#E5DBC7] p-4 rounded-xl">
-            <span class="text-xs font-bold text-[#5C4938] block">זמני שבת קודש (פרשת חיי שרה)</span>
-            <h4 class="text-sm font-bold text-[#0F2340] mt-1">כניסת שבת: 16:31 • יציאת שבת: 17:30</h4>
-            <p class="text-xs text-[#5C4938] mt-0.5">מותאם לעיר המגורים שלך (נתוני הדגמה)</p>
-          </div>
-          <div class="bg-[#F8F3E8] border border-[#E5DBC7] p-4 rounded-xl">
-            <span class="text-xs font-bold text-[#5C4938] block">ראשי חודשים ומועדים קרובים</span>
-            <h4 class="text-sm font-bold text-[#0F2340] mt-1">ראש חודש כסלו • חנוכה (כ״ה בכסלו)</h4>
-            <p class="text-xs text-[#5C4938] mt-0.5">תזכורת אוטומטית ליעלה ויבוא והלל</p>
-          </div>
-          <div class="bg-[#F8F3E8] border border-[#E5DBC7] p-4 rounded-xl">
-            <span class="text-xs font-bold text-[#5C4938] block">ספירת העומר ותזכורות עונתיות</span>
-            <h4 class="text-sm font-bold text-[#0F2340] mt-1">מוכן להפעלה אוטומטית מפסח עד שבועות</h4>
-            <p class="text-xs text-[#5C4938] mt-0.5">כולל נוסח הספירה היומית והתראה בערב</p>
-          </div>
-        </div>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5" id="zmanim-grid"></div>
 
+            <div class="pt-1 text-center text-[10px] text-amber-400/80 font-semibold border-t border-slate-800">
+              ✨ מופק באפליקציית צדיק-טוק • tzadiktok.app
+            </div>
+          </div>
 
+          <!-- זמני כניסת ויציאת שבת, ספירת העומר, ראשי חודשים וחגים -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+            <div class="bg-[#F8F3E8] border border-[#E5DBC7] p-4 rounded-xl">
+              <span class="text-xs font-bold text-[#5C4938] block">זמני שבת קודש (פרשת חיי שרה)</span>
+              <h4 class="text-sm font-bold text-[#0F2340] mt-1">כניסת שבת: 16:31 • יציאת שבת: 17:30</h4>
+              <p class="text-xs text-[#5C4938] mt-0.5">מותאם לעיר המגורים שלך (נתוני הדגמה)</p>
+            </div>
+            <div class="bg-[#F8F3E8] border border-[#E5DBC7] p-4 rounded-xl">
+              <span class="text-xs font-bold text-[#5C4938] block">ראשי חודשים ומועדים קרובים</span>
+              <h4 class="text-sm font-bold text-[#0F2340] mt-1">ראש חודש כסלו • חנוכה (כ״ה בכסלו)</h4>
+              <p class="text-xs text-[#5C4938] mt-0.5">תזכורת אוטומטית ליעלה ויבוא והלל</p>
+            </div>
+            <div class="bg-[#F8F3E8] border border-[#E5DBC7] p-4 rounded-xl">
+              <span class="text-xs font-bold text-[#5C4938] block">ספירת העומר ותזכורות עונתיות</span>
+              <h4 class="text-sm font-bold text-[#0F2340] mt-1">מוכן להפעלה אוטומטית מפסח עד שבועות</h4>
+              <p class="text-xs text-[#5C4938] mt-0.5">כולל נוסח הספירה היומית והתראה בערב</p>
+            </div>
+          </div>
         </div>
 
         <!-- Hebrew Calendar & Yahrzeits Section -->
@@ -4261,9 +4266,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-client.js?v=48"></script>
-  <script src="utils.js?v=48"></script>
-  <script src="data.js?v=48"></script>
-  <script src="app.js?v=48"></script>
+  <script src="supabase-client.js?v=49"></script>
+  <script src="utils.js?v=49"></script>
+  <script src="data.js?v=49"></script>
+  <script src="app.js?v=49"></script>
 </body>
 </html>

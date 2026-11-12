@@ -810,20 +810,19 @@ input, select, textarea, button {
 }
 
 /* 5. שורת חיפוש צמודה (Sticky), מונה תוצאות, כרטיסים אווריריים וכפתור צף "+ הוסף" */
+
 .sticky-list-header {
-  position: sticky !important;
-  top: 56px !important;
-  z-index: 25 !important;
-  background-color: rgba(240, 253, 250, 0.98) !important;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 12px 16px !important;
+  position: relative !important;
+  top: auto !important;
+  z-index: 10 !important;
+  background-color: #F0FDFA !important;
+  padding: 14px 18px !important;
   border: 1.5px solid #0D9488 !important;
   border-radius: 16px !important;
   box-shadow: 0 4px 14px rgba(13, 148, 136, 0.08) !important;
-  margin-top: 4px !important;
-  margin-bottom: 16px !important;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-top: 14px !important;
+  margin-bottom: 20px !important;
+  clear: both !important;
 }
 
 .live-result-counter {
@@ -2415,20 +2414,19 @@ body.reel-fullscreen-open {
 
 
 /* TZADIKTOK V48: ייצוב שורת החיפוש בדפים הפנימיים - מניעת קפיצות וחפיפת טקסטים */
+
 .sticky-list-header {
   position: relative !important;
+  top: auto !important;
   z-index: 10 !important;
   background-color: #F0FDFA !important;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   padding: 14px 18px !important;
   border: 1.5px solid #0D9488 !important;
   border-radius: 16px !important;
-  box-shadow: 0 2px 10px rgba(13, 148, 136, 0.08) !important;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.08) !important;
   margin-top: 14px !important;
   margin-bottom: 20px !important;
   clear: both !important;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* ייצוב מפת Leaflet */
@@ -2496,4 +2494,47 @@ body.reel-fullscreen-open {
   transform: translateY(-2px) !important;
   border-color: #C9A227 !important;
   box-shadow: 0 8px 24px rgba(201, 162, 39, 0.12) !important;
+}
+
+/* ============================================================================
+   TZADIKTOK V49 REFINEMENTS: Minimalist Learn & WhatsApp Zmanim Card
+   ============================================================================ */
+#zmanim-share-card {
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+#zmanim-share-card .grid > div {
+  background-color: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(201, 162, 39, 0.35);
+  border-radius: 12px;
+  padding: 8px 6px;
+  text-align: center;
+}
+
+#zmanim-share-card .grid > div span:first-child {
+  color: #94A3B8;
+  font-size: 11px;
+  display: block;
+}
+
+#zmanim-share-card .grid > div span:last-child {
+  color: #FBBF24;
+  font-size: 15px;
+  font-weight: 900;
+  font-family: monospace, sans-serif;
+  margin-top: 2px;
+  display: block;
+}
+
+/* Ensure carousel header buttons look clean and do not break line */
+.learn-carousel-header-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 900;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: color 0.15s ease;
 }

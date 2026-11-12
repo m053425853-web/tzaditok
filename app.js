@@ -13789,3 +13789,192 @@ window.forceExitShabbatMode = function () {
 
   console.log("TzadikTok V48 master UI/UX logic initialized successfully.");
 })();
+
+// ============================================================================
+// TZADIKTOK V49 EXTENSIONS: WhatsApp Zmanim Card Share + Streaming UI Handlers
+// ============================================================================
+(function() {
+  function el(id) {
+    return document.getElementById(id);
+  }
+
+  // 1. פונקציית שיתוף כרטיס זמני היום בוואטסאפ (תמונה + טקסט עשיר)
+  window.shareZmanimWhatsAppImage = async function() {
+    try {
+      var shareCard = el("zmanim-share-card") || el("zmanim-grid");
+      if (!shareCard) {
+        if (typeof showToast === "function") showToast("לא נמצא כרטיס זמנים לשיתוף");
+        return;
+      }
+
+      // עדכון נתוני תאריך ועיר בכרטיס השיתוף לפני הצילום
+      var city = localStorage.getItem(typeof STORAGE_KEYS !== "undefined" ? STORAGE_KEYS.CITY_LOC : "tzadiktok_city_v18") || "בני ברק";
+      var hebDateEl = el("home-hebrew-date");
+      var gregDateEl = el("home-greg-date");
+      var parashaEl = el("home-parasha-title");
+
+      var hebDate = (hebDateEl && hebDateEl.textContent.trim()) || "י״ג חשון תשפ״ז";
+      var gregDate = (gregDateEl && gregDateEl.textContent.trim()) || new Date().toLocaleDateString("he-IL");
+      var parasha = (parashaEl && parashaEl.textContent.trim()) || "פרשת וירא";
+
+      var cityLabel = el("zm-share-city-label");
+      if (cityLabel) cityLabel.textContent = "📍 עיר: " + city;
+
+      var parashaLabel = el("zm-share-parasha-label");
+      if (parashaLabel) parashaLabel.textContent = parasha;
+
+      var hebLabel = el("zm-share-hebdate-label");
+      if (hebLabel) hebLabel.textContent = hebDate;
+
+      var gregLabel = el("zm-share-gregdate-label");
+      if (gregLabel) gregLabel.textContent = gregDate;
+
+      // הכנת טקסט ההודעה לוואטסאפ
+      var textLines = [
+        "👑 *זמני היום בהלכה - צדיק-טוק*",
+        "📍 *עיר:* " + city,
+        "📅 *" + hebDate + "* (" + gregDate + ")",
+        "📖 *" + parasha + "*",
+        "──────────────────"
+      ];
+
+      var zmanimList = window.CURRENT_REAL_ZMANIM;
+      if (!zmanimList || !zmanimList.length) {
+        var gridItems = document.querySelectorAll("#zmanim-grid > div");
+        if (gridItems && gridItems.length) {
+          zmanimList = [];
+          gridItems.forEach(function(item) {
+            var spans = item.querySelectorAll("span");
+            if (spans.length >= 2) {
+              zmanimList.push({ n: spans[0].textContent.trim(), t: spans[1].textContent.trim() });
+            }
+          });
+        }
+      }
+
+      if (zmanimList && zmanimList.length) {
+        zmanimList.forEach(function(item) {
+          textLines.push("• *" + item.n + ":* " + item.t);
+        });
+      }
+
+      textLines.push("──────────────────");
+      textLines.push("📱 שתפו עם חברים ומשפחה מאפליקציית צדיק-טוק!");
+      var fullShareText = textLines.join("\n");
+
+      if (typeof showToast === "function") {
+        showToast("📸 מעבד כרטיס זמנים מעוצב לשיתוף...");
+      }
+
+      // בדיקה האם ספריית html2canvas זמינה
+      if (typeof html2canvas === "undefined") {
+        await new Promise(function(resolve) {
+          var script = document.createElement("script");
+          script.src = "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
+          script.onload = resolve;
+          script.onerror = function() {
+            resolve();
+          };
+          document.head.appendChild(script);
+        });
+      }
+
+      if (typeof html2canvas !== "undefined") {
+        var canvas = await html2canvas(shareCard, {
+          backgroundColor: "#0B1120",
+          scale: 2,
+          useCORS: true,
+          logging: false
+        });
+
+        canvas.toBlob(async function(blob) {
+          if (!blob) {
+            fallbackTextShare(fullShareText);
+            return;
+          }
+
+          var file = new File([blob], "tzadiktok_zmanim_" + new Date().toISOString().slice(0, 10) + ".png", { type: "image/png" });
+
+          // 1. ניסיון שיתוף תמונה מובנה בנייד (Web Share API)
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({
+                files: [file],
+                title: "זמני היום בהלכה - צדיק-טוק",
+                text: fullShareText
+              });
+              if (typeof showToast === "function") showToast("✅ זמני היום שותפו בהצלחה!");
+              return;
+            } catch (err) {
+              if (err && err.name !== "AbortError") {
+                console.warn("[Share API] Fallback required:", err);
+              } else {
+                return;
+              }
+            }
+          }
+
+          // 2. Fallback לדסקטופ / דפדפן ללא תמיכת שיתוף קבצים: הורדת התמונה ופתיחת וואטסאפ
+          try {
+            var downloadLink = document.createElement("a");
+            downloadLink.href = URL.createObjectURL(blob);
+            downloadLink.download = "tzadiktok_zmanim_" + new Date().toISOString().slice(0, 10) + ".png";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+          } catch(e) {
+            console.warn("Download error:", e);
+          }
+
+          var waUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(fullShareText);
+          window.open(waUrl, "_blank");
+
+          if (typeof showToast === "function") {
+            showToast("📸 תמונת הזמנים נשמרה והודעת וואטסאפ נפתחה!");
+          }
+        }, "image/png");
+      } else {
+        fallbackTextShare(fullShareText);
+      }
+    } catch(err) {
+      console.error("[Zmanim Share Error]", err);
+      fallbackTextShare("זמני היום בהלכה - צדיק-טוק");
+    }
+  };
+
+  function fallbackTextShare(text) {
+    var waUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(text);
+    window.open(waUrl, "_blank");
+    if (typeof showToast === "function") {
+      showToast("💬 וואטסאפ נפתח עם זמני היום!");
+    }
+  }
+
+  // 2. עדכון דינמי של נתוני כרטיס שיתוף הזמנים כשהזמנים נטענים
+  var origFetchZmanim = window.fetchHebcalZmanim;
+  if (typeof origFetchZmanim === "function") {
+    window.fetchHebcalZmanim = async function(city) {
+      var res = await origFetchZmanim(city);
+      try {
+        var userCity = city || (localStorage.getItem(typeof STORAGE_KEYS !== "undefined" ? STORAGE_KEYS.CITY_LOC : "tzadiktok_city_v18")) || "בני ברק";
+        var cLabel = el("zm-share-city-label");
+        if (cLabel) cLabel.textContent = "📍 עיר: " + userCity;
+
+        var hebDateEl = el("home-hebrew-date");
+        var hLabel = el("zm-share-hebdate-label");
+        if (hLabel && hebDateEl) hLabel.textContent = hebDateEl.textContent.trim();
+
+        var gregDateEl = el("home-greg-date");
+        var gLabel = el("zm-share-gregdate-label");
+        if (gLabel && gregDateEl) gLabel.textContent = gregDateEl.textContent.trim();
+
+        var parashaEl = el("home-parasha-title");
+        var pLabel = el("zm-share-parasha-label");
+        if (pLabel && parashaEl) pLabel.textContent = parashaEl.textContent.trim();
+      } catch(e) {}
+      return res;
+    };
+  }
+
+  console.log("TzadikTok V49 extensions initialized.");
+})();
