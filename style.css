@@ -1933,3 +1933,121 @@ body.reel-fullscreen-open {
   overflow: hidden !important;
   touch-action: pan-y !important;
 }
+
+
+/* ==========================================================================
+   שדרוג מדור 'ללמוד' V46 — מצב קולנוע וסטרימינג (Cinematic Dark Mode / Netflix & ReelShort Style)
+   משפיע באופן בלעדי על #view-series בלבד! כל שאר הדפים נשארים בעיצובם המקורי.
+   ========================================================================== */
+#view-series {
+  background-color: #0a0a0c !important;
+  color: #F8FAFC !important;
+  border-radius: 24px !important;
+  padding: 16px !important;
+  border: 1px solid #1E2333 !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45) !important;
+}
+
+#view-series h1,
+#view-series h2,
+#view-series h3,
+#view-series h4,
+#view-series h5,
+#view-series h6 {
+  color: #FFFFFF !important;
+}
+
+#view-series .cinematic-card {
+  background: #141724;
+  border: 1px solid #272B3F;
+  border-radius: 18px;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#view-series .cinematic-card:hover {
+  border-color: #EA580C;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(234, 88, 12, 0.22);
+}
+
+#view-series .cinematic-hero-card {
+  background: #121522;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#view-series .cinematic-hero-card:hover {
+  border-color: #F59E0B;
+  transform: scale(1.02);
+  box-shadow: 0 16px 36px rgba(245, 158, 11, 0.25);
+}
+
+#view-series .badge-vip-streaming {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 50%, #B45309 100%);
+  color: #000000;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+#view-series .stream-tab-btn {
+  background: #161928;
+  color: #94A3B8;
+  border: 1px solid #272C42;
+  transition: all 0.2s ease;
+}
+#view-series .stream-tab-btn:hover {
+  color: #FFFFFF;
+  border-color: #3B4263;
+}
+#view-series .stream-tab-btn.active {
+  background: linear-gradient(135deg, #EA580C 0%, #C9A227 100%) !important;
+  color: #FFFFFF !important;
+  font-weight: 900 !important;
+  border-color: #F59E0B !important;
+  box-shadow: 0 4px 16px rgba(234, 88, 12, 0.35) !important;
+}
+
+#view-series .stream-scroll-row {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+#view-series .stream-scroll-row::-webkit-scrollbar {
+  height: 6px;
+}
+#view-series .stream-scroll-row::-webkit-scrollbar-thumb {
+  background: #2D334D;
+  border-radius: 9999px;
+}
+#view-series .stream-scroll-row::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* כפתור הפעלה זוהר במרכז כרטיסי הקולנוע */
+.cinema-play-glow-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+  transition: all 0.2s ease;
+}
+.cinematic-hero-card:hover .cinema-play-glow-btn,
+.cinematic-card:hover .cinema-play-glow-btn {
+  transform: scale(1.15);
+  background: #EA580C;
+  border-color: #FDE68A;
+  box-shadow: 0 0 25px rgba(234, 88, 12, 0.8);
+}

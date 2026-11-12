@@ -12149,3 +12149,604 @@ window.forceExitShabbatMode = function () {
     initV45();
   }
 })();
+
+
+// ============================================================================
+// מדור 'ללמוד' V46 — ממשק סטרימינג קולנועי (Netflix / ReelShort Style)
+// ============================================================================
+(function () {
+  var currentLearnStreamTab = "all";
+
+  // נתוני דמו אותנטיים עשירים לפרשת השבוע וקרוסלה ראשית (פורמט 9:16)
+  var DEMO_HERO_REELS = [
+    {
+      id: "hero_vayechi",
+      title: "הסוד של פרשת ויחי: איך להפוך קושי לברכה",
+      rabbi: "הרב יגאל כהן שליט״א",
+      category: "פרשה",
+      badge: "פרשת השבוע",
+      videoUrl: "https://www.youtube.com/watch?v=F1B9e_f6p5Y",
+      thumb: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=600&auto=format&fit=crop&q=80",
+      views: "14.2K",
+      likes: 420
+    },
+    {
+      id: "hero_shemot",
+      title: "תגליות מרתקות בספר שמות: משה רבנו והסנה",
+      rabbi: "הרב זמיר כהן שליט״א",
+      category: "פרשה",
+      badge: "מומלץ השבוע",
+      videoUrl: "https://www.youtube.com/watch?v=8l4R2yL_q-4",
+      thumb: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&auto=format&fit=crop&q=80",
+      views: "18.9K",
+      likes: 560
+    },
+    {
+      id: "hero_bo",
+      title: "פרשת בא: סוד עשר המכות והיציאה לחירות",
+      rabbi: "הרה״ג שמואל אליהו שליט״א",
+      category: "פרשה",
+      badge: "הפקה מיוחדת",
+      videoUrl: "https://www.youtube.com/watch?v=d_R4s0E4J_k",
+      thumb: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&auto=format&fit=crop&q=80",
+      views: "11.5K",
+      likes: 310
+    }
+  ];
+
+  // שיעורים אחרונים מגדולי הרבנים
+  var DEMO_RECENT_SHIURIM = [
+    {
+      id: "rec_yosef",
+      title: "הלכות ברכות הנהנין וסדר קדימה בברכות",
+      rabbi: "הראשון לציון הרב יצחק יוסף שליט״א",
+      duration: "28:40",
+      category: "הלכה",
+      videoUrl: "https://www.youtube.com/watch?v=kYJz7n_g9aU",
+      thumb: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=500&auto=format&fit=crop&q=80",
+      likes: 245
+    },
+    {
+      id: "rec_biderman",
+      title: "דיבורי חיזוק ואמונה: אין עוד מלבדו בכל רגע",
+      rabbi: "הרה״צ רבי אלימלך בידרמן שליט״א",
+      duration: "15:20",
+      category: "אמונה",
+      videoUrl: "https://www.youtube.com/watch?v=wX6e1_m3p80",
+      thumb: "https://images.unsplash.com/photo-1532012164546-f432f2e3777f?w=500&auto=format&fit=crop&q=80",
+      likes: 389
+    },
+    {
+      id: "rec_eliyahu",
+      title: "סוד קדושת השבת ושכר שומריה כהלכתה",
+      rabbi: "הרב מאיר אליהו שליט״א",
+      duration: "32:10",
+      category: "מוסר",
+      videoUrl: "https://www.youtube.com/watch?v=y7r9b1_x2q4",
+      thumb: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500&auto=format&fit=crop&q=80",
+      likes: 198
+    }
+  ];
+
+  // סיפורי צדיקים ומופתים
+  var DEMO_TZADDIKIM_STORIES = [
+    {
+      id: "tz_baba_sali",
+      title: "הבבא סאלי והישועה הפלאית שהרעידה את נתיבות",
+      rabbi: "הבבא סאלי • רבי ישראל אבוחצירא זצוק״ל",
+      tag: "מופתים וישועות",
+      videoUrl: "https://www.youtube.com/watch?v=m7Q1p2_v5t8",
+      thumb: "https://images.unsplash.com/photo-1519791883288-dc8bd696e667?w=500&auto=format&fit=crop&q=80"
+    },
+    {
+      id: "tz_lubavitch",
+      title: "הרבי מליובאוויטש בשיחה נדירה: שליחותו של כל יהודי",
+      rabbi: "כ״ק מרן האדמו״ר מליובאוויטש זי״ע",
+      tag: "הדרכה לחיים",
+      videoUrl: "https://www.youtube.com/watch?v=a3b4c5_d6e7",
+      thumb: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&auto=format&fit=crop&q=80"
+    },
+    {
+      id: "tz_chafetz_chaim",
+      title: "החפץ חיים ומידת האמת: המפגש המטלטל בראדין",
+      rabbi: "מרן בעל ה'חפץ חיים' זי״ע",
+      tag: "שמירת הלשון",
+      videoUrl: "https://www.youtube.com/watch?v=f8e9d0_c1b2",
+      thumb: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=500&auto=format&fit=crop&q=80"
+    }
+  ];
+
+  // שיעורים ארוכים ומעמיקים (פורמט רחב 16:9)
+  var DEMO_LONG_LESSONS = [
+    {
+      id: "long_tanya",
+      title: "שיעור עמוק ומקיף בספר התניא: פרק ל״ב - אהבת ישראל ואחדות הלבבות",
+      rabbi: "הרב יגאל כהן שליט״א",
+      category: "חסידות ומחשבה",
+      duration: "48:20",
+      views: "14.2K צפיות",
+      likes: 380,
+      videoUrl: "https://www.youtube.com/watch?v=F1B9e_f6p5Y",
+      thumb: "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=600&auto=format&fit=crop&q=80"
+    },
+    {
+      id: "long_yam_suf",
+      title: "סוד קריעת ים סוף ונס השילוח: שיעור מולטימדיה עשיר ומלווה במקורות",
+      rabbi: "הרב זמיר כהן שליט״א",
+      category: "פרשת השבוע ומדע",
+      duration: "56:15",
+      views: "22.5K צפיות",
+      likes: 640,
+      videoUrl: "https://www.youtube.com/watch?v=8l4R2yL_q-4",
+      thumb: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&auto=format&fit=crop&q=80"
+    },
+    {
+      id: "long_shabbat",
+      title: "הלכות שבת הלכה למעשה: דיני בישול, שהייה וחזרה במטבח המודרני",
+      rabbi: "הראשון לציון הרב יצחק יוסף שליט״א",
+      category: "הלכה למעשה",
+      duration: "42:10",
+      views: "18.1K צפיות",
+      likes: 495,
+      videoUrl: "https://www.youtube.com/watch?v=kYJz7n_g9aU",
+      thumb: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&auto=format&fit=crop&q=80"
+    }
+  ];
+
+  // כרטיסי חידונים אינטראקטיביים צבעוניים עם גביע 🏆
+  var STREAMING_QUIZZES = [
+    {
+      id: "q_torah",
+      title: "אתגר פרשת השבוע וחומש",
+      desc: "בחן את עצמך על חמישה חומשי תורה, פירושי רש״י וההפטרות",
+      questionsCount: "10 שאלות",
+      points: "🏆 500 נק׳",
+      badgeColor: "bg-amber-500",
+      borderColor: "border-amber-500/40",
+      bgGradient: "from-[#2A2111] to-[#161824]",
+      catFilter: "פרשת"
+    },
+    {
+      id: "q_halacha",
+      title: "טריוויה בהלכה למעשה",
+      desc: "הלכות שבת, ברכות הנהנין, כשרות ותפילה בחיי היום-יום",
+      questionsCount: "12 שאלות",
+      points: "🏆 600 נק׳",
+      badgeColor: "bg-sky-500",
+      borderColor: "border-sky-500/40",
+      bgGradient: "from-[#0F2236] to-[#161824]",
+      catFilter: "הלכה"
+    },
+    {
+      id: "q_nach",
+      title: "חידון תנ״ך וגיבורי ישראל",
+      desc: "נביאים ראשונים ואחרונים, מלכי ישראל ומלחמות התנ״ך",
+      questionsCount: "8 שאלות",
+      points: "🏆 400 נק׳",
+      badgeColor: "bg-emerald-500",
+      borderColor: "border-emerald-500/40",
+      bgGradient: "from-[#102A1F] to-[#161824]",
+      catFilter: "תנ״ך"
+    },
+    {
+      id: "q_generations",
+      title: "גדולי ישראל וציר הדורות",
+      desc: "תנאים, אמוראים, ראשונים ואחרונים לאורך ההיסטוריה היהודית",
+      questionsCount: "10 שאלות",
+      points: "🏆 500 נק׳",
+      badgeColor: "bg-purple-500",
+      borderColor: "border-purple-500/40",
+      bgGradient: "from-[#251636] to-[#161824]",
+      catFilter: "גדולי"
+    }
+  ];
+
+  function esc(s) {
+    return String(s || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  // 1. אתחול כל אזורי הסטרימינג
+  window.initLearnStreamingUI = function () {
+    window.renderLearnHeroCarousel();
+    window.renderLearnSubCarousels();
+    window.renderLearnLongLessons();
+    window.renderLearnAiSeries();
+    window.renderLearnQuizzesCards();
+  };
+
+  // 2. מעבר בין טאבים בסטרימינג
+  window.switchLearnStreamTab = function (tabKey) {
+    currentLearnStreamTab = tabKey || "all";
+
+    // עדכון מצב טאב פעיל
+    var tabs = document.querySelectorAll("#learn-stream-tabs-bar .stream-tab-btn");
+    tabs.forEach(function (btn) {
+      if (btn.id === "l-tab-" + currentLearnStreamTab) {
+        btn.classList.add("active");
+      } else {
+        btn.classList.remove("active");
+      }
+    });
+
+    var viewAll = document.getElementById("learn-stream-feed-all");
+    var viewTorah = document.getElementById("learn-stream-view-torah");
+    var viewShiurim = document.getElementById("learn-stream-view-shiurim");
+    var viewStories = document.getElementById("learn-stream-view-tzaddikim_stories");
+    var viewAi = document.getElementById("learn-stream-view-aiseries");
+    var viewQuizzes = document.getElementById("learn-stream-view-quizzes");
+
+    [viewAll, viewTorah, viewShiurim, viewStories, viewAi, viewQuizzes].forEach(function (v) {
+      if (v) v.classList.add("hidden");
+    });
+
+    if (currentLearnStreamTab === "all") {
+      if (viewAll) viewAll.classList.remove("hidden");
+    } else if (currentLearnStreamTab === "torah") {
+      if (viewTorah) viewTorah.classList.remove("hidden");
+      renderTorahStreamGrid();
+    } else if (currentLearnStreamTab === "shiurim") {
+      if (viewShiurim) viewShiurim.classList.remove("hidden");
+      renderShiurimStreamGrid();
+    } else if (currentLearnStreamTab === "tzaddikim_stories") {
+      if (viewStories) viewStories.classList.remove("hidden");
+      renderStoriesStreamGrid();
+    } else if (currentLearnStreamTab === "aiseries") {
+      if (viewAi) viewAi.classList.remove("hidden");
+      window.renderLearnAiSeries();
+    } else if (currentLearnStreamTab === "quizzes") {
+      if (viewQuizzes) viewQuizzes.classList.remove("hidden");
+      window.renderLearnQuizzesCards();
+    }
+  };
+
+  // 3. רינדור קרוסלה ראשית (Hero Carousel - 9:16)
+  window.renderLearnHeroCarousel = function () {
+    var c = document.getElementById("learn-hero-carousel");
+    if (!c) return;
+
+    var items = [].concat(DEMO_HERO_REELS);
+
+    // הוספת סרטונים מאושרים מסופרבייס אם קיימים
+    if (window.cachedApprovedLessons && window.cachedApprovedLessons.length) {
+      var parashaLessons = window.cachedApprovedLessons.filter(function (l) {
+        return (l.category || "").indexOf("פרשה") !== -1 || (l.topic || "").indexOf("פרשה") !== -1;
+      });
+      if (parashaLessons.length) {
+        parashaLessons.slice(0, 5).forEach(function (l, idx) {
+          var yId = window.extractYoutubeVideoId ? window.extractYoutubeVideoId(l.video_url || l.url) : "";
+          var tUrl = yId ? ("https://img.youtube.com/vi/" + yId + "/hqdefault.jpg") : items[0].thumb;
+          items.push({
+            id: "sup_hero_" + (l.id || idx),
+            title: l.title || "שיעור בפרשת השבוע",
+            rabbi: l.rabbi_name || l.rabbi || "הרב המלמד",
+            category: "פרשה",
+            badge: "מהמאגר",
+            videoUrl: l.video_url || l.url,
+            thumb: tUrl,
+            views: (l.views_count ? l.views_count + " צפיות" : "חדש"),
+            likes: l.likes_count || 12
+          });
+        });
+      }
+    }
+
+    c.innerHTML = items.map(function (item) {
+      return '<div onclick="playApprovedReelVideo(\'' + esc(item.videoUrl) + '\', \'' + esc(item.title) + '\', \'' + esc(item.rabbi) + '\')" class="cinematic-hero-card aspect-[9/16] w-[180px] sm:w-[220px] shrink-0 cursor-pointer group shadow-2xl relative select-none">' +
+        '<img src="' + esc(item.thumb) + '" alt="' + esc(item.title) + '" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">' +
+        '<div class="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-transparent"></div>' +
+        '<div class="absolute top-2.5 right-2.5 flex items-center gap-1.5">' +
+          '<span class="px-2 py-0.5 rounded-md bg-[#EA580C] text-white font-black text-[10px] shadow-md uppercase">' + esc(item.badge) + '</span>' +
+        '</div>' +
+        '<div class="absolute inset-0 flex items-center justify-center opacity-90 group-hover:opacity-100 transition-opacity">' +
+          '<div class="cinema-play-glow-btn">▶</div>' +
+        '</div>' +
+        '<div class="absolute bottom-0 left-0 right-0 p-3.5 space-y-1 text-right">' +
+          '<span class="text-[11px] font-bold text-amber-400 block truncate">👑 ' + esc(item.rabbi) + '</span>' +
+          '<h4 class="text-xs sm:text-sm font-black text-white leading-tight line-clamp-2 drop-shadow-md">' + esc(item.title) + '</h4>' +
+          '<div class="flex items-center justify-between text-[10px] text-gray-300 pt-1 border-t border-white/10">' +
+            '<span>👁️ ' + esc(item.views) + '</span>' +
+            '<span>❤️ ' + esc(item.likes) + '</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  };
+
+  // 4. רינדור קרוסלות משניות (שיעורים אחרונים וסיפורי צדיקים)
+  window.renderLearnSubCarousels = function () {
+    var cShiurim = document.getElementById("learn-subcarousel-shiurim");
+    if (cShiurim) {
+      cShiurim.innerHTML = DEMO_RECENT_SHIURIM.map(function (s) {
+        return '<div onclick="playApprovedReelVideo(\'' + esc(s.videoUrl) + '\', \'' + esc(s.title) + '\', \'' + esc(s.rabbi) + '\')" class="cinematic-card w-[220px] sm:w-[260px] shrink-0 p-3 flex flex-col justify-between cursor-pointer group shadow-lg select-none">' +
+          '<div class="relative w-full aspect-video rounded-xl overflow-hidden mb-2.5 bg-slate-900">' +
+            '<img src="' + esc(s.thumb) + '" alt="' + esc(s.title) + '" class="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy">' +
+            '<div class="absolute inset-0 bg-black/30 flex items-center justify-center">' +
+              '<div class="cinema-play-glow-btn" style="width:36px;height:36px;font-size:14px;">▶</div>' +
+            '</div>' +
+            '<span class="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded bg-black/80 text-white font-mono text-[10px] font-bold">' + esc(s.duration) + '</span>' +
+          '</div>' +
+          '<div class="space-y-1 text-right">' +
+            '<span class="text-[11px] font-bold text-sky-400 block truncate">' + esc(s.rabbi) + '</span>' +
+            '<h5 class="text-xs font-black text-white line-clamp-2 leading-snug">' + esc(s.title) + '</h5>' +
+          '</div>' +
+        '</div>';
+      }).join("");
+    }
+
+    var cStories = document.getElementById("learn-subcarousel-stories");
+    if (cStories) {
+      cStories.innerHTML = DEMO_TZADDIKIM_STORIES.map(function (s) {
+        return '<div onclick="playApprovedReelVideo(\'' + esc(s.videoUrl) + '\', \'' + esc(s.title) + '\', \'' + esc(s.rabbi) + '\')" class="cinematic-card w-[220px] sm:w-[260px] shrink-0 p-3 flex flex-col justify-between cursor-pointer group shadow-lg select-none">' +
+          '<div class="relative w-full aspect-video rounded-xl overflow-hidden mb-2.5 bg-slate-900">' +
+            '<img src="' + esc(s.thumb) + '" alt="' + esc(s.title) + '" class="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy">' +
+            '<div class="absolute inset-0 bg-black/30 flex items-center justify-center">' +
+              '<div class="cinema-play-glow-btn" style="width:36px;height:36px;font-size:14px;">▶</div>' +
+            '</div>' +
+            '<span class="absolute top-1.5 right-1.5 px-2 py-0.5 rounded bg-amber-500/90 text-black font-black text-[10px]">' + esc(s.tag) + '</span>' +
+          '</div>' +
+          '<div class="space-y-1 text-right">' +
+            '<span class="text-[11px] font-bold text-amber-300 block truncate">' + esc(s.rabbi) + '</span>' +
+            '<h5 class="text-xs font-black text-white line-clamp-2 leading-snug">' + esc(s.title) + '</h5>' +
+          '</div>' +
+        '</div>';
+      }).join("");
+    }
+  };
+
+  // 5. רינדור שיעורים ארוכים ומעמיקים (פורמט רחב 16:9)
+  window.renderLearnLongLessons = function () {
+    var c = document.getElementById("learn-long-lessons-list");
+    if (!c) return;
+
+    c.innerHTML = DEMO_LONG_LESSONS.map(function (l) {
+      return '<div class="cinematic-card p-3 sm:p-4 flex flex-col sm:flex-row items-center gap-4 group shadow-lg">' +
+        '<div onclick="playApprovedReelVideo(\'' + esc(l.videoUrl) + '\', \'' + esc(l.title) + '\', \'' + esc(l.rabbi) + '\')" class="relative w-full sm:w-[220px] aspect-video rounded-xl overflow-hidden shrink-0 cursor-pointer bg-slate-900">' +
+          '<img src="' + esc(l.thumb) + '" alt="' + esc(l.title) + '" class="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy">' +
+          '<div class="absolute inset-0 bg-black/30 flex items-center justify-center">' +
+            '<div class="cinema-play-glow-btn" style="width:40px;height:40px;font-size:15px;">▶</div>' +
+          '</div>' +
+          '<span class="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/80 text-white font-mono text-[11px] font-bold">' + esc(l.duration) + '</span>' +
+        '</div>' +
+        '<div class="flex-1 w-full flex flex-col justify-between text-right space-y-2">' +
+          '<div class="space-y-1">' +
+            '<div class="flex items-center justify-between text-xs text-gray-400">' +
+              '<span class="px-2 py-0.5 rounded bg-[#272B3F] text-amber-400 font-bold text-[10px]">' + esc(l.category) + '</span>' +
+              '<span>' + esc(l.views) + '</span>' +
+            '</div>' +
+            '<h4 class="text-sm sm:text-base font-black text-white group-hover:text-amber-400 transition-colors line-clamp-2">' + esc(l.title) + '</h4>' +
+            '<p class="text-xs text-sky-400 font-bold">👑 ' + esc(l.rabbi) + '</p>' +
+          '</div>' +
+          '<div class="flex items-center justify-between pt-2 border-t border-[#272B3F]">' +
+            '<span class="text-xs text-gray-400 font-bold">❤️ ' + esc(l.likes) + ' לייקים</span>' +
+            '<button type="button" onclick="playApprovedReelVideo(\'' + esc(l.videoUrl) + '\', \'' + esc(l.title) + '\', \'' + esc(l.rabbi) + '\')" class="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-black font-black text-xs transition-all flex items-center gap-1.5 cursor-pointer">' +
+              '<span>צפה בשיעור</span>' +
+              '<span>▶</span>' +
+            '</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  };
+
+  // 6. רינדור סדרות AI (פרימיום VIP)
+  window.renderLearnAiSeries = function () {
+    var c = document.getElementById("learn-aiseries-stream-grid");
+    if (!c) return;
+
+    var series = (window.SERIES_LIBRARY && window.SERIES_LIBRARY.length) ? window.SERIES_LIBRARY : [
+      {
+        id: "s_joseph",
+        title: "יוסף הצדיק • שליט מצרים",
+        season: "עונה 1 • 10 פרקים",
+        tag: "דרמה מקראית אפית",
+        desc: "סיפורו המטלטל של יוסף, מכתונת הפסים והבור, ועד למשנה למלך מצרים.",
+        image: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=600&auto=format&fit=crop&q=80"
+      },
+      {
+        id: "s_abraham",
+        title: "אברהם העברי • מול כבשן האש",
+        season: "עונה 1 • 8 פרקים",
+        tag: "סדרת מופת היסטורית",
+        desc: "מסעו של אבי האומה מאור כשדים ועד להפצת האמונה בבורא עולם.",
+        image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&auto=format&fit=crop&q=80"
+      },
+      {
+        id: "s_david",
+        title: "דוד המלך • נעים זמירות ישראל",
+        season: "עונה 1 • 12 פרקים",
+        tag: "דרמה מוזיקלית ותנ״כית",
+        desc: "רועה הצאן שהפך למשיח ה׳, חיבר את ספר התהילים ונלחם בגוליית.",
+        image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&auto=format&fit=crop&q=80"
+      }
+    ];
+
+    c.innerHTML = series.map(function (s) {
+      var ytId = window.resolveYoutubeVideoId ? window.resolveYoutubeVideoId("", "סדרות AI", s.title) : "F1B9e_f6p5Y";
+      var vUrl = "https://www.youtube.com/watch?v=" + ytId;
+
+      return '<div class="cinematic-card p-4 flex flex-col justify-between group shadow-xl relative">' +
+        '<div class="relative w-full aspect-video rounded-xl overflow-hidden mb-3 bg-slate-900 cursor-pointer" onclick="playApprovedReelVideo(\'' + esc(vUrl) + '\', \'' + esc(s.title) + '\', \'סדרות AI • צדיק-טוק\')">' +
+          '<img src="' + esc(s.image) + '" alt="' + esc(s.title) + '" class="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy">' +
+          '<div class="absolute inset-0 bg-black/40 flex items-center justify-center">' +
+            '<div class="cinema-play-glow-btn">▶</div>' +
+          '</div>' +
+          '<span class="badge-vip-streaming absolute top-2 right-2 px-2.5 py-0.5 rounded-full text-[10px] text-black font-black uppercase shadow-lg">VIP פרימיום</span>' +
+          '<span class="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/75 text-amber-300 font-bold text-[10px]">' + esc(s.season || "עונה 1") + '</span>' +
+        '</div>' +
+        '<div class="space-y-1.5 text-right flex-1">' +
+          '<span class="text-[11px] font-bold text-amber-400 block">' + esc(s.tag || "דרמת AI מקראית") + '</span>' +
+          '<h4 class="text-sm sm:text-base font-black text-white group-hover:text-amber-400 transition-colors">' + esc(s.title) + '</h4>' +
+          '<p class="text-xs text-gray-300 line-clamp-2 leading-relaxed">' + esc(s.desc || "") + '</p>' +
+        '</div>' +
+        '<div class="pt-3 mt-3 border-t border-[#272B3F] flex items-center justify-between">' +
+          '<span class="text-xs text-gray-400 font-bold">איכות 4K HDR</span>' +
+          '<button type="button" onclick="playApprovedReelVideo(\'' + esc(vUrl) + '\', \'' + esc(s.title) + '\', \'סדרות AI • צדיק-טוק\')" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#EA580C] to-[#C9A227] text-white font-black text-xs shadow-md hover:brightness-110 transition-all flex items-center gap-1.5 cursor-pointer">' +
+            '<span>צפה בפרק 1</span>' +
+            '<span>▶</span>' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  };
+
+  // 7. רינדור כרטיסי חידונים אינטראקטיביים צבעוניים עם גביע 🏆
+  window.renderLearnQuizzesCards = function () {
+    var c = document.getElementById("learn-quizzes-stream-grid");
+    if (!c) return;
+
+    c.innerHTML = STREAMING_QUIZZES.map(function (q) {
+      return '<div class="cinematic-card p-5 border-2 ' + esc(q.borderColor) + ' bg-gradient-to-br ' + esc(q.bgGradient) + ' flex flex-col justify-between group shadow-xl relative">' +
+        '<div class="flex items-center justify-between mb-3">' +
+          '<span class="px-3 py-1 rounded-xl ' + esc(q.badgeColor) + ' text-white font-black text-xs shadow-md flex items-center gap-1.5">' +
+            '<span>🏆</span>' +
+            '<span>' + esc(q.points) + '</span>' +
+          '</span>' +
+          '<span class="text-xs font-bold text-gray-300">' + esc(q.questionsCount) + '</span>' +
+        '</div>' +
+        '<div class="space-y-1.5 text-right flex-1 mb-4">' +
+          '<h4 class="text-base sm:text-lg font-black text-white group-hover:text-amber-300 transition-colors">' + esc(q.title) + '</h4>' +
+          '<p class="text-xs text-gray-300 leading-relaxed">' + esc(q.desc) + '</p>' +
+        '</div>' +
+        '<div class="pt-3 border-t border-white/10 flex items-center justify-between">' +
+          '<span class="text-xs text-amber-400 font-bold">זכייה בניקוד אישי</span>' +
+          '<button type="button" onclick="startStreamingQuiz(\'' + esc(q.catFilter) + '\')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:brightness-110 text-slate-950 font-black text-xs shadow-lg transition-all flex items-center gap-1.5 cursor-pointer">' +
+            '<span>שחק עכשיו</span>' +
+            '<span>🎮</span>' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  };
+
+  // התחלת משחק חידון ישירות
+  window.startStreamingQuiz = function (catFilter) {
+    if (window.openLearnSection) {
+      window.openLearnSection("quizzes");
+      setTimeout(function () {
+        if (window.renderInlineLearnQuizzes) window.renderInlineLearnQuizzes(catFilter || "all");
+      }, 50);
+    }
+  };
+
+  function renderTorahStreamGrid() {
+    var c = document.getElementById("learn-torah-stream-grid");
+    if (!c) return;
+    c.innerHTML = DEMO_HERO_REELS.map(function (item) {
+      return '<div onclick="playApprovedReelVideo(\'' + esc(item.videoUrl) + '\', \'' + esc(item.title) + '\', \'' + esc(item.rabbi) + '\')" class="cinematic-hero-card aspect-[9/16] w-full shrink-0 cursor-pointer group shadow-xl relative">' +
+        '<img src="' + esc(item.thumb) + '" class="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy">' +
+        '<div class="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-transparent"></div>' +
+        '<div class="absolute top-2.5 right-2.5"><span class="px-2 py-0.5 rounded-md bg-[#EA580C] text-white font-black text-[10px]">' + esc(item.badge) + '</span></div>' +
+        '<div class="absolute inset-0 flex items-center justify-center"><div class="cinema-play-glow-btn">▶</div></div>' +
+        '<div class="absolute bottom-0 left-0 right-0 p-3.5 space-y-1 text-right">' +
+          '<span class="text-[11px] font-bold text-amber-400 block">' + esc(item.rabbi) + '</span>' +
+          '<h4 class="text-xs sm:text-sm font-black text-white leading-tight">' + esc(item.title) + '</h4>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  }
+
+  function renderShiurimStreamGrid() {
+    var c = document.getElementById("learn-shiurim-stream-grid");
+    if (!c) return;
+    c.innerHTML = DEMO_RECENT_SHIURIM.concat(DEMO_LONG_LESSONS).map(function (s) {
+      return '<div onclick="playApprovedReelVideo(\'' + esc(s.videoUrl) + '\', \'' + esc(s.title) + '\', \'' + esc(s.rabbi) + '\')" class="cinematic-card p-3 flex flex-col justify-between cursor-pointer group shadow-lg">' +
+        '<div class="relative w-full aspect-video rounded-xl overflow-hidden mb-2.5 bg-slate-900">' +
+          '<img src="' + esc(s.thumb) + '" class="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy">' +
+          '<div class="absolute inset-0 bg-black/30 flex items-center justify-center"><div class="cinema-play-glow-btn" style="width:36px;height:36px;font-size:14px;">▶</div></div>' +
+          '<span class="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded bg-black/80 text-white font-mono text-[10px] font-bold">' + esc(s.duration || "שיעור מלא") + '</span>' +
+        '</div>' +
+        '<div class="space-y-1 text-right">' +
+          '<span class="text-[11px] font-bold text-sky-400 block truncate">' + esc(s.rabbi) + '</span>' +
+          '<h5 class="text-xs font-black text-white line-clamp-2 leading-snug">' + esc(s.title) + '</h5>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  }
+
+  function renderStoriesStreamGrid() {
+    var c = document.getElementById("learn-stories-stream-grid");
+    if (!c) return;
+    c.innerHTML = DEMO_TZADDIKIM_STORIES.map(function (s) {
+      return '<div onclick="playApprovedReelVideo(\'' + esc(s.videoUrl) + '\', \'' + esc(s.title) + '\', \'' + esc(s.rabbi) + '\')" class="cinematic-card p-3 flex flex-col justify-between cursor-pointer group shadow-lg">' +
+        '<div class="relative w-full aspect-video rounded-xl overflow-hidden mb-2.5 bg-slate-900">' +
+          '<img src="' + esc(s.thumb) + '" class="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy">' +
+          '<div class="absolute inset-0 bg-black/30 flex items-center justify-center"><div class="cinema-play-glow-btn" style="width:36px;height:36px;font-size:14px;">▶</div></div>' +
+          '<span class="absolute top-1.5 right-1.5 px-2 py-0.5 rounded bg-amber-500/90 text-black font-black text-[10px]">' + esc(s.tag) + '</span>' +
+        '</div>' +
+        '<div class="space-y-1 text-right">' +
+          '<span class="text-[11px] font-bold text-amber-300 block truncate">' + esc(s.rabbi) + '</span>' +
+          '<h5 class="text-xs font-black text-white line-clamp-2 leading-snug">' + esc(s.title) + '</h5>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  }
+
+  // 8. חיפוש מהיר בסטרימינג
+  window.handleLearnStreamingSearch = function (q) {
+    var query = String(q || "").trim().toLowerCase();
+    var box = document.getElementById("learn-search-results-box");
+    if (!box) return;
+
+    if (!query) {
+      box.classList.add("hidden");
+      box.innerHTML = "";
+      return;
+    }
+
+    var allItems = []
+      .concat(DEMO_HERO_REELS)
+      .concat(DEMO_RECENT_SHIURIM)
+      .concat(DEMO_TZADDIKIM_STORIES)
+      .concat(DEMO_LONG_LESSONS);
+
+    var matches = allItems.filter(function (it) {
+      return [it.title, it.rabbi, it.category, it.badge, it.tag].join(" ").toLowerCase().indexOf(query) !== -1;
+    });
+
+    box.classList.remove("hidden");
+    if (!matches.length) {
+      box.innerHTML = '<div class="p-4 text-center text-xs text-gray-400 bg-[#161824] rounded-2xl border border-[#272B3F]">לא נמצאו תוצאות עבור "' + esc(query) + '". נסה חיפוש אחר או בדוק בספריות המלאות.</div>';
+      return;
+    }
+
+    box.innerHTML = '<div class="bg-[#141724] border border-[#272B3F] p-3 rounded-2xl space-y-2">' +
+      '<div class="text-xs text-amber-400 font-bold px-1">נמצאו ' + matches.length + ' תוצאות:</div>' +
+      '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">' +
+        matches.map(function (m) {
+          return '<div onclick="playApprovedReelVideo(\'' + esc(m.videoUrl) + '\', \'' + esc(m.title) + '\', \'' + esc(m.rabbi) + '\')" class="p-2.5 rounded-xl bg-[#1C2033] hover:bg-[#252B44] border border-[#2D334D] flex items-center gap-3 cursor-pointer transition-all">' +
+            '<img src="' + esc(m.thumb) + '" class="w-12 h-12 rounded-lg object-cover shrink-0">' +
+            '<div class="text-right overflow-hidden flex-1">' +
+              '<h5 class="text-xs font-black text-white truncate">' + esc(m.title) + '</h5>' +
+              '<span class="text-[11px] text-amber-400 font-bold block truncate">' + esc(m.rabbi) + '</span>' +
+            '</div>' +
+            '<span class="text-amber-400 text-sm shrink-0">▶</span>' +
+          '</div>';
+        }).join("") +
+      '</div>' +
+    '</div>';
+  };
+
+  window.clearLearnStreamingSearch = function () {
+    var inp = document.getElementById("learn-global-search-input");
+    if (inp) inp.value = "";
+    window.handleLearnStreamingSearch("");
+  };
+
+  // אתחול אוטומטי בעת טעינה ובמעבר ללשונית 'ללמוד'
+  document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(window.initLearnStreamingUI, 80);
+  });
+
+  var prevSwitchTabV46 = window.switchTab;
+  window.switchTab = function (tabId) {
+    if (prevSwitchTabV46) prevSwitchTabV46(tabId);
+    if (tabId === "series" || tabId === "learn") {
+      setTimeout(window.initLearnStreamingUI, 50);
+    }
+  };
+})();

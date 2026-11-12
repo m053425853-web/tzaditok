@@ -30,7 +30,7 @@
     };
   </script>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <link rel="stylesheet" href="style.css?v=45" />
+  <link rel="stylesheet" href="style.css?v=46" />
 </head>
 <body class="min-h-screen select-none">
 
@@ -394,143 +394,237 @@
     <!-- 2. COMPREHENSIVE TORAH, NACH & HISTORY LIBRARY (הספרייה המרכזית) -->
     <section id="view-series" class="view-section space-y-4">
       <!-- סרגל חזרה פנימי כשנמצאים בתוך תת-מדור של 'ללמוד' (מוסתר במסך הראשי של ללמוד) -->
-      <div id="learn-sub-back-bar" class="hidden bg-white border border-[#BAE6FD] rounded-2xl px-3.5 py-2.5 flex items-center justify-between gap-2 shadow-sm">
+      <div id="learn-sub-back-bar" class="hidden bg-[#161824] border border-[#272B3F] rounded-2xl px-3.5 py-2.5 flex items-center justify-between gap-2 shadow-md">
         <div class="flex items-center gap-2.5">
-          <button type="button" onclick="backToLearnHub()" class="px-3 py-1.5 rounded-xl bg-[#F0F9FF] hover:bg-[#E0F2FE] border border-[#7DD3FC] text-[#0F2340] text-xs font-black flex items-center gap-1 transition-all">
+          <button type="button" onclick="backToLearnHub()" class="px-3 py-1.5 rounded-xl bg-[#202538] hover:bg-[#2A314A] border border-[#3B4263] text-white text-xs font-black flex items-center gap-1 transition-all cursor-pointer">
             <span>←</span>
-            <span>חזרה ללמוד</span>
+            <span>חזרה לסטרימינג</span>
           </button>
-          <span id="learn-active-sub-title" class="text-sm sm:text-base font-black text-[#0F2340] serif-heading">בית המדרש</span>
+          <span id="learn-active-sub-title" class="text-sm sm:text-base font-black text-amber-400 serif-heading">בית המדרש • ללמוד</span>
         </div>
+        <button type="button" onclick="openLearnContentUploadModal()" class="px-3.5 py-1.5 bg-gradient-to-r from-[#EA580C] to-[#C9A227] hover:brightness-110 text-white font-black rounded-xl text-xs shadow-md shrink-0 cursor-pointer" style="color:#FFFFFF !important;">
+          + העלאת תוכן
+        </button>
+      </div>
         <button type="button" onclick="openLearnContentUploadModal()" class="px-3 py-1.5 bg-[#0284C7] hover:bg-[#0369A1] text-white font-black rounded-xl text-xs shadow-sm shrink-0" style="color:#FFFFFF !important;">
           + העלאת תוכן
         </button>
       </div>
 
-      <!-- המסך הראשי של 'ללמוד' (#learn-hub-home): שורת חיפוש כללית אחת למעלה + הכפתורים הגדולים של הקטגוריות בלבד (ללא סינונים!) -->
-      <div id="learn-hub-home" class="space-y-3.5">
-        <div class="flex items-center justify-between gap-2 px-1">
+            <!-- המסך הראשי של 'ללמוד' (#learn-hub-home): ממשק סטרימינג קולנועי (Dark / Netflix & ReelShort Style) -->
+      <div id="learn-hub-home" class="space-y-5">
+        <!-- כותרת ראשית + כפתור העלאת תוכן בולט בראש הדף -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1 pt-1">
           <div>
-            <span class="px-2.5 py-0.5 rounded-md bg-[#0284C7] text-white text-[11px] font-black inline-block mb-0.5" style="color:#FFFFFF !important;">בית המדרש • ללמוד</span>
-            <h2 class="text-lg sm:text-xl font-black text-[#0F2340] serif-heading">בחר מסלול לימוד או חפש בכל המאגר</h2>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#EA580C] to-[#C9A227] text-white text-[11px] font-black inline-flex items-center gap-1 shadow-sm">
+                <span>🎬</span> צדיק-טוק CINEMA
+              </span>
+              <span class="text-[11px] text-gray-400 font-bold">סטרימינג תורני עשיר</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-black text-white serif-heading tracking-wide">בית המדרש • עולם התוכן והשיעורים</h2>
           </div>
-          <button type="button" onclick="openLearnContentUploadModal()" class="px-3.5 py-2 bg-[#0284C7] hover:bg-[#0369A1] text-white font-black rounded-xl text-xs shadow-sm flex items-center gap-1.5 shrink-0" style="color:#FFFFFF !important;">
-            <span>+ העלאת תוכן</span>
+          <!-- כפתור העלאת תוכן בולט בראש הדף -->
+          <button type="button" onclick="openLearnContentUploadModal()" class="px-4 py-2.5 bg-gradient-to-r from-[#EA580C] to-[#C9A227] hover:brightness-110 text-white font-black rounded-xl text-xs sm:text-sm shadow-xl flex items-center justify-center gap-2 shrink-0 border border-amber-300/30 transition-all cursor-pointer">
+            <span class="text-base leading-none font-bold">+</span>
+            <span>העלאת תוכן</span>
           </button>
         </div>
 
-        <!-- שורת חיפוש כללית אחת למעלה במסך הראשי של 'ללמוד' -->
-        <div class="bg-white border-2 border-[#7DD3FC] focus-within:border-[#0284C7] rounded-2xl px-3.5 py-2.5 flex items-center gap-2.5 shadow-sm">
-          <svg class="w-4 h-4 text-[#0284C7] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input id="learn-global-search-input" type="search" oninput="handleLearnGlobalSearch(this.value)" placeholder="חיפוש כללי בכל מדור ללמוד (פרשה, תנ״ך, שיעורים, סרטונים, קורסים, סיפורי צדיקים)..." class="w-full bg-transparent text-xs sm:text-sm text-[#0F2340] font-semibold outline-none">
-          <button type="button" onclick="var inp=document.getElementById('learn-global-search-input'); if(inp){inp.value='';} handleLearnGlobalSearch('');" class="text-xs text-[#5C4938] hover:text-[#0F2340] font-bold shrink-0">נקה</button>
+        <!-- שורת חיפוש כללית קולנועית בראש הדף -->
+        <div class="bg-[#141724] border border-[#272B3F] focus-within:border-[#F59E0B] rounded-2xl px-3.5 py-2.5 flex items-center gap-2.5 shadow-lg transition-all">
+          <svg class="w-4 h-4 text-[#F59E0B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="learn-global-search-input" type="search" oninput="handleLearnStreamingSearch(this.value)" placeholder="חיפוש מהיר בסטרימינג (פרשת השבוע, רבנים, שיעורים, סדרות AI, סיפורי צדיקים)..." class="w-full bg-transparent text-xs sm:text-sm text-white placeholder-gray-400 font-semibold outline-none">
+          <button type="button" onclick="clearLearnStreamingSearch();" class="text-xs text-amber-400 hover:text-amber-300 font-bold shrink-0">נקה</button>
         </div>
 
-        <!-- תיבת תוצאות חיפוש כללי ב'ללמוד' (מופיעה רק בעת הקלדה בשורת החיפוש) -->
+        <!-- תיבת תוצאות חיפוש מהיר ב'ללמוד' -->
         <div id="learn-search-results-box" class="hidden"></div>
 
-        <!-- הכפתורים הגדולים של הקטגוריות במסך הראשי של 'ללמוד' (ללא שום סינונים במסך הראשי!) -->
-        <div class="learn-main-cats-grid" role="navigation" aria-label="קטגוריות מדור ללמוד">
-          <button type="button" id="lib-btn-torah" onclick="openLearnSection('torah')" class="learn-big-cat-btn">
-            <span class="learn-big-cat-icon">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-            </span>
-            <div class="learn-big-cat-text">
-              <strong>פרשה (חומש)</strong>
-              <span>חמישה חומשי תורה ו-54 פרשיות השבוע</span>
-            </div>
-          </button>
-
-          <button type="button" id="lib-btn-nach" onclick="openLearnSection('nach')" class="learn-big-cat-btn">
-            <span class="learn-big-cat-icon">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-            </span>
-            <div class="learn-big-cat-text">
-              <strong>תנ״ך (נ״ך)</strong>
-              <span>נביאים ראשונים, אחרונים וכתובים</span>
-            </div>
-          </button>
-
-          <button type="button" id="learn-main-tab-shiurim" onclick="openLearnSection('liveshiurim')" class="learn-big-cat-btn">
-            <span class="learn-big-cat-icon">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            </span>
-            <div class="learn-big-cat-text">
-              <strong>שיעורים</strong>
-              <span>שיעורי תורה מפי רבנים לפי נושא ורב</span>
-            </div>
-          </button>
-
-          <button type="button" id="lib-btn-eduvideos" onclick="openLearnSection('eduvideos')" class="learn-big-cat-btn">
-            <span class="learn-big-cat-icon">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="4" width="20" height="16" rx="2"/><polygon points="10 9 15 12 10 15 10 9"/></svg>
-            </span>
-            <div class="learn-big-cat-text">
-              <strong>סרטונים</strong>
-              <span>ספריית וידאו חינוכית ויוטיוב כשר</span>
-            </div>
-          </button>
-
-          <button type="button" id="learn-main-tab-courses" onclick="openLearnSection('courses')" class="learn-big-cat-btn">
-            <span class="learn-big-cat-icon">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-            </span>
-            <div class="learn-big-cat-text">
-              <strong>קורסים</strong>
-              <span>מסלולי לימוד מובנים וקורסים שבועיים</span>
-            </div>
-          </button>
-
-          <button type="button" id="lib-btn-tzaddikim_stories" onclick="openLearnSection('tzaddikim_stories')" class="learn-big-cat-btn">
-            <span class="learn-big-cat-icon">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            </span>
-            <div class="learn-big-cat-text">
-              <strong>סיפורי צדיקים</strong>
-              <span>מעשיות מחזקות ומוסר השכל מגדולי הדורות</span>
-            </div>
-          </button>
-
-          <button type="button" id="lib-btn-generations" onclick="openLearnSection('generations')" class="learn-big-cat-btn">
-            <span class="learn-big-cat-icon">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            </span>
-            <div class="learn-big-cat-text">
-              <strong>ראשונים ואחרונים</strong>
-              <span>ציר הדורות, פוסקים ומחברי הספרים</span>
-            </div>
-          </button>
-
-          <button type="button" id="lib-btn-mishnah" onclick="openLearnSection('mishnah')" class="learn-big-cat-btn">
-            <span class="learn-big-cat-icon">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
-            </span>
-            <div class="learn-big-cat-text">
-              <strong>משנה והלכה</strong>
-              <span>שישה סדרי משנה, גמרא והלכה למעשה</span>
-            </div>
-          </button>
-
-          <button type="button" id="lib-btn-chassidut" onclick="openLearnSection('chassidut')" class="learn-big-cat-btn">
-            <span class="learn-big-cat-icon">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
-            </span>
-            <div class="learn-big-cat-text">
-              <strong>חסידות</strong>
-              <span>תניא, ליקוטי מוהר״ן ותורת החסידות</span>
-            </div>
-          </button>
-
-          <button type="button" id="learn-main-tab-quizzes" onclick="openLearnSection('quizzes')" class="learn-big-cat-btn">
-            <span class="learn-big-cat-icon">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
-            </span>
-            <div class="learn-big-cat-text">
-              <strong>חידונים</strong>
-              <span>חידוני תורה, פרשה והלכה אינטראקטיביים</span>
-            </div>
-          </button>
+        <!-- שורת טאבים עליונה לבחירת קטגוריה (הכל, פרשה, שיעורים, סיפורי צדיקים, סדרות AI, חידונים) -->
+        <div class="relative">
+          <div id="learn-stream-tabs-bar" class="flex items-center gap-2 overflow-x-auto py-1 no-scrollbar" role="tablist" aria-label="קטגוריות סטרימינג ללמוד">
+            <button type="button" onclick="switchLearnStreamTab('all')" id="l-tab-all" class="stream-tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-black shrink-0 cursor-pointer">
+              🌟 הכל
+            </button>
+            <button type="button" onclick="switchLearnStreamTab('torah')" id="l-tab-torah" class="stream-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shrink-0 cursor-pointer">
+              📜 פרשת השבוע
+            </button>
+            <button type="button" onclick="switchLearnStreamTab('shiurim')" id="l-tab-shiurim" class="stream-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shrink-0 cursor-pointer">
+              🎙️ שיעורים
+            </button>
+            <button type="button" onclick="switchLearnStreamTab('tzaddikim_stories')" id="l-tab-tzaddikim_stories" class="stream-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shrink-0 cursor-pointer">
+              👑 סיפורי צדיקים
+            </button>
+            <button type="button" onclick="switchLearnStreamTab('aiseries')" id="l-tab-aiseries" class="stream-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shrink-0 cursor-pointer flex items-center gap-1.5">
+              <span>🎬 סדרות AI</span>
+              <span class="badge-vip-streaming px-1.5 py-0.5 rounded text-[10px] text-black font-black uppercase">VIP</span>
+            </button>
+            <button type="button" onclick="switchLearnStreamTab('quizzes')" id="l-tab-quizzes" class="stream-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shrink-0 cursor-pointer">
+              🏆 חידונים
+            </button>
+          </div>
         </div>
+
+        <!-- =================================================================
+             תצוגה ראשית: פיד הסטרימינג המלא (טאב 'הכל')
+             ================================================================= -->
+        <div id="learn-stream-feed-all" class="space-y-6">
+
+          <!-- 1. קרוסלה ראשית (Hero Carousel): כרטיסים אנכיים פורמט 9:16 (פרשת השבוע / מומלצים) -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between px-1">
+              <div>
+                <h3 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
+                  <span class="text-amber-400">🔥</span> פרשת השבוע • נבחרת מומלצים
+                </h3>
+                <p class="text-xs text-gray-400 font-normal">סרטוני שורטס ורילס אנכיים (פורמט 9:16) לצפייה במסך מלא</p>
+              </div>
+              <span class="text-xs text-amber-400 font-bold">החלק לצפייה ←</span>
+            </div>
+            <!-- מיכל הקרוסלה האנכית 9:16 -->
+            <div id="learn-hero-carousel" class="stream-scroll-row">
+              <!-- כרטיסי דמו אותנטיים + מולאים דינמית מסופרבייס -->
+            </div>
+          </div>
+
+          <!-- 2. קרוסלה משנית 1: שיעורים אחרונים (אופקית) -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between px-1">
+              <div>
+                <h3 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
+                  <span class="text-[#38BDF8]">🎙️</span> שיעורים אחרונים מגדולי הרבנים
+                </h3>
+                <p class="text-xs text-gray-400 font-normal">שיעורי הלכה, אמונה ומוסר מהימים האחרונים</p>
+              </div>
+              <button type="button" onclick="switchLearnStreamTab('shiurim')" class="text-xs text-amber-400 hover:text-amber-300 font-bold cursor-pointer">לכל השיעורים ←</button>
+            </div>
+            <!-- מיכל קרוסלת שיעורים אחרונים -->
+            <div id="learn-subcarousel-shiurim" class="stream-scroll-row">
+              <!-- כרטיסי דמו + מולאים דינמית מסופרבייס -->
+            </div>
+          </div>
+
+          <!-- 3. קרוסלה משנית 2: סיפורי צדיקים (אופקית) -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between px-1">
+              <div>
+                <h3 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
+                  <span class="text-[#FBBF24]">👑</span> סיפורי צדיקים ומופתים
+                </h3>
+                <p class="text-xs text-gray-400 font-normal">סיפורים מרתקים על גדולי ישראל בכל הדורות</p>
+              </div>
+              <button type="button" onclick="switchLearnStreamTab('tzaddikim_stories')" class="text-xs text-amber-400 hover:text-amber-300 font-bold cursor-pointer">לכל הסיפורים ←</button>
+            </div>
+            <!-- מיכל קרוסלת סיפורי צדיקים -->
+            <div id="learn-subcarousel-stories" class="stream-scroll-row">
+              <!-- כרטיסי דמו + מולאים דינמית מסופרבייס -->
+            </div>
+          </div>
+
+          <!-- 4. רשימת שיעורים ארוכים (פורמט רחב 16:9) בתחתית הדף -->
+          <div class="space-y-3 pt-2">
+            <div class="flex items-center justify-between px-1">
+              <div>
+                <h3 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
+                  <span class="text-emerald-400">📺</span> שיעורים ארוכים ומעמיקים (16:9)
+                </h3>
+                <p class="text-xs text-gray-400 font-normal">סדרות ושיעורים מלאים להעמקה בתורה ובהלכה</p>
+              </div>
+              <span class="text-xs text-gray-400 font-bold">איכות HD</span>
+            </div>
+            <!-- מיכל שיעורים ארוכים -->
+            <div id="learn-long-lessons-list" class="space-y-3">
+              <!-- כרטיסים רחבים 16:9 -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- =================================================================
+             תצוגות ייעודיות לטאבים: פרשה, שיעורים, סיפורים, סדרות AI, חידונים
+             ================================================================= -->
+        <!-- תצוגת פרשת השבוע -->
+        <div id="learn-stream-view-torah" class="hidden space-y-4">
+          <div class="flex items-center justify-between p-4 rounded-2xl bg-[#141724] border border-[#272B3F]">
+            <div>
+              <h3 class="text-base sm:text-lg font-black text-white">📜 פרשת השבוע וספר התורה</h3>
+              <p class="text-xs text-gray-400">שיעורים וסרטונים על פרשיות השבוע וחמשת חומשי תורה</p>
+            </div>
+            <button type="button" onclick="openLearnSection('torah')" class="px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 font-bold text-xs border border-amber-400/40">ספרייה טקסטואלית ↗</button>
+          </div>
+          <div id="learn-torah-stream-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+        </div>
+
+        <!-- תצוגת שיעורים -->
+        <div id="learn-stream-view-shiurim" class="hidden space-y-4">
+          <div class="flex items-center justify-between p-4 rounded-2xl bg-[#141724] border border-[#272B3F]">
+            <div>
+              <h3 class="text-base sm:text-lg font-black text-white">🎙️ ספריית השיעורים המלאה</h3>
+              <p class="text-xs text-gray-400">הלכה, אמונה, מוסר וחסידות</p>
+            </div>
+            <button type="button" onclick="openLearnSection('liveshiurim')" class="px-3 py-1.5 rounded-xl bg-sky-500/20 text-sky-400 hover:bg-sky-500/30 font-bold text-xs border border-sky-400/40">סינון מתקדם ↗</button>
+          </div>
+          <div id="learn-shiurim-stream-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+        </div>
+
+        <!-- תצוגת סיפורי צדיקים -->
+        <div id="learn-stream-view-tzaddikim_stories" class="hidden space-y-4">
+          <div class="flex items-center justify-between p-4 rounded-2xl bg-[#141724] border border-[#272B3F]">
+            <div>
+              <h3 class="text-base sm:text-lg font-black text-white">👑 סיפורי צדיקים ומופתים</h3>
+              <p class="text-xs text-gray-400">צפייה וקריאה על גדולי הדורות</p>
+            </div>
+            <button type="button" onclick="openLearnSection('tzaddikim_stories')" class="px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 font-bold text-xs border border-amber-400/40">ספריית סיפורים מלאה ↗</button>
+          </div>
+          <div id="learn-stories-stream-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+        </div>
+
+        <!-- תצוגת סדרות AI (פרימיום VIP) -->
+        <div id="learn-stream-view-aiseries" class="hidden space-y-4">
+          <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#181B2B] to-[#121420] border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xl">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="badge-vip-streaming px-2 py-0.5 rounded-md text-[11px] text-black font-black uppercase">VIP תוכן פרימיום</span>
+                <span class="text-xs text-amber-300 font-bold">הפקות בינה מלאכותית מקוריות</span>
+              </div>
+              <h3 class="text-lg sm:text-xl font-black text-white">דרמות מקראיות והיסטוריה יהודית ב-AI</h3>
+              <p class="text-xs text-gray-300">סדרות אפיות וסיפורי התנ״ך בהפקה קולנועית מרהיבה</p>
+            </div>
+            <span class="text-xs font-bold text-amber-400 bg-black/40 px-3 py-1.5 rounded-xl border border-amber-400/20 self-start sm:self-auto">פרקים מלאים</span>
+          </div>
+          <div id="learn-aiseries-stream-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+        </div>
+
+        <!-- תצוגת חידונים ('חידונים') -->
+        <div id="learn-stream-view-quizzes" class="hidden space-y-4">
+          <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#1B1E30] to-[#141624] border border-purple-500/30 flex items-center justify-between gap-3 shadow-xl">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="px-2 py-0.5 rounded-md bg-purple-600 text-white text-[11px] font-black">🏆 אתגר הידע</span>
+                <span class="text-xs text-purple-300 font-bold">חידונים נושאי פרסים וניקוד</span>
+              </div>
+              <h3 class="text-lg sm:text-xl font-black text-white">חידוני תורה, הלכה והיסטוריה יהודית</h3>
+              <p class="text-xs text-gray-300">בחר חידון, בדוק את הידע שלך וזכה בתגים וניקוד!</p>
+            </div>
+          </div>
+          <div id="learn-quizzes-stream-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+        </div>
+
+        <!-- רכיבים ישנים מוסתרים לשמירה מלאה על תאימות לאחור (Backward Compatibility) -->
+        <div class="hidden" aria-hidden="true" style="display:none !important;">
+          <button type="button" id="lib-btn-torah" onclick="openLearnSection('torah')"></button>
+          <button type="button" id="lib-btn-nach" onclick="openLearnSection('nach')"></button>
+          <button type="button" id="learn-main-tab-shiurim" onclick="openLearnSection('liveshiurim')"></button>
+          <button type="button" id="lib-btn-eduvideos" onclick="openLearnSection('eduvideos')"></button>
+          <button type="button" id="learn-main-tab-courses" onclick="openLearnSection('courses')"></button>
+          <button type="button" id="lib-btn-tzaddikim_stories" onclick="openLearnSection('tzaddikim_stories')"></button>
+          <button type="button" id="lib-btn-generations" onclick="openLearnSection('generations')"></button>
+          <button type="button" id="lib-btn-mishnah" onclick="openLearnSection('mishnah')"></button>
+          <button type="button" id="lib-btn-chassidut" onclick="openLearnSection('chassidut')"></button>
+          <button type="button" id="learn-main-tab-quizzes" onclick="openLearnSection('quizzes')"></button>
+        </div>
+
       </div>
 
       <!-- =====================================================================
@@ -3901,9 +3995,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-client.js?v=45"></script>
-  <script src="utils.js?v=45"></script>
-  <script src="data.js?v=45"></script>
-  <script src="app.js?v=45"></script>
+  <script src="supabase-client.js?v=46"></script>
+  <script src="utils.js?v=46"></script>
+  <script src="data.js?v=46"></script>
+  <script src="app.js?v=46"></script>
 </body>
 </html>
