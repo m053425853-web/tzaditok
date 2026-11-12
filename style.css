@@ -2319,3 +2319,181 @@ body.reel-fullscreen-open {
   direction: rtl !important;
   text-align: right !important;
 }
+
+
+/* TZADIKTOK V48: ביטול צל וערפל הטאבים ב'ללמוד' לגלילה חלקה ונקייה לחלוטין */
+.tabs-fade-container::before,
+.tabs-fade-container::after,
+.tabs-clean-container::before,
+.tabs-clean-container::after {
+  display: none !important;
+  width: 0 !important;
+  background: none !important;
+}
+.tabs-fade-container,
+.tabs-clean-container {
+  overflow: visible !important;
+}
+#learn-stream-tabs-bar {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+
+/* TZADIKTOK V48: רשת 5 קטגוריות ראשיות קומפקטית ל'קרוב אליי' הנכנסת במסך אחד */
+#near-me-5cat-nav {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  background: #FFFFFF;
+  border: 1px solid #E5DBC7;
+  border-radius: 16px;
+  padding: 8px 6px;
+  box-shadow: 0 2px 8px rgba(15, 35, 64, 0.04);
+}
+
+.near-5cat-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 6px 2px;
+  background: #FAFAF9;
+  border: 1px solid #E5DBC7;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 62px;
+  text-align: center;
+}
+
+.near-5cat-tile:hover,
+.near-5cat-tile.active {
+  background: #F0FDFA;
+  border-color: #0D9488;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.12);
+}
+
+.near-5cat-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+
+.near-5cat-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: #0F2340;
+  line-height: 1.2;
+}
+
+@media (min-width: 640px) {
+  #near-me-5cat-nav {
+    gap: 10px;
+    padding: 10px 12px;
+  }
+  .near-5cat-tile {
+    min-height: 70px;
+    padding: 8px 4px;
+    gap: 5px;
+  }
+  .near-5cat-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+  .near-5cat-title {
+    font-size: 12px;
+  }
+}
+
+
+/* TZADIKTOK V48: ייצוב שורת החיפוש בדפים הפנימיים - מניעת קפיצות וחפיפת טקסטים */
+.sticky-list-header {
+  position: relative !important;
+  z-index: 10 !important;
+  background-color: #F0FDFA !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 14px 18px !important;
+  border: 1.5px solid #0D9488 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 2px 10px rgba(13, 148, 136, 0.08) !important;
+  margin-top: 14px !important;
+  margin-bottom: 20px !important;
+  clear: both !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* ייצוב מפת Leaflet */
+#near-me-leaflet-map-wrapper {
+  margin-top: 12px !important;
+  margin-bottom: 12px !important;
+  clear: both !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+#near-me-leaflet-map {
+  z-index: 10 !important;
+  touch-action: auto !important;
+  border-radius: 16px !important;
+}
+
+#near-me-leaflet-map .leaflet-pane {
+  z-index: 10 !important;
+}
+
+#near-me-leaflet-map .leaflet-top,
+#near-me-leaflet-map .leaflet-bottom {
+  z-index: 15 !important;
+}
+
+
+/* TZADIKTOK V48: עיצוב נקי, מאוורר ויוקרתי לכרטיסי פורטל הקהילה */
+.comm-portal-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (min-width: 640px) {
+  .comm-portal-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .comm-portal-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.comm-portal-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: right;
+  background: #FFFFFF !important;
+  border: 1px solid #EFE8DA !important;
+  border-radius: 20px !important;
+  padding: 22px !important;
+  box-shadow: 0 2px 10px rgba(15, 35, 64, 0.04) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  min-height: 180px !important;
+}
+
+.comm-portal-card:hover {
+  transform: translateY(-2px) !important;
+  border-color: #C9A227 !important;
+  box-shadow: 0 8px 24px rgba(201, 162, 39, 0.12) !important;
+}

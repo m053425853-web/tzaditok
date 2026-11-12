@@ -30,7 +30,7 @@
     };
   </script>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <link rel="stylesheet" href="style.css?v=47" />
+  <link rel="stylesheet" href="style.css?v=48" />
   <!-- Leaflet Map CSS & JS for Interactive Near-Me Map -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -422,7 +422,7 @@
             <span class="px-2 py-0.5 rounded-full bg-gradient-to-r from-[#EA580C] to-[#C9A227] text-white text-[10px] font-black inline-flex items-center gap-1 shadow-sm">
               <span>🎬</span> CINEMA
             </span>
-            <h2 class="text-lg sm:text-xl font-black text-white serif-heading tracking-wide">בית המדרש • עולם התוכן והשיעורים</h2>
+            <h2 class="text-lg sm:text-xl font-black text-white serif-heading tracking-wide">סינמה ספרייה • בית המדרש</h2>
           </div>
           <span class="text-[11px] text-gray-400 font-bold hidden sm:inline">סטרימינג תורני עשיר</span>
         </div>
@@ -438,15 +438,9 @@
         <div id="learn-search-results-box" class="hidden"></div>
 
         <!-- שורת טאבים עליונה עם כפתור פלוס (+) קטן ויפה ואפקט Fade בקצוות לגלילה חלקה -->
-        <div class="flex items-center gap-2">
-          <!-- כפתור פלוס (+) מעוצב וקומפקטי להעלאת תוכן ישירות בצמוד לשורת הטאבים -->
-          <button type="button" onclick="openLearnContentUploadModal()" class="w-8 h-8 rounded-full bg-gradient-to-r from-[#EA580C] to-[#C9A227] hover:brightness-110 text-white font-black text-lg flex items-center justify-center shrink-0 shadow-md cursor-pointer border border-amber-300/40 transition-transform hover:scale-105" title="העלאת תוכן חדש לבית המדרש" aria-label="העלאת תוכן חדש">
-            +
-          </button>
-
-          <!-- מיכל הטאבים עם אפקט Fade ימינה ושמאלה -->
-          <div class="relative flex-1 min-w-0 tabs-fade-container">
-            <div id="learn-stream-tabs-bar"  class="flex items-center gap-2 overflow-x-auto py-1 no-scrollbar" role="tablist" aria-label="קטגוריות סטרימינג ללמוד">
+        <!-- שורת טאבים נקייה לגלילה חלקה ללא צללים או כפתורים מפריעים -->
+        <div class="relative w-full min-w-0 tabs-clean-container">
+          <div id="learn-stream-tabs-bar"  class="flex items-center gap-2 overflow-x-auto py-1 no-scrollbar" role="tablist" aria-label="קטגוריות סטרימינג ללמוד">
             <button type="button" onclick="switchLearnStreamTab('all')" id="l-tab-all" class="stream-tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-black shrink-0 cursor-pointer">
               🌟 הכל
             </button>
@@ -476,14 +470,19 @@
 
           <!-- 1. קרוסלה ראשית (Hero Carousel): כרטיסים אנכיים פורמט 9:16 (פרשת השבוע / מומלצים) -->
           <div class="space-y-3">
-            <div class="flex items-center justify-between px-1">
+            <div class="flex items-center justify-between gap-2 px-1">
               <div>
                 <h3 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
                   <span class="text-amber-400">🔥</span> פרשת השבוע • נבחרת מומלצים
                 </h3>
-                <p class="text-xs text-gray-400 font-normal">סרטוני שורטס ורילס אנכיים (פורמט 9:16) לצפייה במסך מלא</p>
+                <p class="text-xs text-gray-400 font-normal">סרטוני שורטס ורילס אנכיים (9:16) לצפייה במסך מלא</p>
               </div>
-              <span class="text-xs text-amber-400 font-bold">החלק לצפייה ←</span>
+              <div class="flex items-center gap-2 shrink-0">
+                <button type="button" onclick="openLearnContentUploadModalWithCategory('פרשה')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#EA580C]/20 hover:bg-[#EA580C]/35 text-amber-300 border border-amber-500/40 text-xs font-bold transition-all cursor-pointer shadow-sm">
+                  <span>📷</span><span>+ העלאת פרשה</span>
+                </button>
+                <span class="text-xs text-amber-400 font-bold hidden sm:inline">החלק לצפייה ←</span>
+              </div>
             </div>
             <!-- מיכל הקרוסלה האנכית 9:16 -->
             <div id="learn-hero-carousel" class="stream-scroll-row">
@@ -493,14 +492,19 @@
 
           <!-- 2. קרוסלה משנית 1: שיעורים אחרונים (אופקית) -->
           <div class="space-y-3">
-            <div class="flex items-center justify-between px-1">
+            <div class="flex items-center justify-between gap-2 px-1">
               <div>
                 <h3 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
                   <span class="text-[#38BDF8]">🎙️</span> שיעורים אחרונים מגדולי הרבנים
                 </h3>
                 <p class="text-xs text-gray-400 font-normal">שיעורי הלכה, אמונה ומוסר מהימים האחרונים</p>
               </div>
-              <button type="button" onclick="switchLearnStreamTab('shiurim')" class="text-xs text-amber-400 hover:text-amber-300 font-bold cursor-pointer">לכל השיעורים ←</button>
+              <div class="flex items-center gap-2 shrink-0">
+                <button type="button" onclick="openLearnContentUploadModalWithCategory('שיעורים')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#38BDF8]/20 hover:bg-[#38BDF8]/35 text-[#38BDF8] border border-[#38BDF8]/40 text-xs font-bold transition-all cursor-pointer shadow-sm">
+                  <span>➕</span><span>+ העלאת שיעור</span>
+                </button>
+                <button type="button" onclick="switchLearnStreamTab('shiurim')" class="text-xs text-amber-400 hover:text-amber-300 font-bold cursor-pointer">לכל השיעורים ←</button>
+              </div>
             </div>
             <!-- מיכל קרוסלת שיעורים אחרונים -->
             <div id="learn-subcarousel-shiurim" class="stream-scroll-row">
@@ -510,14 +514,19 @@
 
           <!-- 3. קרוסלה משנית 2: סיפורי צדיקים (אופקית) -->
           <div class="space-y-3">
-            <div class="flex items-center justify-between px-1">
+            <div class="flex items-center justify-between gap-2 px-1">
               <div>
                 <h3 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
                   <span class="text-[#FBBF24]">👑</span> סיפורי צדיקים ומופתים
                 </h3>
                 <p class="text-xs text-gray-400 font-normal">סיפורים מרתקים על גדולי ישראל בכל הדורות</p>
               </div>
-              <button type="button" onclick="switchLearnStreamTab('tzaddikim_stories')" class="text-xs text-amber-400 hover:text-amber-300 font-bold cursor-pointer">לכל הסיפורים ←</button>
+              <div class="flex items-center gap-2 shrink-0">
+                <button type="button" onclick="openLearnContentUploadModalWithCategory('סיפור צדיק')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#FBBF24]/20 hover:bg-[#FBBF24]/35 text-amber-300 border border-amber-400/40 text-xs font-bold transition-all cursor-pointer shadow-sm">
+                  <span>📜</span><span>+ העלאת סיפור</span>
+                </button>
+                <button type="button" onclick="switchLearnStreamTab('tzaddikim_stories')" class="text-xs text-amber-400 hover:text-amber-300 font-bold cursor-pointer">לכל הסיפורים ←</button>
+              </div>
             </div>
             <!-- מיכל קרוסלת סיפורי צדיקים -->
             <div id="learn-subcarousel-stories" class="stream-scroll-row">
@@ -527,21 +536,24 @@
 
           <!-- 4. רשימת שיעורים ארוכים (פורמט רחב 16:9) בתחתית הדף -->
           <div class="space-y-3 pt-2">
-            <div class="flex items-center justify-between px-1">
+            <div class="flex items-center justify-between gap-2 px-1">
               <div>
                 <h3 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
                   <span class="text-emerald-400">📺</span> שיעורים ארוכים ומעמיקים (16:9)
                 </h3>
                 <p class="text-xs text-gray-400 font-normal">סדרות ושיעורים מלאים להעמקה בתורה ובהלכה</p>
               </div>
-              <span class="text-xs text-gray-400 font-bold">איכות HD</span>
+              <div class="flex items-center gap-2 shrink-0">
+                <button type="button" onclick="openLearnContentUploadModalWithCategory('הלכה')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/35 text-emerald-400 border border-emerald-500/40 text-xs font-bold transition-all cursor-pointer shadow-sm">
+                  <span>🎥</span><span>+ העלאת תוכן</span>
+                </button>
+                <span class="text-xs text-gray-400 font-bold hidden sm:inline">איכות HD</span>
+              </div>
             </div>
             <!-- מיכל שיעורים ארוכים -->
             <div id="learn-long-lessons-list" class="space-y-3">
               <!-- כרטיסים רחבים 16:9 -->
             </div>
-          </div>
-
         </div>
 
         <!-- =================================================================
@@ -1816,8 +1828,47 @@
         </div>
       </div>
 
-      <div id="find-hub-root" class="near-me-5cat-grid">
-        <div class="near-me-cat-box space-y-2.5">
+      
+      <!-- רשת 5 קטגוריות ראשיות קומפקטית ומסודרת הנכנסת כולה במסך אחד ללא גלילה -->
+      <div id="near-me-5cat-nav" class="grid grid-cols-5 gap-1.5 sm:gap-2.5 p-2 bg-white rounded-2xl border border-[#E5DBC7] shadow-sm">
+        <button type="button" onclick="focusNearMeCategory('near-sec-tefilla')" class="near-5cat-tile group" id="btn-cat-tefilla" aria-label="מעבר לקטגוריית תפילה">
+          <div class="near-5cat-icon bg-amber-50 text-amber-600 border border-amber-200">
+            <span>🕍</span>
+          </div>
+          <span class="near-5cat-title">תפילה</span>
+        </button>
+
+        <button type="button" onclick="focusNearMeCategory('near-sec-food')" class="near-5cat-tile group" id="btn-cat-food" aria-label="מעבר לקטגוריית אוכל">
+          <div class="near-5cat-icon bg-emerald-50 text-emerald-600 border border-emerald-200">
+            <span>🍷</span>
+          </div>
+          <span class="near-5cat-title">אוכל</span>
+        </button>
+
+        <button type="button" onclick="focusNearMeCategory('near-sec-chesed')" class="near-5cat-tile group" id="btn-cat-chesed" aria-label="מעבר לקטגוריית חסד">
+          <div class="near-5cat-icon bg-rose-50 text-rose-600 border border-rose-200">
+            <span>🤝</span>
+          </div>
+          <span class="near-5cat-title">חסד</span>
+        </button>
+
+        <button type="button" onclick="focusNearMeCategory('near-sec-people')" class="near-5cat-tile group" id="btn-cat-people" aria-label="מעבר לקטגוריית אנשים">
+          <div class="near-5cat-icon bg-blue-50 text-blue-600 border border-blue-200">
+            <span>👥</span>
+          </div>
+          <span class="near-5cat-title">אנשים</span>
+        </button>
+
+        <button type="button" onclick="focusNearMeCategory('near-sec-places')" class="near-5cat-tile group" id="btn-cat-places" aria-label="מעבר לקטגוריית מקומות">
+          <div class="near-5cat-icon bg-purple-50 text-purple-600 border border-purple-200">
+            <span>📍</span>
+          </div>
+          <span class="near-5cat-title">מקומות</span>
+        </button>
+      </div>
+    
+      <div id="find-hub-root" class="space-y-4">
+        <div id="near-sec-tefilla" class="near-me-cat-box space-y-2.5 scroll-mt-24">
           <div class="flex items-center justify-between gap-2 border-b border-[#E5DBC7] pb-2">
             <h3 class="text-base sm:text-lg font-black text-[#0F2340] serif-heading">תפילה</h3>
             <span class="text-xs text-[#5C4938] font-bold">מניינים קרובים בזמן אמת ומקוואות טהרה</span>
@@ -1827,7 +1878,7 @@
             <button type="button" onclick="switchTab('mikvaot')" class="tt-tile"><strong>מקוואות טהרה</strong><span>מקוואות נשים, גברים וכלים • שעות פתיחה וניווט</span></button>
           </div>
         </div>
-        <div class="near-me-cat-box space-y-2.5">
+        <div id="near-sec-food" class="near-me-cat-box space-y-2.5 scroll-mt-24">
           <div class="flex items-center justify-between gap-2 border-b border-[#E5DBC7] pb-2">
             <h3 class="text-base sm:text-lg font-black text-[#0F2340] serif-heading">אוכל</h3>
             <span class="text-xs text-[#5C4938] font-bold">מסעדות כשרות למהדרין וסורק ברקוד מוצרים</span>
@@ -1837,7 +1888,7 @@
             <button type="button" onclick="openBarcodeScannerModal()" class="tt-tile"><strong>סורק ברקוד כשרות</strong><span>סריקת מוצרים לבדיקת גוף הכשרות וחלבי/בשרי/פרווה</span></button>
           </div>
         </div>
-        <div class="near-me-cat-box space-y-2.5">
+        <div id="near-sec-chesed" class="near-me-cat-box space-y-2.5 scroll-mt-24">
           <div class="flex items-center justify-between gap-2 border-b border-[#E5DBC7] pb-2">
             <h3 class="text-base sm:text-lg font-black text-[#0F2340] serif-heading">חסד</h3>
             <span class="text-xs text-[#5C4938] font-bold">גמ״חים להשאלת ציוד וארגוני רפואה והצלה</span>
@@ -1847,7 +1898,7 @@
             <button type="button" onclick="switchTab('gemachim'); filterGemachimByCategory('רפואה');" class="tt-tile"><strong>ארגוני הצלה וחירום</strong><span>יד שרה, עזר מציון, איחוד הצלה וידידים בדרכים</span></button>
           </div>
         </div>
-        <div class="near-me-cat-box space-y-2.5">
+        <div id="near-sec-people" class="near-me-cat-box space-y-2.5 scroll-mt-24">
           <div class="flex items-center justify-between gap-2 border-b border-[#E5DBC7] pb-2">
             <h3 class="text-base sm:text-lg font-black text-[#0F2340] serif-heading">אנשים</h3>
             <span class="text-xs text-[#5C4938] font-bold">רבנים וקווי הלכה, חברותא ובעלי מקצוע תורניים</span>
@@ -1858,7 +1909,7 @@
             <button type="button" onclick="switchTab('customs')" class="tt-tile"><strong>שירותי דת</strong><span>מוהלים, משגיחי כשרות, סופרי סת״ם ומדריכי חתנים</span></button>
           </div>
         </div>
-        <div class="near-me-cat-box space-y-2.5">
+        <div id="near-sec-places" class="near-me-cat-box space-y-2.5 scroll-mt-24">
           <div class="flex items-center justify-between gap-2 border-b border-[#E5DBC7] pb-2">
             <h3 class="text-base sm:text-lg font-black text-[#0F2340] serif-heading">מקומות</h3>
             <span class="text-xs text-[#5C4938] font-bold">קברי צדיקים, בתי חב״ד בעולם וישיבות</span>
@@ -2711,9 +2762,9 @@
             <span class="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[11px] font-black inline-flex items-center gap-1 shadow-sm">
               <span>🤝</span> קהילת צדיק-טוק
             </span>
-            <span class="text-xs text-gray-500 font-bold">פורטל החסד והשיתוף (בסגנון matara.pro)</span>
+            <span class="text-xs text-gray-500 font-semibold">שותפות, עזרה הדדית וחיבור תורני</span>
           </div>
-          <h2 class="text-xl sm:text-2xl font-black text-[#0F2340] serif-heading">פורטל הקהילה • שותפות, עזרה וחיבור</h2>
+          <h2 class="text-xl sm:text-2xl font-black text-[#0F2340] serif-heading">מרכז הקהילה</h2>
         </div>
         <div class="flex items-center gap-2">
           <button type="button" onclick="openNewCommunityPostModal()" class="px-3.5 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:brightness-110 text-white font-black rounded-xl text-xs shadow flex items-center gap-1.5 cursor-pointer">
@@ -2798,7 +2849,7 @@
         </button>
 
         <!-- כרטיס 5: קבוצות רכישה -->
-        <button type="button" onclick="openCommunityPortalSubView('groupbuys')" class="comm-portal-card group sm:col-span-2 lg:col-span-1" aria-label="מעבר לקבוצות רכישה">
+        <button type="button" onclick="openCommunityPortalSubView('groupbuys')" class="comm-portal-card group" aria-label="מעבר לקבוצות רכישה">
           <div class="comm-portal-icon-wrap bg-purple-50 text-purple-600 border border-purple-200">
             <span class="text-2xl">🛍️</span>
           </div>
@@ -2814,6 +2865,25 @@
             <span class="text-[11px] text-gray-400 font-semibold">חיסכון עד 40%</span>
           </div>
         </button>
+
+        <!-- כרטיס 6: חנות יודאיקה וספרי קודש (הוחזר למרכז הקהילה) -->
+        <button type="button" onclick="switchTab('judaica')" class="comm-portal-card group" aria-label="מעבר לחנות יודאיקה וספרי קודש">
+          <div class="comm-portal-icon-wrap bg-amber-50 text-amber-700 border border-amber-200">
+            <span class="text-2xl">🏺</span>
+          </div>
+          <div class="comm-portal-card-body">
+            <div class="flex items-center justify-between gap-1 mb-1">
+              <h3 class="text-base sm:text-lg font-black text-[#0F2340] serif-heading group-hover:text-amber-600 transition-colors">חנות יודאיקה וספרי קודש</h3>
+              <span class="comm-portal-badge bg-amber-100 text-amber-800">מוצרי קדושה</span>
+            </div>
+            <p class="text-xs text-[#5C4938] leading-relaxed">תשמישי קדושה, תפילין ומזוזות מהודרות, ספרי קודש, כיפות ומוצרים לשבת ולחג.</p>
+          </div>
+          <div class="comm-portal-card-footer">
+            <span class="text-xs font-bold text-amber-600 flex items-center gap-1">כניסה לחנות ←</span>
+            <span class="text-[11px] text-gray-400 font-semibold">משלוח מהיר</span>
+          </div>
+        </button>
+    
       </div>
 
       <!-- 2. תת-עמוד 1: פורום הקהילה (Facebook Style Feed) -->
@@ -4191,9 +4261,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-client.js?v=47"></script>
-  <script src="utils.js?v=47"></script>
-  <script src="data.js?v=47"></script>
-  <script src="app.js?v=47"></script>
+  <script src="supabase-client.js?v=48"></script>
+  <script src="utils.js?v=48"></script>
+  <script src="data.js?v=48"></script>
+  <script src="app.js?v=48"></script>
 </body>
 </html>
