@@ -30,7 +30,10 @@
     };
   </script>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <link rel="stylesheet" href="style.css?v=46" />
+  <link rel="stylesheet" href="style.css?v=47" />
+  <!-- Leaflet Map CSS & JS for Interactive Near-Me Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body class="min-h-screen select-none">
 
@@ -412,23 +415,16 @@
       </div>
 
             <!-- המסך הראשי של 'ללמוד' (#learn-hub-home): ממשק סטרימינג קולנועי (Dark / Netflix & ReelShort Style) -->
-      <div id="learn-hub-home" class="space-y-5">
-        <!-- כותרת ראשית + כפתור העלאת תוכן בולט בראש הדף -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1 pt-1">
-          <div>
-            <div class="flex items-center gap-2 mb-1">
-              <span class="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#EA580C] to-[#C9A227] text-white text-[11px] font-black inline-flex items-center gap-1 shadow-sm">
-                <span>🎬</span> צדיק-טוק CINEMA
-              </span>
-              <span class="text-[11px] text-gray-400 font-bold">סטרימינג תורני עשיר</span>
-            </div>
-            <h2 class="text-xl sm:text-2xl font-black text-white serif-heading tracking-wide">בית המדרש • עולם התוכן והשיעורים</h2>
+      <div id="learn-hub-home" class="space-y-4">
+        <!-- כותרת עליונה נקייה, כהה ומינימליסטית (ללא באנרים ענקיים) -->
+        <div class="flex items-center justify-between gap-3 px-1 pt-1 border-b border-[#1E2337] pb-2">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded-full bg-gradient-to-r from-[#EA580C] to-[#C9A227] text-white text-[10px] font-black inline-flex items-center gap-1 shadow-sm">
+              <span>🎬</span> CINEMA
+            </span>
+            <h2 class="text-lg sm:text-xl font-black text-white serif-heading tracking-wide">בית המדרש • עולם התוכן והשיעורים</h2>
           </div>
-          <!-- כפתור העלאת תוכן בולט בראש הדף -->
-          <button type="button" onclick="openLearnContentUploadModal()" class="px-4 py-2.5 bg-gradient-to-r from-[#EA580C] to-[#C9A227] hover:brightness-110 text-white font-black rounded-xl text-xs sm:text-sm shadow-xl flex items-center justify-center gap-2 shrink-0 border border-amber-300/30 transition-all cursor-pointer">
-            <span class="text-base leading-none font-bold">+</span>
-            <span>העלאת תוכן</span>
-          </button>
+          <span class="text-[11px] text-gray-400 font-bold hidden sm:inline">סטרימינג תורני עשיר</span>
         </div>
 
         <!-- שורת חיפוש כללית קולנועית בראש הדף -->
@@ -441,9 +437,16 @@
         <!-- תיבת תוצאות חיפוש מהיר ב'ללמוד' -->
         <div id="learn-search-results-box" class="hidden"></div>
 
-        <!-- שורת טאבים עליונה לבחירת קטגוריה (הכל, פרשה, שיעורים, סיפורי צדיקים, סדרות AI, חידונים) -->
-        <div class="relative">
-          <div id="learn-stream-tabs-bar" class="flex items-center gap-2 overflow-x-auto py-1 no-scrollbar" role="tablist" aria-label="קטגוריות סטרימינג ללמוד">
+        <!-- שורת טאבים עליונה עם כפתור פלוס (+) קטן ויפה ואפקט Fade בקצוות לגלילה חלקה -->
+        <div class="flex items-center gap-2">
+          <!-- כפתור פלוס (+) מעוצב וקומפקטי להעלאת תוכן ישירות בצמוד לשורת הטאבים -->
+          <button type="button" onclick="openLearnContentUploadModal()" class="w-8 h-8 rounded-full bg-gradient-to-r from-[#EA580C] to-[#C9A227] hover:brightness-110 text-white font-black text-lg flex items-center justify-center shrink-0 shadow-md cursor-pointer border border-amber-300/40 transition-transform hover:scale-105" title="העלאת תוכן חדש לבית המדרש" aria-label="העלאת תוכן חדש">
+            +
+          </button>
+
+          <!-- מיכל הטאבים עם אפקט Fade ימינה ושמאלה -->
+          <div class="relative flex-1 min-w-0 tabs-fade-container">
+            <div id="learn-stream-tabs-bar"  class="flex items-center gap-2 overflow-x-auto py-1 no-scrollbar" role="tablist" aria-label="קטגוריות סטרימינג ללמוד">
             <button type="button" onclick="switchLearnStreamTab('all')" id="l-tab-all" class="stream-tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-black shrink-0 cursor-pointer">
               🌟 הכל
             </button>
@@ -1770,9 +1773,49 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5" id="chabad-grid-container"></div>
     </section>
 
-    <!-- 10. LIVE MINYAN FINDER WITH "CALL FOR MINYAN" ALERT -->
-    <!-- דף הבית של "למצוא": רשימת המדורים (נבנה ב-JS: renderFindHub) -->
+        <!-- 10. LIVE MINYAN FINDER WITH "CALL FOR MINYAN" ALERT -->
+    <!-- דף הבית של "קרוב אליי" / "למצוא" (#view-find) -->
     <section id="view-find" class="view-section space-y-4">
+      <!-- שורת כותרת עליונה יציבה + שורת חיפוש ראשית נקייה אחת + כפתור מפה אינטראקטיבית -->
+      <div id="near-me-master-header" class="bg-white border border-[#E5DBC7] p-3.5 sm:p-4 rounded-2xl space-y-3 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#E5DBC7] pb-2.5">
+          <div>
+            <h2 class="text-xl sm:text-2xl font-black text-[#0F2340] serif-heading">קרוב אליי • איתור שירותי יהדות</h2>
+            <p class="text-xs text-[#5C4938] font-semibold">מניינים, מקוואות, מסעדות כשרות, גמ״חים, רבנים וקברי צדיקים</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" id="near-me-map-toggle-btn" onclick="toggleNearMeMapView()" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#0F766E] to-[#0D9488] hover:brightness-110 text-white font-black text-xs flex items-center gap-1.5 shadow-md transition-all cursor-pointer" style="color:#FFFFFF !important;">
+              <span>🗺️</span>
+              <span id="near-me-map-btn-text">תצוגת מפה</span>
+            </button>
+            <button type="button" onclick="locateNearestByGPS()" class="px-3 py-2 rounded-xl bg-[#F0FDFA] border border-[#0D9488] text-[#0F766E] font-bold text-xs hover:bg-[#CCFBF1] transition-all flex items-center gap-1">
+              <span>📍</span>
+              <span>לפי מיקום GPS</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- שורת חיפוש ראשית יציבה אחת לכל המדורים (מונעת קפיצות וביטול כפילויות) -->
+        <div class="relative">
+          <div class="flex items-center gap-2 bg-[#F8FAF9] border border-[#99F6E4] focus-within:border-[#0D9488] rounded-xl px-3 py-2.5 transition-all shadow-sm">
+            <svg class="w-4 h-4 text-[#0D9488] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input id="near-me-global-search-input" type="search" oninput="handleNearMeGlobalSearch(this.value)" placeholder="חיפוש מהיר בכל הארץ: עיר, בית כנסת, מסעדה, רב, גמ״ח..." class="w-full bg-transparent text-xs sm:text-sm text-[#0F2340] placeholder-gray-500 font-semibold outline-none">
+            <button type="button" onclick="clearNearMeGlobalSearch()" class="text-xs text-[#0D9488] hover:text-[#0F766E] font-bold shrink-0">נקה</button>
+          </div>
+          <!-- תוצאות חיפוש מהיר ב'קרוב אליי' -->
+          <div id="near-me-search-results-box" class="hidden mt-2 p-3 bg-white border border-[#99F6E4] rounded-xl shadow-lg max-h-72 overflow-y-auto space-y-2"></div>
+        </div>
+
+        <!-- מיכל מפה אינטראקטיבית של Leaflet (מוסתר כברירת מחדל, מוצג בלחיצה על כפתור המפה) -->
+        <div id="near-me-leaflet-map-wrapper" class="hidden space-y-2 pt-1">
+          <div class="flex items-center justify-between text-xs font-bold text-[#0F766E]">
+            <span>מפה אינטראקטיבית – לחץ על סיכה לקבלת פרטים וניווט</span>
+            <button type="button" onclick="resetNearMeMapCenter()" class="hover:underline">מרכז מחדש למרכז הארץ</button>
+          </div>
+          <div id="near-me-leaflet-map" class="w-full h-72 sm:h-96 rounded-xl border-2 border-[#0D9488] shadow-inner bg-slate-100 z-10"></div>
+        </div>
+      </div>
+
       <div id="find-hub-root" class="near-me-5cat-grid">
         <div class="near-me-cat-box space-y-2.5">
           <div class="flex items-center justify-between gap-2 border-b border-[#E5DBC7] pb-2">
@@ -2659,85 +2702,238 @@
 
   
     <!-- 18. COMMUNITY FORUM VIEW (פורום קהילתי ובית מדרש חברתי) -->
+        <!-- 22. COMMUNITY FORUM & CHESED HUB (matara.pro Style Complete Overhaul) -->
     <section id="view-forum" class="view-section space-y-4">
-      <!-- רשת (Grid) של 2 עמודות עם 4 הכפתורים (פורום, הגרלות, צדקה, חנות) ישירות על הרקע הרגיל של האתר ללא באנר כתום -->
-      <div>
-        <div class="community-compact-grid" role="tablist" aria-label="ניווט מדור קהילה">
-          <button type="button" id="comm-tab-btn-forum" onclick="switchCommunitySubTab('forum')" class="community-compact-btn active">
-            <span class="community-compact-icon">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <!-- כותרת ראשית של פורטל הקהילה -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-white border border-[#E5DBC7] p-4 rounded-2xl shadow-sm">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[11px] font-black inline-flex items-center gap-1 shadow-sm">
+              <span>🤝</span> קהילת צדיק-טוק
             </span>
-            <span>פורום</span>
-          </button>
-
-          <button type="button" id="comm-tab-btn-raffles" onclick="switchCommunitySubTab('raffles')" class="community-compact-btn">
-            <span class="community-compact-icon">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3l-4 4-4-4"/></svg>
-            </span>
-            <span>הגרלות</span>
-          </button>
-
-          <button type="button" id="comm-tab-btn-charity" onclick="switchCommunitySubTab('charity')" class="community-compact-btn">
-            <span class="community-compact-icon">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-            </span>
-            <span>צדקה</span>
-          </button>
-
-          <button type="button" id="comm-tab-btn-shop" onclick="switchTab('judaica')" class="community-compact-btn">
-            <span class="community-compact-icon">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-            </span>
-            <span>חנות</span>
+            <span class="text-xs text-gray-500 font-bold">פורטל החסד והשיתוף (בסגנון matara.pro)</span>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-black text-[#0F2340] serif-heading">פורטל הקהילה • שותפות, עזרה וחיבור</h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="openNewCommunityPostModal()" class="px-3.5 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:brightness-110 text-white font-black rounded-xl text-xs shadow flex items-center gap-1.5 cursor-pointer">
+            <span>✍️</span>
+            <span>פרסם משהו חדש</span>
           </button>
         </div>
       </div>
 
-      <!-- פאנל 1: פורום הקהילה -->
-      <div id="comm-panel-forum" class="space-y-4">
-        <div class="bg-white border border-[#FED7AA] p-5 rounded-2xl space-y-3 shadow-sm">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <h4 class="text-base font-black text-[#0F2340] serif-heading">פתיחת נושא או אשכול חדש בפורום הקהילה</h4>
-            <span id="result-count-forum" class="live-result-counter">מציג תוצאות</span>
+      <!-- 1. דף הבית של הקהילה: רשת של 2 עמודות עם 5 כרטיסים מרובעים לבנים, אייקונים ברורים וצלליות עדינות (#comm-portal-home) -->
+      <div id="comm-portal-home" class="comm-portal-grid">
+        <!-- כרטיס 1: פורום הקהילה -->
+        <button type="button" onclick="openCommunityPortalSubView('forum')" class="comm-portal-card group" aria-label="מעבר לפורום הקהילה">
+          <div class="comm-portal-icon-wrap bg-blue-50 text-blue-600 border border-blue-200">
+            <span class="text-2xl">💬</span>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <input id="forum-new-title" type="text" placeholder="כותרת הדיון או דבר התורה..." class="sm:col-span-2 bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-3.5 py-2 text-xs text-[#0F2340] outline-none">
-            <select id="forum-new-cat" class="bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-3.5 py-2 text-xs text-[#0F2340] outline-none">
-              <option value="דברי תורה ופרשת השבוע">קטגוריה: דברי תורה ופרשת השבוע</option>
-              <option value="סיפורי השגחה פרטית וחיזוק">קטגוריה: סיפורי השגחה פרטית וחיזוק</option>
-              <option value="שאלות ועזרה הדדית">קטגוריה: שאלות ועזרה הדדית</option>
-            </select>
-          </div>
-          <textarea id="forum-new-body" rows="2" placeholder="כתוב כאן את תוכן הדברים..." class="w-full bg-[#FDF8EF] border border-[#D8CBB5] rounded-xl px-3.5 py-2 text-xs text-[#0F2340] outline-none"></textarea>
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar">
-              <button type="button" onclick="renderForumPosts('all')" class="px-3.5 py-1.5 rounded-xl bg-amber-500 text-white font-black text-xs shrink-0">כל הדיונים</button>
-              <button type="button" onclick="renderForumPosts('דברי תורה')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold text-xs shrink-0">דברי תורה ופרשה</button>
-              <button type="button" onclick="renderForumPosts('סיפורי השגחה')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold text-xs shrink-0">סיפורי השגחה וחיזוק</button>
-              <button type="button" onclick="renderForumPosts('שאלות')" class="px-3.5 py-1.5 rounded-xl bg-[#FDF8EF] border border-[#D8CBB5] text-[#0F2340] font-bold text-xs shrink-0">שאלות ועזרה הדדית</button>
+          <div class="comm-portal-card-body">
+            <div class="flex items-center justify-between gap-1 mb-1">
+              <h3 class="text-base sm:text-lg font-black text-[#0F2340] serif-heading group-hover:text-amber-600 transition-colors">פורום הקהילה</h3>
+              <span class="comm-portal-badge bg-blue-100 text-blue-800">דיונים ושאלות</span>
             </div>
-            <button type="button" onclick="addNewForumPost()" class="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-white font-black rounded-xl text-xs">
-              פרסם אשכול בפורום
+            <p class="text-xs text-[#5C4938] leading-relaxed">שאלות בהלכה, דיוני מוסר, חיזוק יומי והתייעצויות פתוחות עם חברי הקהילה.</p>
+          </div>
+          <div class="comm-portal-card-footer">
+            <span class="text-xs font-bold text-blue-600 flex items-center gap-1">כניסה לפורום ←</span>
+            <span class="text-[11px] text-gray-400 font-semibold">פיד פעיל</span>
+          </div>
+        </button>
+
+        <!-- כרטיס 2: חדשות ועדכונים -->
+        <button type="button" onclick="openCommunityPortalSubView('news')" class="comm-portal-card group" aria-label="מעבר לחדשות ועדכונים">
+          <div class="comm-portal-icon-wrap bg-emerald-50 text-emerald-600 border border-emerald-200">
+            <span class="text-2xl">📰</span>
+          </div>
+          <div class="comm-portal-card-body">
+            <div class="flex items-center justify-between gap-1 mb-1">
+              <h3 class="text-base sm:text-lg font-black text-[#0F2340] serif-heading group-hover:text-amber-600 transition-colors">חדשות ועדכונים</h3>
+              <span class="comm-portal-badge bg-emerald-100 text-emerald-800">מאמרים וכתבות</span>
+            </div>
+            <p class="text-xs text-[#5C4938] leading-relaxed">מבזקי עולם התורה, הודעות בית המדרש, אירועים קרובים ומאמרי חיזוק מרתקים.</p>
+          </div>
+          <div class="comm-portal-card-footer">
+            <span class="text-xs font-bold text-emerald-600 flex items-center gap-1">לכל הכתבות ←</span>
+            <span class="text-[11px] text-gray-400 font-semibold">מתעדכן</span>
+          </div>
+        </button>
+
+        <!-- כרטיס 3: תרומות וצדקה -->
+        <button type="button" onclick="openCommunityPortalSubView('charity')" class="comm-portal-card group" aria-label="מעבר לתרומות וצדקה">
+          <div class="comm-portal-icon-wrap bg-rose-50 text-rose-600 border border-rose-200">
+            <span class="text-2xl">💖</span>
+          </div>
+          <div class="comm-portal-card-body">
+            <div class="flex items-center justify-between gap-1 mb-1">
+              <h3 class="text-base sm:text-lg font-black text-[#0F2340] serif-heading group-hover:text-amber-600 transition-colors">תרומות וצדקה</h3>
+              <span class="comm-portal-badge bg-rose-100 text-rose-800">קמפיינים וגיוסים</span>
+            </div>
+            <p class="text-xs text-[#5C4938] leading-relaxed">קרנות עזרה למשפחות נזקקות, החזקת לומדי תורה, קמחא דפסחא וסרגלי יעד חיים.</p>
+          </div>
+          <div class="comm-portal-card-footer">
+            <span class="text-xs font-bold text-rose-600 flex items-center gap-1">שותפות במצוות ←</span>
+            <span class="text-[11px] text-gray-400 font-semibold">100% לצדקה</span>
+          </div>
+        </button>
+
+        <!-- כרטיס 4: לוח מודעות -->
+        <button type="button" onclick="openCommunityPortalSubView('bulletin')" class="comm-portal-card group" aria-label="מעבר ללוח מודעות">
+          <div class="comm-portal-icon-wrap bg-amber-50 text-amber-600 border border-amber-200">
+            <span class="text-2xl">📌</span>
+          </div>
+          <div class="comm-portal-card-body">
+            <div class="flex items-center justify-between gap-1 mb-1">
+              <h3 class="text-base sm:text-lg font-black text-[#0F2340] serif-heading group-hover:text-amber-600 transition-colors">לוח מודעות</h3>
+              <span class="comm-portal-badge bg-amber-100 text-amber-800">דרושים ולמכירה</span>
+            </div>
+            <p class="text-xs text-[#5C4938] leading-relaxed">לוח קהילתי מסווג: הצעות עבודה, יד שנייה, השבת אבידה, מודעות שכונה וגמ״חים.</p>
+          </div>
+          <div class="comm-portal-card-footer">
+            <span class="text-xs font-bold text-amber-600 flex items-center gap-1">עיון בלוח המודעות ←</span>
+            <span class="text-[11px] text-gray-400 font-semibold">מודעות מאומתות</span>
+          </div>
+        </button>
+
+        <!-- כרטיס 5: קבוצות רכישה -->
+        <button type="button" onclick="openCommunityPortalSubView('groupbuys')" class="comm-portal-card group sm:col-span-2 lg:col-span-1" aria-label="מעבר לקבוצות רכישה">
+          <div class="comm-portal-icon-wrap bg-purple-50 text-purple-600 border border-purple-200">
+            <span class="text-2xl">🛍️</span>
+          </div>
+          <div class="comm-portal-card-body">
+            <div class="flex items-center justify-between gap-1 mb-1">
+              <h3 class="text-base sm:text-lg font-black text-[#0F2340] serif-heading group-hover:text-amber-600 transition-colors">קבוצות רכישה</h3>
+              <span class="comm-portal-badge bg-purple-100 text-purple-800">מבצעים קהילתיים</span>
+            </div>
+            <p class="text-xs text-[#5C4938] leading-relaxed">כוח קנייה משותף: ספרי קודש, תשמישי קדושה, מוצרי חגים וציוד לבית בהנחות ענק.</p>
+          </div>
+          <div class="comm-portal-card-footer">
+            <span class="text-xs font-bold text-purple-600 flex items-center gap-1">הצטרפות לקבוצות ←</span>
+            <span class="text-[11px] text-gray-400 font-semibold">חיסכון עד 40%</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- 2. תת-עמוד 1: פורום הקהילה (Facebook Style Feed) -->
+      <div id="comm-subview-forum" class="hidden space-y-4">
+        <div class="flex items-center justify-between bg-white border border-[#E5DBC7] p-3 sm:p-4 rounded-2xl shadow-sm">
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="closeCommunityPortalSubView()" class="comm-back-btn">
+              <span>←</span>
+              <span>חזרה לפורטל הקהילה</span>
+            </button>
+            <h3 class="text-lg font-black text-[#0F2340] serif-heading">פורום הקהילה</h3>
+          </div>
+          <button type="button" onclick="openNewCommunityPostModal()" class="px-3 py-1.5 bg-[#0284C7] text-white font-bold rounded-xl text-xs hover:bg-[#0369A1] transition-all">
+            + פוסט חדש
+          </button>
+        </div>
+
+        <!-- תיבת כתיבת פוסט מהירה (Facebook Style) -->
+        <div class="bg-white border border-[#E5DBC7] p-4 rounded-2xl shadow-sm space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 text-white font-black flex items-center justify-center text-sm shadow">
+              את/ה
+            </div>
+            <input type="text" id="comm-quick-post-input" placeholder="מה תרצה לשתף או לשאול בקהילה היום?..." class="flex-1 bg-[#FDF8EF] border border-[#E5DBC7] focus:border-amber-500 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-[#0F2340] outline-none">
+            <button type="button" onclick="publishQuickCommunityPost()" class="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:brightness-110 text-white font-black rounded-xl text-xs shadow shrink-0">
+              פרסם
             </button>
           </div>
         </div>
 
-        <div id="forum-posts-container" class="space-y-3.5"></div>
+        <!-- פיד הפוסטים (FB Style) -->
+        <div id="comm-forum-feed-container" class="space-y-4"></div>
       </div>
 
-      <!-- פאנל 2: הגרלות הקודש -->
-      <div id="comm-panel-raffles" class="hidden space-y-4">
-        <div id="comm-raffles-host"></div>
+      <!-- 3. תת-עמוד 2: חדשות ועדכונים (מאמרים וכתבות) -->
+      <div id="comm-subview-news" class="hidden space-y-4">
+        <div class="flex items-center justify-between bg-white border border-[#E5DBC7] p-3 sm:p-4 rounded-2xl shadow-sm">
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="closeCommunityPortalSubView()" class="comm-back-btn">
+              <span>←</span>
+              <span>חזרה לפורטל הקהילה</span>
+            </button>
+            <h3 class="text-lg font-black text-[#0F2340] serif-heading">חדשות ועדכונים תורניים</h3>
+          </div>
+          <span class="text-xs text-gray-500 font-bold">מבזקים ומאמרים</span>
+        </div>
+
+        <!-- סנן קטגוריות חדשות -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+          <button type="button" onclick="filterCommunityNews('all', this)" class="comm-news-filter-btn active">הכל</button>
+          <button type="button" onclick="filterCommunityNews('torah', this)" class="comm-news-filter-btn">עולם התורה</button>
+          <button type="button" onclick="filterCommunityNews('events', this)" class="comm-news-filter-btn">אירועים וזמנים</button>
+          <button type="button" onclick="filterCommunityNews('chizuk', this)" class="comm-news-filter-btn">מאמרי חיזוק</button>
+        </div>
+
+        <!-- רשימת כתבות נקייה (תמונה מימין, כותרת ותקציר משמאל) -->
+        <div id="comm-news-list-container" class="space-y-3"></div>
       </div>
 
-      <!-- פאנל 3: צדקה, קמפיינים וספר הפרנסים -->
-      <div id="comm-panel-charity" class="hidden space-y-4">
-        <div id="comm-charity-host"></div>
+      <!-- 4. תת-עמוד 3: תרומות וצדקה (קמפיינים וסרגלי התקדמות) -->
+      <div id="comm-subview-charity" class="hidden space-y-4">
+        <div class="flex items-center justify-between bg-white border border-[#E5DBC7] p-3 sm:p-4 rounded-2xl shadow-sm">
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="closeCommunityPortalSubView()" class="comm-back-btn">
+              <span>←</span>
+              <span>חזרה לפורטל הקהילה</span>
+            </button>
+            <h3 class="text-lg font-black text-[#0F2340] serif-heading">תרומות וצדקה • קמפיינים פעילים</h3>
+          </div>
+          <span class="text-xs text-rose-600 font-bold">פיקוח הלכתי מלא</span>
+        </div>
+
+        <!-- גריד קמפיינים עם סרגלי יעד ויזואליים -->
+        <div id="comm-charity-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </div>
 
-      <!-- פאנל 4: לוח תפילות קהילתי -->
-      <div id="comm-panel-prayers" class="hidden space-y-4">
-        <div id="comm-prayers-host"></div>
+      <!-- 5. תת-עמוד 4: לוח מודעות (דרושים, למכירה, הודעות) -->
+      <div id="comm-subview-bulletin" class="hidden space-y-4">
+        <div class="flex items-center justify-between bg-white border border-[#E5DBC7] p-3 sm:p-4 rounded-2xl shadow-sm">
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="closeCommunityPortalSubView()" class="comm-back-btn">
+              <span>←</span>
+              <span>חזרה לפורטל הקהילה</span>
+            </button>
+            <h3 class="text-lg font-black text-[#0F2340] serif-heading">לוח מודעות קהילתי</h3>
+          </div>
+          <button type="button" onclick="openNewBulletinModal()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-black rounded-xl text-xs transition-all">
+            + פרסם מודעה
+          </button>
+        </div>
+
+        <!-- סנן תגיות בלוח המודעות -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+          <button type="button" onclick="filterCommunityBulletin('all', this)" class="comm-bulletin-filter-btn active">הכל</button>
+          <button type="button" onclick="filterCommunityBulletin('sale', this)" class="comm-bulletin-filter-btn">🏷️ למכירה</button>
+          <button type="button" onclick="filterCommunityBulletin('jobs', this)" class="comm-bulletin-filter-btn">💼 דרושים</button>
+          <button type="button" onclick="filterCommunityBulletin('lost', this)" class="comm-bulletin-filter-btn">🔍 השבת אבידה</button>
+          <button type="button" onclick="filterCommunityBulletin('gemach', this)" class="comm-bulletin-filter-btn">📦 גמ״ח</button>
+          <button type="button" onclick="filterCommunityBulletin('notice', this)" class="comm-bulletin-filter-btn">📢 הודעות</button>
+        </div>
+
+        <!-- רשימת מודעות מסווגת עם תגיות -->
+        <div id="comm-bulletin-list-container" class="space-y-3"></div>
+      </div>
+
+      <!-- 6. תת-עמוד 5: קבוצות רכישה (מבצעים קהילתיים מוזלים) -->
+      <div id="comm-subview-groupbuys" class="hidden space-y-4">
+        <div class="flex items-center justify-between bg-white border border-[#E5DBC7] p-3 sm:p-4 rounded-2xl shadow-sm">
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="closeCommunityPortalSubView()" class="comm-back-btn">
+              <span>←</span>
+              <span>חזרה לפורטל הקהילה</span>
+            </button>
+            <h3 class="text-lg font-black text-[#0F2340] serif-heading">קבוצות רכישה קהילתיות</h3>
+          </div>
+          <span class="text-xs text-purple-700 font-bold">חיסכון קבוצתי ישיר</span>
+        </div>
+
+        <!-- כרטיסי קבוצות רכישה -->
+        <div id="comm-groupbuys-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
       </div>
     </section>
 
@@ -3995,9 +4191,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-client.js?v=46"></script>
-  <script src="utils.js?v=46"></script>
-  <script src="data.js?v=46"></script>
-  <script src="app.js?v=46"></script>
+  <script src="supabase-client.js?v=47"></script>
+  <script src="utils.js?v=47"></script>
+  <script src="data.js?v=47"></script>
+  <script src="app.js?v=47"></script>
 </body>
 </html>

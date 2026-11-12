@@ -813,14 +813,17 @@ input, select, textarea, button {
 .sticky-list-header {
   position: sticky !important;
   top: 56px !important;
-  z-index: 32 !important;
-  background-color: rgba(240, 253, 250, 0.96) !important;
-  backdrop-filter: blur(6px);
-  padding: 12px 14px !important;
+  z-index: 25 !important;
+  background-color: rgba(240, 253, 250, 0.98) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 12px 16px !important;
   border: 1.5px solid #0D9488 !important;
   border-radius: 16px !important;
   box-shadow: 0 4px 14px rgba(13, 148, 136, 0.08) !important;
-  margin-bottom: 14px !important;
+  margin-top: 4px !important;
+  margin-bottom: 16px !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .live-result-counter {
@@ -2050,4 +2053,269 @@ body.reel-fullscreen-open {
   background: #EA580C;
   border-color: #FDE68A;
   box-shadow: 0 0 25px rgba(234, 88, 12, 0.8);
+}
+
+
+/* ============================================================================
+   TZADIKTOK V47 — TABS FADE OVERLAY, NEAR-ME MAP, AND COMMUNITY HUB (matara.pro)
+   ============================================================================ */
+
+/* 1. אפקט Fade בקצוות ימין ושמאל לשורת הטאבים בסטרימינג ('ללמוד') */
+.tabs-fade-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.tabs-fade-container::before,
+.tabs-fade-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 28px;
+  pointer-events: none;
+  z-index: 5;
+  transition: opacity 0.2s ease;
+}
+
+.tabs-fade-container::before {
+  right: 0;
+  background: linear-gradient(to left, #0a0a0c 10%, rgba(10, 10, 12, 0) 100%);
+}
+
+.tabs-fade-container::after {
+  left: 0;
+  background: linear-gradient(to right, #0a0a0c 10%, rgba(10, 10, 12, 0) 100%);
+}
+
+/* 2. פורטל הקהילה בסגנון matara.pro: רשת כרטיסים מרובעים לבנים עם צלליות עדינות */
+.comm-portal-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 14px;
+}
+
+@media (min-width: 640px) {
+  .comm-portal-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .comm-portal-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.comm-portal-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: right;
+  background: #ffffff;
+  border: 1.5px solid #E5DBC7;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 4px 14px rgba(15, 35, 64, 0.05);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  min-height: 170px;
+}
+
+.comm-portal-card:hover {
+  transform: translateY(-3px);
+  border-color: #C9A227;
+  box-shadow: 0 10px 24px rgba(201, 162, 39, 0.16);
+}
+
+.comm-portal-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  transition: transform 0.2s ease;
+}
+
+.comm-portal-card:hover .comm-portal-icon-wrap {
+  transform: scale(1.08);
+}
+
+.comm-portal-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.comm-portal-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #F3EDE2;
+  padding-top: 10px;
+  margin-top: 12px;
+}
+
+.comm-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: #FDF8EF;
+  border: 1px solid #D8CBB5;
+  color: #0F2340;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.comm-back-btn:hover {
+  background: #F6EFE2;
+  border-color: #C9A227;
+}
+
+/* 3. פיד פוסטים סטייל Facebook בפורום הקהילה */
+.comm-post-card {
+  background: #ffffff;
+  border: 1px solid #E5DBC7;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.2s ease;
+}
+
+.comm-post-card:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+}
+
+.comm-post-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 15px;
+  color: #ffffff;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+.comm-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #4B5563;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.comm-action-btn:hover {
+  background: #F3F4F6;
+  color: #111827;
+}
+
+.comm-action-btn.liked {
+  color: #DC2626 !important;
+}
+
+/* 4. קמפיינים וסרגלי התקדמות בצדקה */
+.comm-charity-card {
+  background: #ffffff;
+  border: 1.5px solid #E5DBC7;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.comm-progress-track {
+  width: 100%;
+  height: 10px;
+  background-color: #E5E7EB;
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.comm-progress-bar {
+  height: 100%;
+  background: linear-gradient(to left, #EA580C, #C9A227);
+  border-radius: 9999px;
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 5. לוח מודעות ופילטרים */
+.comm-bulletin-filter-btn,
+.comm-news-filter-btn {
+  padding: 5px 12px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #F3EDE2;
+  color: #0F2340;
+  border: 1px solid #D8CBB5;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.comm-bulletin-filter-btn.active,
+.comm-news-filter-btn.active {
+  background: #0F2340;
+  color: #FCD34D !important;
+  border-color: #0F2340;
+}
+
+.comm-tag-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+/* 6. קבוצות רכישה */
+.comm-groupbuy-card {
+  background: #ffffff;
+  border: 1.5px solid #E5DBC7;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* 7. מפת Leaflet ואינטגרציה */
+#near-me-leaflet-map-wrapper .leaflet-container {
+  font-family: inherit !important;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 14px !important;
+  padding: 4px !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
+}
+
+.leaflet-popup-content {
+  margin: 10px 12px !important;
+  line-height: 1.4 !important;
+  direction: rtl !important;
+  text-align: right !important;
 }
