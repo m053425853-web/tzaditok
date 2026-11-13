@@ -30,7 +30,7 @@
     };
   </script>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <link rel="stylesheet" href="style.css?v=49" />
+  <link rel="stylesheet" href="style.css?v=50" />
   <!-- Leaflet Map CSS & JS for Interactive Near-Me Map -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -80,18 +80,30 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="#C9A227" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
           </button>
         </div>
-        <!-- [מרכז] לוגו ברור + שם האתר -->
-        <div class="flex items-center gap-2.5 cursor-pointer shrink-0 justify-self-center" onclick="switchTab('feed')">
-          <div class="w-10 h-10 rounded-xl bg-[#FDF8EF] border-2 border-[#C9A227] flex items-center justify-center overflow-hidden shadow-sm shrink-0">
-            <svg id="header-default-logo-svg" class="w-7 h-7" viewBox="0 0 24 24" fill="none">
-              <polygon points="12,2 15,8 21,9 16.5,14 18,20 12,17 6,20 7.5,14 3,9 9,8" fill="#C9A227" fill-opacity="0.25" stroke="#C9A227" stroke-width="1.8"/>
-              <text x="12" y="16" text-anchor="middle" fill="#0F2340" font-family="Frank Ruhl Libre, serif" font-weight="900" font-size="13">צ</text>
-            </svg>
+        <!-- [מרכז] לוגו ברור + שם האתר + חותמת רבנים -->
+        <div class="flex flex-col items-center justify-center cursor-pointer shrink-0 justify-self-center" onclick="switchTab('feed')">
+          <div class="flex items-center gap-2">
+            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#FDF8EF] border-2 border-[#C9A227] flex items-center justify-center overflow-hidden shadow-sm shrink-0">
+              <svg id="header-default-logo-svg" class="w-6 h-6 sm:w-7 sm:h-7" viewBox="0 0 24 24" fill="none">
+                <polygon points="12,2 15,8 21,9 16.5,14 18,20 12,17 6,20 7.5,14 3,9 9,8" fill="#C9A227" fill-opacity="0.25" stroke="#C9A227" stroke-width="1.8"/>
+                <text x="12" y="16" text-anchor="middle" fill="#0F2340" font-family="Frank Ruhl Libre, serif" font-weight="900" font-size="13">צ</text>
+              </svg>
+            </div>
+            <div class="flex flex-col items-start">
+              <h1 class="header-title-text text-xl sm:text-2xl font-black tracking-tight leading-none">צדיק-טוק</h1>
+              <span id="header-rabbinical-stamp" class="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-[#5C4938] mt-0.5 leading-tight">
+                <svg class="w-3 h-3 text-[#C9A227] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                <span>תוכן האתר באישור ועד הרבנים</span>
+              </span>
+            </div>
           </div>
-          <h1 class="header-title-text text-xl sm:text-2xl font-black tracking-tight leading-none">צדיק-טוק</h1>
         </div>
-        <!-- [שמאל] אייקון האזור האישי בכותרת העליונה -->
-        <div class="flex justify-end items-center gap-2">
+        <!-- [שמאל] כפתור מצב כשר + אייקון האזור האישי בכותרת העליונה -->
+        <div class="flex justify-end items-center gap-1.5 sm:gap-2">
+          <button id="kosher-mode-toggle-btn" type="button" onclick="toggleKosherMode()" aria-pressed="false" class="tt-hdr-btn kosher-toggle-pill px-2.5 sm:px-3 py-1.5 rounded-xl border border-[#C9A227] bg-[#FDF8EF] text-[#0F2340] hover:bg-[#F6EFE2] text-xs font-black flex items-center gap-1.5 transition-all" title="מצב כשר – הסתרת תמונות, סרטונים ואנימציות">
+            <svg class="w-4 h-4 text-[#C9A227] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+            <span id="kosher-mode-btn-label">מצב כשר</span>
+          </button>
           <button id="header-auth-btn" type="button" onclick="openPersonalArea()" class="tt-hdr-btn tt-hdr-primary" title="האזור האישי שלי">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
             <span id="header-auth-label" class="tt-hdr-label">האזור האישי</span>
@@ -172,12 +184,49 @@
         </div>
       </div>
 
+      
+      <!-- 3 כפתורי הניווט המרכזיים של בית המדרש הדיגיטלי (גובה מינימלי 56px, אייקוני SVG נקיים, צבעי כחול כהה/זהב מעודנים) -->
+      <div id="home-giant-nav-buttons" class="grid grid-cols-3 gap-2.5 sm:gap-3.5 my-2" role="navigation" aria-label="ניווט ראשי מהיר">
+        <button type="button" onclick="switchTab('series')" class="home-giant-cta-btn group flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 px-3 py-3 rounded-2xl bg-[#0F2340] hover:bg-[#163159] text-white border-2 border-[#C9A227] shadow-md transition-all cursor-pointer min-h-[60px]">
+          <span class="w-9 h-9 rounded-xl bg-[#C9A227]/20 border border-[#C9A227]/60 flex items-center justify-center text-[#FCD34D] shrink-0 group-hover:scale-105 transition-transform">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H2V4z"/><path d="M22 4h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8V4z"/></svg>
+          </span>
+          <div class="text-center sm:text-right">
+            <span class="block text-base sm:text-lg font-black tracking-tight text-white serif-heading leading-none" style="color:#FFFFFF !important;">ללמוד</span>
+            <span class="hidden sm:block text-[11px] text-[#FCD34D] font-bold mt-0.5" style="color:#FCD34D !important;">בית המדרש והספרייה</span>
+          </div>
+        </button>
+
+        <button type="button" onclick="switchTab('siddur')" class="home-giant-cta-btn group flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 px-3 py-3 rounded-2xl bg-[#0F2340] hover:bg-[#163159] text-white border-2 border-[#C9A227] shadow-md transition-all cursor-pointer min-h-[60px]">
+          <span class="w-9 h-9 rounded-xl bg-[#C9A227]/20 border border-[#C9A227]/60 flex items-center justify-center text-[#FCD34D] shrink-0 group-hover:scale-105 transition-transform">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>
+          </span>
+          <div class="text-center sm:text-right">
+            <span class="block text-base sm:text-lg font-black tracking-tight text-white serif-heading leading-none" style="color:#FFFFFF !important;">להתפלל</span>
+            <span class="hidden sm:block text-[11px] text-[#FCD34D] font-bold mt-0.5" style="color:#FCD34D !important;">סידור, תהילים וזמנים</span>
+          </div>
+        </button>
+
+        <button type="button" onclick="switchTab('find')" class="home-giant-cta-btn group flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 px-3 py-3 rounded-2xl bg-[#0F2340] hover:bg-[#163159] text-white border-2 border-[#C9A227] shadow-md transition-all cursor-pointer min-h-[60px]">
+          <span class="w-9 h-9 rounded-xl bg-[#C9A227]/20 border border-[#C9A227]/60 flex items-center justify-center text-[#FCD34D] shrink-0 group-hover:scale-105 transition-transform">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          </span>
+          <div class="text-center sm:text-right">
+            <span class="block text-base sm:text-lg font-black tracking-tight text-white serif-heading leading-none" style="color:#FFFFFF !important;">למצוא</span>
+            <span class="hidden sm:block text-[11px] text-[#FCD34D] font-bold mt-0.5" style="color:#FCD34D !important;">מניינים, מקוואות וכשרות</span>
+          </div>
+        </button>
+      </div>
+
       <!-- קרוסלת רילס עם סינון משך זמן (עד 90 שניות / עד 5 דקות / הכל) וחיצי גלילה פנימיים -->
-      <div id="home-reels-carousel-section" class="space-y-1.5 pt-0.5">
-        <div class="flex flex-wrap items-center justify-between gap-2 px-1">
+      <div id="home-reels-carousel-section" class="bg-white border-2 border-[#C9A227] rounded-2xl p-3 sm:p-4 shadow-sm space-y-2.5">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-1.5 border-b border-[#E5DBC7]">
           <div class="flex items-center gap-2">
-            <span class="px-2 py-0.5 rounded-md bg-[#0F2340] text-amber-300 text-[11px] font-black" style="color:#FCD34D !important;">רילס</span>
-            <h3 class="text-sm sm:text-base font-black text-[#0F2340] serif-heading">סרטונים קצרים</h3>
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#0F2340] text-amber-300 text-xs font-black" style="color:#FCD34D !important;">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>רילס</span>
+            </span>
+            <h3 class="text-base sm:text-lg font-black text-[#0F2340] serif-heading">סרטוני חיזוק קצרים</h3>
           </div>
           <!-- כפתורי סינון משך זמן: עד 90 שניות (ברירת מחדל), עד 5 דקות, והכל -->
           <div class="flex items-center gap-1 text-[11px]" id="reels-duration-filter-bar">
@@ -385,6 +434,23 @@
         </div>
       </div>
 
+      <!-- חותמת אישור ועד הרבנים בתחתית דף הבית -->
+      <div id="home-rabbinical-trust-stamp" class="bg-[#FDF8EF] border-2 border-[#C9A227] rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-[#0F2340] text-[#FCD34D] border border-[#C9A227] flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <div>
+            <strong class="block text-sm sm:text-base font-black text-[#0F2340] serif-heading">תוכן האתר באישור ועד הרבנים</strong>
+            <span class="text-xs text-[#5C4938]">בית מדרש דיגיטלי נקי, מפוקח ומותאם לציבור שומרי תורה ומצוות</span>
+          </div>
+        </div>
+        <button type="button" onclick="toggleKosherMode()" class="px-4 py-2 rounded-xl bg-[#F6EFE2] hover:bg-[#EDE1CC] border border-[#C9A227] text-xs font-black text-[#0F2340] flex items-center gap-1.5 shrink-0 cursor-pointer">
+          <svg class="w-4 h-4 text-[#0F2340]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+          <span>הפעלת מצב כשר (טקסט בלבד)</span>
+        </button>
+      </div>
+
       <!-- מיכלים מוסתרים לתאימות לאחור -->
       <div class="hidden" aria-hidden="true">
         <div id="home-recommended-carousel"></div>
@@ -419,11 +485,11 @@
           <span class="text-[11px] text-amber-400/80 font-bold">שיעורים וסרטונים יומיים</span>
         </div>
 
-        <!-- שורת חיפוש קומפקטית ומעודנת בראש הדף -->
-        <div class="bg-[#12141F] border border-[#23273A] focus-within:border-amber-500/60 rounded-xl px-3 py-1.5 flex items-center gap-2 shadow-sm transition-all">
-          <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input id="learn-global-search-input" type="search" oninput="handleLearnStreamingSearch(this.value)" placeholder="חיפוש מהיר בספרייה (פרשה, שיעורים, צדיקים)..." class="w-full bg-transparent text-xs text-white placeholder-gray-400 font-medium outline-none">
-          <button type="button" onclick="clearLearnStreamingSearch();" class="text-[11px] text-gray-400 hover:text-amber-400 font-bold shrink-0">נקה</button>
+        <!-- שורת חיפוש דקה, שקופה-למחצה ומינימליסטית בראש הדף (Cinema Style) -->
+        <div id="learn-slim-search-bar" class="bg-white/5 border border-white/15 focus-within:border-amber-400/70 backdrop-blur-md rounded-xl px-3 py-1 flex items-center gap-2 transition-all">
+          <svg class="w-3.5 h-3.5 text-amber-400/90 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="learn-global-search-input" type="search" oninput="handleLearnStreamingSearch(this.value)" placeholder="חיפוש מהיר בספרייה (פרשה, שיעורים, צדיקים)..." class="w-full bg-transparent text-xs text-white placeholder-gray-400 font-medium outline-none py-0.5">
+          <button type="button" onclick="clearLearnStreamingSearch();" class="text-[11px] text-gray-400 hover:text-amber-400 font-bold shrink-0 px-1">נקה</button>
         </div>
 
         <!-- תיבת תוצאות חיפוש מהיר ב'ללמוד' -->
@@ -432,25 +498,31 @@
         <!-- שורת טאבים עליונה עם כפתור פלוס (+) קטן ויפה ואפקט Fade בקצוות לגלילה חלקה -->
         <!-- שורת טאבים נקייה לגלילה חלקה ללא צללים או כפתורים מפריעים -->
         <div class="relative w-full min-w-0 tabs-clean-container">
-          <div id="learn-stream-tabs-bar"  class="flex items-center gap-2 overflow-x-auto py-1 no-scrollbar" role="tablist" aria-label="קטגוריות סטרימינג ללמוד">
-            <button type="button" onclick="switchLearnStreamTab('all')" id="l-tab-all" class="stream-tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-black shrink-0 cursor-pointer">
-              🌟 הכל
+          <div id="learn-stream-tabs-bar" class="flex items-center gap-2 overflow-x-auto py-1 no-scrollbar" role="tablist" aria-label="קטגוריות סטרימינג ללמוד">
+            <button type="button" onclick="switchLearnStreamTab('all')" id="l-tab-all" class="stream-tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-black shrink-0 cursor-pointer inline-flex items-center gap-1.5">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+              <span>הכל</span>
             </button>
-            <button type="button" onclick="switchLearnStreamTab('torah')" id="l-tab-torah" class="stream-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shrink-0 cursor-pointer">
-              📜 פרשת השבוע
+            <button type="button" onclick="switchLearnStreamTab('torah')" id="l-tab-torah" class="stream-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shrink-0 cursor-pointer inline-flex items-center gap-1.5">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              <span>פרשת השבוע</span>
             </button>
-            <button type="button" onclick="switchLearnStreamTab('shiurim')" id="l-tab-shiurim" class="stream-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shrink-0 cursor-pointer">
-              🎙️ שיעורים
+            <button type="button" onclick="switchLearnStreamTab('shiurim')" id="l-tab-shiurim" class="stream-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shrink-0 cursor-pointer inline-flex items-center gap-1.5">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>שיעורים</span>
             </button>
-            <button type="button" onclick="switchLearnStreamTab('tzaddikim_stories')" id="l-tab-tzaddikim_stories" class="stream-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shrink-0 cursor-pointer">
-              👑 סיפורי צדיקים
+            <button type="button" onclick="switchLearnStreamTab('tzaddikim_stories')" id="l-tab-tzaddikim_stories" class="stream-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shrink-0 cursor-pointer inline-flex items-center gap-1.5">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <span>סיפורי צדיקים</span>
             </button>
-            <button type="button" onclick="switchLearnStreamTab('aiseries')" id="l-tab-aiseries" class="stream-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shrink-0 cursor-pointer flex items-center gap-1.5">
-              <span>🎬 סדרות AI</span>
+            <button type="button" onclick="switchLearnStreamTab('aiseries')" id="l-tab-aiseries" class="stream-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shrink-0 cursor-pointer inline-flex items-center gap-1.5">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              <span>סדרות AI</span>
               <span class="badge-vip-streaming px-1.5 py-0.5 rounded text-[10px] text-black font-black uppercase">VIP</span>
             </button>
-            <button type="button" onclick="switchLearnStreamTab('quizzes')" id="l-tab-quizzes" class="stream-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shrink-0 cursor-pointer">
-              🏆 חידונים
+            <button type="button" onclick="switchLearnStreamTab('quizzes')" id="l-tab-quizzes" class="stream-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shrink-0 cursor-pointer inline-flex items-center gap-1.5">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+              <span>חידונים</span>
             </button>
           </div>
         </div>
@@ -464,12 +536,12 @@
           <div class="space-y-2">
             <div class="flex items-center justify-between gap-2 px-1">
               <button type="button" onclick="switchLearnStreamTab('torah')" class="text-sm sm:text-base font-black text-white hover:text-amber-400 flex items-center gap-1.5 transition-colors cursor-pointer text-right group">
-                <span class="text-amber-400">🔥</span>
+                <svg class="w-4 h-4 text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                 <span>פרשת השבוע • מומלצים</span>
                 <span class="text-xs text-amber-400/80 group-hover:translate-x-[-2px] transition-transform">←</span>
               </button>
               <button type="button" onclick="openLearnContentUploadModalWithCategory('פרשה')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[11px] font-bold transition-all cursor-pointer shadow-sm shrink-0">
-                <span>📷</span><span>+ העלאת פרשה</span>
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg><span>העלאת פרשה</span>
               </button>
             </div>
             <!-- מיכל הקרוסלה האנכית 9:16 -->
@@ -482,12 +554,12 @@
           <div class="space-y-2">
             <div class="flex items-center justify-between gap-2 px-1">
               <button type="button" onclick="switchLearnStreamTab('shiurim')" class="text-sm sm:text-base font-black text-white hover:text-[#38BDF8] flex items-center gap-1.5 transition-colors cursor-pointer text-right group">
-                <span class="text-[#38BDF8]">🎙️</span>
+                <svg class="w-4 h-4 text-[#38BDF8] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                 <span>שיעורי הלכה ומוסר</span>
                 <span class="text-xs text-[#38BDF8]/80 group-hover:translate-x-[-2px] transition-transform">←</span>
               </button>
               <button type="button" onclick="openLearnContentUploadModalWithCategory('שיעורים')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#38BDF8]/10 hover:bg-[#38BDF8]/20 text-[#38BDF8] border border-[#38BDF8]/30 text-[11px] font-bold transition-all cursor-pointer shadow-sm shrink-0">
-                <span>➕</span><span>+ העלאת שיעור</span>
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg><span>העלאת שיעור</span>
               </button>
             </div>
             <!-- מיכל קרוסלת שיעורים אחרונים -->
@@ -500,12 +572,12 @@
           <div class="space-y-2">
             <div class="flex items-center justify-between gap-2 px-1">
               <button type="button" onclick="switchLearnStreamTab('tzaddikim_stories')" class="text-sm sm:text-base font-black text-white hover:text-[#FBBF24] flex items-center gap-1.5 transition-colors cursor-pointer text-right group">
-                <span class="text-[#FBBF24]">👑</span>
+                <svg class="w-4 h-4 text-[#FBBF24] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                 <span>סיפורי צדיקים ומופתים</span>
                 <span class="text-xs text-[#FBBF24]/80 group-hover:translate-x-[-2px] transition-transform">←</span>
               </button>
               <button type="button" onclick="openLearnContentUploadModalWithCategory('סיפור צדיק')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#FBBF24]/10 hover:bg-[#FBBF24]/20 text-amber-300 border border-amber-400/30 text-[11px] font-bold transition-all cursor-pointer shadow-sm shrink-0">
-                <span>📜</span><span>+ העלאת סיפור</span>
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg><span>העלאת סיפור</span>
               </button>
             </div>
             <!-- מיכל קרוסלת סיפורי צדיקים -->
@@ -518,12 +590,12 @@
           <div class="space-y-2 pt-1">
             <div class="flex items-center justify-between gap-2 px-1">
               <button type="button" onclick="switchLearnStreamTab('shiurim')" class="text-sm sm:text-base font-black text-white hover:text-emerald-400 flex items-center gap-1.5 transition-colors cursor-pointer text-right group">
-                <span class="text-emerald-400">📺</span>
+                <svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
                 <span>שיעורים ארוכים ומעמיקים (16:9)</span>
                 <span class="text-xs text-emerald-400/80 group-hover:translate-x-[-2px] transition-transform">←</span>
               </button>
               <button type="button" onclick="openLearnContentUploadModalWithCategory('הלכה')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-bold transition-all cursor-pointer shadow-sm shrink-0">
-                <span>🎥</span><span>+ העלאת שיעור</span>
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg><span>העלאת שיעור</span>
               </button>
             </div>
             <!-- מיכל שיעורים ארוכים -->
@@ -3325,6 +3397,34 @@
       </div>
     </section>
 
+
+    <!-- פוטר מרכזי של האתר: חותמת רבנים, פרטיות וכפתור 'צור קשר' (ללא מספרי טלפון חשופים) -->
+    <footer id="site-main-footer" class="mt-8 pt-6 pb-8 border-t-2 border-[#E5DBC7] bg-[#FDF8EF] rounded-2xl px-4 sm:px-6 text-[#0F2340]">
+      <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3 text-center sm:text-right">
+          <div class="w-10 h-10 rounded-xl bg-[#0F2340] border-2 border-[#C9A227] flex items-center justify-center text-[#FCD34D] shrink-0">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <div>
+            <div class="flex items-center justify-center sm:justify-start gap-2">
+              <strong class="text-sm sm:text-base font-black serif-heading text-[#0F2340]">צדיק-טוק • בית מדרש דיגיטלי</strong>
+              <span class="px-2 py-0.5 rounded-md bg-[#F6EFE2] border border-[#C9A227] text-[11px] font-black text-[#0F2340]">תוכן האתר באישור ועד הרבנים</span>
+            </div>
+            <p class="text-xs text-[#5C4938] mt-0.5">תורה, תפילה, הלכה וקהילה במקום אחד • שמירה מלאה על פרטיות המשתמשים</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center justify-center gap-2.5">
+          <button type="button" onclick="toggleKosherMode()" class="px-4 py-2.5 rounded-xl bg-white hover:bg-[#F6EFE2] border border-[#D8CBB5] text-xs font-bold text-[#0F2340] flex items-center gap-1.5 cursor-pointer min-h-[48px]">
+            <svg class="w-4 h-4 text-[#C9A227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+            <span>מצב כשר</span>
+          </button>
+          <button type="button" onclick="openContactUsModal()" class="px-5 py-2.5 rounded-xl bg-[#0F2340] hover:bg-[#163159] text-white border border-[#C9A227] text-xs font-black flex items-center gap-1.5 shadow-sm cursor-pointer min-h-[48px]" style="color:#FFFFFF !important;">
+            <svg class="w-4 h-4 text-[#FCD34D]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <span>צור קשר</span>
+          </button>
+        </div>
+      </div>
+    </footer>
   </main>
 
   <!-- Mobile Bottom Navigation Bar (5 לשוניות בדיוק: בית | ללמוד | תפילה וזמנים | קרוב אליי | קהילה) -->
@@ -4265,10 +4365,58 @@
     </div>
   </div>
 
+  
+  <!-- מודאל צור קשר (פניות הציבור, הצעות ייעול ודיווח תוכן לוועד הרבנים) -->
+  <div id="modal-contact-us" class="hidden fixed inset-0 z-[80] modal-backdrop flex items-end sm:items-center justify-center p-0 sm:p-4" role="dialog" aria-modal="true" aria-labelledby="contact-us-modal-title">
+    <div class="bg-[#FDF8EF] border-2 border-[#C9A227] rounded-3xl max-w-md w-full p-5 sm:p-6 space-y-4 shadow-2xl relative">
+      <div class="flex items-center justify-between border-b border-[#E5DBC7] pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-[#0F2340] text-[#FCD34D] flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div>
+            <span class="text-[11px] font-black text-[#5C4938] block">פניות הציבור וועד הרבנים</span>
+            <h3 id="contact-us-modal-title" class="text-lg font-black text-[#0F2340] serif-heading">צור קשר עם צוות צדיק-טוק</h3>
+          </div>
+        </div>
+        <button type="button" onclick="closeModal('modal-contact-us')" class="modal-close-x-btn shrink-0"><span>✕</span><span>סגור</span></button>
+      </div>
+
+      <form id="form-contact-us" onsubmit="submitContactUsForm(event)" class="space-y-3 text-xs">
+        <div>
+          <label for="contact-us-name" class="block font-bold text-[#0F2340] mb-1">שם מלא *</label>
+          <input id="contact-us-name" type="text" required placeholder="הזן את שמך..." class="w-full bg-white border border-[#D8CBB5] focus:border-[#0F2340] rounded-xl px-3.5 py-2.5 text-xs text-[#0F2340] outline-none">
+        </div>
+        <div>
+          <label for="contact-us-contact" class="block font-bold text-[#0F2340] mb-1">אימייל או אמצעי לחזרה *</label>
+          <input id="contact-us-contact" type="text" required placeholder="כתובת אימייל לחזרה..." class="w-full bg-white border border-[#D8CBB5] focus:border-[#0F2340] rounded-xl px-3.5 py-2.5 text-xs text-[#0F2340] outline-none">
+        </div>
+        <div>
+          <label for="contact-us-subject" class="block font-bold text-[#0F2340] mb-1">נושא הפנייה</label>
+          <select id="contact-us-subject" class="w-full bg-white border border-[#D8CBB5] focus:border-[#0F2340] rounded-xl px-3.5 py-2.5 text-xs text-[#0F2340] outline-none font-bold">
+            <option value="הצעת תוכן / שיעור חדש">הצעת תוכן או שיעור חדש</option>
+            <option value="פנייה לוועד הרבנים / סינון תוכן">פנייה לוועד הרבנים / בקרת תוכן</option>
+            <option value="דיווח על תקלה טכנית">דיווח על תקלה טכנית</option>
+            <option value="שיתופי פעולה ותרומות">שיתופי פעולה והנצחה</option>
+            <option value="אחר">נושא אחר</option>
+          </select>
+        </div>
+        <div>
+          <label for="contact-us-message" class="block font-bold text-[#0F2340] mb-1">תוכן ההודעה *</label>
+          <textarea id="contact-us-message" rows="3" required placeholder="כתוב כאן את פנייתך בפירוט..." class="w-full bg-white border border-[#D8CBB5] focus:border-[#0F2340] rounded-xl px-3.5 py-2.5 text-xs text-[#0F2340] outline-none"></textarea>
+        </div>
+        <div id="contact-us-feedback-msg" class="hidden p-3 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 font-bold text-center"></div>
+        <button type="submit" id="btn-submit-contact-us" class="w-full py-3 bg-[#0F2340] hover:bg-[#163159] text-white font-black rounded-xl text-sm shadow-md transition-all cursor-pointer min-h-[56px]" style="color:#FFFFFF !important;">
+          שליחת פנייה למערכת
+        </button>
+      </form>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-client.js?v=49"></script>
-  <script src="utils.js?v=49"></script>
-  <script src="data.js?v=49"></script>
-  <script src="app.js?v=49"></script>
+  <script src="supabase-client.js?v=50"></script>
+  <script src="utils.js?v=50"></script>
+  <script src="data.js?v=50"></script>
+  <script src="app.js?v=50"></script>
 </body>
 </html>

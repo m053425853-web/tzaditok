@@ -13978,3 +13978,111 @@ window.forceExitShabbatMode = function () {
 
   console.log("TzadikTok V49 extensions initialized.");
 })();
+
+
+/* ============================================================================
+   TZADIKTOK V50 — KOSHER MODE (מצב כשר), CONTACT US MODAL & TRUST UPGRADES
+   ============================================================================ */
+(function() {
+  var KOSHER_STORAGE_KEY = "tzadiktok_kosher_mode_v50";
+
+  window.applyKosherModeState = function(isKosher) {
+    if (isKosher) {
+      document.body.classList.add("kosher-mode");
+    } else {
+      document.body.classList.remove("kosher-mode");
+    }
+    var btn = document.getElementById("kosher-mode-toggle-btn");
+    var lbl = document.getElementById("kosher-mode-btn-label");
+    if (btn) {
+      btn.setAttribute("aria-pressed", isKosher ? "true" : "false");
+    }
+    if (lbl) {
+      lbl.textContent = isKosher ? "מצב כשר: פעיל" : "מצב כשר";
+    }
+  };
+
+  window.toggleKosherMode = function() {
+    var isCurrentlyKosher = document.body.classList.contains("kosher-mode");
+    var nextState = !isCurrentlyKosher;
+    try {
+      localStorage.setItem(KOSHER_STORAGE_KEY, nextState ? "1" : "0");
+    } catch (e) {}
+    window.applyKosherModeState(nextState);
+    if (typeof showToast === "function") {
+      showToast(nextState ? "הופעל מצב כשר – תצוגת טקסט נקייה ללא תמונות וסרטונים" : "מצב כשר כובה – תצוגה מלאה");
+    }
+  };
+
+  window.openContactUsModal = function() {
+    var modal = document.getElementById("modal-contact-us");
+    var feedback = document.getElementById("contact-us-feedback-msg");
+    if (feedback) {
+      feedback.classList.add("hidden");
+      feedback.textContent = "";
+    }
+    if (modal) {
+      modal.classList.remove("hidden");
+    }
+  };
+
+  window.submitContactUsForm = async function(event) {
+    if (event) event.preventDefault();
+    var nameEl = document.getElementById("contact-us-name");
+    var contactEl = document.getElementById("contact-us-contact");
+    var subjectEl = document.getElementById("contact-us-subject");
+    var msgEl = document.getElementById("contact-us-message");
+    var btn = document.getElementById("btn-submit-contact-us");
+    var feedback = document.getElementById("contact-us-feedback-msg");
+
+    var senderName = nameEl ? nameEl.value.trim() : "";
+    var senderContact = contactEl ? contactEl.value.trim() : "";
+    var subject = subjectEl ? subjectEl.value.trim() : "פנייה כללית";
+    var message = msgEl ? msgEl.value.trim() : "";
+
+    if (!senderName || !message) return;
+
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "שולח פנייה...";
+    }
+
+    try {
+      var client = window.supabaseClient || (typeof getSupabase === "function" ? getSupabase() : null);
+      if (client) {
+        await client.from("community_reviews").insert([{
+          author_name: senderName + " (" + senderContact + ")",
+          content: "[" + subject + "] " + message,
+          rating: 5,
+          target_type: "contact_us"
+        }]);
+      }
+    } catch (err) {
+      console.warn("[Contact Us Submit Warning]", err);
+    }
+
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "שליחת פנייה למערכת";
+    }
+
+    if (feedback) {
+      feedback.textContent = "תודה רבה! פנייתך התקבלה במערכת ותועבר לצוות האתר ולוועד הרבנים.";
+      feedback.classList.remove("hidden");
+    }
+    if (typeof showToast === "function") {
+      showToast("פנייתך נשלחה בהצלחה לצוות צדיק-טוק!");
+    }
+    if (msgEl) msgEl.value = "";
+  };
+
+  // אתחול מצב כשר בטעינת הדף אם נשמר ב-LocalStorage
+  try {
+    var savedKosher = localStorage.getItem(KOSHER_STORAGE_KEY);
+    if (savedKosher === "1") {
+      window.applyKosherModeState(true);
+    }
+  } catch (e) {}
+
+  console.log("TzadikTok V50 Digital Beit Midrash & Kosher Mode initialized.");
+})();

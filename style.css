@@ -2538,3 +2538,125 @@ body.reel-fullscreen-open {
   cursor: pointer;
   transition: color 0.15s ease;
 }
+
+
+/* ============================================================================
+   TZADIKTOK V50 — DIGITAL BEIT MIDRASH, KOSHER MODE & 56PX ACCESSIBILITY
+   ============================================================================ */
+
+/* 1. 3 Giant Primary Home Navigation Buttons & 56px Touch Accessibility */
+#home-giant-nav-buttons .home-giant-cta-btn {
+  min-height: 60px !important;
+  border-radius: 18px !important;
+  background: linear-gradient(135deg, #0F2340 0%, #17325A 100%) !important;
+  border: 2px solid #C9A227 !important;
+  box-shadow: 0 4px 14px rgba(15, 35, 64, 0.14) !important;
+}
+
+#home-giant-nav-buttons .home-giant-cta-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(201, 162, 39, 0.25) !important;
+}
+
+/* Minimum 56px touch target height for main interactive navigation & primary action buttons */
+.home-big-action-card,
+.heritage-bottom-nav .bottom-nav-item,
+#modal-contact-us button[type="submit"],
+.comm-portal-card .comm-cta-btn {
+  min-height: 56px !important;
+}
+
+/* Slim, semi-transparent search bar in Learn section */
+#learn-slim-search-bar {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  min-height: 38px;
+}
+
+/* Active state for Kosher Mode button in header */
+body.kosher-mode #kosher-mode-toggle-btn {
+  background-color: #0F2340 !important;
+  color: #FFFFFF !important;
+  border-color: #C9A227 !important;
+}
+body.kosher-mode #kosher-mode-toggle-btn span,
+body.kosher-mode #kosher-mode-toggle-btn svg {
+  color: #FCD34D !important;
+  stroke: #FCD34D !important;
+}
+
+/* 2. KOSHER MODE (מצב כשר): Hide all images, videos, reels, colorful backgrounds & animations */
+body.kosher-mode,
+body.kosher-mode * {
+  animation: none !important;
+  transition: none !important;
+}
+
+body.kosher-mode {
+  background-color: #FDF8EF !important;
+  color: #0F2340 !important;
+}
+
+body.kosher-mode img,
+body.kosher-mode video,
+body.kosher-mode iframe,
+body.kosher-mode #home-reels-carousel-section,
+body.kosher-mode .reel-9x16-video-box,
+body.kosher-mode .cinema-play-glow-btn,
+body.kosher-mode #modal-tiktok-reels-player {
+  display: none !important;
+}
+
+/* In Kosher Mode, transform dark Cinema-Style cards into clean high-contrast text cards */
+body.kosher-mode #view-series {
+  background: #FDF8EF !important;
+  color: #0F2340 !important;
+  border-color: #C9A227 !important;
+}
+
+body.kosher-mode #view-series h2,
+body.kosher-mode #view-series h3,
+body.kosher-mode #view-series h4,
+body.kosher-mode #view-series button,
+body.kosher-mode #view-series input {
+  color: #0F2340 !important;
+}
+
+body.kosher-mode #learn-slim-search-bar {
+  background: #FFFFFF !important;
+  border: 1px solid #C9A227 !important;
+}
+
+body.kosher-mode .cinematic-hero-card,
+body.kosher-mode .cinematic-card,
+body.kosher-mode .cinematic-wide-row {
+  background: #FFFFFF !important;
+  border: 1.5px solid #C9A227 !important;
+  aspect-ratio: auto !important;
+  height: auto !important;
+  min-height: 110px !important;
+  padding: 14px !important;
+  color: #0F2340 !important;
+}
+
+body.kosher-mode .cinematic-hero-card .cinema-overlay,
+body.kosher-mode .cinematic-card .cinema-overlay {
+  position: static !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+body.kosher-mode .cinematic-hero-card h4,
+body.kosher-mode .cinematic-card h4,
+body.kosher-mode .cinematic-wide-row h4 {
+  color: #0F2340 !important;
+  text-shadow: none !important;
+}
+
+body.kosher-mode .cinematic-hero-card p,
+body.kosher-mode .cinematic-card p,
+body.kosher-mode .cinematic-wide-row p {
+  color: #5C4938 !important;
+}
